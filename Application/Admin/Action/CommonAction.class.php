@@ -66,5 +66,7 @@ class CommonAction extends Action {
         }
         $this->ajaxReturn($return);
     }
+
+
     
 }

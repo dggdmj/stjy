@@ -144,5 +144,48 @@ class TableImportAction extends CommonAction{
 		$this->page=D('Article')->relation(true)->where(array('id'=>$id))->find();
 		$this->display("Page/index");
 	}
+
+    function upload() {
+        if (!empty($_FILES)) {
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+            $upload = new \Think\Upload($config);
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());}
+            vendor("PHPExcel.PHPExcel");
+            $file_name=$upload->rootPath.$info['photo']['savepath'].$info['photo']['savename'];
+            $extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
+            if ($extension == 'xlsx') {
+                $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
+                $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
+            } else if ($extension == 'xls') {
+                $objReader = \PHPExcel_IOFactory::createReader('Excel5');
+                $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
+            }
+            $sheet = $objPHPExcel->getSheet(0);
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            for ($i = 2; $i <= $highestRow; $i++) {
+                $data['product_id'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
+                $data['title'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
+                $data['img_url'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
+                $data['price'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
+                $data['product_url'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
+                $data['long_url'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
+                $data['input_time'] = time();
+                $data['promotion_type'] = mt_rand(3, 5);
+                M('product')->add($data);
+            }
+            $this->success('导入成功！');
+        } else {
+            $this->error("请选择上传的文件");
+        }
+    }
+
 }
 ?>
