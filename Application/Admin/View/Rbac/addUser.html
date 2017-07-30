@@ -1,0 +1,95 @@
+<form action="{:U('Admin/Rbac/addUserHandle',array('id'=>$user['id']))}" class="form-x one-form form-auto" id="form" method="post">
+<div class="panel one-box active">
+        <div class="panel-head">
+			<if condition='ACTION_NAME eq "addUser"'>	
+            <strong>添加用户</strong>
+			<else/>
+			<strong>修改用户资料</strong>
+			</if>
+        </div>
+        <div class="panel-body">	
+			<div class="form-group">
+                <div class="label">
+                    <label>用户账号</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="username" size="60" value="{$user.username}">
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="label">
+                    <label>昵称</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="nicename" size="60" value="{$user.nicename}">
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="label">
+                    <label>邮箱</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="email" size="60" value="{$user.email}">
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="label">
+					<if condition='ACTION_NAME eq "addUser"'>	
+                    <label>密码</label>
+					<else/>
+					<label>新密码</label>
+					</if>
+                </div>
+                <div class="field">
+                    <input type="password" class="input" name="password" size="60" value="">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>是否锁定</label>
+                </div>
+                <div class="field">
+                    <div class="button-group radio">
+                        <if condition="$user.lock == 1">
+                            <label class="button active"><input name="lock" value="1" checked="checked" type="radio">
+                                <span class="icon icon-check"></span> 是</label>
+                            <label class="button"><input name="lock" value="0" type="radio">
+                                <span class="icon icon-times"></span> 否</label>
+                            <else/>
+                            <label class="button"><input name="lock" value="1" checked="checked" type="radio">
+                                <span class="icon icon-check"></span> 是</label>
+                            <label class="button active"><input name="lock" value="0" type="radio">
+                                <span class="icon icon-times"></span> 否</label>
+                        </if>
+                    </div>
+                    <div class="input-note">锁定用户是否可以登陆</div>
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="label">
+                    <label>所属角色</label>
+                </div>
+                <div class="field">
+                    <select class="input" name="role_id[]">
+						<?php if(empty($user['role'])):?>
+						<option value="">===请选择角色===</option>	
+						<?php else:?>
+						<foreach name='user.role' item='v'>
+						<option value="{$v.id}">{$v.name}({$v.remark})</option>
+						</foreach>
+						<?php endif;?>				
+						<foreach name='role' item='v'>
+							<option value="{$v.id}">{$v.name}({$v.remark})</option>
+						</foreach>
+					</select>
+                </div>
+            </div>
+		</div>
+        <div class="panel-foot">
+            <div class="form-button">
+                <div id="tips"></div>
+				<button class="button bg-main" id="ajaxForm" type='submit'>保存</button>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,25 @@
+@charset "utf-8";
+body { font-size:16px; font-family:"微软雅黑"; color:#0066d2; background-color:#0066d2; }
+img,input { border:0px; }
+body,ul,li,p,dt,dd,dl { padding:0px; margin:0px; }
+
+.log_bg { width:100%; background:url(../images/bg.jpg) center no-repeat; height:600px; margin-top:5%;  }
+.log_m { width:400px; margin-left:auto; margin-right:auto; padding-top:100px; }
+.log_top { background:url(../images/log_top.jpg) no-repeat; width:400px; height:63px; color:#FFF; font-size:18px; text-align:center; line-height:65px; }
+.log_cen { background:url(../images/log_bg.jpg) no-repeat; width:400px; height:288px; padding-top:15px; }
+.username,.password,.yzm { padding-left:30px; line-height:60px; }
+.username input,.password input,.yzm input { padding:10px 5px 10px 5px;; width:250px; border: 1px solid #cccccc; }
+.yzm input { width:50px; }
+.yzm span { position: relative; bottom: -11px; }
+.log_exit { text-align:center; margin-top:18px; }
+.sub { background:url(../images/login.jpg) no-repeat; width:100px; height:40px; border:none; cursor:pointer;}
+.exit {background:url(../images/exit.jpg) no-repeat; width:100px; height:40px; border:none; cursor:pointer; }
+.sdw:focus{
+  transition:border linear .2s,box-shadow linear .5s;
+ -moz-transition:border linear .2s,-moz-box-shadow linear .5s;
+ -webkit-transition:border linear .2s,-webkit-box-shadow linear .5s;
+ outline:none;border-color:rgba(241,39,242,.75);
+ box-shadow:0 0 15px rgba(241,39,232,.5);
+ -moz-box-shadow:0 0 8px rgba(241,39,232,.5);
+ -webkit-box-shadow:0 0 8px rgba(241,39,232,3); 
+}

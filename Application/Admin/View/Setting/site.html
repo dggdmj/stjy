@@ -1,0 +1,171 @@
+<form method="post" class="form-x one-form form-auto" id="form" action="{:U('/Setting/site')}">
+    <div class="panel one-box  active">
+        <div class="panel-head">
+            <strong>站点信息</strong>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">站点标题</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_title" name="site_title" size="60" value="{$info.site_title}" datatype="*">
+                    <div class="input-note">网站标题栏处显示</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">站点副标题</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_subtitle" name="site_subtitle" size="60" value="{$info.site_subtitle}">
+                    <div class="input-note">站点标题后面显示的副标题</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">站点关键词</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_keywords" name="site_keywords" size="60" value="{$info.site_keywords}">
+                    <div class="input-note">搜索引擎所收录的关键词</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">站点描述</label>
+                </div>
+                <div class="field">
+                    <textarea class="input" id="site_description" name="site_description" rows="3" cols="62">{$info.site_description}</textarea>
+                    <div class="input-note">当前网站的描述信息</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">站点网址</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_url" name="site_url" size="60" value="{$info.site_url}">
+                    <div class="input-note">当前网站的域名，开启手机版后做PC跳转</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">站长邮箱</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_email" name="site_email" size="60" value="{$info.site_email}">
+                    <div class="input-note">站长邮箱方便联系</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">官方QQ</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_qq" name="site_qq" size="60" value="{$info.site_qq}">
+                    <div class="input-note">官方QQ方便客户及时在线交流</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">咨询热线</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_phone" name="site_phone" size="60" value="{$info.site_phone}">
+                    <div class="input-note">咨询热线方便客户及时联系</div>
+                </div>
+            </div>
+            <!--<div class="form-group">
+                <div class="label">
+                    <label for="sitename">联系人</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_linkman" name="site_linkman" size="60" value="{$info.site_linkman}">
+                    <div class="input-note">联系人方便客户及时联系</div>
+                </div>
+            </div>-->
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">公司地址</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_address" name="site_address" size="60" value="{$info.site_address}">
+                    <div class="input-note">咨询热线方便客户及时联系</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">站点版权</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_copyright" name="site_copyright" size="60" value="{$info.site_copyright}">
+                    <div class="input-note">版权信息或备案号</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">传真</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="site_license" name="site_license" size="60" value="{$info.site_license}">
+                    <div class="input-note">传真号码</div>
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="label">
+                    <label>内容</label>
+                </div>
+                <div class="field">
+                    <textarea type="input js-editor" class="input" id="site_content" name="site_content" style="min-height: 300px;" >{$info.site_content}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label for="sitename">站点统计</label>
+                </div>
+                <div class="field">
+                    <textarea class="input" id="site_statistics" name="site_statistics" rows="3" cols="62">{$info.site_statistics}</textarea>
+                    <div class="input-note">用于统计代码调用</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-foot">
+            <div class="form-button">
+                <div id="tips"></div>
+                <button class="button bg-main" id="ajaxForm" type="submit">保存</button>
+                <button class="button bg" type="reset">重置</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    // ajax 提交表单
+    /*$(document).ready(function(){
+        $("#ajaxForm").click(function(){    // 提交按钮触发事件
+            var url = $("#form").attr("action");    // 获取 表单的 提交地址
+            // 序列化 表单数据 后提交
+            $.post(url,$("form").serialize(),function(data){
+                // data 是 ajaxreturn 返回的 数据
+                if(data['status'] == 1){    // 处理成功后
+                    layer.alert(data['info'], {icon : 1} , function(index){        
+                        window.location.reload();   // 刷新当前页面
+                        layer.close(index); // 关闭遮罩层
+                    });
+                } else {
+                    // 处理失败后 刷新页面
+                }
+            });
+        });
+    });*/
+	
+	KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="site_content"]', {
+            cssPath : '__PUBLIC__/keditor/plugins/code/prettify.css',
+            uploadJson : '__PUBLIC__/keditor/php/upload_json.php',
+            fileManagerJson : '__PUBLIC__/keditor/php/file_manager_json.php',
+            allowFileManager : true
+        });
+        prettyPrint();
+    });
+</script>

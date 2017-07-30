@@ -1,0 +1,156 @@
+<form method="post" class="form-x one-form form-auto" id="form" action="{:U('/Classify/runAddCate',array('id'=>$info['id']))}">
+    <div class="tab one-tab">
+        <div class="panel one-box  active">
+            <div class="panel-head">
+                <div class="tab-head">
+                    <strong>{$name}文章栏目</strong>
+                    <ul class="tab-nav">
+                        <li class="active"><a href="#tab-1">基本信息</a>
+                        </li>
+                        <li><a href="#tab-2">扩展信息</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-body">
+                <div class="tab-panel active" id="tab-1">
+                    <div class="form-group">
+                        <div class="label">
+                            <label>栏目名称</label>
+                        </div>
+                        <div class="field">
+                            <input type="text" class="input" id="name" name="name" size="60" datatype="s" value="{$info.name}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="label">
+                            <label>{$type}名称</label>
+                        </div>
+                        <div class="field">
+                            <input type="text" class="input" name="way" size="60" value="{$info.way}">
+                            <div class="input-note">当前栏目所属的控制器/方法</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="label">
+                            <label>内容分页数</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" class="input" id="page" name="page" size="60" datatype="n" value="{$info.pages}">
+                            <div class="input-note">当前栏目的内容列表下文章每页显示数量</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="label">
+                            <label>栏目顺序</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" class="input" id="sort" name="sort" size="60" datatype="n" value="{$info['sort']}">
+                            <div class="input-note">栏目列表调用时的顺序，数字越小越靠前</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="label">
+                            <label>新窗口打开</label>
+                        </div>
+                        <div class="field">
+                            <div class="button-group radio">
+                                <if condition="$info.target == 1">
+                                    <label class="button active"><input name="target" value="1" checked="checked" type="radio">
+                                        <span class="icon icon-check"></span> 是</label>
+                                    <label class="button"><input name="target" value="0" type="radio">
+                                        <span class="icon icon-times"></span> 否</label>
+                                <else/>
+                                    <label class="button"><input name="target" value="0" checked="checked" type="radio">
+                                        <span class="icon icon-check"></span> 否</label>
+                                    <label class="button active"><input name="target" value="1" type="radio">
+                                        <span class="icon icon-times"></span> 是</label>
+                                </if>
+                            </div>
+                            <div class="input-note">新窗口打开网站</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="label">
+                            <label>显示栏目</label>
+                        </div>
+                        <div class="field">
+                            <div class="button-group radio">
+                                <if condition="$info.hidden == 1">
+                                    <label class="button active"><input name="hidden" value="1" checked="checked" type="radio">
+                                        <span class="icon icon-check"></span> 是</label>
+                                    <label class="button"><input name="hidden" value="0" type="radio">
+                                        <span class="icon icon-times"></span> 否</label>
+                                    <else/>
+                                    <label class="button"><input name="hidden" value="0" checked="checked" type="radio">
+                                        <span class="icon icon-check"></span> 否</label>
+                                    <label class="button active"><input name="hidden" value="1" type="radio">
+                                        <span class="icon icon-times"></span> 是</label>
+                                </if>
+                            </div>
+                            <div class="input-note">栏目是否显示</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-panel" id="tab-2">
+                    <div class="form-group">
+                        <div class="label">
+                            <label>子标题</label>
+                        </div>
+                        <div class="field">
+                            <input type="text" class="input" id="subname" name="subname" size="60" value="{$info.subname}">
+                            <div class="input-note">扩展标题的副标题信息</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="label">
+                            <label>栏目关键词</label>
+                        </div>
+                        <div class="field">
+                            <input type="text" class="input" id="keywords" name="keywords" size="60" value="{$info.keywords}">
+                            <div class="input-note">当前栏目的关键词</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="label">
+                            <label for="sitename">栏目描述</label>
+                        </div>
+                        <div class="field">
+                            <textarea class="input" id="description" name="description" rows="3" cols="62">{$info.description}</textarea>
+                            <div class="input-note">当前栏目的描述信息</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="label">
+                            <label>单页内容</label>
+                        </div>
+                        <div class="field">
+                            <textarea type="input js-editor" class="input" name="content" style="width: 100%; height: 200px;" >{$info.content}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-foot">
+                <div class="form-button">
+                    <div id="tips"></div>
+                    <input type="hidden" name="class_id" type="hidden" value="{$info.class_id}">
+                    <button class="button bg-main" type="submit">保存</button>
+                    <button class="button bg" type="reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="content"]', {
+            cssPath : '__PUBLIC__/keditor/plugins/code/prettify.css',
+            uploadJson : '__PUBLIC__/keditor/php/upload_json.php',
+            fileManagerJson : '__PUBLIC__/keditor/php/file_manager_json.php',
+            allowFileManager : true
+        });
+        prettyPrint();
+    });
+</script>

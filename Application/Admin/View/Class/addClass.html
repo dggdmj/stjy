@@ -1,0 +1,46 @@
+<form method="post" class="form-x one-form form-auto" id="form" action="{:U('/Class/runAddClass',array('id'=>$classes['id']))}">
+	 <div class="panel one-box  active">
+        <div class="panel-head">
+			<if condition='ACTION_NAME eq "addClass"'>	
+            <strong>添加案例分类</strong>
+			<else/>
+			<strong>修改案例分类</strong>
+			</if>
+        </div>
+        <div class="panel-body">	
+			<div class="form-group">
+                <div class="label">
+                    <label>分类名称</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="name" size="60" value="{$classes['name']}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>副标题</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="subtitle" size="60" value="{$classes['subtitle']}">
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="label">
+                    <label>排序</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="sort" size="60" value="<?php echo $classes['sort']?$classes['sort']:100;?>">
+                </div>
+            </div>
+        </div>
+        <div class="panel-foot">
+			<div class="form-button">
+                <div id="tips"></div>
+				<button class="button bg-main" id="ajaxForm" type='submit'>保存</button>
+				<if condition='ACTION_NAME eq "addClass"'>	
+                <button class="button bg" type="reset">重置</button>
+				</if>
+            </div>
+        </div>
+    </div>
+</form>
