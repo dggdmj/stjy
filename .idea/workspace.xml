@@ -42,8 +42,13 @@
       <file leaf-file-name="TableImportAction.class.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/Admin/Action/TableImportAction.class.php">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="262">
+              <caret line="163" column="76" lean-forward="true" selection-start-line="163" selection-start-column="76" selection-end-line="163" selection-end-column="76" />
+=======
             <state relative-caret-position="1159">
               <caret line="62" column="46" lean-forward="false" selection-start-line="62" selection-start-column="35" selection-end-line="62" selection-end-column="46" />
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
               <folding>
                 <element signature="e#31#48#0#PHP" expanded="true" />
                 <marker date="1501491064069" expanded="true" signature="2787:2832" ph="insert into one_article_attr... " />
@@ -63,6 +68,14 @@
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file leaf-file-name="CommonAction.class.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Application/Admin/Action/CommonAction.class.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="502">
+              <caret line="67" column="5" lean-forward="false" selection-start-line="67" selection-start-column="5" selection-end-line="67" selection-end-column="5" />
+              <folding />
+=======
       <file leaf-file-name="xglhc.html" pinned="false" current-in-tab="true">
         <entry file="file://$USER_HOME$/Desktop/wap_daxin/wap_daxin/xglhc.html">
           <provider selected="true" editor-type-id="text-editor">
@@ -71,6 +84,7 @@
               <folding>
                 <element signature="n#style#0;n#h1#0;n#a#1;n#header#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
             </state>
           </provider>
         </entry>
@@ -111,8 +125,12 @@
         <option value="$PROJECT_DIR$/Application/Admin/Action/CommonAction.class.php" />
         <option value="$PROJECT_DIR$/Application/Admin/View/TableImport/xyxxb.html" />
         <option value="$PROJECT_DIR$/Application/Admin/Action/TableImportAction.class.php" />
+<<<<<<< HEAD
+        <option value="$PROJECT_DIR$/Application/Common/Conf/config.php" />
+=======
         <option value="$PROJECT_DIR$/Application/Admin/View/TableImport/import.html" />
         <option value="$USER_HOME$/Desktop/wap_daxin/wap_daxin/xglhc.html" />
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
       </list>
     </option>
   </component>
@@ -127,6 +145,12 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
+<<<<<<< HEAD
+    <option name="x" value="119" />
+    <option name="y" value="1027" />
+    <option name="width" value="1280" />
+    <option name="height" value="777" />
+=======
     <option name="x" value="496" />
     <option name="y" value="8" />
     <option name="width" value="1394" />
@@ -134,6 +158,7 @@
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -253,6 +278,42 @@
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="Public" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stjy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stjy" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Public" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Uploads" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="20170730" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stjy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stjy" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="Application" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
@@ -262,6 +323,46 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Action" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stjy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stjy" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Common" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stjy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stjy" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Common" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Conf" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -382,13 +483,26 @@
       <option name="presentableId" value="Default" />
       <updated>1501415841049</updated>
       <workItem from="1501415843196" duration="3710000" />
+<<<<<<< HEAD
+      <workItem from="1501422240395" duration="5581000" />
+=======
       <workItem from="1501422240395" duration="5065000" />
       <workItem from="1501486745431" duration="5023000" />
       <workItem from="1501492913123" duration="445000" />
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
+    <option name="totallyTimeSpent" value="9291000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="119" y="1027" width="1280" height="777" extended-state="0" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2253635" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
     <option name="totallyTimeSpent" value="14243000" />
   </component>
   <component name="ToolWindowManager">
@@ -396,6 +510,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2589053" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -605,6 +720,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="283">
           <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="47" selection-end-column="1" />
+<<<<<<< HEAD
+          <folding />
+=======
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
         </state>
       </provider>
     </entry>
@@ -629,6 +748,8 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+=======
     <entry file="file://$PROJECT_DIR$/Application/Admin/Action/CommonAction.class.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1216">
@@ -637,6 +758,7 @@
         </state>
       </provider>
     </entry>
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
     <entry file="file://$PROJECT_DIR$/Application/Admin/Action/UserAction.class.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-114">
@@ -654,8 +776,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/Admin/Action/TableImportAction.class.php">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="262">
+          <caret line="163" column="76" lean-forward="true" selection-start-line="163" selection-start-column="76" selection-end-line="163" selection-end-column="76" />
+=======
         <state relative-caret-position="1159">
           <caret line="62" column="46" lean-forward="false" selection-start-line="62" selection-start-column="35" selection-end-line="62" selection-end-column="46" />
+>>>>>>> 079c9a7db3db94b1ea0dc931f7e309bc065a275b
           <folding>
             <element signature="e#31#48#0#PHP" expanded="true" />
             <marker date="1501491064069" expanded="true" signature="2787:2832" ph="insert into one_article_attr... " />
@@ -679,6 +806,22 @@
           <folding>
             <element signature="n#style#0;n#h1#0;n#a#1;n#header#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Application/Common/Conf/config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="9" column="24" lean-forward="false" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Application/Admin/Action/CommonAction.class.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="502">
+          <caret line="67" column="5" lean-forward="false" selection-start-line="67" selection-start-column="5" selection-end-line="67" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -64,6 +64,7 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
+<<<<<<< HEAD
     /**
      * 更新发布文章
      */
@@ -149,6 +150,12 @@ class TableImportAction extends CommonAction{
 	}
 
     function upload() {
+=======
+    //数据导入
+    function dataUpload() {
+	    dump($_FILES);
+	    dump($_POST);die;
+>>>>>>> b0dcdfc0f5d4925095272c18aa89eb8e2120f859
         if (!empty($_FILES)) {
             // var_dump($_FILES);
             // die;
