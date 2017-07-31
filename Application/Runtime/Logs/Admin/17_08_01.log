@@ -3484,3 +3484,39 @@ NOTIC: [2] call_user_func() expects parameter 1 to be a valid callback, no array
 SQL: SHOW COLUMNS FROM `stjy_qishu_history` [ RunTime:0.0011s ]
 SQL: INSERT INTO `stjy_qishu_history` (`table_name`,`tid`,`qishu`,`caozuoren`,`suoshufx`,`filename`) VALUES ('xyxxb','1','201706','梅梅','华景分校','./Public/Uploads/20170801/597f5f3a0ab9a.xls') [ RunTime:0.0002s ]
 
+[ 2017-08-01T00:55:55+08:00 ] 127.0.0.1 /index.php/TableImport/xyxxb
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000016s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000359s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000674s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000786s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0084s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `stjy_qishu_history` [ RunTime:0.0012s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `stjy_qishu_history` WHERE ( tid = 1 ) LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `stjy_qishu_history` WHERE ( tid = 1 ) ORDER BY id desc LIMIT 0,15   [ RunTime:0.0002s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000100s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000211s ]
+NOTIC: [8] Undefined index: add /Applications/MAMP/htdocs/stjy/Application/Runtime/Cache/Admin/3308c28f6719556643dc39cf6733549c.php 第 49 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.011826s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011904s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000230s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000312s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000053s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.006921s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.004668s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.000502s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000015s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.004937s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000783s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000887s ]
+
