@@ -53,25 +53,14 @@ class TableImportAction extends CommonAction{
 		$this->assign('fpage',$show);// 赋值分页输出
 		$this->adminDisplay();
 	}
-	
-	// 删除/还原
-	public function toTrash(){
-		$type=(int)$_GET['type'];
-		$msg=$type?'删除':'还原';
-		$update=array(
-			'id'=>(int)$_GET['id'],
-			'del'=>$type,
-		);
-		if(M('article')->save($update)) {
-			$this->success($msg.'成功'); //转到文章列表页
-		}else {
-			$this->error($msg.'失败');
-		}	
 
-	}
 	
-	//添加文章页
-	public function article(){
+	//数据表导入
+	public function import(){
+	    $tid = $_GET['tid'];    //对应数据表的序号tabel_name
+        $table_info = M("table_name")->where("xuhao = ".$tid)->find();
+
+        $this->assign("table_info",$table_info);
 		$this->adminDisplay();
 	}
 
