@@ -64,7 +64,7 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
-<<<<<<< HEAD
+
     /**
      * 更新发布文章
      */
@@ -149,13 +149,11 @@ class TableImportAction extends CommonAction{
 		$this->display("Page/index");
 	}
 
-    function upload() {
-=======
+    function upload() {}
     //数据导入
     function dataUpload() {
 	    dump($_FILES);
 	    dump($_POST);die;
->>>>>>> b0dcdfc0f5d4925095272c18aa89eb8e2120f859
         if (!empty($_FILES)) {
             // var_dump($_FILES);
             // die;
@@ -224,7 +222,7 @@ class TableImportAction extends CommonAction{
                 M('xyxxb')->add($data);
             }
             $this->success('导入成功！');
-        } else {
+        }else{
             $this->error("请选择上传的文件");
         }
     }

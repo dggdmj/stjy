@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit();?><form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="<?php echo U('/Article/addArticle',array('id'=>$article['id']));?>">
+<?php if (!defined('THINK_PATH')) exit();?><form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="<?php echo U('/TableImport/dataUpload',array('id'=>$article['id']));?>">
 	 <div class="panel one-box  active">
         <div class="panel-head">
             <strong>数据表导入</strong>
@@ -9,8 +9,18 @@
                     <label>所属分类</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="table_name" size="60" value="<?php echo ($table_info["name"]); ?>" readonly>
-                    <input type="hidden" class="input" name="ta" size="60" value="<?php echo ($table_info["name"]); ?>">
+                    <input type="text" class="input" name="name" size="60" value="<?php echo ($table_info["name"]); ?>" readonly>
+                    <input type="hidden" class="input" name="table_name" size="60" value="<?php echo ($table_info["table_name"]); ?>">
+                    <input type="hidden" class="input" name="tid" size="60" value="<?php echo ($table_info["id"]); ?>">
+                </div>
+            </div>
+			<div class="form-group">
+                <div class="label">
+                    <label>当前期数</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="qishu" size="60" value="201706">
+                    <div class="input-note">例如:201706</div>
                 </div>
             </div>
 			<div class="form-group">
@@ -18,7 +28,7 @@
                     <label>操作人</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="editor" size="60" value="<?php echo ($article["editor"]); ?>" readonly>
+                    <input type="text" class="input" name="caozuoren" size="60" value="梅梅" readonly>
                 </div>
             </div>
 			<div class="form-group">
@@ -27,18 +37,17 @@
                     </label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="title" size="60" value="<?php echo ($article["title"]); ?>">
+                    <input type="text" class="input" name="suoshufx" size="60" value="华景分校">
                 </div>
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>封面</label>
+                    <label>EXCEL表</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" id="image" name="image" readonly="readonly" size="38" value="<?php echo ($article["image"]); ?>">
-                    <a class="button bg-blue button-small  js-img-upload" data="image" id="image_upload" preview="image_preview""><span class="icon-upload"> 上传</span></a>
-                    <a class="button bg-blue button-small icon-picture-o" id="image_preview" href="javascript:;" > 预览</a>
-                    <div class="input-note">封面图片尺寸370x294</div>
+                    <input type="file" class="input" name="excel" />
+                    <!--<a class="button bg-blue button-small icon-picture-o" id="image_preview" href="javascript:;" > 预览</a>-->
+                    <div class="input-note">请导入EXCEL文件</div>
                 </div>
             </div>
         </div>
