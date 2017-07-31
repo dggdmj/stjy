@@ -6068,3 +6068,247 @@ INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.001000s ]
 INFO: [ app_end ] --END-- [ RunTime:0.002000s ]
 
 >>>>>>> 1a4b113ece44cc7c49595c7f4f174e34aa9a2523
+[ 2017-07-31T23:50:47+08:00 ] 127.0.0.1 /index.php/TableImport/index
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000021s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001273s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000662s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000746s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0092s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0017s ]
+
+[ 2017-07-31T23:50:48+08:00 ] 127.0.0.1 /index.php/TableImport/xyxxb
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000018s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000365s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000450s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000510s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0096s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0010s ]
+SQL: SHOW COLUMNS FROM `stjy_xyxxb` [ RunTime:0.0032s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `stjy_xyxxb` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `stjy_xyxxb` ORDER BY id desc LIMIT 0,15   [ RunTime:0.0003s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000239s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000530s ]
+NOTIC: [8] Undefined index: add /Applications/MAMP/htdocs/stjy/Application/Runtime/Cache/Admin/3308c28f6719556643dc39cf6733549c.php 第 49 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.014297s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.014363s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000170s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000221s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000048s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.007861s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.006961s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.000324s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000013s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.007111s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000726s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000798s ]
+
+[ 2017-07-31T23:51:38+08:00 ] 127.0.0.1 /index.php/TableImport/xyxxb
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000031s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000630s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000823s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000930s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0088s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0006s ]
+SQL: SHOW COLUMNS FROM `stjy_xyxxb` [ RunTime:0.0037s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `stjy_xyxxb` LIMIT 1   [ RunTime:0.0001s ]
+SQL: SELECT * FROM `stjy_xyxxb` ORDER BY id desc LIMIT 0,15   [ RunTime:0.0001s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000094s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000197s ]
+NOTIC: [8] Undefined index: add /Applications/MAMP/htdocs/stjy/Application/Runtime/Cache/Admin/3308c28f6719556643dc39cf6733549c.php 第 49 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.011415s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011510s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000351s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000468s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000043s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.006019s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.004016s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.000751s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000012s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.004412s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000502s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000555s ]
+
+[ 2017-07-31T23:51:40+08:00 ] 127.0.0.1 /index.php/TableImport/import?tid=1
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000017s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000400s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000711s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000824s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0091s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0015s ]
+SQL: SHOW COLUMNS FROM `stjy_table_name` [ RunTime:0.0011s ]
+SQL: SELECT * FROM `stjy_table_name` WHERE ( xuhao = 1 ) LIMIT 1   [ RunTime:0.0002s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000067s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000141s ]
+NOTIC: [8] Undefined index: add /Applications/MAMP/htdocs/stjy/Application/Runtime/Cache/Admin/3308c28f6719556643dc39cf6733549c.php 第 49 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.013218s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.013279s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000153s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000202s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000042s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.003865s ]
+NOTIC: [8] Undefined variable: article /Applications/MAMP/htdocs/stjy/Application/Runtime/Cache/Admin/46c69d3ae8d572054d9c40f60cb97fae.php 第 1 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.002777s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.000300s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000015s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.002934s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000588s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000650s ]
+
+[ 2017-07-31T23:51:51+08:00 ] 127.0.0.1 /index.php/TableImport/dataUpload
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000015s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000348s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000446s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000556s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0010s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0001s ]
+SQL: SHOW COLUMNS FROM `stjy_qishu_history` [ RunTime:0.0010s ]
+SQL: INSERT INTO `stjy_qishu_history` (`table_name`,`tid`,`qishu`,`caozuoren`,`suoshufx`) VALUES ('xyxxb','1','201706','梅梅','华景分校') [ RunTime:0.0002s ]
+NOTIC: [2] call_user_func() expects parameter 1 to be a valid callback, no array or string given /Applications/MAMP/htdocs/stjy/ThinkPHP/Library/Think/Upload.class.php 第 170 行.
+NOTIC: [8] Undefined index: photo /Applications/MAMP/htdocs/stjy/Application/Admin/Action/TableImportAction.class.php 第 168 行.
+NOTIC: [8] Undefined index: photo /Applications/MAMP/htdocs/stjy/Application/Admin/Action/TableImportAction.class.php 第 168 行.
+NOTIC: [8] Undefined variable: objPHPExcel /Applications/MAMP/htdocs/stjy/Application/Admin/Action/TableImportAction.class.php 第 177 行.
+
+[ 2017-07-31T23:54:04+08:00 ] 127.0.0.1 /index.php/TableImport/xyxxb
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000017s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000349s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000473s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000539s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0096s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0004s ]
+SQL: SHOW COLUMNS FROM `stjy_xyxxb` [ RunTime:0.0039s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `stjy_xyxxb` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `stjy_xyxxb` ORDER BY id desc LIMIT 0,15   [ RunTime:0.0002s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000062s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000127s ]
+NOTIC: [8] Undefined index: add /Applications/MAMP/htdocs/stjy/Application/Runtime/Cache/Admin/3308c28f6719556643dc39cf6733549c.php 第 49 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.011575s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011685s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000294s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000376s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000054s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.006959s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.004621s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.000578s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000012s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.004823s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000517s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000572s ]
+
+[ 2017-07-31T23:55:26+08:00 ] 127.0.0.1 /index.php/TableImport/xyxxb
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000017s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000354s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000444s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000503s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0093s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0003s ]
+SQL: SHOW COLUMNS FROM `stjy_xyxxb` [ RunTime:0.0032s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `stjy_xyxxb` LIMIT 1   [ RunTime:0.0006s ]
+SQL: SELECT * FROM `stjy_xyxxb` ORDER BY id desc LIMIT 0,15   [ RunTime:0.0002s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000067s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000140s ]
+NOTIC: [8] Undefined index: add /Applications/MAMP/htdocs/stjy/Application/Runtime/Cache/Admin/3308c28f6719556643dc39cf6733549c.php 第 49 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.012971s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.013055s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000223s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000296s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000046s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.006646s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.004304s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.000449s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000013s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.004498s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000583s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000637s ]
+
+[ 2017-07-31T23:55:41+08:00 ] 127.0.0.1 /index.php/TableImport/xyxxb
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000016s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000348s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000443s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000502s ]
+NOTIC: [8] Use of undefined constant APP_NAME - assumed 'APP_NAME' /Applications/MAMP/htdocs/stjy/Application/Admin/Action/CommonAction.class.php 第 20 行.
+SQL: SHOW COLUMNS FROM `stjy_class` [ RunTime:0.0013s ]
+SQL: SELECT * FROM `stjy_class` ORDER BY id desc  [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `stjy_xyxxb` [ RunTime:0.0019s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `stjy_xyxxb` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `stjy_xyxxb` ORDER BY id desc LIMIT 0,15   [ RunTime:0.0002s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000063s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000133s ]
+NOTIC: [8] Undefined index: add /Applications/MAMP/htdocs/stjy/Application/Runtime/Cache/Admin/3308c28f6719556643dc39cf6733549c.php 第 49 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.011775s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011839s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000150s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000200s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000042s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.004839s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.003836s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.000299s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000011s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.003982s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000494s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000545s ]
+

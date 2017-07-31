@@ -43,12 +43,12 @@ class TableImportAction extends CommonAction{
 
 	//文章列表页
 	public function xyxxb(){
-		$data = M('xyxxb'); // 实例化对象
-		$count = $data->count();// 查询满足要求的总记录数
+		$data = M('qishu_history'); // 实例化对象
+		$count = $data->where("tid = 1")->count();// 查询满足要求的总记录数
 		$Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
 		$show = $Page->show();// 分页显示输出
 		// 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-		$list = $data->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+		$list = $data->where("tid = 1")->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
 		$this->assign('list',$list);// 赋值数据集
 		$this->assign('fpage',$show);// 赋值分页输出
 		$this->adminDisplay();
@@ -64,7 +64,6 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
-<<<<<<< HEAD
     /**
      * 更新发布文章
      */
@@ -149,16 +148,9 @@ class TableImportAction extends CommonAction{
 		$this->display("Page/index");
 	}
 
-    function upload() {
-=======
     //数据导入
     function dataUpload() {
-	    dump($_FILES);
-	    dump($_POST);die;
->>>>>>> b0dcdfc0f5d4925095272c18aa89eb8e2120f859
         if (!empty($_FILES)) {
-            // var_dump($_FILES);
-            // die;
             $config = array(
                 'exts' => array('xlsx', 'xls'),
                 'maxSize' => 3145728,
@@ -170,7 +162,12 @@ class TableImportAction extends CommonAction{
             if (!$info = $upload->upload()) {
                 $this->error($upload->getError());}
             vendor("PHPExcel.PHPExcel");
-            $file_name=$upload->rootPath.$info['photo']['savepath'].$info['photo']['savename'];
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            //在qishu_history中增加
+            $_POST["filename"] = $file_name;
+            $qishu_id = M("qishu_history")->add($_POST);
+
             $extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
             if ($extension == 'xlsx') {
                 $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
@@ -179,9 +176,10 @@ class TableImportAction extends CommonAction{
                 $objReader = \PHPExcel_IOFactory::createReader('Excel5');
                 $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
             }
-            $sheet = $objPHPExcel->getSheet(0);
+            $sheet = $objReader->getSheet(0);
             $highestRow = $sheet->getHighestRow(); // 取得总行数
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+
             for ($i = 2; $i <= $highestRow; $i++) {
                 $data['xuehao'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
                 $data['xingming'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
@@ -217,10 +215,8 @@ class TableImportAction extends CommonAction{
                 $data['shengyuxf'] = $objPHPExcel->getActiveSheet()->getCell("AF" . $i)->getValue();
                 $data['zhanghuye'] = $objPHPExcel->getActiveSheet()->getCell("AG" . $i)->getValue();
                 $data['shengao'] = $objPHPExcel->getActiveSheet()->getCell("AH" . $i)->getValue();
-                // $data['input_time'] = time();
-                // $data['promotion_type'] = mt_rand(3, 5);
-                // var_dump($data);
-                // die;
+
+                $data['suoshudd'] = $qishu_id;  //所属订单id
                 M('xyxxb')->add($data);
             }
             $this->success('导入成功！');
