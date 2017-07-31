@@ -7,26 +7,26 @@
     <meta name="renderer" content="webkit">
     <title>oneCMS 1.0 - 网站后台管理</title>
     <!-- import style css -->
-    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/pingtu.css" />
-    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/admin.css" />
+    <link rel="stylesheet" type="text/css" href="/stjy/Public/Admin/css/pingtu.css" />
+    <link rel="stylesheet" type="text/css" href="/stjy/Public/Admin/css/admin.css" />
     <!-- import style js -->
-    <script type="text/javascript" src="/Public/Admin/js/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
+    <script type="text/javascript" src="/stjy/Public/Admin/js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="/stjy/Public/Admin/js/pingtu.js"></script>
     <!-- 因IE8不支持CSS的媒体查询，因此需引入respond.js才能使其实现媒体查询功能。  -->
-    <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
+    <script type="text/javascript" src="/stjy/Public/Admin/js/respond.js"></script>
     <!-- Layer WEB弹窗插件 -->
-    <script type="text/javascript" src="/Public/Admin/js/layer/layer.min.js"></script>
+    <script type="text/javascript" src="/stjy/Public/Admin/js/layer/layer.min.js"></script>
     <!-- KindEditor 在线编辑器 -->
-    <link rel="stylesheet" href="/Public/Admin/keditor/themes/default/default.css" />
-    <link rel="stylesheet" href="/Public/Admin/keditor/plugins/code/prettify.css" />
-    <script charset="utf-8" src="/Public/Admin/keditor/kindeditor-all-min.js"></script>
-    <script charset="utf-8" src="/Public/Admin/keditor/lang/zh-CN.js"></script>
-    <script charset="utf-8" src="/Public/Admin/keditor/plugins/code/prettify.js"></script>
+    <link rel="stylesheet" href="/stjy/Public/Admin/keditor/themes/default/default.css" />
+    <link rel="stylesheet" href="/stjy/Public/Admin/keditor/plugins/code/prettify.css" />
+    <script charset="utf-8" src="/stjy/Public/Admin/keditor/kindeditor-all-min.js"></script>
+    <script charset="utf-8" src="/stjy/Public/Admin/keditor/lang/zh-CN.js"></script>
+    <script charset="utf-8" src="/stjy/Public/Admin/keditor/plugins/code/prettify.js"></script>
     <!-- webUploader 上传图片和文件插件 -->
-    <link rel="stylesheet" type="text/css" href="/Public/Admin/webuploader/webuploader.css">
-    <script type="text/javascript" src="/Public/Admin/webuploader/webuploader.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stjy/Public/Admin/webuploader/webuploader.css">
+    <script type="text/javascript" src="/stjy/Public/Admin/webuploader/webuploader.min.js"></script>
 	<!-- dateTime 插件 -->
-	<link rel="stylesheet" type="text/css" href="/Public/Admin/time/jquery.datetimepicker.css"/ >
+	<link rel="stylesheet" type="text/css" href="/stjy/Public/Admin/time/jquery.datetimepicker.css"/ >
 
     <style>
         body {overflow-x:hidden; background-color: #eff3f6;}

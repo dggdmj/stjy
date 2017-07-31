@@ -7,22 +7,22 @@
     <title>网站后台管理系统</title>
 
     <!-- import css -->
-    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/pingtu.css" />
-    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/admin.css" />
-	
+    <link rel="stylesheet" type="text/css" href="/stjy/Public/Admin/css/pingtu.css" />
+    <link rel="stylesheet" type="text/css" href="/stjy/Public/Admin/css/admin.css" />
+
     <!-- import js -->
-    <script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
+    <script type="text/javascript" src="/stjy/Public/Admin/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/stjy/Public/Admin/js/pingtu.js"></script>
     <!-- 因IE8不支持CSS的媒体查询，因此需引入respond.js才能使其实现媒体查询功能。  -->
-    <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
+    <script type="text/javascript" src="/stjy/Public/Admin/js/respond.js"></script>
 
 </head>
 <body>
-    
+
     <div class="one-head clearfix">
         <div class="one-logo">
             <a href="http://www.ddmall.com.cn" target="_blank">
-                <img src="/Public/Admin/images/logo.png" alt="ddmall后台管理系统" />
+                <img src="/stjy/Public/Admin/images/logo.png" alt="ddmall后台管理系统" />
             </a>
             <button class="button icon-navicon admin-nav-btn" data-target=".admin-nav"></button>
             <button class="button icon-navicon icon-ellipsis-v admin-menu-btn" data-target=".admin-menu"></button>
@@ -48,7 +48,7 @@
             </div>
         </ul>
     </div>
-    
+
     <div class="one-admin">
             <iframe id="one-iframe" name="one-iframe" class="one-iframe" src="" frameborder="0"></iframe>
     </div>
@@ -63,7 +63,7 @@
             }
         }
         $('#nav').html(topNav);
-        
+
         //绑定导航连接
         $('#nav').on('click','a',function(){
             $('#nav-head').text($(this).text());

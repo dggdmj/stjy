@@ -147,7 +147,7 @@
                     <tbody>
                         <tr>
                             <td width="100" align="right">访问地址：</td>
-                            <td><a href="http://<?php echo ($_SERVER["SERVER_NAME"]); ?>" target="_blank">http://<?php echo ($_SERVER["SERVER_NAME"]); ?>/</a>
+                            <td><a href="http://<?php echo ($_SERVER["SERVER_NAME"]); ?>" target="_blank">http://<?php echo ($_SERVER["SERVER_NAME"]); ?>/stjy/</a>
                             </td>
                         </tr>
                         <tr>
