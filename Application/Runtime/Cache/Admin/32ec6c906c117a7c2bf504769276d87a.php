@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo ($config["site_title"]); ?>网站后台登录入口</title>
-<link href="/stjy/Public/Admin/css/login.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="/stjy/Public/Admin/js/jquery.min.js"></script>
+<link href="/Public/Admin/css/login.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
 <script type="text/javascript">
 	var URL = "<?php echo U('/Login/verify');?>?";
 	function change_code(obj){
