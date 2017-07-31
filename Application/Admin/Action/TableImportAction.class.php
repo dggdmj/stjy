@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Admin\Action;
 use Think\Action;
 use Admin\Model;
@@ -26,7 +26,7 @@ class TableImportAction extends CommonAction{
         );
         return $data;
     }
-	
+
 	//文章列表页
 	public function index(){
         echo "建设中。。";die;
@@ -43,7 +43,7 @@ class TableImportAction extends CommonAction{
 
 	//文章列表页
 	public function xyxxb(){
-		$data = M('qishu_history'); // 实例化对象
+		$data = M('xyxxb'); // 实例化对象
 		$count = $data->count();// 查询满足要求的总记录数
 		$Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
 		$show = $Page->show();// 分页显示输出
@@ -54,7 +54,7 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
-	
+
 	//数据表导入
 	public function import(){
 	    $tid = $_GET['tid'];    //对应数据表的序号tabel_name
@@ -64,11 +64,101 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
+<<<<<<< HEAD
+    /**
+     * 更新发布文章
+     */
+    public function updateArticl() {
+    	$ids = I('id');
+		$data = M("article")->where(array('id'=>array('in',$ids)))->setField('del',1);
+		if ($data) {
+			$this->success('文章批量删除成功!');
+		} else {
+			$this->error('文章批量删除失败');
+		}
+    }
+
+
+	//添加文章
+	public function addArticle(){
+		$data=array(
+			'editor'=>$_POST['editor'],
+			'title'=>$_POST['title'],
+			'content'=>htmlspecialchars_decode($_POST['content']),
+			'summary'=>$_POST['summary'],
+			'click'=>$_POST['click'],
+			'important'=>$_POST['important'],
+            'image'=>$_POST['image'],
+			'time'=>time(),
+			'cid'=>(int)$_POST['cid'],
+		);
+
+		if(empty($_GET['id'])) {
+
+			if ($_POST['cid']==""){
+
+				$this->error('请选择分类');
+				exit();
+			}
+			if($bid=M('article')->add($data)) {
+				if(isset($_POST['aid'])) {
+					$sql='insert into one_article_attr (bid,aid) values ';
+					foreach($_POST['aid'] as $v) {
+						$sql.='('.$bid.','.$v.'),';
+					}
+					$sql=rtrim($sql,',');
+					M('article_attr')->execute($sql);
+				}
+				$this->success('添加成功'.$msg,U('index'));
+			} else {
+				$this->error('添加失败'.$msg);
+			}
+		}
+		else {
+			$bid=$_GET['id'];
+			M('article_attr')->where(array('bid'=>$bid))->delete();
+			if(M('article')->where(array('id'=>$bid))->save($data)) {
+				if(isset($_POST['aid'])) {
+					$sql='insert into one_article_attr (bid,aid) values ';
+					foreach($_POST['aid'] as $v) {
+						$sql.='('.$bid.','.$v.'),';
+					}
+					$sql=rtrim($sql,',');
+					M('article_attr')->execute($sql);
+				}
+				$this->success('修改成功'.$msg,U('index'));
+			} else {
+				$this->error('修改失败'.$msg);
+			}
+		}
+	}
+
+	// 修改文章
+	public function edit() {
+		$id = $_GET['id'];
+		$this->article=D('Article')->relation(true)->where(array('id'=>$id))->find();
+		$cate=M('classify')->order('sort')->select();
+		$this->cate=unlimitedForLevel($cate); //组合成一维数组
+		$this->attr=M('attr')->select();
+		$this->adminDisplay('article');
+	}
+
+	public function preview(){
+		$id = $_GET['id'];
+		$this->page=D('Article')->relation(true)->where(array('id'=>$id))->find();
+		$this->display("Page/index");
+	}
+
+    function upload() {
+=======
     //数据导入
     function dataUpload() {
 	    dump($_FILES);
 	    dump($_POST);die;
+>>>>>>> b0dcdfc0f5d4925095272c18aa89eb8e2120f859
         if (!empty($_FILES)) {
+            // var_dump($_FILES);
+            // die;
             $config = array(
                 'exts' => array('xlsx', 'xls'),
                 'maxSize' => 3145728,
@@ -93,15 +183,45 @@ class TableImportAction extends CommonAction{
             $highestRow = $sheet->getHighestRow(); // 取得总行数
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
             for ($i = 2; $i <= $highestRow; $i++) {
-                $data['product_id'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
-                $data['title'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
-                $data['img_url'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
-                $data['price'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
-                $data['product_url'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
-                $data['long_url'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
-                $data['input_time'] = time();
-                $data['promotion_type'] = mt_rand(3, 5);
-                M('product')->add($data);
+                $data['xuehao'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
+                $data['xingming'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
+                $data['xingbie'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
+                $data['shishengxin'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
+                $data['shenfenzheng'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
+                $data['chushengrq'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
+                $data['nianling'] = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
+                $data['shoujihm'] = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
+                $data['zhaoshengly'] = $objPHPExcel->getActiveSheet()->getCell("I" . $i)->getValue();
+                $data['laiyuanfx'] = $objPHPExcel->getActiveSheet()->getCell("J" . $i)->getValue();
+                $data['baomingrq'] = $objPHPExcel->getActiveSheet()->getCell("K" . $i)->getValue();
+                $data['xiaoqu'] = $objPHPExcel->getActiveSheet()->getCell("L" . $i)->getValue();
+                $data['xueguanshi'] = $objPHPExcel->getActiveSheet()->getCell("M" . $i)->getValue();
+                $data['fuqinxm'] = $objPHPExcel->getActiveSheet()->getCell("N" . $i)->getValue();
+                $data['fuqindh'] = $objPHPExcel->getActiveSheet()->getCell("O" . $i)->getValue();
+                $data['muqinxm'] = $objPHPExcel->getActiveSheet()->getCell("P" . $i)->getValue();
+                $data['muqindh'] = $objPHPExcel->getActiveSheet()->getCell("Q" . $i)->getValue();
+                $data['jiatingzz'] = $objPHPExcel->getActiveSheet()->getCell("R" . $i)->getValue();
+                $data['qq'] = $objPHPExcel->getActiveSheet()->getCell("S" . $i)->getValue();
+                $data['jiuduxx'] = $objPHPExcel->getActiveSheet()->getCell("T" . $i)->getValue();
+                $data['nianji'] = $objPHPExcel->getActiveSheet()->getCell("U" . $i)->getValue();
+                $data['banji'] = $objPHPExcel->getActiveSheet()->getCell("V" . $i)->getValue();
+                $data['beizhu'] = $objPHPExcel->getActiveSheet()->getCell("W" . $i)->getValue();
+                $data['jifen'] = $objPHPExcel->getActiveSheet()->getCell("X" . $i)->getValue();
+                $data['leixing'] = $objPHPExcel->getActiveSheet()->getCell("Y" . $i)->getValue();
+                $data['zhuangtai'] = $objPHPExcel->getActiveSheet()->getCell("Z" . $i)->getValue();
+                $data['tuixuerq'] = $objPHPExcel->getActiveSheet()->getCell("AA" . $i)->getValue();
+                $data['tuixueyy'] = $objPHPExcel->getActiveSheet()->getCell("AB" . $i)->getValue();
+                $data['tuixuebz'] = $objPHPExcel->getActiveSheet()->getCell("AC" . $i)->getValue();
+                $data['dianziqbye'] = $objPHPExcel->getActiveSheet()->getCell("AD" . $i)->getValue();
+                $data['qianjiaoje'] = $objPHPExcel->getActiveSheet()->getCell("AE" . $i)->getValue();
+                $data['shengyuxf'] = $objPHPExcel->getActiveSheet()->getCell("AF" . $i)->getValue();
+                $data['zhanghuye'] = $objPHPExcel->getActiveSheet()->getCell("AG" . $i)->getValue();
+                $data['shengao'] = $objPHPExcel->getActiveSheet()->getCell("AH" . $i)->getValue();
+                // $data['input_time'] = time();
+                // $data['promotion_type'] = mt_rand(3, 5);
+                // var_dump($data);
+                // die;
+                M('xyxxb')->add($data);
             }
             $this->success('导入成功！');
         } else {
