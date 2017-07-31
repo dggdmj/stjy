@@ -84,15 +84,11 @@ class TableImportAction extends CommonAction{
             $_POST["filename"] = $file_name;
             $qishu_id = M("qishu_history")->add($_POST);
 
-            $extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));//判断导入表格后缀格式
-            if ($extension == 'xlsx') {
-                $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
-                $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
-            } else if ($extension == 'xls') {
-                $objReader = \PHPExcel_IOFactory::createReader('Excel5');
-                $objPHPExcel = $objReader->load($file_name, $encode = 'utf-8');
-            }
-            $sheet = $objReader->getSheet(0);
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);
             $highestRow = $sheet->getHighestRow(); // 取得总行数
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
 
