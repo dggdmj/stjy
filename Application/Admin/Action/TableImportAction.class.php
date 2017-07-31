@@ -9,32 +9,46 @@ class TableImportAction extends CommonAction{
     public function _infoModule()
     {
     	$this->class = M('class')->order('id desc')->select();
-        $data = array('info' => array('name' => '文章列表',
-            'description' => ' 管理网站文章列表',
+        $data = array('info' => array('name' => '校管家表格',
+            'description' => ' 管理网站数据总表',
         ),
             'menu' => array(
-                array('name' => '文章列表',
-                    'url' => url('Article/index'),
+                array('name' => '数据总表',
+                    'url' => url('TableImport/index'),
                     'icon' => 'list',
                 ),
             ),
-            'add' => array(
-                array('name' => '添加文章',
-                    'url' => url('Article/article'),
-                ),
-            )
+//            'add' => array(
+//                array('name' => '添加文章',
+//                    'url' => url('Article/article'),
+//                ),
+//            )
         );
         return $data;
     }
 	
 	//文章列表页
-	public function xyxxb(){
+	public function index(){
+        echo "建设中。。";die;
 		$data = M('article'); // 实例化Article对象
 		$count = $data->where('del = 0')->count();// 查询满足要求的总记录数
 		$Page = new \Think\Page($count,C('PAGE_NUM'));// 实例化分页类 传入总记录数和每页显示的记录数(25)
 		$show = $Page->show();// 分页显示输出
 		// 进行分页数据查询 注意limit方法的参数要使用Page类的属性
 		$list = $data->order('id desc')->where('del = 0')->limit($Page->firstRow.','.$Page->listRows)->select();
+		$this->assign('list',$list);// 赋值数据集
+		$this->assign('fpage',$show);// 赋值分页输出
+		$this->adminDisplay();
+	}
+
+	//文章列表页
+	public function xyxxb(){
+		$data = M('qishu_history'); // 实例化对象
+		$count = $data->count();// 查询满足要求的总记录数
+		$Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+		$show = $Page->show();// 分页显示输出
+		// 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+		$list = $data->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
 		$this->assign('list',$list);// 赋值数据集
 		$this->assign('fpage',$show);// 赋值分页输出
 		$this->adminDisplay();
