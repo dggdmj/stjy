@@ -64,6 +64,10 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 97461f5ac94fb7a24b2f98f0e49695ebc114b12a
     /**
      * 更新发布文章
      */
@@ -148,8 +152,16 @@ class TableImportAction extends CommonAction{
 		$this->display("Page/index");
 	}
 
+<<<<<<< HEAD
     //数据导入
     function dataUpload() {
+=======
+    function upload() {}
+    //数据导入
+    function dataUpload() {
+	    dump($_FILES);
+	    dump($_POST);die;
+>>>>>>> 97461f5ac94fb7a24b2f98f0e49695ebc114b12a
         if (!empty($_FILES)) {
             $config = array(
                 'exts' => array('xlsx', 'xls'),
@@ -220,7 +232,7 @@ class TableImportAction extends CommonAction{
                 M('xyxxb')->add($data);
             }
             $this->success('导入成功！');
-        } else {
+        }else{
             $this->error("请选择上传的文件");
         }
     }
