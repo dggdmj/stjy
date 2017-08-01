@@ -29,19 +29,21 @@ class TableImportAction extends CommonAction{
 
 	//文章列表页
 	public function index(){
-        echo "建设中。。";die;
-		$data = M('article'); // 实例化Article对象
-		$count = $data->where('del = 0')->count();// 查询满足要求的总记录数
-		$Page = new \Think\Page($count,C('PAGE_NUM'));// 实例化分页类 传入总记录数和每页显示的记录数(25)
-		$show = $Page->show();// 分页显示输出
-		// 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-		$list = $data->order('id desc')->where('del = 0')->limit($Page->firstRow.','.$Page->listRows)->select();
-		$this->assign('list',$list);// 赋值数据集
-		$this->assign('fpage',$show);// 赋值分页输出
-		$this->adminDisplay();
+        $data = M('qishu_history'); // 实例化对象
+        $count = $data->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
+        }
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->adminDisplay();
 	}
 
-	//文章列表页
+	//学员信息列表页
 	public function xyxxb(){
 		$data = M('qishu_history'); // 实例化对象
 		$count = $data->where("tid = 1")->count();// 查询满足要求的总记录数
@@ -49,8 +51,22 @@ class TableImportAction extends CommonAction{
 		$show = $Page->show();// 分页显示输出
 		// 进行分页数据查询 注意limit方法的参数要使用Page类的属性
 		$list = $data->where("tid = 1")->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
+        }
 		$this->assign('list',$list);// 赋值数据集
 		$this->assign('fpage',$show);// 赋值分页输出
+		$this->adminDisplay();
+	}
+
+	//学员信息页
+	public function xyxxb_xq(){
+	    $id = $_GET['id'];
+		$data = M('xyxxb'); // 实例化对象
+		$list = $data->where("suoshudd = ".$id)->select();
+        $filedname = array_flip($this->getcomment("xyxxb"));
+		$this->assign('list',$list);// 赋值数据集
+		$this->assign('filedname',$filedname);// 赋值数据集
 		$this->adminDisplay();
 	}
 
@@ -64,9 +80,23 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
+	//返回数据表中以注释为键，字段名为值得数组,例如： ["姓名"] => string(8) "xingming"
+    public function getcomment($table_name){
+        $temp = M($table_name)->query("SHOW FULL COLUMNS FROM stjy_".$table_name);
+        foreach($temp as $v){
+            $field[]=$v['field'];
+            $comment[]=$v['comment'];
+        }
+        return array_combine($comment,$field);
+    }
+
+
     //数据导入
-    function dataUpload() {
+    public function dataUpload() {
         if (!empty($_FILES)) {
+            $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
+            $tid = $_POST["tid"];  //表名对应的序号
+
             $config = array(
                 'exts' => array('xlsx', 'xls'),
                 'maxSize' => 3145728,
@@ -91,51 +121,34 @@ class TableImportAction extends CommonAction{
             $sheet = $objPHPExcel->getSheet(0);
             $highestRow = $sheet->getHighestRow(); // 取得总行数
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
-            // var_dump($highestColumn);
-            // AH
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
             // 获取excel里面的所有字段
             for($i=0;$i<$colsNum;$i++){
                 $ziduan[]=$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
-                // $data[]=\PHPExcel_Cell::stringFromColumnIndex($i);
             }
-            // var_dump($ziduan);
-            $temp = M('xyxxb')->query("SHOW FULL COLUMNS FROM stjy_xyxxb;");
-            // var_dump($data);
-            foreach($temp as $v){
-                $field[]=$v['field'];
-                $comment[]=$v['comment'];
-            }
-            // var_dump($field);
-            // var_dump($comment);
-            $newTemp = array_combine($comment,$field);
-            // var_dump($newTemp);
+            // 获取excel里面注释和字段名拼接的数组
+            $newTemp = $this->getcomment($tablename);
+
             for($i=0;$i<count($ziduan);$i++){
                 if(array_key_exists($ziduan[$i], $newTemp)){
-                    // $data[$newtemp[$ziduan[$i]]] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
                     $temp1 = $ziduan[$i];
                     $temp2 = $newTemp[$temp1];
-                    // echo .'-----------'.$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue().'<br>';
                     $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
                 }
             }
-            // var_dump($data);
-            // die;
             for ($j = 2; $j <= $highestRow; $j++) {
                 for($i=0;$i<count($ziduan);$i++){
                     if(array_key_exists($ziduan[$i], $newTemp)){
-                        // $data[$newtemp[$ziduan[$i]]] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
                         $temp1 = $ziduan[$i];
                         $temp2 = $newTemp[$temp1];
-                        // echo .'-----------'.$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue().'<br>';
                         $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
                     }
                     $data['suoshudd'] = $qishu_id;  //所属订单id
                     $data['daorusj'] = date('Y-m-d H:i:s');
                 }
-                M('xyxxb')->add($data);
+                M($tablename)->add($data);
             }
-            $this->success('导入成功！');
+            $this->success('导入成功！',"/TableImport/index");
         } else {
             $this->error("请选择上传的文件");
         }
