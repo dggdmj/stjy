@@ -91,44 +91,48 @@ class TableImportAction extends CommonAction{
             $sheet = $objPHPExcel->getSheet(0);
             $highestRow = $sheet->getHighestRow(); // 取得总行数
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
-
-            for ($i = 2; $i <= $highestRow; $i++) {
-                $data['xuehao'] = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
-                $data['xingming'] = $objPHPExcel->getActiveSheet()->getCell("B" . $i)->getValue();
-                $data['xingbie'] = $objPHPExcel->getActiveSheet()->getCell("C" . $i)->getValue();
-                $data['shishengxin'] = $objPHPExcel->getActiveSheet()->getCell("D" . $i)->getValue();
-                $data['shenfenzheng'] = $objPHPExcel->getActiveSheet()->getCell("E" . $i)->getValue();
-                $data['chushengrq'] = $objPHPExcel->getActiveSheet()->getCell("F" . $i)->getValue();
-                $data['nianling'] = $objPHPExcel->getActiveSheet()->getCell("G" . $i)->getValue();
-                $data['shoujihm'] = $objPHPExcel->getActiveSheet()->getCell("H" . $i)->getValue();
-                $data['zhaoshengly'] = $objPHPExcel->getActiveSheet()->getCell("I" . $i)->getValue();
-                $data['laiyuanfx'] = $objPHPExcel->getActiveSheet()->getCell("J" . $i)->getValue();
-                $data['baomingrq'] = $objPHPExcel->getActiveSheet()->getCell("K" . $i)->getValue();
-                $data['xiaoqu'] = $objPHPExcel->getActiveSheet()->getCell("L" . $i)->getValue();
-                $data['xueguanshi'] = $objPHPExcel->getActiveSheet()->getCell("M" . $i)->getValue();
-                $data['fuqinxm'] = $objPHPExcel->getActiveSheet()->getCell("N" . $i)->getValue();
-                $data['fuqindh'] = $objPHPExcel->getActiveSheet()->getCell("O" . $i)->getValue();
-                $data['muqinxm'] = $objPHPExcel->getActiveSheet()->getCell("P" . $i)->getValue();
-                $data['muqindh'] = $objPHPExcel->getActiveSheet()->getCell("Q" . $i)->getValue();
-                $data['jiatingzz'] = $objPHPExcel->getActiveSheet()->getCell("R" . $i)->getValue();
-                $data['qq'] = $objPHPExcel->getActiveSheet()->getCell("S" . $i)->getValue();
-                $data['jiuduxx'] = $objPHPExcel->getActiveSheet()->getCell("T" . $i)->getValue();
-                $data['nianji'] = $objPHPExcel->getActiveSheet()->getCell("U" . $i)->getValue();
-                $data['banji'] = $objPHPExcel->getActiveSheet()->getCell("V" . $i)->getValue();
-                $data['beizhu'] = $objPHPExcel->getActiveSheet()->getCell("W" . $i)->getValue();
-                $data['jifen'] = $objPHPExcel->getActiveSheet()->getCell("X" . $i)->getValue();
-                $data['leixing'] = $objPHPExcel->getActiveSheet()->getCell("Y" . $i)->getValue();
-                $data['zhuangtai'] = $objPHPExcel->getActiveSheet()->getCell("Z" . $i)->getValue();
-                $data['tuixuerq'] = $objPHPExcel->getActiveSheet()->getCell("AA" . $i)->getValue();
-                $data['tuixueyy'] = $objPHPExcel->getActiveSheet()->getCell("AB" . $i)->getValue();
-                $data['tuixuebz'] = $objPHPExcel->getActiveSheet()->getCell("AC" . $i)->getValue();
-                $data['dianziqbye'] = $objPHPExcel->getActiveSheet()->getCell("AD" . $i)->getValue();
-                $data['qianjiaoje'] = $objPHPExcel->getActiveSheet()->getCell("AE" . $i)->getValue();
-                $data['shengyuxf'] = $objPHPExcel->getActiveSheet()->getCell("AF" . $i)->getValue();
-                $data['zhanghuye'] = $objPHPExcel->getActiveSheet()->getCell("AG" . $i)->getValue();
-                $data['shengao'] = $objPHPExcel->getActiveSheet()->getCell("AH" . $i)->getValue();
-
-                $data['suoshudd'] = $qishu_id;  //所属订单id
+            // var_dump($highestColumn);
+            // AH
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            // 获取excel里面的所有字段
+            for($i=0;$i<$colsNum;$i++){
+                $ziduan[]=$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
+                // $data[]=\PHPExcel_Cell::stringFromColumnIndex($i);
+            }
+            // var_dump($ziduan);
+            $temp = M('xyxxb')->query("SHOW FULL COLUMNS FROM stjy_xyxxb;");
+            // var_dump($data);
+            foreach($temp as $v){
+                $field[]=$v['field'];
+                $comment[]=$v['comment'];
+            }
+            // var_dump($field);
+            // var_dump($comment);
+            $newTemp = array_combine($comment,$field);
+            // var_dump($newTemp);
+            for($i=0;$i<count($ziduan);$i++){
+                if(array_key_exists($ziduan[$i], $newTemp)){
+                    // $data[$newtemp[$ziduan[$i]]] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+                    $temp1 = $ziduan[$i];
+                    $temp2 = $newTemp[$temp1];
+                    // echo .'-----------'.$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue().'<br>';
+                    $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+                }
+            }
+            // var_dump($data);
+            // die;
+            for ($j = 2; $j <= $highestRow; $j++) {
+                for($i=0;$i<count($ziduan);$i++){
+                    if(array_key_exists($ziduan[$i], $newTemp)){
+                        // $data[$newtemp[$ziduan[$i]]] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+                        $temp1 = $ziduan[$i];
+                        $temp2 = $newTemp[$temp1];
+                        // echo .'-----------'.$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue().'<br>';
+                        $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+                    }
+                    $data['suoshudd'] = $qishu_id;  //所属订单id
+                    $data['daorusj'] = date('Y-m-d H:i:s');
+                }
                 M('xyxxb')->add($data);
             }
             $this->success('导入成功！');
