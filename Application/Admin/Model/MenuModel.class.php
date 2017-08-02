@@ -225,49 +225,49 @@ class MenuModel {
                     ),*/
 //                )
 //            ),
-//            'Member' => array(
-//                'name' => '管理员',
-//                'icon' => 'user',
-//                'order' => 10,
-//                'menu' => array(
-//                    array(
-//                        'name' => '用户列表',
-//                        'icon' => 'user',
-//                        'url' => U('/Rbac/index'),
-//                        'order' => 0
-//                    ),
-//                    array(
-//                        'name' => '角色列表',
-//                        'icon' => 'user-md',
-//                        'url' => U('/Rbac/roleList'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '节点列表',
-//                        'icon' => 'sitemap',
-//                        'url' => U('/Rbac/nodeList'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '添加用户',
-//                        'icon' => 'user',
-//                        'url' => U('/Rbac/addUser'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '添加角色',
-//                        'icon' => 'user-md',
-//                        'url' => U('/Rbac/addRole'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '添加节点',
-//                        'icon' => 'sitemap',
-//                        'url' => U('/Rbac/addNode'),
-//                        'order' => 1
-//                    ),
-//                )
-//            ),
+            'Member' => array(
+                'name' => '管理员',
+                'icon' => 'user',
+                'order' => 10,
+                'menu' => array(
+                    array(
+                        'name' => '用户列表',
+                        'icon' => 'user',
+                        'url' => U('/Rbac/index'),
+                        'order' => 0
+                    ),
+                    array(
+                        'name' => '角色列表',
+                        'icon' => 'user-md',
+                        'url' => U('/Rbac/roleList'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '节点列表',
+                        'icon' => 'sitemap',
+                        'url' => U('/Rbac/nodeList'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '添加用户',
+                        'icon' => 'user',
+                        'url' => U('/Rbac/addUser'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '添加角色',
+                        'icon' => 'user-md',
+                        'url' => U('/Rbac/addRole'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '添加节点',
+                        'icon' => 'sitemap',
+                        'url' => U('/Rbac/addNode'),
+                        'order' => 1
+                    ),
+                )
+            ),
 //            'message' => array(
 //                'name' => '留言',
 //                'icon' => 'envelope',

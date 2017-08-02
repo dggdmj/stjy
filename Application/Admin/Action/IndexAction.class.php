@@ -28,6 +28,10 @@ class IndexAction extends CommonAction {
         $this->display();
     }
 
+    public function common(){
+        $this->display();
+    }
+
     /**
      * 欢迎页面
      */

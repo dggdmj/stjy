@@ -35,7 +35,7 @@ class RbacAction extends CommonAction {
 
 	// 用户列表
 	public function index() {
-		$this->user=D('User')->field('password',true)->relation(true)->select();
+		$this->user=M('admin')->alias("a")->join("left join stjy_role_user r on a.id = r.user_id left join stjy_role sr on r.role_id = sr.id")->field("a.*,sr.remark")->select();
 		$this->adminDisplay();
 	}
 	//添加用户页面
@@ -100,7 +100,7 @@ class RbacAction extends CommonAction {
 	//修改用户页面
 	public function editUser() {
 		$id = $_GET['id'];
-		$this->user=D('User')->field('password',true)->relation(true)->where(array('id'=>$id))->find();
+		$this->user=M('admin')->field('password',true)->where(array('id'=>$id))->find();
 		$this->role=M('role')->select();
 		$this->adminDisplay('addUser');
 	}

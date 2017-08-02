@@ -34,7 +34,7 @@ class CommonAction extends Action {
     protected function adminDisplay($tpl = '') {
         //复制当前URL
         $this->assign('self',__SELF__);
-        $common = $this->fetch('common');
+        $common = $this->fetch('Index/common');
         $tplArray = get_method_array($tpl);
         $tpl = $tplArray['controller'] . '/' . $tplArray['action'];
         $html = $this->fetch($tpl);

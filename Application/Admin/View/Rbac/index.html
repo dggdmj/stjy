@@ -5,7 +5,7 @@
 			<tr>
 				<th>编号</th>
 				<th>用户名称</th>
-				<th>昵称</th>
+				<th>名字</th>
 				<th>邮箱</th>
 				<th>上一次登录时间</th>
 				<th>上一次登录IP</th>
@@ -25,18 +25,7 @@
 					<if condition='$v["lock"]'>锁定<else/>未锁定</if>
 				</td>
 				<td>
-					<!--<if condition='$v["username"] eq C("RBAC_SUPERADMIN")'>
-					超级管理员
-					<else/>
-						<ul>
-							<foreach name='v.role' item='value' >
-								<li>{$value.name}({$value.remark})</li>
-							</foreach>
-						</ul>
-					</if>-->
-					<foreach name='v.role' item='value' >
-						{$value.name}({$value.remark})
-					</foreach>
+						{$v.remark}
 				</td>
 				<td>
 					<a class="button bg-blue button-small icon-pencil" title="修改" alt="修改" href="editUser/id/{$v['id']}"></a>
