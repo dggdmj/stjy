@@ -309,12 +309,17 @@ class TableImportAction extends CommonAction{
                 }
                 M($tablename)->add($data);
             }
-            $this->success('导入成功！',$tablename);//获得成功跳转的链接
+            $this->success('导入成功！',$this->getTableUrl($tid));//获得成功跳转的链接
         } else {
             $this->error("请选择上传的文件");
         }
     }
 
+    public function getTableUrl($tid){
+        $url = 'TableImport/';
+        $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
+        return $url.$tablename;
+    }
 
 }
 ?>

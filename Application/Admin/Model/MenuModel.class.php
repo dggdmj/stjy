@@ -40,33 +40,39 @@ class MenuModel {
                         'order' => 1
                     ),
                     array(
-                        'name' => '班级学员信息表',
+                        'name' => '班级学员信息表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/bjxyxxb'),
                         'order' => 1
                     ),
                     array(
-                        'name' => '收据记录表',
+                        'name' => '收据记录表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/sjjlb'),
                         'order' => 1
                     ),
                     array(
-                        'name' => '课消明细表',
+                        'name' => '课消明细表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/kxmxb'),
                         'order' => 1
                     ),
                     array(
-                        'name' => '开班明细表',
+                        'name' => '开班明细表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/kbmxb'),
                         'order' => 1
                     ),
                     array(
-                        'name' => '学员费用预警表',
+                        'name' => '学员费用预警表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/xyfyyjb'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '市场业绩表',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/scyjb'),
                         'order' => 1
                     ),
                 )
