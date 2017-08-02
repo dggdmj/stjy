@@ -53,20 +53,20 @@
                         <if condition="$user.lock == 0">
                             <label class="button">
                                 <input name="lock" value="1" checked="checked" type="radio">
-                                <span class="icon icon-check"></span> 是
+                                <span class="icon icon-check"></span> 锁定
                             </label>
                             <label class="button active">
                                 <input name="lock" value="0" type="radio">
-                                <span class="icon icon-times"></span> 否
+                                <span class="icon icon-times"></span> 未锁定
                             </label>
                             <else/>
                             <label class="button active">
                                 <input name="lock" value="1" checked="checked" type="radio">
-                                <span class="icon icon-check"></span> 是
+                                <span class="icon icon-check"></span> 锁定
                             </label>
                             <label class="button">
                                 <input name="lock" value="0" type="radio">
-                                <span class="icon icon-times"></span> 否
+                                <span class="icon icon-times"></span> 未锁定
                             </label>
                         </if>
                     </div>

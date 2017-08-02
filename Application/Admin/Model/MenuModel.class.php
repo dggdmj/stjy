@@ -193,44 +193,43 @@ class MenuModel {
 //            ),
 //
 //
-//            'Function' => array(
-//                'name' => '网站设置',
-//                'icon' => 'wrench',
-//                'order' => 3,
-//                'menu' => array(
-//                   array(
-//                        'name' => '导航管理',
-//                        'icon' => 'leaf',
-//                        'url' => U('/Nav/index'),
-//                        'order' => 1
+            'Function' => array(
+                'name' => '功能设置',
+                'icon' => 'wrench',
+                'order' => 3,
+                'menu' => array(
+                   array(
+                        'name' => '校区管理',
+                        'icon' => 'leaf',
+                        'url' => U('Setting/School'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '期数管理',
+                        'icon' => 'crosshairs',
+                        'url' => U('Setting/ishu'),
+                        'order' => 2
+                    ),
+//                    array(
+//                        'name' => '扩展模型管理',
+//                        'icon' => 'puzzle-piece',
+//                        'url' => U('/Expand/index'),
+//                        'order' => 3
 //                    ),
 //                    array(
-//                        'name' => '广告位管理',
-//                        'icon' => 'crosshairs',
-//                        'url' => U('/Position/index'),
-//                        'order' => 2
+//                        'name' => '表单管理',
+//                        'icon' => 'file-text-o',
+//                        'url' => U('/Form/index'),
+//                        'order' => 4
 //                    ),
-                    /*
-                    array(
-                        'name' => '扩展模型管理',
-                        'icon' => 'puzzle-piece',
-                        'url' => U('/Expand/index'),
-                        'order' => 3
-                    ),
-                    array(
-                        'name' => '表单管理',
-                        'icon' => 'file-text-o',
-                        'url' => U('/Form/index'),
-                        'order' => 4
-                    ),
-                    array(
-                        'name' => 'TAG管理',
-                        'icon' => 'tags',
-                        'url' => U('/Tags/index'),
-                        'order' => 5
-                    ),*/
-//                )
-//            ),
+//                    array(
+//                        'name' => 'TAG管理',
+//                        'icon' => 'tags',
+//                        'url' => U('/Tags/index'),
+//                        'order' => 5
+//                    ),
+                )
+            ),
             'Member' => array(
                 'name' => '管理员',
                 'icon' => 'user',

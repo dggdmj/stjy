@@ -7,10 +7,10 @@ return array(
 	'USER_AUTH_KEY' => 'uid',            //用户认证识别号
 	'NOT_AUTH_MODULE' => 'Index',        //无需认证的控制器
 	'NOT_AUTH_ACTION' => 'addUserHandle,addRoleHandle,addNodeHandle,setAccess', //无需认证的动作方法
-	'RBAC_ROLE_TABLE' => 'one_role',      //角色表名称
-	'RBAC_USER_TABLE' => 'one_role_user', //角色与用户的中间表名称
-	'RBAC_ACCESS_TABLE' => 'one_access',  //权限表名称
-	'RBAC_NODE_TABLE' => 'one_node',      //节点表名称
+	'RBAC_ROLE_TABLE' => 'stjy_role',      //角色表名称
+	'RBAC_USER_TABLE' => 'stjy_role_user', //角色与用户的中间表名称
+	'RBAC_ACCESS_TABLE' => 'stjy_access',  //权限表名称
+	'RBAC_NODE_TABLE' => 'stjy_node',      //节点表名称
 	'DEFAULT_MODULE' => '',      //默认模块
 
 	// 自定义控制器名称
