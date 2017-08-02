@@ -86,6 +86,152 @@ class TableImportAction extends CommonAction{
         $this->adminDisplay();
     }
 
+    //班级信息页
+    public function bjxxb_xq(){
+        $id = $_GET['id'];
+        $data = M('bjxxb'); // 实例化对象
+        $list = $data->where("suoshudd = ".$id)->select();
+        $filedname = array_flip($this->getcomment("bjxxb"));
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('filedname',$filedname);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //班级学员信息列表页
+    public function bjxyxxb(){
+        $data = M('qishu_history'); // 实例化对象
+        $count = $data->where("tid = 3")->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->where("tid = 3")->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
+        }
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->adminDisplay();
+    }
+
+    //班级学员信息页
+    public function bjxyxxb_xq(){
+        $id = $_GET['id'];
+        $data = M('bjxyxxb'); // 实例化对象
+        $list = $data->where("suoshudd = ".$id)->select();
+        $filedname = array_flip($this->getcomment("bjxyxxb"));
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('filedname',$filedname);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //收据记录列表页
+    public function sjjlb(){
+        $data = M('qishu_history'); // 实例化对象
+        $count = $data->where("tid = 4")->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->where("tid = 4")->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
+        }
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->adminDisplay();
+    }
+
+    //收据记录信息页
+    public function sjjlb_xq(){
+        $id = $_GET['id'];
+        $data = M('sjjlb'); // 实例化对象
+        $list = $data->where("suoshudd = ".$id)->select();
+        $filedname = array_flip($this->getcomment("sjjlb"));
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('filedname',$filedname);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //课消明细列表页
+    public function kxmxb(){
+        $data = M('qishu_history'); // 实例化对象
+        $count = $data->where("tid = 5")->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->where("tid = 5")->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
+        }
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->adminDisplay();
+    }
+
+    //课消明细信息页
+    public function kxmxb_xq(){
+        $id = $_GET['id'];
+        $data = M('kxmxb'); // 实例化对象
+        $list = $data->where("suoshudd = ".$id)->select();
+        $filedname = array_flip($this->getcomment("kxmxb"));
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('filedname',$filedname);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //课消明细列表页
+    public function kbmxb(){
+        $data = M('qishu_history'); // 实例化对象
+        $count = $data->where("tid = 6")->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->where("tid = 6")->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
+        }
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->adminDisplay();
+    }
+
+    //课消明细信息页
+    public function kbmxb_xq(){
+        $id = $_GET['id'];
+        $data = M('kbmxb'); // 实例化对象
+        $list = $data->where("suoshudd = ".$id)->select();
+        $filedname = array_flip($this->getcomment("kbmxb"));
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('filedname',$filedname);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //课消明细列表页
+    public function xyfyyjb(){
+        $data = M('qishu_history'); // 实例化对象
+        $count = $data->where("tid = 7")->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->where("tid = 7")->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
+        }
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->adminDisplay();
+    }
+
+    //课消明细信息页
+    public function xyfyyjb_xq(){
+        $id = $_GET['id'];
+        $data = M('xyfyyjb'); // 实例化对象
+        $list = $data->where("suoshudd = ".$id)->select();
+        $filedname = array_flip($this->getcomment("xyfyyjb"));
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('filedname',$filedname);// 赋值数据集
+        $this->adminDisplay();
+    }
+
 	//数据表导入
 	public function import(){
 	    $tid = $_GET['tid'];    //对应数据表的序号tabel_name
@@ -163,7 +309,30 @@ class TableImportAction extends CommonAction{
                 }
                 M($tablename)->add($data);
             }
-            $this->success('导入成功！',"/TableImport/index/");
+            switch ($tid) {
+                case 1:
+                    $this->success('导入成功！','/TableImport/xyxxb/');
+                    break;
+                case 2:
+                    $this->success('导入成功！','/TableImport/bjxxb/');
+                    break;
+                case 3:
+                    $this->success('导入成功！',"/TableImport/bjxyxxb/");
+                    break;
+                case 4:
+                    $this->success('导入成功！',"/TableImport/sjjlb/");
+                    break;
+                case 5:
+                    $this->success('导入成功！',"/TableImport/kxmxb/");
+                    break;
+                case 6:
+                    $this->success('导入成功！',"/TableImport/kbmxb/");
+                    break;
+                case 7:
+                    $this->success('导入成功！',"/TableImport/xyfyyjb/");
+                    break;
+            }
+
         } else {
             $this->error("请选择上传的文件");
         }
