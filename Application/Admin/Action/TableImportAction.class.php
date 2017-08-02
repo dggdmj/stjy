@@ -309,34 +309,12 @@ class TableImportAction extends CommonAction{
                 }
                 M($tablename)->add($data);
             }
-            switch ($tid) {
-                case 1:
-                    $this->success('导入成功！','/TableImport/xyxxb/');
-                    break;
-                case 2:
-                    $this->success('导入成功！','/TableImport/bjxxb/');
-                    break;
-                case 3:
-                    $this->success('导入成功！',"/TableImport/bjxyxxb/");
-                    break;
-                case 4:
-                    $this->success('导入成功！',"/TableImport/sjjlb/");
-                    break;
-                case 5:
-                    $this->success('导入成功！',"/TableImport/kxmxb/");
-                    break;
-                case 6:
-                    $this->success('导入成功！',"/TableImport/kbmxb/");
-                    break;
-                case 7:
-                    $this->success('导入成功！',"/TableImport/xyfyyjb/");
-                    break;
-            }
-
+            $this->success('导入成功！',$tablename);//获得成功跳转的链接
         } else {
             $this->error("请选择上传的文件");
         }
     }
+
 
 }
 ?>
