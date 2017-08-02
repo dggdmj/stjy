@@ -18,7 +18,7 @@ class SettingAction extends CommonAction{
                     'icon' => 'list',
                 ),
                 array('name' => '期数列表',
-                    'url' => url('Setting/ishu'),
+                    'url' => url('Setting/Qishu'),
                     'icon' => 'list',
                 ),
             ),
@@ -35,22 +35,22 @@ class SettingAction extends CommonAction{
     }
 	
 	//校区列表页
-	public function School(){
-		$data = M('School'); // 实例化对象
+	public function school(){
+		$data = M('school'); // 实例化对象
 		$list = $data->order('id desc')->select();
 		$this->assign('list',$list);// 赋值数据集
 		$this->adminDisplay();
 	}
 
 	//添加校区页面
-	public function School_add(){
+	public function school_add(){
 		$this->adminDisplay();
 	}
 
     //添加校区
     public function addSchool(){
         if(empty($_GET['id'])) {
-            if($bid=M('School')->add($_POST)) {
+            if($bid=M('school')->add($_POST)) {
                 $this->success('添加成功',U('School'));
             } else {
                 $this->error('添加失败');
@@ -58,7 +58,7 @@ class SettingAction extends CommonAction{
         }
         else {
             $bid=$_GET['id'];
-            if(M('School')->where(array('id'=>$bid))->save($_POST)) {
+            if(M('school')->where(array('id'=>$bid))->save($_POST)) {
                 $this->success('修改成功',U('School'));
             } else {
                 $this->error('修改失败');
@@ -75,31 +75,31 @@ class SettingAction extends CommonAction{
 
 
     //期数列表页
-    public function Qishu(){
-        $data = M('School'); // 实例化对象
+    public function qishu(){
+        $data = M('qishu'); // 实例化对象
         $list = $data->order('id desc')->select();
         $this->assign('list',$list);// 赋值数据集
         $this->adminDisplay();
     }
 
     //添加期数页面
-    public function Qishu_add(){
+    public function qishu_add(){
         $this->adminDisplay();
     }
 
     //添加期数
     public function addQishu(){
         if(empty($_GET['id'])) {
-            if($bid=M('School')->add($_POST)) {
-                $this->success('添加成功',U('School'));
+            if($bid=M('qishu')->add($_POST)) {
+                $this->success('添加成功',U('qishu'));
             } else {
                 $this->error('添加失败');
             }
         }
         else {
             $bid=$_GET['id'];
-            if(M('School')->where(array('id'=>$bid))->save($_POST)) {
-                $this->success('修改成功',U('School'));
+            if(M('qishu')->where(array('id'=>$bid))->save($_POST)) {
+                $this->success('修改成功',U('qishu'));
             } else {
                 $this->error('修改失败');
             }
@@ -109,8 +109,8 @@ class SettingAction extends CommonAction{
     // 修改期数
     public function editQishu() {
         $id = $_GET['id'];
-        $this->list=D('School')->where(array('id'=>$id))->find();
-        $this->adminDisplay('school_add');
+        $this->list=D('qishu')->where(array('id'=>$id))->find();
+        $this->adminDisplay('qishu_add');
     }
 
     //彻底删除

@@ -201,13 +201,13 @@ class MenuModel {
                    array(
                         'name' => '校区管理',
                         'icon' => 'leaf',
-                        'url' => U('Setting/School'),
+                        'url' => U('Setting/school'),
                         'order' => 1
                     ),
                     array(
                         'name' => '期数管理',
                         'icon' => 'crosshairs',
-                        'url' => U('Setting/ishu'),
+                        'url' => U('Setting/qishu'),
                         'order' => 2
                     ),
 //                    array(

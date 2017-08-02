@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Aug 02, 2017 at 09:19 PM
+-- Generation Time: Aug 03, 2017 at 12:02 AM
 -- Server version: 5.5.38
 -- PHP Version: 5.6.2
 
@@ -19,6 +19,19 @@ SET time_zone = "+00:00";
 --
 -- Database: `stjy`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stjy_access`
+--
+
+CREATE TABLE `stjy_access` (
+  `role_id` smallint(6) unsigned NOT NULL,
+  `node_id` smallint(6) unsigned NOT NULL,
+  `level` tinyint(1) NOT NULL,
+  `module` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -42,8 +55,8 @@ CREATE TABLE `stjy_admin` (
 --
 
 INSERT INTO `stjy_admin` (`id`, `username`, `password`, `nicename`, `email`, `logintime`, `loginip`, `lock`) VALUES
-(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', 1501675068, '127.0.0.1', 0),
-(2, 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', 1501676282, '127.0.0.1', 0);
+(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', 1501689170, '127.0.0.1', 0),
+(2, 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', 1501687519, '127.0.0.1', 1);
 
 -- --------------------------------------------------------
 
@@ -595,6 +608,25 @@ INSERT INTO `stjy_node` (`id`, `name`, `title`, `status`, `remark`, `sort`, `pid
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `stjy_qishu`
+--
+
+CREATE TABLE `stjy_qishu` (
+`id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL COMMENT '期数',
+  `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间'
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='期数表';
+
+--
+-- Dumping data for table `stjy_qishu`
+--
+
+INSERT INTO `stjy_qishu` (`id`, `name`, `addtime`) VALUES
+(2, '201707', '2017-08-02 15:59:00');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `stjy_qishu_history`
 --
 
@@ -661,6 +693,27 @@ CREATE TABLE `stjy_role_user` (
 INSERT INTO `stjy_role_user` (`role_id`, `user_id`) VALUES
 (1, '1'),
 (2, '2');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stjy_school`
+--
+
+CREATE TABLE `stjy_school` (
+`id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL COMMENT '校区名称',
+  `isuse` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启动：0，未启用；1，启用'
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='校区列表';
+
+--
+-- Dumping data for table `stjy_school`
+--
+
+INSERT INTO `stjy_school` (`id`, `name`, `isuse`) VALUES
+(1, '华景分校', 1),
+(2, '番禺分校', 1),
+(3, '罗湖分校', 0);
 
 -- --------------------------------------------------------
 
@@ -2181,6 +2234,12 @@ INSERT INTO `stjy_xyxxb` (`id`, `xuehao`, `xingming`, `xingbie`, `shishengxin`, 
 --
 
 --
+-- Indexes for table `stjy_access`
+--
+ALTER TABLE `stjy_access`
+ ADD KEY `groupId` (`role_id`), ADD KEY `nodeId` (`node_id`);
+
+--
 -- Indexes for table `stjy_admin`
 --
 ALTER TABLE `stjy_admin`
@@ -2235,6 +2294,12 @@ ALTER TABLE `stjy_node`
  ADD PRIMARY KEY (`id`), ADD KEY `level` (`level`), ADD KEY `pid` (`pid`), ADD KEY `status` (`status`), ADD KEY `name` (`name`);
 
 --
+-- Indexes for table `stjy_qishu`
+--
+ALTER TABLE `stjy_qishu`
+ ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `stjy_qishu_history`
 --
 ALTER TABLE `stjy_qishu_history`
@@ -2251,6 +2316,12 @@ ALTER TABLE `stjy_role`
 --
 ALTER TABLE `stjy_role_user`
  ADD KEY `group_id` (`role_id`), ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `stjy_school`
+--
+ALTER TABLE `stjy_school`
+ ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `stjy_sjjlb`
@@ -2321,6 +2392,11 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id';
 ALTER TABLE `stjy_node`
 MODIFY `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
 --
+-- AUTO_INCREMENT for table `stjy_qishu`
+--
+ALTER TABLE `stjy_qishu`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
 -- AUTO_INCREMENT for table `stjy_qishu_history`
 --
 ALTER TABLE `stjy_qishu_history`
@@ -2330,6 +2406,11 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 ALTER TABLE `stjy_role`
 MODIFY `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `stjy_school`
+--
+ALTER TABLE `stjy_school`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `stjy_sjjlb`
 --

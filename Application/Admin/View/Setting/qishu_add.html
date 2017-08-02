@@ -1,45 +1,18 @@
-<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Setting/addSchool',array('id'=>$list['id']))}">
+<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Setting/addQishu',array('id'=>$list['id']))}">
 	 <div class="panel one-box  active">
         <div class="panel-head">
-            <strong>添加校区</strong>
+            <strong>添加期数</strong>
         </div>
         <div class="panel-body">
 			<div class="form-group">
                 <div class="label">
-                    <label>校区名称</label>
+                    <label>期数</label>
                 </div>
                 <div class="field">
                     <input type="text" class="input" name="name" size="60" value="{$list.name}">
+                    <p>以年月的形式，例如:201707</p>
                 </div>
             </div>
-			<div class="form-group">
-                <div class="label">
-                    <label>标题</label>
-                </div>
-                <div class="field">
-                    <div class="button-group radio">
-                        <if condition="$list.isuse == 1">
-                            <label class="button active">
-                                <input name="isuse" value="1" checked="checked" type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button">
-                                <input name="isuse" value="0" type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                            <else/>
-                            <label class="button ">
-                                <input name="isuse" value="1"type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button active">
-                                <input name="isuse" value="0" checked="checked"  type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                        </if>
-                    </div>
-                    <div class="input-note">是否启用校区</div>
-                </div>
             </div>
 
         </div>
