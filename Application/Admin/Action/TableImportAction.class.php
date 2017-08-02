@@ -70,6 +70,21 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
+    //班级信息列表页
+    public function bjxxb(){
+        $data = M('qishu_history'); // 实例化对象
+        $count = $data->where("tid = 2")->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->where("tid = 2")->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach ($list as $k=>$v){
+            $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
+        }
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->adminDisplay();
+    }
 
 	//数据表导入
 	public function import(){
@@ -80,7 +95,7 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
-	//返回数据表中以注释为键，字段名为值得数组,例如： ["姓名"] => string(8) "xingming"
+	//返回数据表中以注释为键，字段名为值的数组,例如： ["姓名" => string(8) "xingming"]
     public function getcomment($table_name){
         $temp = M($table_name)->query("SHOW FULL COLUMNS FROM stjy_".$table_name);
         foreach($temp as $v){
@@ -148,7 +163,7 @@ class TableImportAction extends CommonAction{
                 }
                 M($tablename)->add($data);
             }
-            $this->success('导入成功！',"/TableImport/index");
+            $this->success('导入成功！',"/TableImport/index/");
         } else {
             $this->error("请选择上传的文件");
         }
