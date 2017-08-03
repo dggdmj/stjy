@@ -30,49 +30,49 @@ class MenuModel {
                     array(
                         'name' => '学员信息表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/xyxxb'),
+                        'url' => U('/TableImport/tableList/tid/1'),
                         'order' => 1
                     ),
                     array(
                         'name' => '班级信息表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/bjxxb'),
+                        'url' => U('/TableImport/tableList/tid/2'),
                         'order' => 1
                     ),
                     array(
                         'name' => '班级学员信息表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/bjxyxxb'),
+                        'url' => U('/TableImport/tableList/tid/3'),
                         'order' => 1
                     ),
                     array(
                         'name' => '收据记录表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/sjjlb'),
+                        'url' => U('/TableImport/tableList/tid/4'),
                         'order' => 1
                     ),
                     array(
                         'name' => '课消明细表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/kxmxb'),
+                        'url' => U('/TableImport/tableList/tid/5'),
                         'order' => 1
                     ),
                     array(
                         'name' => '开班明细表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/kbmxb'),
+                        'url' => U('/TableImport/tableList/tid/6'),
                         'order' => 1
                     ),
                     array(
                         'name' => '学员费用预警表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/xyfyyjb'),
+                        'url' => U('/TableImport/tableList/tid/7'),
                         'order' => 1
                     ),
                     array(
                         'name' => '市场业绩表',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/scyjb'),
+                        'url' => U('/TableImport/tableList/tid/8'),
                         'order' => 1
                     ),
                 )
@@ -171,7 +171,7 @@ class MenuModel {
 //                    ),
 //                )
 //            ),
-          
+
 //        	'Case' => array(
 //                'name' => '产品管理',
 //                'icon' => 'camera',
