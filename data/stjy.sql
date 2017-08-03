@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.10
+-- version 4.0.6-rc1
 -- http://www.phpmyadmin.net
 --
--- Host: localhost:3306
--- Generation Time: Aug 03, 2017 at 12:02 AM
--- Server version: 5.5.38
--- PHP Version: 5.6.2
+-- 主机: localhost
+-- 生成日期: 2017-08-03 11:40:44
+-- 服务器版本: 5.5.19
+-- PHP 版本: 5.3.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,55 +17,58 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `stjy`
+-- 数据库: `stjy`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_access`
+-- 表的结构 `stjy_access`
 --
 
-CREATE TABLE `stjy_access` (
+CREATE TABLE IF NOT EXISTS `stjy_access` (
   `role_id` smallint(6) unsigned NOT NULL,
   `node_id` smallint(6) unsigned NOT NULL,
   `level` tinyint(1) NOT NULL,
-  `module` varchar(50) DEFAULT NULL
+  `module` varchar(50) DEFAULT NULL,
+  KEY `groupId` (`role_id`),
+  KEY `nodeId` (`node_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_admin`
+-- 表的结构 `stjy_admin`
 --
 
-CREATE TABLE `stjy_admin` (
-`id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` char(20) NOT NULL DEFAULT '' COMMENT '帐号',
   `password` char(32) NOT NULL DEFAULT '' COMMENT '密码',
   `nicename` varchar(20) NOT NULL DEFAULT '' COMMENT '昵称',
   `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
   `logintime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
   `loginip` varchar(30) NOT NULL,
-  `lock` tinyint(1) unsigned NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='管理员';
+  `lock` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='管理员' AUTO_INCREMENT=3 ;
 
 --
--- Dumping data for table `stjy_admin`
+-- 转存表中的数据 `stjy_admin`
 --
 
 INSERT INTO `stjy_admin` (`id`, `username`, `password`, `nicename`, `email`, `logintime`, `loginip`, `lock`) VALUES
-(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', 1501689170, '127.0.0.1', 0),
+(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', 1501731196, '127.0.0.1', 0),
 (2, 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', 1501687519, '127.0.0.1', 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_article`
+-- 表的结构 `stjy_article`
 --
 
-CREATE TABLE `stjy_article` (
-`id` int(10) unsigned NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_article` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `editor` varchar(50) DEFAULT NULL,
   `title` varchar(255) NOT NULL DEFAULT '',
   `summary` varchar(255) DEFAULT '',
@@ -75,17 +78,19 @@ CREATE TABLE `stjy_article` (
   `image` varchar(255) DEFAULT NULL,
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   `cid` int(10) unsigned NOT NULL,
-  `del` tinyint(1) unsigned NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章列表';
+  `del` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `cid` (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章列表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_bjxxb`
+-- 表的结构 `stjy_bjxxb`
 --
 
-CREATE TABLE `stjy_bjxxb` (
-`id` int(11) NOT NULL COMMENT 'id',
+CREATE TABLE IF NOT EXISTS `stjy_bjxxb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `banjimc` varchar(255) DEFAULT NULL COMMENT '班级名称',
   `xiaoqumc` varchar(255) DEFAULT NULL COMMENT '校区名称',
   `shangkels` varchar(255) DEFAULT NULL COMMENT '上课老师',
@@ -108,11 +113,12 @@ CREATE TABLE `stjy_bjxxb` (
   `yishangkc` double(11,2) DEFAULT NULL COMMENT '已上课次',
   `jieyezt` varchar(255) DEFAULT NULL COMMENT '结业状态',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间'
-) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=45 ;
 
 --
--- Dumping data for table `stjy_bjxxb`
+-- 转存表中的数据 `stjy_bjxxb`
 --
 
 INSERT INTO `stjy_bjxxb` (`id`, `banjimc`, `xiaoqumc`, `shangkels`, `banzhuren`, `morenjs`, `kaibanrq`, `dangqianjd`, `paikejsrq`, `jihuajyrq`, `shangkesj`, `nianji`, `kemu`, `leixing`, `yuzhaors`, `dangqianrs`, `rubanlv`, `jihuakc`, `jifeidw`, `yipaikc`, `yishangkc`, `jieyezt`, `suoshudd`, `daorusj`) VALUES
@@ -164,11 +170,11 @@ INSERT INTO `stjy_bjxxb` (`id`, `banjimc`, `xiaoqumc`, `shangkels`, `banzhuren`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_bjxyxxb`
+-- 表的结构 `stjy_bjxyxxb`
 --
 
-CREATE TABLE `stjy_bjxyxxb` (
-`id` int(11) NOT NULL COMMENT 'id',
+CREATE TABLE IF NOT EXISTS `stjy_bjxyxxb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `xiaoqu` varchar(255) DEFAULT NULL COMMENT '校区',
   `kecheng` varchar(255) DEFAULT NULL COMMENT '课程',
   `banji` varchar(255) DEFAULT NULL COMMENT '班级',
@@ -185,11 +191,12 @@ CREATE TABLE `stjy_bjxyxxb` (
   `fuqindh` varchar(255) DEFAULT NULL COMMENT '父亲电话',
   `muqindh` varchar(255) DEFAULT NULL COMMENT '母亲电话',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间'
-) ENGINE=MyISAM AUTO_INCREMENT=302 DEFAULT CHARSET=utf8;
+  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=302 ;
 
 --
--- Dumping data for table `stjy_bjxyxxb`
+-- 转存表中的数据 `stjy_bjxyxxb`
 --
 
 INSERT INTO `stjy_bjxyxxb` (`id`, `xiaoqu`, `kecheng`, `banji`, `shangkesj`, `shangkels`, `xuehao`, `xingming`, `nianji`, `dianhua`, `guanzhuwx`, `shoujuhao`, `beizhu`, `gonglixx`, `fuqindh`, `muqindh`, `suoshudd`, `daorusj`) VALUES
@@ -499,23 +506,24 @@ INSERT INTO `stjy_bjxyxxb` (`id`, `xiaoqu`, `kecheng`, `banji`, `shangkesj`, `sh
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_class`
+-- 表的结构 `stjy_class`
 --
 
-CREATE TABLE `stjy_class` (
-`id` int(10) unsigned NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_class` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
-  `sort` int(10) unsigned DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章分类';
+  `sort` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章分类' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_kbmxb`
+-- 表的结构 `stjy_kbmxb`
 --
 
-CREATE TABLE `stjy_kbmxb` (
-`id` int(11) NOT NULL COMMENT 'id',
+CREATE TABLE IF NOT EXISTS `stjy_kbmxb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `banjimc` varchar(255) DEFAULT NULL COMMENT '班级名称',
   `kaibanrq` varchar(255) DEFAULT NULL COMMENT '开班日期',
   `jiebanrq` varchar(255) DEFAULT NULL COMMENT '结班日期',
@@ -530,17 +538,18 @@ CREATE TABLE `stjy_kbmxb` (
   `fanduls` varchar(255) DEFAULT NULL COMMENT '泛读老师',
   `waijiaols` varchar(255) DEFAULT NULL COMMENT '外教老师',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_kxmxb`
+-- 表的结构 `stjy_kxmxb`
 --
 
-CREATE TABLE `stjy_kxmxb` (
-`id` int(11) NOT NULL COMMENT 'id',
+CREATE TABLE IF NOT EXISTS `stjy_kxmxb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `xuehao` varchar(255) DEFAULT NULL COMMENT '学号',
   `xingming` varchar(255) DEFAULT NULL COMMENT '姓名',
   `nianji` varchar(255) DEFAULT NULL COMMENT '年级',
@@ -562,40 +571,47 @@ CREATE TABLE `stjy_kxmxb` (
   `shoujuhao` varchar(255) DEFAULT NULL COMMENT '收据号',
   `shoufeixq` varchar(255) DEFAULT NULL COMMENT '收费校区',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_log`
+-- 表的结构 `stjy_log`
 --
 
-CREATE TABLE `stjy_log` (
+CREATE TABLE IF NOT EXISTS `stjy_log` (
   `id` int(11) NOT NULL,
   `time` int(11) unsigned DEFAULT NULL,
-  `ip` varchar(50) DEFAULT NULL
+  `ip` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='访问日志';
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_node`
+-- 表的结构 `stjy_node`
 --
 
-CREATE TABLE `stjy_node` (
-`id` smallint(6) unsigned NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_node` (
+  `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `title` varchar(50) DEFAULT NULL,
   `status` tinyint(1) DEFAULT '0',
   `remark` varchar(255) DEFAULT NULL,
   `sort` smallint(6) unsigned DEFAULT NULL,
   `pid` smallint(6) unsigned NOT NULL,
-  `level` tinyint(1) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+  `level` tinyint(1) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `level` (`level`),
+  KEY `pid` (`pid`),
+  KEY `status` (`status`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 --
--- Dumping data for table `stjy_node`
+-- 转存表中的数据 `stjy_node`
 --
 
 INSERT INTO `stjy_node` (`id`, `name`, `title`, `status`, `remark`, `sort`, `pid`, `level`) VALUES
@@ -608,41 +624,44 @@ INSERT INTO `stjy_node` (`id`, `name`, `title`, `status`, `remark`, `sort`, `pid
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_qishu`
+-- 表的结构 `stjy_qishu`
 --
 
-CREATE TABLE `stjy_qishu` (
-`id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_qishu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT '期数',
-  `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间'
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='期数表';
+  `isuse` tinyint(1) NOT NULL COMMENT '是否启用：0，不启用；1启用',
+  `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='期数表' AUTO_INCREMENT=3 ;
 
 --
--- Dumping data for table `stjy_qishu`
+-- 转存表中的数据 `stjy_qishu`
 --
 
-INSERT INTO `stjy_qishu` (`id`, `name`, `addtime`) VALUES
-(2, '201707', '2017-08-02 15:59:00');
+INSERT INTO `stjy_qishu` (`id`, `name`, `isuse`, `addtime`) VALUES
+(2, '201707', 1, '2017-08-02 15:59:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_qishu_history`
+-- 表的结构 `stjy_qishu_history`
 --
 
-CREATE TABLE `stjy_qishu_history` (
-`id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_qishu_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` varchar(255) NOT NULL COMMENT '上传的文件路径',
   `table_name` varchar(255) DEFAULT NULL COMMENT '表名',
   `tid` int(11) DEFAULT NULL COMMENT '表类型id',
   `qishu` varchar(255) DEFAULT '' COMMENT '期数',
   `suoshufx` varchar(255) DEFAULT '' COMMENT '所属分校',
   `caozuoren` varchar(255) DEFAULT '' COMMENT '操作人',
-  `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间'
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
--- Dumping data for table `stjy_qishu_history`
+-- 转存表中的数据 `stjy_qishu_history`
 --
 
 INSERT INTO `stjy_qishu_history` (`id`, `filename`, `table_name`, `tid`, `qishu`, `suoshufx`, `caozuoren`, `daorusj`) VALUES
@@ -655,19 +674,22 @@ INSERT INTO `stjy_qishu_history` (`id`, `filename`, `table_name`, `tid`, `qishu`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_role`
+-- 表的结构 `stjy_role`
 --
 
-CREATE TABLE `stjy_role` (
-`id` smallint(6) unsigned NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_role` (
+  `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `pid` smallint(6) DEFAULT NULL,
   `status` tinyint(1) unsigned DEFAULT NULL,
-  `remark` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+  `remark` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pid` (`pid`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
--- Dumping data for table `stjy_role`
+-- 转存表中的数据 `stjy_role`
 --
 
 INSERT INTO `stjy_role` (`id`, `name`, `pid`, `status`, `remark`) VALUES
@@ -678,16 +700,18 @@ INSERT INTO `stjy_role` (`id`, `name`, `pid`, `status`, `remark`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_role_user`
+-- 表的结构 `stjy_role_user`
 --
 
-CREATE TABLE `stjy_role_user` (
+CREATE TABLE IF NOT EXISTS `stjy_role_user` (
   `role_id` mediumint(9) unsigned DEFAULT NULL,
-  `user_id` char(32) DEFAULT NULL
+  `user_id` char(32) DEFAULT NULL,
+  KEY `group_id` (`role_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `stjy_role_user`
+-- 转存表中的数据 `stjy_role_user`
 --
 
 INSERT INTO `stjy_role_user` (`role_id`, `user_id`) VALUES
@@ -697,17 +721,18 @@ INSERT INTO `stjy_role_user` (`role_id`, `user_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_school`
+-- 表的结构 `stjy_school`
 --
 
-CREATE TABLE `stjy_school` (
-`id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_school` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT '校区名称',
-  `isuse` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启动：0，未启用；1，启用'
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='校区列表';
+  `isuse` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启动：0，未启用；1，启用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='校区列表' AUTO_INCREMENT=5 ;
 
 --
--- Dumping data for table `stjy_school`
+-- 转存表中的数据 `stjy_school`
 --
 
 INSERT INTO `stjy_school` (`id`, `name`, `isuse`) VALUES
@@ -718,11 +743,11 @@ INSERT INTO `stjy_school` (`id`, `name`, `isuse`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_sjjlb`
+-- 表的结构 `stjy_sjjlb`
 --
 
-CREATE TABLE `stjy_sjjlb` (
-`id` int(11) NOT NULL COMMENT 'id',
+CREATE TABLE IF NOT EXISTS `stjy_sjjlb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `jiaofeirq` varchar(255) DEFAULT NULL COMMENT '交费日期',
   `shoujihao` varchar(255) DEFAULT NULL COMMENT '收据号',
   `fapiaohao` varchar(255) DEFAULT NULL COMMENT '发票号',
@@ -753,24 +778,26 @@ CREATE TABLE `stjy_sjjlb` (
   `yejigsr` varchar(255) DEFAULT NULL COMMENT '业绩归属人',
   `beizhu` varchar(255) DEFAULT NULL COMMENT '备注',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_table_name`
+-- 表的结构 `stjy_table_name`
 --
 
-CREATE TABLE `stjy_table_name` (
-`id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `stjy_table_name` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `xuhao` int(11) DEFAULT NULL COMMENT '表序号',
   `name` varchar(255) DEFAULT '' COMMENT '名称',
-  `table_name` varchar(255) DEFAULT NULL COMMENT '数据表名'
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+  `table_name` varchar(255) DEFAULT NULL COMMENT '数据表名',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
--- Dumping data for table `stjy_table_name`
+-- 转存表中的数据 `stjy_table_name`
 --
 
 INSERT INTO `stjy_table_name` (`id`, `xuhao`, `name`, `table_name`) VALUES
@@ -786,11 +813,11 @@ INSERT INTO `stjy_table_name` (`id`, `xuhao`, `name`, `table_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_xyfyyjb`
+-- 表的结构 `stjy_xyfyyjb`
 --
 
-CREATE TABLE `stjy_xyfyyjb` (
-`id` int(11) NOT NULL COMMENT 'id',
+CREATE TABLE IF NOT EXISTS `stjy_xyfyyjb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `xuehao` varchar(255) DEFAULT NULL COMMENT '学号',
   `xingming` varchar(255) DEFAULT NULL COMMENT '姓名',
   `dianhua` varchar(255) DEFAULT NULL COMMENT '电话',
@@ -801,17 +828,18 @@ CREATE TABLE `stjy_xyfyyjb` (
   `danwei` varchar(255) DEFAULT NULL COMMENT '单位',
   `feiyong` double(11,2) DEFAULT NULL COMMENT '费用',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stjy_xyxxb`
+-- 表的结构 `stjy_xyxxb`
 --
 
-CREATE TABLE `stjy_xyxxb` (
-`id` int(11) NOT NULL COMMENT 'id',
+CREATE TABLE IF NOT EXISTS `stjy_xyxxb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `xuehao` varchar(255) DEFAULT NULL COMMENT '学号',
   `xingming` varchar(255) DEFAULT NULL COMMENT '姓名',
   `xingbie` varchar(255) DEFAULT NULL COMMENT '性别',
@@ -847,11 +875,12 @@ CREATE TABLE `stjy_xyxxb` (
   `zhanghuye` double(11,2) DEFAULT NULL COMMENT '账户余额',
   `shengao` varchar(255) DEFAULT NULL COMMENT '身高',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间'
-) ENGINE=MyISAM AUTO_INCREMENT=1366 DEFAULT CHARSET=utf8;
+  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1366 ;
 
 --
--- Dumping data for table `stjy_xyxxb`
+-- 转存表中的数据 `stjy_xyxxb`
 --
 
 INSERT INTO `stjy_xyxxb` (`id`, `xuehao`, `xingming`, `xingbie`, `shishengxin`, `shenfenzheng`, `chushengrq`, `nianling`, `shoujihm`, `zhaoshengly`, `laiyuanfx`, `baomingrq`, `xiaoqu`, `xueguanshi`, `fuqinxm`, `fuqindh`, `muqinxm`, `muqindh`, `jiatingzz`, `qq`, `jiuduxx`, `nianji`, `banji`, `beizhu`, `jifen`, `leixing`, `zhuangtai`, `tuixuerq`, `tuixueyy`, `tuixuebz`, `dianziqbye`, `qianjiaoje`, `shengyuxf`, `zhanghuye`, `shengao`, `suoshudd`, `daorusj`) VALUES
@@ -2229,208 +2258,6 @@ INSERT INTO `stjy_xyxxb` (`id`, `xuehao`, `xingming`, `xingbie`, `shishengxin`, 
 (1364, 'S12543', '钟语芹', '女', '', '', '2013-06-08', '4', '13925170955', '01-老带新', '天河华景中心', '2017-05-10', '天河华景中心', '', '', '', '', '', '', '', '', '小班', '', '', 0.00, '', '在读', '', '', '', 230.00, 0.00, 750.00, 980.00, '', 3, '2017-08-02 10:31:39'),
 (1365, 'S12617', '郭子川', '男', '', '', '', '', '13794351612', '07-网络咨询', '天河骏景中心', '2017-05-10', '天河华景中心', '', '', '', '', '', '', '', '', '', '', '', 0.00, '', '在读', '', '', '', 0.00, 0.00, 3316.00, 3316.00, '', 3, '2017-08-02 10:31:39');
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `stjy_access`
---
-ALTER TABLE `stjy_access`
- ADD KEY `groupId` (`role_id`), ADD KEY `nodeId` (`node_id`);
-
---
--- Indexes for table `stjy_admin`
---
-ALTER TABLE `stjy_admin`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_article`
---
-ALTER TABLE `stjy_article`
- ADD PRIMARY KEY (`id`), ADD KEY `cid` (`cid`);
-
---
--- Indexes for table `stjy_bjxxb`
---
-ALTER TABLE `stjy_bjxxb`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_bjxyxxb`
---
-ALTER TABLE `stjy_bjxyxxb`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_class`
---
-ALTER TABLE `stjy_class`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_kbmxb`
---
-ALTER TABLE `stjy_kbmxb`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_kxmxb`
---
-ALTER TABLE `stjy_kxmxb`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_log`
---
-ALTER TABLE `stjy_log`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_node`
---
-ALTER TABLE `stjy_node`
- ADD PRIMARY KEY (`id`), ADD KEY `level` (`level`), ADD KEY `pid` (`pid`), ADD KEY `status` (`status`), ADD KEY `name` (`name`);
-
---
--- Indexes for table `stjy_qishu`
---
-ALTER TABLE `stjy_qishu`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_qishu_history`
---
-ALTER TABLE `stjy_qishu_history`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_role`
---
-ALTER TABLE `stjy_role`
- ADD PRIMARY KEY (`id`), ADD KEY `pid` (`pid`), ADD KEY `status` (`status`);
-
---
--- Indexes for table `stjy_role_user`
---
-ALTER TABLE `stjy_role_user`
- ADD KEY `group_id` (`role_id`), ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `stjy_school`
---
-ALTER TABLE `stjy_school`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_sjjlb`
---
-ALTER TABLE `stjy_sjjlb`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_table_name`
---
-ALTER TABLE `stjy_table_name`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_xyfyyjb`
---
-ALTER TABLE `stjy_xyfyyjb`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `stjy_xyxxb`
---
-ALTER TABLE `stjy_xyxxb`
- ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `stjy_admin`
---
-ALTER TABLE `stjy_admin`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `stjy_article`
---
-ALTER TABLE `stjy_article`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `stjy_bjxxb`
---
-ALTER TABLE `stjy_bjxxb`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',AUTO_INCREMENT=45;
---
--- AUTO_INCREMENT for table `stjy_bjxyxxb`
---
-ALTER TABLE `stjy_bjxyxxb`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',AUTO_INCREMENT=302;
---
--- AUTO_INCREMENT for table `stjy_class`
---
-ALTER TABLE `stjy_class`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `stjy_kbmxb`
---
-ALTER TABLE `stjy_kbmxb`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id';
---
--- AUTO_INCREMENT for table `stjy_kxmxb`
---
-ALTER TABLE `stjy_kxmxb`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id';
---
--- AUTO_INCREMENT for table `stjy_node`
---
-ALTER TABLE `stjy_node`
-MODIFY `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
---
--- AUTO_INCREMENT for table `stjy_qishu`
---
-ALTER TABLE `stjy_qishu`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `stjy_qishu_history`
---
-ALTER TABLE `stjy_qishu_history`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT for table `stjy_role`
---
-ALTER TABLE `stjy_role`
-MODIFY `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `stjy_school`
---
-ALTER TABLE `stjy_school`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `stjy_sjjlb`
---
-ALTER TABLE `stjy_sjjlb`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id';
---
--- AUTO_INCREMENT for table `stjy_table_name`
---
-ALTER TABLE `stjy_table_name`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `stjy_xyfyyjb`
---
-ALTER TABLE `stjy_xyfyyjb`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id';
---
--- AUTO_INCREMENT for table `stjy_xyxxb`
---
-ALTER TABLE `stjy_xyxxb`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',AUTO_INCREMENT=1366;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
