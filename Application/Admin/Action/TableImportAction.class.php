@@ -27,7 +27,7 @@ class TableImportAction extends CommonAction{
         return $data;
     }
 
-	//文章列表页
+	//列表页
 	public function index(){
         $data = M('qishu_history'); // 实例化对象
         $count = $data->count();// 查询满足要求的总记录数
@@ -64,14 +64,12 @@ class TableImportAction extends CommonAction{
     }
 
     // 详情页
-    // $tableList = array(1=>'xyxxb','bjxxb','bjxyxxb','sjjlb','kxmxb','kbmxb','xyfyyjb');
     public function table_xq(){
         $id = $_GET['id'];
         $tid = $_GET['tid'];
-        $tableList = array(1=>'xyxxb','bjxxb','bjxyxxb','sjjlb','kxmxb','kbmxb','xyfyyjb','scyjb');
-        $data = M($tableList[$tid]); // 实例化对象
-        $list = $data->where("suoshudd = ".$id)->select();
-        $filedname = array_flip($this->getcomment($tableList[$tid]));
+        $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
+        $list = M($tablename)->where("suoshudd = ".$id)->select();
+        $filedname = array_flip($this->getcomment($tablename));
         $this->assign('list',$list);// 赋值数据集
         $this->assign('filedname',$filedname);// 赋值数据集
         $this->adminDisplay();
@@ -160,11 +158,19 @@ class TableImportAction extends CommonAction{
         }
     }
 
-    // public function getTableUrl($tid){
-    //     $url = 'TableImport/';
-    //     $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
-    //     return $url.$tablename;
-    // }
 
+    //彻底删除
+    public function delete() {
+        $id=(int)$_GET['id'];
+        $tid = $_GET['tid'];
+        $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
+        $res1 = M($tablename)->where("suoshudd = ".$id)->delete();
+        $res2 = M("qishu_history")->delete($id);
+        if($res1 && $res2) {
+            $this->success('删除成功');
+        }else {
+            $this->error('删除失败');
+        }
+    }
 }
 ?>
