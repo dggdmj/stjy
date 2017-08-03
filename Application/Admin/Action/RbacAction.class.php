@@ -35,12 +35,24 @@ class RbacAction extends CommonAction {
 
 	// 用户列表
 	public function index() {
-		$this->user=M('admin')->alias("a")->join("left join stjy_role_user r on a.id = r.user_id left join stjy_role sr on r.role_id = sr.id")->field("a.*,sr.remark")->select();
+		$user=M('admin')->alias("a")->join("left join stjy_role_user r on a.id = r.user_id left join stjy_role sr on r.role_id = sr.id")->field("a.*,sr.remark")->select();
+		foreach ($user as $k=>$v){
+		    $sc_arr_id = explode(',',$v['school_id']);
+		    $sc_arr= array();
+		    foreach ($sc_arr_id as $a){
+		        if(!empty($a)){
+		            $sc_arr[] = M("school")->where("id = ".$a)->getField('name');
+                }
+            }
+            $user[$k]['schools'] = implode(",",$sc_arr);
+        }
+        $this->assign("user",$user);
 		$this->adminDisplay();
 	}
 	//添加用户页面
 	public function addUser() {
 		$this->role=M('role')->select();
+		$this->school = M("school")->select();
 		$this->adminDisplay();
 	}
 	//处理添加、修改用户
@@ -50,6 +62,7 @@ class RbacAction extends CommonAction {
 				'username' => $_POST['username'],
 				'nicename' => $_POST['nicename'],
 				'email' => $_POST['email'],
+                'school_id' => implode(',',$_POST['school']),
 				'password' => I('password','','md5'),
 				'logintime' => time(),
 				'lock' => $_POST['lock'],
@@ -76,6 +89,7 @@ class RbacAction extends CommonAction {
 				'username' => $_POST['username'],
 				'nicename' => $_POST['nicename'],
 				'email' => $_POST['email'],
+                'school_id' => implode(',',$_POST['school']),
 				'password' => $pwd,
 				'logintime' => time(),
 				'lock' => $_POST['lock'],
@@ -102,6 +116,7 @@ class RbacAction extends CommonAction {
 		$id = $_GET['id'];
 		$this->user=M('admin')->field('password',true)->where(array('id'=>$id))->find();
 		$this->role=M('role')->select();
+        $this->school = M("school")->select();
 		$this->adminDisplay('addUser');
 	}
 	//删除

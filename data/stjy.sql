@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Aug 03, 2017 at 11:09 PM
+-- Generation Time: Aug 04, 2017 at 01:14 AM
 -- Server version: 5.5.38
 -- PHP Version: 5.6.2
 
@@ -55,18 +55,20 @@ CREATE TABLE `stjy_admin` (
   `password` char(32) NOT NULL DEFAULT '' COMMENT '密码',
   `nicename` varchar(20) NOT NULL DEFAULT '' COMMENT '昵称',
   `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
+  `school_id` varchar(255) NOT NULL COMMENT '学校id，用逗号分割',
   `logintime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
   `loginip` varchar(30) NOT NULL,
   `lock` tinyint(1) unsigned NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='管理员';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='管理员';
 
 --
 -- Dumping data for table `stjy_admin`
 --
 
-INSERT INTO `stjy_admin` (`id`, `username`, `password`, `nicename`, `email`, `logintime`, `loginip`, `lock`) VALUES
-(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', 1501768104, '127.0.0.1', 0),
-(2, 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', 1501768484, '127.0.0.1', 0);
+INSERT INTO `stjy_admin` (`id`, `username`, `password`, `nicename`, `email`, `school_id`, `logintime`, `loginip`, `lock`) VALUES
+(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '', 1501779804, '127.0.0.1', 0),
+(2, 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2', 1501780406, '127.0.0.1', 1),
+(3, 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', 1501780416, '127.0.0.1', 1);
 
 -- --------------------------------------------------------
 
@@ -1517,7 +1519,8 @@ CREATE TABLE `stjy_role_user` (
 
 INSERT INTO `stjy_role_user` (`role_id`, `user_id`) VALUES
 (1, '1'),
-(2, '2');
+(2, '2'),
+(2, '3');
 
 -- --------------------------------------------------------
 
@@ -2839,7 +2842,7 @@ ALTER TABLE `stjy_xyxxb`
 -- AUTO_INCREMENT for table `stjy_admin`
 --
 ALTER TABLE `stjy_admin`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `stjy_article`
 --
