@@ -21,9 +21,7 @@
                 <div class="field">
                     <select name="qishu">
                         <foreach name='qishu' item='v'>
-                            <!-- <input type="text" class="input" name="qishu" size="60" value="201706"> -->
-                            <!-- <option value ="{$v.name}">{$v.name}</option> -->
-                            <if condition="($v.name eq $extra.qishu)">
+                            <if condition="$v.name eq $extra['qishu']">
                                 <option value ="{$v.name}" selected>{$v.name}</option>
                             <else />
                                 <option value ="{$v.name}">{$v.name}</option>

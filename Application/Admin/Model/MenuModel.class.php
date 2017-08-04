@@ -28,6 +28,12 @@ class MenuModel {
                 'order' => 1,
                 'menu' => array(
                     array(
+                        'name' => '数据总表',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/index'),
+                        'order' => 1
+                    ),
+                    array(
                         'name' => '学员信息表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/tableList/tid/1'),
