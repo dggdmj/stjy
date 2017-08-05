@@ -29,27 +29,21 @@ class TableImportAction extends CommonAction{
 
 	//数据总表
 	public function index(){
-        $data = M('qishu_history')->field("qishu,suoshufx")->group("qishu,suoshufx")->select();
+        $data = M('qishu_history')->field("qishu,sid")->group("qishu,sid")->order('qishu desc')->select();
         $count = count($data);
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        // $list = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.table_name=stjy_table_name.table_name')->field('stjy_qishu_history.*,stjy_table_name.name')->order('stjy_qishu_history.id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        $list = M('qishu_history')->field("qishu,suoshufx")->group("qishu,suoshufx")->order('qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-
+        $list = M('qishu_history')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field("stjy_qishu_history.qishu,stjy_qishu_history.sid,stjy_school.name")->group("qishu,sid")->order('qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         // 获取期数和所属分校已导入的数据
-        foreach($data as $v){
+        foreach($data as $k=>$v){
             $where['qishu'] = $v['qishu'];
-            $where['suoshufx'] = $v['suoshufx'];
-            $newdata[] = M('qishu_history')->field('tid')->where($where)->select();
-        }
-        // 将上面得到的数据转化成二维数组
-        foreach($newdata as $k=>$v){
-            foreach($v as $v1){
+            $where['sid'] = $v['sid'];
+            $newdata = M('qishu_history')->field('tid')->where($where)->select();
+            foreach($newdata as $v1){
                 $newdata2[$k][]=$v1['tid'];
             }
         }
-        var_dump($newdata2);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('data',$newdata2);
@@ -64,7 +58,7 @@ class TableImportAction extends CommonAction{
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->where("tid = ".$tid)->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $list = $data->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_admin.nicename,stjy_school.name as school_name,stjy_table_name.name,stjy_table_name.table_name')->where("tid = ".$tid)->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         foreach ($list as $k=>$v){
             $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
         }
@@ -92,7 +86,7 @@ class TableImportAction extends CommonAction{
         $table_info = M("table_name")->where("xuhao = ".$tid)->find();// 表明
         $qishu = M('qishu')->where('isuse = 1')->order('id desc')->select();// 期数
         $school = M('school')->where('isuse = 1')->select();// 可用校区
-        $suoshuxq = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('school_id');
+        $suoshuxq = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('school_id');// 操作人的所属校区
         $suoshuxq = explode(',', $suoshuxq);
         foreach($suoshuxq as $v){
             foreach($school as $v1){
@@ -102,13 +96,10 @@ class TableImportAction extends CommonAction{
             }
         }
         if(count($_GET)>1){
-            var_dump($_GET);
             $extra['qishu'] = $_GET['qishu'];
-            $extra['school_id'] = M('school')->where('name ="'.$_GET['suoshufx'].'"')->getField('id');
-            var_dump($extra);
+            $extra['sid'] = $_GET['sid'];
             $this->assign("extra",$extra);
         }
-        // var_dump($data);
         $this->assign("table_info",$table_info);
         $this->assign("qishu",$qishu);
         $this->assign("school",$data);
@@ -130,8 +121,8 @@ class TableImportAction extends CommonAction{
     public function dataUpload() {
         if (!empty($_FILES)) {
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
-            $_POST['suoshufx'] = M('school')->where('id ='.$_POST['suoshufx'])->getField('name');//所属校区
-            $_POST['caozuoren'] = M('admin')->where('username ="'.$_POST['caozuoren'].'"')->getField('nicename');//操作人
+            // $_POST['suoshufx'] = M('school')->where('id ='.$_POST['suoshufx'])->getField('name');//所属校区
+            $_POST['uid'] = M('admin')->where('username ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
             $tid = $_POST["tid"];  //表名对应的序号
             $config = array(
                 'exts' => array('xlsx', 'xls'),
@@ -149,7 +140,7 @@ class TableImportAction extends CommonAction{
             $_POST["filename"] = $file_name;
             $where['tid'] = $_POST['tid'];
             $where['qishu'] = $_POST['qishu'];
-            $where['suoshufx'] = $_POST['suoshufx'];
+            $where['sid'] = $_POST['sid'];
             // 查询是否已经存在该表格的导入
             $res = M('qishu_history')->where($where)->find();
             // 如果已经导入,则导入失败
@@ -193,7 +184,7 @@ class TableImportAction extends CommonAction{
                 }
                 M($tablename)->add($data);
             }
-            $this->success('导入成功！',__CONTROLLER__.'/tableList/tid/'.$tid);//获得成功跳转的链接
+            $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
         } else {
             $this->error("请选择上传的文件");
         }
@@ -215,6 +206,25 @@ class TableImportAction extends CommonAction{
         }
     }
 
-
+    // 总表下载表格
+    public function download(){
+        $data = M('qishu_history')->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_school.name as school_name,stjy_table_name.name')->where($_GET)->find();
+        $file = $data['filename'];
+        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['qishu'];
+        if (file_exists($file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename='.$filename.'.xls');
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file));
+            ob_clean();
+            flush();
+            readfile($file);
+            exit;
+        }
+    }
 }
 ?>
