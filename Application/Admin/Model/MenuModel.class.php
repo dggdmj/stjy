@@ -106,7 +106,37 @@ class MenuModel {
                         'icon' => 'file',
                         'url' => U('/TableCount/scyjb'),
                         'order' => 1
-                    )
+                    ),
+                    array(
+                        'name' => '市场占有率',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/sczyl'),
+                        'order' => 2
+                    ),
+                    array(
+                        'name' => '新增明细',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/xzmx'),
+                        'order' => 3
+                    ),
+                    array(
+                        'name' => '减少明细',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/xzmx'),
+                        'order' => 4
+                    ),
+                    array(
+                        'name' => '经营数据表',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/jysjb'),
+                        'order' => 5
+                    ),
+                    array(
+                        'name' => '退费',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/tuifei'),
+                        'order' => 6
+                    ),
                 )
             ),
 //            'Apponit' => array(

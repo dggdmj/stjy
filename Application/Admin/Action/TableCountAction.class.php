@@ -48,6 +48,31 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
+	//市场占有率详情
+	public function sczyl_xq(){
+        $this->adminDisplay();
+	}
+
+	//新增明细详情
+	public function xzmx_xq(){
+        $this->adminDisplay();
+	}
+
+	//减少明细详情
+	public function jsmx_xq(){
+        $this->adminDisplay();
+	}
+
+	//经营数据表
+	public function jysjb_xq(){
+        $this->adminDisplay();
+	}
+
+	//经营数据表
+	public function tuifei_xq(){
+        $this->adminDisplay();
+	}
+
     /**
      * 获得统计数据
      *
