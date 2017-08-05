@@ -115,6 +115,7 @@ class RbacAction extends CommonAction {
 	public function editUser() {
 		$id = $_GET['id'];
 		$this->user=M('admin')->field('password',true)->where(array('id'=>$id))->find();
+		$this->role_id = M("role_user")->where("user_id = ".$this->user['id'])->getField("role_id");
 		$this->role=M('role')->select();
         $this->school = M("school")->select();
 		$this->adminDisplay('addUser');

@@ -37,9 +37,19 @@
                     <label>所属校区</label>
                 </div>
                 <div class="field">
-                    <volist name="school" id="s">
-                            <input name="school[]" value="{$s.id}" type="checkbox">{$s.name}
-                    </volist>
+                    <?php
+                    $user_school_arr = explode(",",$user['school_id']);
+                    foreach($school as $s){
+                        if(in_array($s['id'],$user_school_arr)){
+                        echo "<input name=\"school[]\" value=\"".$s['id']."\" type=\"checkbox\" checked>".$s["name"];
+                            }else{
+                            echo "<input name=\"school[]\" value=\"".$s['id']."\" type=\"checkbox\">".$s["name"];
+                            }
+                        }
+                  ?>
+                    <!--<volist name="school" id="s">-->
+                            <!--<input name="school[]" value="{$s.id}" type="checkbox">{$s.name}-->
+                    <!--</volist>-->
                 </div>
             </div>
 			<div class="form-group">
@@ -97,7 +107,7 @@
 						</foreach>
 						<?php endif;?>				
 						<foreach name='role' item='v'>
-							<option value="{$v.id}">{$v.name}({$v.remark})</option>
+                            <option value="{$v.id}" <if condition="$v.id eq $role_id">selected</if> >{$v.name}({$v.remark})</option>
 						</foreach>
 					</select>
                 </div>
