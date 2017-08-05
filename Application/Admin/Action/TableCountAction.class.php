@@ -42,8 +42,9 @@ class TableCountAction extends CommonAction{
 
 	//市场业绩表详情
 	public function scyjb_xq(){
-	    $list = $this->getData("201707","1");//获得统计数据
+	    $list = $this->getData("201709","1");//获得统计数据
         dump($list);
+        $this->assign("list",$list);
         $this->adminDisplay();
 	}
 
@@ -55,12 +56,31 @@ class TableCountAction extends CommonAction{
      * @return array
      */
 	public function getData($qishu,$sid){
-        //查询出签单人的名字
+	    //按照期数和分校查询出结果，并以表名为键拼接成一个数组
         $Model = M();
-	    $list = $Model->query("select * from stjy_qishu_history as h where h.qishu = '".$qishu."' and h.tid = 4");
-	    dump($list);
+        $table_list = array();
+	    $data = $Model->query("select * from stjy_qishu_history as h left join `stjy_table_name` as n on h.tid = n.id where h.qishu = '".$qishu."' and h.sid = $sid");
+	    foreach ($data as $k => $v){
+            $table_list[$v['table_name']] = $v;
+        }
+        //查询出签单人的名字
+        $list = $Model->query("select yejigsr from stjy_sjjlb where suoshudd = ".$table_list['sjjlb']['id']." and `yejigsr` != '' group by `yejigsr`");
+        //过滤掉名字中的数据
+        $filter_arr = array('(主签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
+        foreach ($list as $k=>$v){
+            $list[$k]['yejigsr'] = $this->strFilter($v['yejigsr'],$filter_arr);
+        }
 	    return $list;
     }
 
+    //过滤掉字符串中在的指定字符
+    Public function strFilter($str,$arr)
+    {
+        //特殊字符的过滤方法
+        foreach ($arr as $v){
+            $str = str_replace($v, '', $str);
+        }
+        return $str;
+    }
 }
 ?>
