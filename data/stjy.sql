@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-08-05 14:56:21
+Date: 2017-08-05 23:28:28
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -61,7 +61,7 @@ CREATE TABLE `stjy_admin` (
 -- ----------------------------
 -- Records of stjy_admin
 -- ----------------------------
-INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '', '1501908786', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '', '1501943494', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2', '1501915953', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('3', 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', '1501780416', '127.0.0.1', '1');
 
@@ -2616,6 +2616,38 @@ CREATE TABLE `stjy_class` (
 
 -- ----------------------------
 -- Records of stjy_class
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for stjy_jsmxb
+-- ----------------------------
+DROP TABLE IF EXISTS `stjy_jsmxb`;
+CREATE TABLE `stjy_jsmxb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `xuhao` int(11) DEFAULT NULL COMMENT '序号',
+  `yuefen` varchar(255) DEFAULT NULL COMMENT '月份',
+  `fenxiao` varchar(255) DEFAULT NULL COMMENT '分校',
+  `jianshaolx` varchar(255) DEFAULT NULL COMMENT '减少类型',
+  `xuehao` varchar(255) DEFAULT NULL COMMENT '学号',
+  `xingming` varchar(255) DEFAULT NULL COMMENT '姓名',
+  `suoshubm` varchar(255) DEFAULT NULL COMMENT '所属部门',
+  `kaibanrq` varchar(255) DEFAULT NULL COMMENT '开班日期',
+  `jiebanrq` varchar(255) DEFAULT NULL COMMENT '结班日期',
+  `liushitfyy` varchar(255) DEFAULT NULL COMMENT '流失/退费原因',
+  `tingduxqjkc` double(11,2) DEFAULT NULL COMMENT '停读学期及课次',
+  `shengyukc` double(11,2) DEFAULT NULL COMMENT '剩余课次',
+  `yucunxfje` double(11,2) DEFAULT NULL COMMENT '余存学费金额',
+  `lianxidh` varchar(255) DEFAULT NULL COMMENT '联系电话',
+  `yujifdsj` varchar(255) DEFAULT NULL COMMENT '预计复读时间',
+  `zhaoshenggw` varchar(255) DEFAULT NULL COMMENT '招生顾问',
+  `zhaoshengly` varchar(255) DEFAULT NULL COMMENT '招生来源',
+  `jiuduxx` varchar(255) DEFAULT NULL COMMENT '就读学校',
+  `jiuduxxnj` varchar(255) DEFAULT NULL COMMENT '就读学校年级',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of stjy_jsmxb
 -- ----------------------------
 
 -- ----------------------------
@@ -6715,7 +6747,7 @@ CREATE TABLE `stjy_school` (
   `name` varchar(255) NOT NULL COMMENT '校区名称',
   `isuse` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启动：0，未启用；1，启用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='校区列表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='校区列表';
 
 -- ----------------------------
 -- Records of stjy_school
@@ -6723,6 +6755,74 @@ CREATE TABLE `stjy_school` (
 INSERT INTO `stjy_school` VALUES ('1', '华景分校', '1');
 INSERT INTO `stjy_school` VALUES ('2', '番禺分校', '1');
 INSERT INTO `stjy_school` VALUES ('3', '罗湖分校', '0');
+
+-- ----------------------------
+-- Table structure for stjy_scyjb
+-- ----------------------------
+DROP TABLE IF EXISTS `stjy_scyjb`;
+CREATE TABLE `stjy_scyjb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `xuhao` int(11) DEFAULT NULL COMMENT '序号',
+  `xingming` varchar(255) DEFAULT NULL COMMENT '姓名',
+  `zhiwei` varchar(255) DEFAULT NULL COMMENT '职位',
+  `ruzhirq` varchar(255) DEFAULT NULL COMMENT '入职日期',
+  `edu` double(11,2) DEFAULT NULL COMMENT '额度',
+  `rentoushu` double(11,2) DEFAULT NULL COMMENT '人头数',
+  `jingrentou` double(11,2) DEFAULT NULL COMMENT '净人头',
+  `guojibanye1` double(11,2) DEFAULT NULL COMMENT '国际班(幼儿)1年',
+  `guojibanye3` double(11,2) DEFAULT NULL COMMENT '国际班(幼儿)3年',
+  `guojibanye5` double(11,2) DEFAULT NULL COMMENT '国际班(幼儿)5年',
+  `guojibanxx1` double(11,2) DEFAULT NULL COMMENT '国际班(小学)1年',
+  `guojibanxx2` double(11,2) DEFAULT NULL COMMENT '国际班(小学)2年',
+  `guojibanxx5` double(11,2) DEFAULT NULL COMMENT '国际班(小学)5年',
+  `xinshengyxhy` double(11,2) DEFAULT NULL COMMENT '新生游学会员',
+  `guojilxkc` double(11,2) DEFAULT NULL COMMENT '国际领袖课程',
+  `yiqims` double(11,2) DEFAULT NULL COMMENT '一期秒杀',
+  `maisanse` double(11,2) DEFAULT NULL COMMENT '买三送二',
+  `laoshengcsyxhy` double(11,2) DEFAULT NULL COMMENT '老生创始游学会员',
+  `xinshengyxmfd` double(11,2) DEFAULT NULL COMMENT '新生游学免费读',
+  `laoshengxf` double(11,2) DEFAULT NULL COMMENT '老生续费',
+  `xinshengyye` double(11,2) DEFAULT NULL COMMENT '新生营业额',
+  `xinshengynnzb` double(11,2) DEFAULT NULL COMMENT '新生1年内追补',
+  `xinshengpsb` double(11,2) DEFAULT NULL COMMENT '新生平时班',
+  `pingshibynnzb` double(11,2) DEFAULT NULL COMMENT '平时班1年内追补',
+  `hejiyye` double(11,2) DEFAULT NULL COMMENT '合计营业额',
+  `huiyuanldxyye` double(11,2) DEFAULT NULL COMMENT '会员老带新营业额',
+  `qianming` varchar(255) DEFAULT NULL COMMENT '签名',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of stjy_scyjb
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for stjy_sczylb
+-- ----------------------------
+DROP TABLE IF EXISTS `stjy_sczylb`;
+CREATE TABLE `stjy_sczylb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `xuhao` int(11) DEFAULT NULL COMMENT '序号',
+  `xuexiao` varchar(255) DEFAULT NULL COMMENT '学校',
+  `youeryuan` double(11,2) DEFAULT NULL COMMENT '幼儿园',
+  `yinianji` double(11,2) DEFAULT NULL COMMENT '一年级',
+  `ernianji` double(11,2) DEFAULT NULL COMMENT '二年级',
+  `sannianji` double(11,2) DEFAULT NULL COMMENT '三年级',
+  `sinianji` double(11,2) DEFAULT NULL COMMENT '四年级',
+  `wunianji` double(11,2) DEFAULT NULL COMMENT '五年级',
+  `liunianji` double(11,2) DEFAULT NULL COMMENT '六年级',
+  `chuyi` double(11,2) DEFAULT NULL COMMENT '初一',
+  `chuer` double(11,2) DEFAULT NULL COMMENT '初二',
+  `chuerys` double(11,2) DEFAULT NULL COMMENT '初二以上',
+  `heji` double(11,2) DEFAULT NULL COMMENT '合计',
+  `xuexiaogms` double(11,2) DEFAULT NULL COMMENT '学校规模数',
+  `zhanyoulv` double(11,2) DEFAULT NULL COMMENT '占有率',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of stjy_sczylb
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for stjy_sjjlb
@@ -12050,3 +12150,35 @@ INSERT INTO `stjy_xyxxb` VALUES ('3182', 'S12284', '张琪', '女', '', '', '200
 INSERT INTO `stjy_xyxxb` VALUES ('3183', 'S10138', '汪天琦', '女', '', '', '2006-08-24', '10', '13433973785', '06-上门咨询', '天河华景中心', '2017-05-07', '天河华景中心', '', '', '', '', '', '', '', '天河区棠下小学', '五年级', '', '', '0.00', '', '在读', '', '', '', '280.00', '0.00', '3316.00', '3596.00', '', '16', '2017-08-05 13:34:51');
 INSERT INTO `stjy_xyxxb` VALUES ('3184', 'S12543', '钟语芹', '女', '', '', '2013-06-08', '4', '13925170955', '01-老带新', '天河华景中心', '2017-05-10', '天河华景中心', '', '', '', '', '', '', '', '', '小班', '', '', '0.00', '', '在读', '', '', '', '230.00', '0.00', '750.00', '980.00', '', '16', '2017-08-05 13:34:51');
 INSERT INTO `stjy_xyxxb` VALUES ('3185', 'S12617', '郭子川', '男', '', '', '', '', '13794351612', '07-网络咨询', '天河骏景中心', '2017-05-10', '天河华景中心', '', '', '', '', '', '', '', '', '', '', '', '0.00', '', '在读', '', '', '', '0.00', '0.00', '3316.00', '3316.00', '', '16', '2017-08-05 13:34:51');
+
+-- ----------------------------
+-- Table structure for stjy_xzmxb
+-- ----------------------------
+DROP TABLE IF EXISTS `stjy_xzmxb`;
+CREATE TABLE `stjy_xzmxb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `xuhao` int(11) DEFAULT NULL COMMENT '序号',
+  `yuefen` varchar(255) DEFAULT NULL COMMENT '月份',
+  `fenxiao` varchar(255) DEFAULT NULL COMMENT '分校',
+  `jianshaolx` varchar(255) DEFAULT NULL COMMENT '减少类型',
+  `xuehao` varchar(255) DEFAULT NULL COMMENT '序号',
+  `xingming` varchar(255) DEFAULT NULL COMMENT '姓名',
+  `suoshubm` varchar(255) DEFAULT NULL COMMENT '所属部门',
+  `banjibh` varchar(255) DEFAULT NULL COMMENT '班级编号',
+  `jingduls` varchar(255) DEFAULT NULL COMMENT '精读老师',
+  `fanduls` varchar(255) DEFAULT NULL COMMENT '泛读老师',
+  `kaibanrq` varchar(255) DEFAULT NULL COMMENT '开班日期',
+  `jiebanrq` varchar(255) DEFAULT NULL COMMENT '结班日期',
+  `shengyukc` double(11,2) DEFAULT NULL COMMENT '剩余课次',
+  `yucunxfje` double(11,2) DEFAULT NULL COMMENT '余存学费金额',
+  `lianxidh` varchar(255) DEFAULT NULL COMMENT '联系电话',
+  `zhaoshenggw` varchar(255) DEFAULT NULL COMMENT '招生顾问',
+  `zhaoshengly` varchar(255) DEFAULT NULL COMMENT '招生来源',
+  `jiuduxx` varchar(255) DEFAULT NULL COMMENT '就读学校',
+  `jiuduxxnj` varchar(255) DEFAULT NULL COMMENT '就读学校年级',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of stjy_xzmxb
+-- ----------------------------
