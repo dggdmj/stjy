@@ -14,7 +14,7 @@ class TableCountAction extends CommonAction{
         ),
             'menu' => array(
                 array('name' => '市场业绩表',
-                    'url' => url('TableCount/scyjb'),
+                    'url' => url('TableCount/scyjb_xq'),
                     'icon' => 'list',
                 ),
             ),
@@ -42,9 +42,25 @@ class TableCountAction extends CommonAction{
 
 	//市场业绩表详情
 	public function scyjb_xq(){
+	    $list = $this->getData("201707","1");//获得统计数据
+        dump($list);
         $this->adminDisplay();
 	}
 
+    /**
+     * 获得统计数据
+     *
+     * @param  string $qishu       期数：201707
+     * @param  string $sid         学校id：school  中的id
+     * @return array
+     */
+	public function getData($qishu,$sid){
+        //查询出签单人的名字
+        $Model = M();
+	    $list = $Model->query("select * from stjy_qishu_history as h where h.qishu = '".$qishu."' and h.tid = 4");
+	    dump($list);
+	    return $list;
+    }
 
 }
 ?>
