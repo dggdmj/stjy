@@ -210,7 +210,7 @@ class TableImportAction extends CommonAction{
     public function download(){
         $data = M('qishu_history')->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_school.name as school_name,stjy_table_name.name')->where($_GET)->find();
         $file = $data['filename'];
-        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['qishu'];
+        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['name'];
         if (file_exists($file)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
