@@ -28,6 +28,12 @@ class MenuModel {
                 'order' => 1,
                 'menu' => array(
                     array(
+                        'name' => '数据总表',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/index'),
+                        'order' => 1
+                    ),
+                    array(
                         'name' => '学员信息表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/tableList/tid/1'),
@@ -69,12 +75,12 @@ class MenuModel {
                         'url' => U('/TableImport/tableList/tid/7'),
                         'order' => 1
                     ),
-                    array(
-                        'name' => '市场业绩表',
-                        'icon' => 'sitemap',
-                        'url' => U('/TableImport/tableList/tid/8'),
-                        'order' => 1
-                    ),
+//                    array(
+//                        'name' => '市场业绩表',
+//                        'icon' => 'sitemap',
+//                        'url' => U('/TableImport/tableList/tid/8'),
+//                        'order' => 1
+//                    ),
                 )
             ),
 //            'User' => array(
@@ -90,19 +96,19 @@ class MenuModel {
 //                    ),
 //                )
 //            ),
-//            'Order' => array(
-//                'name' => '服务订单管理',
-//                'icon' => 'file',
-//                'order' => 1,
-//                'menu' => array(
-//                    array(
-//                        'name' => '服务订单管理',
-//                        'icon' => 'file',
-//                        'url' => U('/Order/index'),
-//                        'order' => 1
-//                    )
-//                )
-//            ),
+            'Order' => array(
+                'name' => '业绩表管理',
+                'icon' => 'file',
+                'order' => 1,
+                'menu' => array(
+                    array(
+                        'name' => '市场业绩表',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/scyjb'),
+                        'order' => 1
+                    )
+                )
+            ),
 //            'Apponit' => array(
 //                'name' => '预约管理',
 //                'icon' => 'anchor',
