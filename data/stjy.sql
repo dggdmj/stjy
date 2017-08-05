@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-08-05 23:28:28
+Date: 2017-08-06 00:01:29
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -61,7 +61,7 @@ CREATE TABLE `stjy_admin` (
 -- ----------------------------
 -- Records of stjy_admin
 -- ----------------------------
-INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '', '1501943494', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1501943494', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2', '1501915953', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('3', 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', '1501780416', '127.0.0.1', '1');
 
@@ -7513,20 +7513,24 @@ CREATE TABLE `stjy_table_name` (
   `xuhao` int(11) DEFAULT NULL COMMENT '表序号',
   `name` varchar(255) DEFAULT '' COMMENT '名称',
   `table_name` varchar(255) DEFAULT NULL COMMENT '数据表名',
+  `type` tinyint(1) DEFAULT NULL COMMENT '类型:1,导入表;2,导出表;',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_table_name
 -- ----------------------------
-INSERT INTO `stjy_table_name` VALUES ('1', '1', '学员信息表', 'xyxxb');
-INSERT INTO `stjy_table_name` VALUES ('2', '2', '班级信息表', 'bjxxb');
-INSERT INTO `stjy_table_name` VALUES ('3', '3', '班级学员信息表', 'bjxyxxb');
-INSERT INTO `stjy_table_name` VALUES ('4', '4', '收据记录表', 'sjjlb');
-INSERT INTO `stjy_table_name` VALUES ('5', '5', '课消明细表', 'kxmxb');
-INSERT INTO `stjy_table_name` VALUES ('6', '6', '开班明细表', 'kbmxb');
-INSERT INTO `stjy_table_name` VALUES ('7', '7', '学员费用预警表', 'xyfyyjb');
-INSERT INTO `stjy_table_name` VALUES ('8', '8', '市场业绩表', 'scyjb');
+INSERT INTO `stjy_table_name` VALUES ('1', '1', '学员信息表', 'xyxxb', null);
+INSERT INTO `stjy_table_name` VALUES ('2', '2', '班级信息表', 'bjxxb', null);
+INSERT INTO `stjy_table_name` VALUES ('3', '3', '班级学员信息表', 'bjxyxxb', null);
+INSERT INTO `stjy_table_name` VALUES ('4', '4', '收据记录表', 'sjjlb', null);
+INSERT INTO `stjy_table_name` VALUES ('5', '5', '课消明细表', 'kxmxb', null);
+INSERT INTO `stjy_table_name` VALUES ('6', '6', '开班明细表', 'kbmxb', null);
+INSERT INTO `stjy_table_name` VALUES ('7', '7', '学员费用预警表', 'xyfyyjb', null);
+INSERT INTO `stjy_table_name` VALUES ('8', '8', '市场业绩表', 'scyjb', null);
+INSERT INTO `stjy_table_name` VALUES ('9', '9', '市场占有率表', 'sczylb', null);
+INSERT INTO `stjy_table_name` VALUES ('10', '10', '新增明细表', 'xzmxb', null);
+INSERT INTO `stjy_table_name` VALUES ('11', '11', '减少明细表', 'jsmxb', null);
 
 -- ----------------------------
 -- Table structure for stjy_xyfyyjb
