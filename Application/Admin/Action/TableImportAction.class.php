@@ -29,24 +29,37 @@ class TableImportAction extends CommonAction{
 
 	//数据总表
 	public function index(){
-        $data = M('qishu_history')->field("qishu,sid")->group("qishu,sid")->order('qishu desc')->select();
-        $count = count($data);
+        $data = M('sjzb'); // 实例化对象
+        $count = $data->count();// 查询满足要求的总记录数
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = M('qishu_history')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field("stjy_qishu_history.qishu,stjy_qishu_history.sid,stjy_school.name")->group("qishu,sid")->order('qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        // 获取期数和所属分校已导入的数据
-        foreach($data as $k=>$v){
-            $where['qishu'] = $v['qishu'];
-            $where['sid'] = $v['sid'];
-            $newdata = M('qishu_history')->field('tid')->where($where)->select();
-            foreach($newdata as $v1){
-                $newdata2[$k][]=$v1['tid'];
-            }
+        $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->select();
+        $where['xyxxb'] = 2;
+        $where['bjxxb'] = 2;
+        $where['bjxyxxb'] = 2;
+        $where['sjjlb'] = 2;
+        $where['kxmxb'] = 2;
+        $where['kbmxb'] = 2;
+        $where['xyfyyjb'] = 2;
+        $list2 = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($where)->select();
+        // 获取当前用户的角色
+        $username = $_SESSION['username'];
+        $uid = M('admin')->where('username ="'.$username.'"')->getField('id');
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
+        // 获取表明与序号对应的一维数组
+        $arr = $this->getTabelnames();
+        if($rid == 2){
+            $this->assign('list',$list);// 赋值数据集
+        }else if($rid == 4){
+            $this->assign('list',$list2);// 赋值数据集
+        }else{
+            $this->assign('list',$list);// 赋值数据集
         }
-        $this->assign('list',$list);// 赋值数据集
+
         $this->assign('fpage',$show);// 赋值分页输出
-        $this->assign('data',$newdata2);
+        $this->assign('rid',$rid);// 赋值角色id
+        $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
 
@@ -141,8 +154,21 @@ class TableImportAction extends CommonAction{
             $where['tid'] = $_POST['tid'];
             $where['qishu'] = $_POST['qishu'];
             $where['sid'] = $_POST['sid'];
+            $where2['qishu'] = $_POST['qishu'];
+            $where2['sid'] = $_POST['sid'];
+            $sjzb['qishu'] = $_POST['qishu'];
+            $sjzb['sid'] = $_POST['sid'];
+            $sjzb[$tablename] = 2;
             // 查询是否已经存在该表格的导入
             $res = M('qishu_history')->where($where)->find();
+            // 查询数据总表是否有该期数和分校
+            $res2 = M('sjzb')->where($where2)->find();
+            // 若查询到无记录则添加,否则就更新数据
+            if(empty($res2)){
+                M('sjzb')->add($sjzb);
+            }else{
+                M('sjzb')->where($where2)->save($sjzb);
+            }
             // 如果已经导入,则导入失败
             if(!empty($res)){
                 unlink($file_name);// 删除excel文档
@@ -225,6 +251,38 @@ class TableImportAction extends CommonAction{
             readfile($file);
             exit;
         }
+    }
+
+    // 总表操作(通知财务)
+    public function tzcw(){
+        $tablenames = $this->getTabelnames();// 获取序号和表明对应的一维数组
+        $field = implode(',',$tablenames);// 组成筛选条件
+        $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
+        // 若所有表格导入再进行操作
+        $count = 0;
+        $i = 1;
+        foreach($data as $v){
+           $count += $v[$tabelnames[$i]];
+           $i++;
+        }
+        if($count == 14){
+            $temp['status_xz'] = 2;
+            $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            M('sjzb')->where($_GET)->save($temp);
+            $this->success('通知成功');
+        }else{
+            $this->error('请导入所有表格后再通知财务');
+        }
+    }
+
+    public function getTabelnames(){
+        // 获取表明与序号对应的一维数组
+        $tablenames = M('table_name')->field('xuhao,table_name')->limit(7)->select();
+        foreach($tablenames as $v){
+            $id = $v['xuhao'];
+            $arr[$id] = $v['table_name'];
+        }
+        return $arr;
     }
 }
 ?>
