@@ -176,37 +176,37 @@ class MenuModel {
 //                    ),
 //                )
 //            ),
-//            'Article' => array(
-//                'name' => '文章',
-//                'icon' => 'tasks',
-//                'order' => 0,
-//                'menu' => array(
-//                    array(
-//                        'name' => '文章管理',
-//                        'icon' => 'reorder',
-//                        'url' => U('/Article/index'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '文章分类',
-//                        'url' => U('/Class/index'),
-//                        'icon' => 'sitemap',
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '文章回收站',
-//                        'icon' => 'trash-o',
-//                        'url' => U('/ArticleRecycle/index'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '属性管理',
-//                        'icon' => 'cogs',
-//                        'url' => U('/Attribute/index'),
-//                        'order' => 1
-//                    ),
-//                )
-//            ),
+            'Article' => array(
+                'name' => '文章',
+                'icon' => 'tasks',
+                'order' => 0,
+                'menu' => array(
+                    array(
+                        'name' => '文章管理',
+                        'icon' => 'reorder',
+                        'url' => U('/Article/index'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '文章分类',
+                        'url' => U('/Class/index'),
+                        'icon' => 'sitemap',
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '文章回收站',
+                        'icon' => 'trash-o',
+                        'url' => U('/ArticleRecycle/index'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '属性管理',
+                        'icon' => 'cogs',
+                        'url' => U('/Attribute/index'),
+                        'order' => 1
+                    ),
+                )
+            ),
 
 //        	'Case' => array(
 //                'name' => '产品管理',
