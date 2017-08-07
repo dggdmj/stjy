@@ -101,7 +101,7 @@ class TableImportAction extends CommonAction{
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_admin.nicename,stjy_school.name as school_name,stjy_table_name.name,stjy_table_name.table_name')->where("tid = ".$tid)->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $list = $data->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_admin.nicename,stjy_school.name as school_name,stjy_school.id as sid,stjy_table_name.name,stjy_table_name.table_name')->where("tid = ".$tid)->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         foreach ($list as $k=>$v){
             $list[$k]['name'] = M("table_name")->where("table_name = '".$v['table_name']."'")->getField("name");
         }
@@ -259,12 +259,16 @@ class TableImportAction extends CommonAction{
     public function del() {
         $id=(int)$_GET['id'];
         $tid = $_GET['tid'];
+        $where['qishu'] = $_GET['qishu'];
+        $where['sid'] = $_GET['sid'];
         $filename = M('qishu_history')->where('id ='.$id)->getField('filename');
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
+        $temp[$tablename] = 1;
         $res1 = M($tablename)->where("suoshudd = ".$id)->delete();
         $res2 = M("qishu_history")->delete($id);
         if($res1 && $res2) {
             unlink($filename);
+            M('sjzb')->where($where)->save($temp);
             $this->success('删除成功');
         }else {
             $this->error('删除失败');
