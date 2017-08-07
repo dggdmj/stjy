@@ -13,9 +13,38 @@ class TableImportAction extends CommonAction{
             'description' => ' 管理网站数据总表',
         ),
             'menu' => array(
-                array('name' => '数据总表',
+                array(
+                    'name' => '数据总表',
                     'url' => url('TableImport/index'),
                     'icon' => 'list',
+                ),
+                array(
+                        'name' => '学员信息表导入',
+                        'url' => U('/TableImport/tableList/tid/1'),
+                    ),
+                array(
+                        'name' => '班级信息表导入',
+                        'url' => U('/TableImport/tableList/tid/2'),
+                    ),
+                array(
+                    'name' => '班级学员信息表导入',
+                    'url' => U('/TableImport/tableList/tid/3'),
+                ),
+                array(
+                    'name' => '收据记录表导入',
+                    'url' => U('/TableImport/tableList/tid/4'),
+                ),
+                array(
+                    'name' => '课消明细表导入',
+                    'url' => U('/TableImport/tableList/tid/5'),
+                ),
+                array(
+                    'name' => '开班明细表导入',
+                    'url' => U('/TableImport/tableList/tid/6'),
+                ),
+                array(
+                    'name' => '学员费用预警表导入',
+                    'url' => U('/TableImport/tableList/tid/7'),
                 ),
             ),
            // 'add' => array(
