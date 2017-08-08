@@ -129,7 +129,9 @@ class TableImportAction extends CommonAction{
         $table_info = M("table_name")->where("xuhao = ".$tid)->find();// 表明
         $qishu = M('qishu')->where('isuse = 1')->order('id desc')->select();// 期数
         $school = M('school')->where('isuse = 1')->select();// 可用校区
-        $suoshuxq = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('school_id');// 操作人的所属校区
+        $temp = M('admin')->where('username ="'.$_SESSION['username'].'"')->find();
+        $suoshuxq = $temp['school_id'];// 操作人的所属校区
+        $nicename =  $temp['nicename'];// 操作人昵称
         $suoshuxq = explode(',', $suoshuxq);
         foreach($suoshuxq as $v){
             foreach($school as $v1){
@@ -146,6 +148,7 @@ class TableImportAction extends CommonAction{
         $this->assign("table_info",$table_info);
         $this->assign("qishu",$qishu);
         $this->assign("school",$data);
+        $this->assign('nicename',$nicename);
 		$this->adminDisplay();
 	}
 
@@ -261,6 +264,12 @@ class TableImportAction extends CommonAction{
         $tid = $_GET['tid'];
         $where['qishu'] = $_GET['qishu'];
         $where['sid'] = $_GET['sid'];
+        $status_xz = M('sjzb')->where($where)->getField('status_xz');
+        if($status_xz == 2){
+            $arr['status'] = false;
+            $arr['info'] = '表格已提交,删除失败';
+            $this->ajaxReturn($arr);
+        }
         $filename = M('qishu_history')->where('id ='.$id)->getField('filename');
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
         $temp[$tablename] = 1;
@@ -269,9 +278,15 @@ class TableImportAction extends CommonAction{
         if($res1 && $res2) {
             unlink($filename);
             M('sjzb')->where($where)->save($temp);
-            $this->success('删除成功');
+            // $this->success('删除成功');
+            $arr['status'] = true;
+            $arr['info'] = '删除成功';
+            $this->ajaxReturn($arr);
         }else {
-            $this->error('删除失败');
+            // $this->error('删除失败');
+            $arr['status'] = false;
+            $arr['info'] = '删除失败';
+            $this->ajaxReturn($arr);
         }
     }
 
@@ -314,9 +329,15 @@ class TableImportAction extends CommonAction{
             $temp['status_cw'] = 1;
             $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             M('sjzb')->where($_GET)->save($temp);
-            $this->success('通知成功');
+            // $this->success('通知成功');
+            $arr['status'] = true;
+            $arr['info'] = '通知成功';
+            $this->ajaxReturn($arr);
         }else{
-            $this->error('请导入所有表格后再通知财务');
+            // $this->error('请导入所有表格后再通知财务');
+            $arr['status'] = false;
+            $arr['info'] = '请导入所有表格后再通知财务';
+            $this->ajaxReturn($arr);
         }
     }
 
