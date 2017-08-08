@@ -323,6 +323,5 @@ class TableImportAction extends CommonAction{
         $this->success('通过审核操作成功');
     }
 
-
 }
 ?>
