@@ -258,6 +258,7 @@ body {
 .button.bg-main {
     background-color: #0081e6;
     border-color: #1d70d8;
+    margin-left: 5px;
 }
 .button.bg-main:hover {
     background-color: #007bd8;
