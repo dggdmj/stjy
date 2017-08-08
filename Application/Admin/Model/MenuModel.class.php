@@ -102,39 +102,45 @@ class MenuModel {
                 'order' => 1,
                 'menu' => array(
                     array(
+                        'name' => '市场业绩总表',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/index'),
+                        'order' => 1
+                    ),
+                    array(
                         'name' => '市场业绩表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/scyjb'),
+                        'url' => U('/TableCount/yejilist?table=scyjb'),
                         'order' => 1
                     ),
                     array(
                         'name' => '市场占有率',
                         'icon' => 'file',
-                        'url' => U('/TableCount/sczyl'),
+                        'url' => U('/TableCount/yejilist?table=sczyl'),
                         'order' => 2
                     ),
                     array(
                         'name' => '新增明细',
                         'icon' => 'file',
-                        'url' => U('/TableCount/xzmx'),
+                        'url' => U('/TableCount/yejilist?table=xzmx'),
                         'order' => 3
                     ),
                     array(
                         'name' => '减少明细',
                         'icon' => 'file',
-                        'url' => U('/TableCount/xzmx'),
+                        'url' => U('/TableCount/yejilist?table=xzmx'),
                         'order' => 4
                     ),
                     array(
                         'name' => '经营数据表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/jysjb'),
+                        'url' => U('/TableCount/yejilist?table=jysjb'),
                         'order' => 5
                     ),
                     array(
                         'name' => '退费',
                         'icon' => 'file',
-                        'url' => U('/TableCount/tuifei'),
+                        'url' => U('/TableCount/yejilist?table=tuifei'),
                         'order' => 6
                     ),
                 )

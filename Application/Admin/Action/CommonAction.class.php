@@ -68,5 +68,14 @@ class CommonAction extends Action {
     }
 
 
+    // 获取表明与序号对应的一维数组
+    public function getTabelnames(){
+        $tablenames = M('table_name')->field('xuhao,table_name')->limit(7)->select();
+        foreach($tablenames as $v){
+            $id = $v['xuhao'];
+            $arr[$id] = $v['table_name'];
+        }
+        return $arr;
+    }
     
 }

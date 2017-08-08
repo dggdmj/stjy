@@ -27,6 +27,43 @@ class TableCountAction extends CommonAction{
         return $data;
     }
 
+	//市场业绩总表
+	public function index(){
+        // 获取当前用户的角色
+        $username = $_SESSION['username'];
+        $uid = M('admin')->where('username ="'.$username.'"')->getField('id');
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
+
+        $data = M('sjzb'); // 实例化对象
+        if($rid == 2){
+            $count = $data->count();// 查询满足要求的总记录数
+        }else if($rid == 4){
+            $count = $data->where('status_cw is not null')->count();
+        }else{
+            $count = $data->where('status_fxfzr is not null')->count();
+        }
+
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        if($rid == 2){
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->select();
+        }else if($rid == 4){
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
+        }else{
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_fxfzr is not null')->select();
+        }
+
+        // 获取表明与序号对应的一维数组
+        $arr = $this->getTabelnames();
+
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->assign('rid',$rid);// 赋值角色id
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
+	}
+
 	//市场业绩表
 	public function scyjb(){
         $data = M('qishu'); // 实例化对象

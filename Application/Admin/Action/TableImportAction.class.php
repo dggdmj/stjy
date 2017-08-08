@@ -159,16 +159,6 @@ class TableImportAction extends CommonAction{
         return array_combine($comment,$field);
     }
 
-    // 获取表明与序号对应的一维数组
-    public function getTabelnames(){
-        $tablenames = M('table_name')->field('xuhao,table_name')->limit(7)->select();
-        foreach($tablenames as $v){
-            $id = $v['xuhao'];
-            $arr[$id] = $v['table_name'];
-        }
-        return $arr;
-    }
-
     //数据导入
     public function dataUpload() {
         if (!empty($_FILES)) {
