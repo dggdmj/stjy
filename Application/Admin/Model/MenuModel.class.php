@@ -110,37 +110,37 @@ class MenuModel {
                     array(
                         'name' => '市场业绩表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist?table=scyjb'),
+                        'url' => U('/TableCount/yejilist/tid/8'),
                         'order' => 1
                     ),
                     array(
-                        'name' => '市场占有率',
+                        'name' => '市场占有率表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist?table=sczyl'),
+                        'url' => U('/TableCount/yejilist/tid/9'),
                         'order' => 2
                     ),
                     array(
-                        'name' => '新增明细',
+                        'name' => '新增明细表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist?table=xzmx'),
+                        'url' => U('/TableCount/yejilist/tid/10'),
                         'order' => 3
                     ),
                     array(
-                        'name' => '减少明细',
+                        'name' => '减少明细表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist?table=xzmx'),
+                        'url' => U('/TableCount/yejilist/tid/11'),
                         'order' => 4
                     ),
                     array(
                         'name' => '经营数据表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist?table=jysjb'),
+                        'url' => U('/TableCount/yejilist/tid/12'),
                         'order' => 5
                     ),
                     array(
-                        'name' => '退费',
+                        'name' => '退费表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist?table=tuifei'),
+                        'url' => U('/TableCount/yejilist/tid/13'),
                         'order' => 6
                     ),
                 )

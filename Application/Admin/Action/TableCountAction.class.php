@@ -64,6 +64,17 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
+    public function yejilist(){
+        var_dump($_GET);
+        $data = M('sjzb')->field('qishu,sid')->where('status_xz = 2')->select();
+        var_dump($data);
+        $count = M('sjzb')->where('status_xz = 2')->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+    }
+
 	//市场业绩表
 	public function scyjb(){
         $data = M('qishu'); // 实例化对象
