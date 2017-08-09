@@ -314,6 +314,9 @@ class TableImportAction extends CommonAction{
            $i++;
         }
         if($count == 14){
+            $temp['time_xz'] = date('Y-m-d H:i:s');
+            $temp['time_cw'] = null;
+            $temp['time_fxfzr'] = null;
             $temp['status_xz'] = 2;
             $temp['status_cw'] = 1;
             $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');

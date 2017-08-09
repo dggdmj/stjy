@@ -14,27 +14,27 @@ class TableCountAction extends CommonAction{
         ),
             'menu' => array(
                 array('name' => '市场业绩表',
-                    'url' => url('TableCount/scyjb_xq'),
+                    'url' => url('TableCount/yejilist/tid/8'),
                     'icon' => 'list',
                 ),
                 array('name' => '市场占有率',
-                    'url' => url('TableCount/sczyl_xq'),
+                    'url' => url('TableCount/yejilist/tid/9'),
                     'icon' => 'list',
                 ),
                 array('name' => '新增明细',
-                    'url' => url('TableCount/xzmx_xq'),
+                    'url' => url('TableCount/yejilist/tid/10'),
                     'icon' => 'list',
                 ),
                 array('name' => '减少明细',
-                    'url' => url('TableCount/jsmx_xq'),
+                    'url' => url('TableCount/yejilist/tid/11'),
                     'icon' => 'list',
                 ),
                 array('name' => '经营数据表',
-                    'url' => url('TableCount/jysjb_xq'),
+                    'url' => url('TableCount/yejilist/tid/12'),
                     'icon' => 'list',
                 ),
                 array('name' => '退费',
-                    'url' => url('TableCount/tuifei_xq'),
+                    'url' => url('TableCount/yejilist/tid/13'),
                     'icon' => 'list',
                 ),
             ),
@@ -85,14 +85,24 @@ class TableCountAction extends CommonAction{
 	}
 
     public function yejilist(){
-        var_dump($_GET);
         $data = M('sjzb')->field('qishu,sid')->where('status_xz = 2')->select();
-        var_dump($data);
         $count = M('sjzb')->where('status_xz = 2')->count();// 查询满足要求的总记录数
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $list = M('sjzb')->join('LEFT JOIN stjy_school ON stjy_sjzb.sid = stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_xz = 2')->order('stjy_sjzb.id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        foreach($list as $k=>$v){
+            $list[$k]['tid'] = $_GET['tid'];
+            $where['tid'] = $_GET['tid'];
+            $where['sid'] = $v['sid'];
+            $where['qishu'] = $v['qishu'];
+            $newid = M('qishu_history')->field('id')->where($where)->getField('id');
+            $list[$k]['id'] = is_null($newid)?'new':$newid;
+            $list[$k]['table_name'] = M('table_name')->where('id = '.$_GET['tid'])->getField('name');
+        }
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->adminDisplay();
     }
 
 	//市场业绩表
