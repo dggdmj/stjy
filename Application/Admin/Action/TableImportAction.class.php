@@ -68,6 +68,8 @@ class TableImportAction extends CommonAction{
             $count = $data->count();// 查询满足要求的总记录数
         }else if($rid == 4){
             $count = $data->where('status_cw is not null')->count();
+        }else if($_SESSION['superadmin'] == true){
+            $count = $data->count();// 查询满足要求的总记录数
         }else{
             $count = $data->where('status_fxfzr is not null')->count();
         }
@@ -77,6 +79,8 @@ class TableImportAction extends CommonAction{
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
         if($rid == 2){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->select();
+        }else if($_SESSION['superadmin'] == true){
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
         }else if($rid == 4){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
         }else{

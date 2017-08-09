@@ -13,6 +13,10 @@ class TableCountAction extends CommonAction{
             'description' => ' 查看数据总表',
         ),
             'menu' => array(
+                array('name' => '业绩总表',
+                    'url' => url('TableCount/index'),
+                    'icon' => 'list',
+                ),
                 array('name' => '市场业绩表',
                     'url' => url('TableCount/yejilist/tid/8'),
                     'icon' => 'list',
@@ -59,6 +63,8 @@ class TableCountAction extends CommonAction{
             $count = $data->count();// 查询满足要求的总记录数
         }else if($rid == 4){
             $count = $data->where('status_cw is not null')->count();
+        }else if($_SESSION['superadmin'] == true){
+            $count = $data->where('status_cw is not null')->count();
         }else{
             $count = $data->where('status_fxfzr is not null')->count();
         }
@@ -69,6 +75,8 @@ class TableCountAction extends CommonAction{
         if($rid == 2){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->select();
         }else if($rid == 4){
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
+        }else if($_SESSION['superadmin'] == true){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
         }else{
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_fxfzr is not null')->select();
