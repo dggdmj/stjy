@@ -13,12 +13,12 @@ class CountScyjAction extends CommonAction {
         //按照期数和分校查询出结果，并以表名为键拼接成一个数组
         $Model = M();
         $table_list = array();
-        $data = $Model->query("select * from stjy_qishu_history as h left join `stjy_table_name` as n on h.tid = n.id where h.qishu = '".$qishu."' and h.sid = $sid");
-        foreach ($data as $k => $v){
-            $table_list[$v['table_name']] = $v;
-        }
+        $where['qishu'] = $qishu;// 获取期数
+        $whewe['sid'] = $sid;// 获取学校id
+        $where['tid'] = 4;// 从班级学员信息表获取信息,它的tid是3
+        $suoshuid = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id
         //查询出签单人的名字
-        $list = $Model->query("select yejigsr,beizhu from stjy_sjjlb where suoshudd = ".$table_list['sjjlb']['id']." and `yejigsr` != '' group by `yejigsr`");
+        $list = $Model->query("select yejigsr,beizhu from stjy_sjjlb where suoshudd = $suoshuid and `yejigsr` != '' group by `yejigsr`");
         //过滤掉名字中的数据
         $filter_arr = array('(主签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
         foreach ($list as $k=>$v){
