@@ -111,7 +111,6 @@ class TableCountAction extends CommonAction{
             $list[$k]['name'] = $temp['name'];
 
         }
-        var_dump($list);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->adminDisplay();
@@ -132,7 +131,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountSczylAction();
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
-        var_dump($list);
+//        dump($list);
         $this->assign("list",$list);
         // $this->adminDisplay();
 	}
