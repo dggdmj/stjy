@@ -162,8 +162,6 @@ class TableImportAction extends CommonAction{
     //数据导入
     public function dataUpload() {
         if (!empty($_FILES)) {
-            var_dump($_POST);
-            die;
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
             // $_POST['suoshufx'] = M('school')->where('id ='.$_POST['suoshufx'])->getField('name');//所属校区
             $_POST['uid'] = M('admin')->where('username ="'.$_POST['caozuoren'].'"')->getField('id');//操作人

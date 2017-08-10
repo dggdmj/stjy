@@ -98,25 +98,16 @@ class TableCountAction extends CommonAction{
             $where['qishu'] = $v['qishu'];
             $newid = M('qishu_history')->field('id')->where($where)->getField('id');
             $list[$k]['id'] = is_null($newid)?'new':$newid;
-            $list[$k]['table_name'] = M('table_name')->where('id = '.$_GET['tid'])->getField('name');
+            $temp = M('table_name')->where('id = '.$_GET['tid'])->find();
+            $list[$k]['table_name'] = $temp['table_name'];
+            $list[$k]['name'] = $temp['name'];
+
         }
+        var_dump($list);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->adminDisplay();
     }
-
-	//市场业绩表
-	public function scyjb(){
-        $data = M('qishu'); // 实例化对象
-        $count = $data->count();// 查询满足要求的总记录数
-        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
-        $show = $Page->show();// 分页显示输出
-        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        $this->assign('list',$list);// 赋值数据集
-        $this->assign('fpage',$show);// 赋值分页输出
-        $this->adminDisplay();
-	}
 
 	//市场业绩表详情
 	public function scyjb_xq(){
@@ -128,17 +119,21 @@ class TableCountAction extends CommonAction{
 	}
 
 	//市场占有率详情
-	public function sczyl_xq(){
-        $this->adminDisplay();
+	public function sczylb_xq(){
+        $data = new \Admin\Action\CountSczylAction();
+        $list = $data->getSczylbData("201709","1");//获得统计数据
+        dump($list);
+        $this->assign("list",$list);
+        // $this->adminDisplay();
 	}
 
 	//新增明细详情
-	public function xzmx_xq(){
+	public function xzmxb_xq(){
         $this->adminDisplay();
 	}
 
 	//减少明细详情
-	public function jsmx_xq(){
+	public function jsmxb_xq(){
         $this->adminDisplay();
 	}
 
@@ -148,7 +143,7 @@ class TableCountAction extends CommonAction{
 	}
 
 	//经营数据表
-	public function tuifei_xq(){
+	public function tfb_xq(){
         $this->adminDisplay();
 	}
 
