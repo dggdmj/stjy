@@ -117,9 +117,10 @@ class TableCountAction extends CommonAction{
 
 	//市场业绩表详情
 	public function scyjb_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
 	    $data = new \Admin\Action\CountScyjAction();
-	    $list = $data->getScyjbData("201709","1");//获得统计数据
-        dump($list);
+	    $list = $data->getScyjbData($qishu,$sid);//获得统计数据
         $this->assign("list",$list);
         $this->adminDisplay();
 	}
