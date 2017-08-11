@@ -132,7 +132,6 @@ class TableCountAction extends CommonAction{
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
         $this->assign("data",$list['data']);
         $this->assign("heji",$list['heji']);
-
         $this->adminDisplay();
 	}
 
