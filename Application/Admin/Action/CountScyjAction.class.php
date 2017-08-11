@@ -12,21 +12,51 @@ class CountScyjAction extends CommonAction {
     public function getScyjbData($qishu,$sid){
         //按照期数和分校查询出结果，并以表名为键拼接成一个数组
         $Model = M();
-        $table_list = array();
+        $table_list = array();  //初始化要返回的数据
+        //过滤掉名字中的数据
+        $filter_arr = array('(主签单人)','(副签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
         $where['qishu'] = $qishu;// 获取期数
         $whewe['sid'] = $sid;// 获取学校id
         $where['tid'] = 4;// 从班级学员信息表获取信息,它的tid是3
         $suoshuid = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id
         //查询出签单人的名字
         $list = $Model->query("select yejigsr,beizhu from stjy_sjjlb where suoshudd = $suoshuid and `yejigsr` != '' group by `yejigsr`");
-        //过滤掉名字中的数据
-        $filter_arr = array('(主签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
+        //1，遍历数组，如果业绩归属人是2个人的，在重新拼接
+        $newlist = $this->getNewList($list,$filter_arr);
+        dump($newlist);die;
         foreach ($list as $k=>$v){
+
             $list[$k]['yejigsr'] = $this->strFilter($v['yejigsr'],$filter_arr);     //业绩归属人
             $list[$k]['beizhu'] = $this->getBeizhu($v['beizhu']);   //根据备注信息获得备注数组
 
         }
-        return $list;
+        return $table_list;
+    }
+
+    //如果业绩归属人有2个，去除掉重复的，返回业绩归属人的唯一数组
+    public function getNewList($list,$filter_arr){
+        $arr = array();
+        $a = 1;
+        foreach ($list as $k=>$v){
+            $yjgsr_arr = explode(',',$v['yejigsr']);    //将业绩归属人按英文逗号","拆分，如果有2个归属人，则按比例分业绩
+            dump($yjgsr_arr);
+            if(count($yjgsr_arr)>1){
+                //如果有2个业绩归属人
+                for ($i=0;$i<count($yjgsr_arr);$i++){
+                    $name = $this->strFilter($yjgsr_arr[$i],$filter_arr);
+                    $arr[$a][$name]['yejigsr'] = $name;
+                    $arr[$a][$name]['zhufu'] = $this->strZhufu($yjgsr_arr[$i]);
+                    $a++;
+                }
+            }else{
+                //只有1个业绩归属人
+                $name = $this->strFilter($v['yejigsr'],$filter_arr);
+                $arr[$a][$name]['yejigsr'] = $name;
+                $arr[$a][$name]['zhufu'] = $this->strZhufu($v['yejigsr']);
+                $a++;
+            }
+        }
+        return $arr;
     }
 
     //过滤掉字符串中在的指定字符
@@ -37,6 +67,25 @@ class CountScyjAction extends CommonAction {
             $str = str_replace($v, '', $str);
         }
         return $str;
+    }
+
+    //返回签单人是主还是副
+    Public function strZhufu($str)
+    {
+        echo $str;
+        $arr = explode('(',$str);
+        $str = substr($arr[1],0,-1);
+        switch ($str){
+            case '主签单人':
+                return '主签单人';
+                break;
+            case '副签单人':
+                return '副签单人';
+                break;
+            default :
+                return '未知';
+                break;
+        }
     }
 
     //收据记录表中的备注替换

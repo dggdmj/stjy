@@ -81,7 +81,6 @@ class TableCountAction extends CommonAction{
         }else{
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_fxfzr is not null')->select();
         }
-
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames();
 
@@ -126,36 +125,54 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
-	//市场占有率详情
+	//市场占有率表详情
 	public function sczylb_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountSczylAction();
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
-//        dump($list);
-        $this->assign("list",$list);
-        // $this->adminDisplay();
+        $this->assign("data",$list['data']);
+        $this->assign("heji",$list['heji']);
+        $this->adminDisplay();
 	}
 
-	//新增明细详情
+	//新增明细表详情
 	public function xzmxb_xq(){
         $this->adminDisplay();
 	}
 
-	//减少明细详情
+	//减少明细表详情
 	public function jsmxb_xq(){
         $this->adminDisplay();
 	}
 
-	//经营数据表
+	//经营数据表详情
 	public function jysjb_xq(){
         $this->adminDisplay();
 	}
 
-	//经营数据表
+	//退费表详情
 	public function tfb_xq(){
         $this->adminDisplay();
 	}
 
+    // 退回行政操作
+    public function thxz(){
+        $temp['status_xz'] = 3;
+        $temp['status_cw'] = null;
+        M('sjzb')->where($_GET)->save($temp);
+        $this->success('退回行政操作成功');
+    }
+
+    // 财务通过审核操作
+    public function cwtgsh(){
+        $temp['status_cw'] = 2;
+        $temp['status_fxfzr'] = 1;
+        $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+        M('sjzb')->where($_GET)->save($temp);
+        $this->success('通过审核操作成功');
+
+        // 还需要将生成表数据写入数据库并让表格可以下载
+    }
 }
 ?>
