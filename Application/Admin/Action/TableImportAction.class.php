@@ -168,7 +168,7 @@ class TableImportAction extends CommonAction{
         if (!empty($_FILES)) {
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
             // $_POST['suoshufx'] = M('school')->where('id ='.$_POST['suoshufx'])->getField('name');//所属校区
-            $_POST['uid'] = M('admin')->where('username ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
+            $_POST['uid'] = M('admin')->where('nicename ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
             $tid = $_POST["tid"];  //表名对应的序号
             $config = array(
                 'exts' => array('xlsx', 'xls'),
@@ -285,23 +285,27 @@ class TableImportAction extends CommonAction{
     // 下载表格
     public function download(){
         $data = M('qishu_history')->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_school.name as school_name,stjy_table_name.name')->where($_GET)->find();
-        $file = $data['filename'];
-        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['name'];
-        if (file_exists($file)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.$filename.'.xls');
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($file));
-            ob_clean();
-            flush();
-            readfile($file);
-            exit;
+        $file_url = $data['filename'];
+
+        if(!isset($file_url)||trim($file_url)==''){
+            return '500';
         }
-    }
+        if(!file_exists($file_url)){ //检查文件是否存在
+            return '404';
+        }
+        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['name'];
+        $arr = explode('.',$file_url);
+        $file_type = $arr[count($arr)-1];
+        $file=fopen($file_url,'r'); //打开文件
+        //输入文件标签
+        header("Content-type: application/octet-stream");
+        header("Accept-Ranges: bytes");
+        header("Accept-Length: ".filesize($file_url));
+        header("Content-Disposition: attachment; filename=".$filename.'.'.$file_type);
+        //输出文件内容
+        echo fread($file,filesize($file_url));
+        fclose($file);
+        }
 
     // 通知财务
     public function tzcw(){
@@ -335,22 +339,7 @@ class TableImportAction extends CommonAction{
         }
     }
 
-    // 退回行政
-    public function thxz(){
-        $temp['status_xz'] = 3;
-        $temp['status_cw'] = null;
-        M('sjzb')->where($_GET)->save($temp);
-        $this->success('退回行政操作成功');
-    }
 
-    // 财务通过审核
-    public function cwtgsh(){
-        $temp['status_cw'] = 2;
-        $temp['status_fxfzr'] = 1;
-        $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-        M('sjzb')->where($_GET)->save($temp);
-        $this->success('通过审核操作成功');
-    }
 
 }
 ?>
