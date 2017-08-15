@@ -307,24 +307,23 @@ class TableImportAction extends CommonAction{
         fclose($file);
         }
 
-    // 通知财务
-    public function tzcw(){
+    // 通知行政经理
+    public function sub_xz(){
         $tablenames = $this->getTabelnames();// 获取序号和表明对应的一维数组
         $field = implode(',',$tablenames);// 组成筛选条件
         $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
         // 若所有表格导入再进行操作
         $count = 0;
         $i = 1;
+        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
         foreach($data as $v){
            $count += $v[$tabelnames[$i]];
            $i++;
         }
         if($count == 14){
             $temp['time_xz'] = date('Y-m-d H:i:s');
-            $temp['time_cw'] = null;
-            $temp['time_fxfzr'] = null;
             $temp['status_xz'] = 2;
-            $temp['status_cw'] = 1;
+            $temp['status_xzjl'] = 1;
             $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             M('sjzb')->where($_GET)->save($temp);
             // $this->success('通知成功');
@@ -339,7 +338,18 @@ class TableImportAction extends CommonAction{
         }
     }
 
-
+    // 取消通知行政经理
+    public function cancel_xz(){
+        $temp['time_xz'] = date('Y-m-d H:i:s');
+        $temp['status_xz'] = 4;
+        $temp['status_xzjl'] = null;
+        $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+        M('sjzb')->where($_GET)->save($temp);
+        // $this->success('通知成功');
+        $arr['status'] = true;
+        $arr['info'] = '取消成功';
+        $this->ajaxReturn($arr);
+    }
 
 }
 ?>
