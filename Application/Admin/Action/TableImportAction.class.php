@@ -60,31 +60,30 @@ class TableImportAction extends CommonAction{
 	public function index(){
         // 获取当前用户的角色
         $username = $_SESSION['username'];
-        $uid = M('admin')->where('username ="'.$username.'"')->getField('id');
+        $temp = M('admin')->where('username ="'.$username.'"')->find();
+        $uid = $temp['id'];
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
-
+        $school_id = explode(",",$temp['school_id']);
+        $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
-        if($rid == 2){
-            $count = $data->count();// 查询满足要求的总记录数
-        }else if($rid == 4){
-            $count = $data->where('status_cw is not null')->count();
-        }else if($_SESSION['superadmin'] == true){
-            $count = $data->count();// 查询满足要求的总记录数
-        }else{
-            $count = $data->where('status_fxfzr is not null')->count();
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!查询条件可能需要完善!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //  or $_SESSION['superadmin'] == true,若需要用admin查看数据,把这个加入到if里面
+         // $where[''] =
+        if($rid == 2 or $rid == 3){
+            $count = $data->where($map)->count();// 查询满足要求的总记录数
         }
 
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        if($rid == 2){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->select();
-        }else if($_SESSION['superadmin'] == true){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
-        }else if($rid == 4){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
-        }else{
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_fxfzr is not null')->select();
+        if($rid == 2 or $rid == 3 or $_SESSION['superadmin'] == true){
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->select();
         }
 
         // 获取表明与序号对应的一维数组
