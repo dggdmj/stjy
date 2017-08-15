@@ -38,30 +38,62 @@ class CountScyjAction extends CommonAction {
             if(!array_key_exists($v['yejigsr'],$arr)){
                 $arr[$v['yejigsr']]['name'] = $v['yejigsr'];    //业绩归属人的名字
                 //如果此业绩归属人不在数组中，则新增此业绩归属人信息
-//                $arr[$v['yejigsr']]['rentou'] = (double)$this->getRentou($v);  //获得人头数
+                $arr[$v['yejigsr']]['rentou'] = (double)$this->getRentou($v);  //获得人头数
                 $arr[$v['yejigsr']]['jrt'] = $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
-//                if($v['yejigsr'] == '王圆圆'){
-//                    dump($v['data']['xuehao']);
-//                dump($arr[$v['yejigsr']]);
-//                dump($xishu*(double)$this->getJingrentou($beizhu));
-//                }
-            }else{
-                //如果此业绩归属人在数组中，则累计此业绩归属人信息
-                $arr[$v['yejigsr']]['jrt'] += $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
-//                if($v['yejigsr'] == '王圆圆' && $xishu*(double)$this->getJingrentou($beizhu)){
+                $arr[$v['yejigsr']]['yeji'] = $this->explodeBeizhu($beizhu);  //通过备注获得业绩
+                dump($arr);
+                dump($beizhu);
+//                if($v['yejigsr'] == '张松煌' && $xishu*(double)$this->getJingrentou($beizhu)){
 //                    dump($v['data']['xuehao']);
 //                    dump($arr[$v['yejigsr']]);
 //                    dump($xishu*(double)$this->getJingrentou($beizhu));
+//                }
+            }else{
+                //如果此业绩归属人在数组中，则累计此业绩归属人信息
+                $arr[$v['yejigsr']]['rentou'] += (double)$this->getRentou($v);  //获得人头数
+                $arr[$v['yejigsr']]['jrt'] += $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
+//                if($v['yejigsr'] == '张松煌' && $xishu*(double)$this->getJingrentou($beizhu)){
+//                    dump($v['data']['xuehao']);
+//                    dump($arr[$v['yejigsr']]);
+//                    dump($xishu*(double)$this->getJingrentou($beizhu));
+//                    if($v['data']['xuehao'] == 'S18271'){
+//                        dump($v);
+//                    }
 //                 }
             }
         }
         return $arr;
     }
 
+    //根据签单类型返回人头数
+    public function explodeBeizhu($beizhu){
+        $arr = array();
+        $arr['xinlao'] = substr($beizhu,0,6);   //获得是新生还是老生
+        $arr['type'] = substr($beizhu,6,6);   //获得是收据类型
+        $arr['nianji'] = substr($beizhu,12,6);   //年级
+        $arr['baodusc'] = substr($beizhu,18,4);   //报读时长
+        return $arr;
+    }
+
+    //根据签单类型返回人头数
+    public function getYeji($beizhu){
+        $this->explodeBeizhu($beizhu);
+    }
+
+    //根据签单类型返回人头数
+    public function getRentou($data){
+        $arr = array("新增","转校");
+        if(in_array($data['data']['qiandanlx'],$arr)){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
     //如果业绩归属人有2个，去除掉重复的，返回业绩归属人的唯一数组
     public function getNewList($list){
         //过滤掉名字中的数据
-        $filter_arr = array('(主签单人)','(副签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
+        $filter_arr = array('(主签单人)','(副签单人)','（副签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
         $arr = array();
         $a = 1;
         foreach ($list as $k=>$v){
