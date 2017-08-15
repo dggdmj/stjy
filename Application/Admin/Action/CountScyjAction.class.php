@@ -18,7 +18,8 @@ class CountScyjAction extends CommonAction {
         $where['tid'] = 4;// 从班级学员信息表获取信息,它的tid是3
         $suoshuid = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id
         //查询出所有数据
-        $list = $Model->query("select * from stjy_sjjlb where suoshudd = $suoshuid and `yejigsr` != ''");
+        $list = $Model->query("select * from stjy_sjjlb where suoshudd = $suoshuid and `yejigsr` != '' order by `xuehao` ");
+//        dump($list);
         //1，遍历数组，如果业绩归属人是2个人的，增加两条记录，在重新拼接成新的数组
         $newlist = $this->getNewList($list);
         //2，遍历数组，按照业绩归属人的业绩归类统计
@@ -37,19 +38,21 @@ class CountScyjAction extends CommonAction {
             if(!array_key_exists($v['yejigsr'],$arr)){
                 $arr[$v['yejigsr']]['name'] = $v['yejigsr'];    //业绩归属人的名字
                 //如果此业绩归属人不在数组中，则新增此业绩归属人信息
+//                $arr[$v['yejigsr']]['rentou'] = (double)$this->getRentou($v);  //获得人头数
                 $arr[$v['yejigsr']]['jrt'] = $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
-                if($v['yejigsr'] == '张松煌'){
-                dump($arr[$v['yejigsr']]['jrt']);
-                echo 111;
-                }
+//                if($v['yejigsr'] == '王圆圆'){
+//                    dump($v['data']['xuehao']);
+//                dump($arr[$v['yejigsr']]);
+//                dump($xishu*(double)$this->getJingrentou($beizhu));
+//                }
             }else{
                 //如果此业绩归属人在数组中，则累计此业绩归属人信息
                 $arr[$v['yejigsr']]['jrt'] += $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
-                if($v['yejigsr'] == '张松煌'){
-                    dump($beizhu = $v['data']['shoujihao']);
-                    echo $arr[$v['yejigsr']]['jrt'];
-                    dump($beizhu = $v['data']['beizhu']);
-                }
+//                if($v['yejigsr'] == '王圆圆' && $xishu*(double)$this->getJingrentou($beizhu)){
+//                    dump($v['data']['xuehao']);
+//                    dump($arr[$v['yejigsr']]);
+//                    dump($xishu*(double)$this->getJingrentou($beizhu));
+//                 }
             }
         }
         return $arr;
