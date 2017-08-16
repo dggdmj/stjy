@@ -21,7 +21,7 @@ class CountSczylAction extends CommonAction {
         // $res是返回的数据,$res = ['data'=>$data,'heji'=>$heji];
 
         // $heji
-        $arr = M('bjxyxxb')->field('count(*) as count,nianji')->where('gonglixx is not null and suoshudd ='.$id)->group('nianji')->select();
+        $arr = M('bjxyxxb')->field('count(*) as count,nianji')->where('gonglixx is not null and banji != "游学会员" and suoshudd ='.$id)->group('nianji')->select();
         $heji['幼儿园'] = 0;
         foreach($arr as $v){
             if($v['nianji'] == '小班' or $v['nianji'] == '中班' or $v['nianji'] == '大班'){
@@ -36,9 +36,9 @@ class CountSczylAction extends CommonAction {
         }
 
         // $data
-        $schools = M('bjxyxxb')->field('gonglixx')->where('gonglixx is not null and suoshudd ='.$id)->group('gonglixx')->select();// 得出所有公立学校的数组
+        $schools = M('bjxyxxb')->field('gonglixx')->where('gonglixx is not null and banji != "游学会员" and suoshudd ='.$id)->group('gonglixx')->select();// 得出所有公立学校的数组
         foreach($schools as $k=>$v){
-            $temp = M('bjxyxxb')->field('count(*) as count,nianji,gonglixx')->where('gonglixx ="'.$v['gonglixx'].'" and suoshudd ='.$id)->group('nianji')->select();
+            $temp = M('bjxyxxb')->field('count(*) as count,nianji,gonglixx')->where('gonglixx ="'.$v['gonglixx'].'" and banji != "游学会员" and suoshudd ='.$id)->group('nianji')->select();
             $youeryuan = 0;
             $count = 0;
             foreach($temp as $v1){
