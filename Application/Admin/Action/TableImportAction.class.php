@@ -88,7 +88,7 @@ class TableImportAction extends CommonAction{
 
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames();
-        dump($list);
+
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('rid',$rid);// 赋值角色id

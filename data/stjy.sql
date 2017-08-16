@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-08-16 16:48:52
+Date: 2017-08-16 17:41:01
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -138,7 +138,7 @@ CREATE TABLE `stjy_admin` (
 INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1502863530', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2,4', '1502795867', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('3', 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', '1501780416', '127.0.0.1', '1');
-INSERT INTO `stjy_admin` VALUES ('4', 'caiwu', 'f5b5ec699ed736de89336fbce0bc9890', '财务', 'caiwu@caiwu.com', '1,2,3', '1502463953', '0.0.0.0', '0');
+INSERT INTO `stjy_admin` VALUES ('4', 'caiwu', 'f5b5ec699ed736de89336fbce0bc9890', '财务', 'caiwu@caiwu.com', '1,2,3', '1502876005', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4', '1502872941', '127.0.0.1', '0');
 
 -- ----------------------------
@@ -4180,9 +4180,9 @@ CREATE TABLE `stjy_sjzb` (
 -- ----------------------------
 -- Records of stjy_sjzb
 -- ----------------------------
-INSERT INTO `stjy_sjzb` VALUES ('3', '201709', '1', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, '行政经理', '行政经理', '无', null, '2017-08-16 16:37:03', '2017-08-16 16:37:14', null, null);
-INSERT INTO `stjy_sjzb` VALUES ('4', '201709', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '无', '无', null, '2017-08-16 16:37:06', null, null, null);
-INSERT INTO `stjy_sjzb` VALUES ('5', '201707', '4', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '行政经理', '无', null, '2017-08-16 16:37:08', null, null, null);
+INSERT INTO `stjy_sjzb` VALUES ('3', '201709', '1', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', '行政经理', '行政经理', '财务', null, '2017-08-16 16:37:03', '2017-08-16 16:37:14', '2017-08-16 17:37:39', null);
+INSERT INTO `stjy_sjzb` VALUES ('4', '201709', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', '行政经理', '行政经理', '财务', null, '2017-08-16 17:22:10', '2017-08-16 17:22:16', '2017-08-16 17:38:06', null);
+INSERT INTO `stjy_sjzb` VALUES ('5', '201707', '4', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, '行政经理', '行政经理', '无', null, '2017-08-16 17:39:34', '2017-08-16 17:39:38', null, null);
 INSERT INTO `stjy_sjzb` VALUES ('6', '201707', '2', '1', '1', '1', '1', '1', '1', '1', '1', null, null, null, '无', '行政经理', '无', null, null, '2017-08-16 16:33:01', null, null);
 
 -- ----------------------------
