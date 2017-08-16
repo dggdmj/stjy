@@ -3,7 +3,7 @@ namespace Admin\Action;
 use Think\Action;
 use Org\Util\Rbac;
 class CommonAction extends Action {
-	
+
 	protected function _initialize() {
 		/*
 		if (!isset($_SESSION['uid']) || !isset($_SESSION['username'])) {
@@ -77,5 +77,128 @@ class CommonAction extends Action {
         }
         return $arr;
     }
-    
+
+    // 获取当前操作用户的角色id
+    public function getRid(){
+        $username = $_SESSION['username'];// 从session获取用户名
+        $uid = M('admin')->where('username ="'.$username.'"')->getField('id');// 获取admin表的用户id
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
+        return $rid;
+    }
+
+    // -------------------总表操作-------------------
+    // 生成业绩表
+    public function create(){
+        $tablenames = $this->getTabelnames();// 获取序号和表明对应的一维数组
+        $field = implode(',',$tablenames);// 组成筛选条件
+        $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
+        // 若所有表格导入再进行操作
+        $count = 0;
+        $i = 1;
+        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
+        foreach($data as $v){
+           $count += $v[$tabelnames[$i]];
+           $i++;
+        }
+        if($count == 14){
+            $temp['time_xz'] = date('Y-m-d H:i:s');
+            $temp['status_xz'] = 2;
+            $temp['status_xzjl'] = 1;
+            $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            M('sjzb')->where($_GET)->save($temp);// 更新数据总表
+            $arr['status'] = true;
+            $arr['info'] = '操作成功';
+            // 还需要将生成表数据写入数据库并让表格可以下载
+            $this->ajaxReturn($arr);
+        }else{
+            // $this->error('请导入所有表格后再通知财务');
+            $arr['status'] = false;
+            $arr['info'] = '请导入所有表格后再通知财务';
+            $this->ajaxReturn($arr);
+        }
+    }
+
+    // 取消生成业绩表
+    public function rollBack(){
+        $temp['time_xz'] = date('Y-m-d H:i:s');
+        $temp['status_xz'] = 4;
+        $temp['status_xzjl'] = null;
+        $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+        M('sjzb')->where($_GET)->save($temp);// 更新数据总表
+        $arr['status'] = true;
+        $arr['info'] = '操作成功';
+        $this->ajaxReturn($arr);
+    }
+
+    // 退回操作
+    public function back(){
+        $rid = $this->getRid();
+        switch($rid){
+            case 3:
+                $temp['time_xzjl'] = date('Y-m-d H:i:s');
+                $temp['status_xz'] = 3;// 行政状态变成被退回
+                $temp['status_xzjl'] = 3;// 行政经理状态变成退回
+                $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            break;
+            case 4:
+                $temp['time_cw'] = date('Y-m-d H:i:s');
+                $temp['status_xzjl'] = 4;// 行政经理状态变成被退回
+                $temp['status_cw'] = 3;// 财务状态变成退回
+                $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');// 获取财务昵称
+            break;
+        }
+        M('sjzb')->where($_GET)->save($temp);// 更新数据总表
+        $arr['status'] = true;
+        $arr['info'] = '操作成功';
+        $this->ajaxReturn($arr);
+    }
+
+    // 通过审核操作
+    public function checked(){
+        $rid = $this->getRid();
+        switch($rid){
+            case 3:
+                $temp['time_xzjl'] = date('Y-m-d H:i:s');
+                $temp['status_xzjl'] = 2;
+                $temp['status_cw'] = 1;
+                $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            break;
+            case 4:
+                $temp['time_cw'] = date('Y-m-d H:i:s');
+                $temp['status_cw'] = 2;
+                $temp['status_fzr'] = 1;
+                $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+                // 还需要将生成表数据写入数据库并让表格可以下载
+                // 如果数据有误,负责人退回之后删除写入数据库的数据
+            break;
+        }
+        M('sjzb')->where($_GET)->save($temp);// 更新数据总表
+        $arr['status'] = true;
+        $arr['info'] = '操作成功';
+        // 还需要将生成表数据写入数据库并让表格可以下载
+        $this->ajaxReturn($arr);
+    }
+
+    // 取消通过审核操作
+    public function cancel(){
+        $rid = $this->getRid();
+        switch($rid){
+            case 3:
+                $temp['time_xzjl'] = date('Y-m-d H:i:s');
+                $temp['status_xzjl'] = 5;
+                $temp['status_cw'] = null;
+                $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            break;
+            case 4:
+                $temp['time_cw'] = date('Y-m-d H:i:s');
+                $temp['status_cw'] = 4;
+                $temp['status_fzr'] = null;
+                $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            break;
+        }
+        M('sjzb')->where($_GET)->save($temp);// 更新数据总表
+        $arr['status'] = true;
+        $arr['info'] = '操作成功';
+        $this->ajaxReturn($arr);
+    }
 }

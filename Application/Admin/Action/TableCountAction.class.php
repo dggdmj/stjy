@@ -54,22 +54,27 @@ class TableCountAction extends CommonAction{
 	//市场业绩总表
 	public function index(){
         // 获取当前用户的角色
-        $username = $_SESSION['username'];
-        $temp = M('admin')->where('username ="'.$username.'"')->find();
-        $uid = $temp['id'];
-        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
-        $school_id = explode(",",$temp['school_id']);
-        $map['status_xzjl'] = array('neq',3);
+        $username = $_SESSION['username'];// 从session获取用户名
+        $temp = M('admin')->where('username ="'.$username.'"')->find();// 获取admin表的数据
+        $uid = $temp['id'];// 获取用户id
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
+        $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        if($rid == 3){
+            $map['status_xzjl'] = array('neq',3);// 查询条件
+        }elseif($rid == 4){
+            $map['status_cw'] = array('neq',3);// 查询条件
+        }
+
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
-        if($rid == 2 or $rid == 3){
+        if($rid == 3 or $rid == 4){
             $count = $data->where($map)->count();// 查询满足要求的总记录数
         }
 
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        if($rid == 2 or $rid == 3){
+        if($rid == 3){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->select();
         }else if($rid == 4){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->select();
@@ -149,30 +154,5 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
-    // 行政经理退回行政操作
-    public function back_xzjl(){
-        $temp['status_xz'] = 3;
-        $temp['status_xzjl'] = 3;
-        $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-        M('sjzb')->where($_GET)->save($temp);
-        // $this->success('退回行政操作成功');
-        $arr['status'] = true;
-        $arr['info'] = '退回行政操作成功';
-        $this->ajaxReturn($arr);
-    }
-
-    // 行政经理通过审核操作
-    public function ok_xzjl(){
-        $temp['status_xzjl'] = 2;
-        $temp['status_cw'] = 1;
-        $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-        M('sjzb')->where($_GET)->save($temp);
-        // $this->success('通过审核操作成功');
-        $arr['status'] = true;
-        $arr['info'] = '通过审核操作成功';
-        $this->ajaxReturn($arr);
-
-        // 还需要将生成表数据写入数据库并让表格可以下载
-    }
 }
 ?>
