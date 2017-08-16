@@ -59,6 +59,7 @@ class TableCountAction extends CommonAction{
         $uid = $temp['id'];
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
         $school_id = explode(",",$temp['school_id']);
+        $map['status_xzjl'] = array('neq',3);
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
         if($rid == 2 or $rid == 3){
@@ -148,21 +149,28 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
-    // 退回行政操作
-    public function thxz(){
+    // 行政经理退回行政操作
+    public function back_xzjl(){
         $temp['status_xz'] = 3;
-        $temp['status_cw'] = null;
+        $temp['status_xzjl'] = 3;
+        $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
         M('sjzb')->where($_GET)->save($temp);
-        $this->success('退回行政操作成功');
+        // $this->success('退回行政操作成功');
+        $arr['status'] = true;
+        $arr['info'] = '退回行政操作成功';
+        $this->ajaxReturn($arr);
     }
 
-    // 财务通过审核操作
-    public function cwtgsh(){
-        $temp['status_cw'] = 2;
-        $temp['status_fxfzr'] = 1;
-        $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+    // 行政经理通过审核操作
+    public function ok_xzjl(){
+        $temp['status_xzjl'] = 2;
+        $temp['status_cw'] = 1;
+        $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
         M('sjzb')->where($_GET)->save($temp);
-        $this->success('通过审核操作成功');
+        // $this->success('通过审核操作成功');
+        $arr['status'] = true;
+        $arr['info'] = '通过审核操作成功';
+        $this->ajaxReturn($arr);
 
         // 还需要将生成表数据写入数据库并让表格可以下载
     }
