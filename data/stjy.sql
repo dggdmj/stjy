@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-08-16 00:03:16
+Date: 2017-08-16 16:48:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -56,6 +56,50 @@ INSERT INTO `stjy_access` VALUES ('1', '21', '3', null);
 INSERT INTO `stjy_access` VALUES ('1', '22', '3', null);
 INSERT INTO `stjy_access` VALUES ('1', '8', '2', null);
 INSERT INTO `stjy_access` VALUES ('1', '9', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '5', '1', null);
+INSERT INTO `stjy_access` VALUES ('2', '12', '2', null);
+INSERT INTO `stjy_access` VALUES ('2', '14', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '15', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '16', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '17', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '18', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '28', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '30', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '35', '2', null);
+INSERT INTO `stjy_access` VALUES ('2', '36', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '37', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '38', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '39', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '40', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '41', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '42', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '43', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '53', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '54', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '5', '1', null);
+INSERT INTO `stjy_access` VALUES ('3', '12', '2', null);
+INSERT INTO `stjy_access` VALUES ('3', '14', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '15', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '16', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '17', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '18', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '28', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '30', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '35', '2', null);
+INSERT INTO `stjy_access` VALUES ('3', '36', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '37', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '38', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '39', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '40', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '41', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '42', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '43', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '49', '2', null);
+INSERT INTO `stjy_access` VALUES ('3', '53', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '54', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '51', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '50', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '52', '3', null);
 INSERT INTO `stjy_access` VALUES ('4', '5', '1', null);
 INSERT INTO `stjy_access` VALUES ('4', '35', '2', null);
 INSERT INTO `stjy_access` VALUES ('4', '36', '3', null);
@@ -66,58 +110,10 @@ INSERT INTO `stjy_access` VALUES ('4', '40', '3', null);
 INSERT INTO `stjy_access` VALUES ('4', '41', '3', null);
 INSERT INTO `stjy_access` VALUES ('4', '42', '3', null);
 INSERT INTO `stjy_access` VALUES ('4', '43', '3', null);
-INSERT INTO `stjy_access` VALUES ('4', '44', '3', null);
-INSERT INTO `stjy_access` VALUES ('4', '45', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '5', '1', null);
-INSERT INTO `stjy_access` VALUES ('2', '35', '2', null);
-INSERT INTO `stjy_access` VALUES ('2', '36', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '37', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '38', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '39', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '40', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '41', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '42', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '43', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '44', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '45', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '12', '2', null);
-INSERT INTO `stjy_access` VALUES ('2', '14', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '15', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '16', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '17', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '18', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '28', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '30', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '31', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '32', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '33', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '34', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '46', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '5', '1', null);
-INSERT INTO `stjy_access` VALUES ('3', '12', '2', null);
-INSERT INTO `stjy_access` VALUES ('3', '14', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '15', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '16', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '17', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '18', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '28', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '30', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '31', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '32', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '33', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '34', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '46', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '35', '2', null);
-INSERT INTO `stjy_access` VALUES ('3', '36', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '37', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '38', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '39', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '40', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '41', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '42', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '43', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '44', '3', null);
-INSERT INTO `stjy_access` VALUES ('3', '45', '3', null);
+INSERT INTO `stjy_access` VALUES ('4', '49', '2', null);
+INSERT INTO `stjy_access` VALUES ('4', '51', '3', null);
+INSERT INTO `stjy_access` VALUES ('4', '50', '3', null);
+INSERT INTO `stjy_access` VALUES ('4', '52', '3', null);
 
 -- ----------------------------
 -- Table structure for stjy_admin
@@ -139,11 +135,11 @@ CREATE TABLE `stjy_admin` (
 -- ----------------------------
 -- Records of stjy_admin
 -- ----------------------------
-INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1502812437', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1502863530', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2,4', '1502795867', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('3', 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', '1501780416', '127.0.0.1', '1');
 INSERT INTO `stjy_admin` VALUES ('4', 'caiwu', 'f5b5ec699ed736de89336fbce0bc9890', '财务', 'caiwu@caiwu.com', '1,2,3', '1502463953', '0.0.0.0', '0');
-INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4', '1502812648', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4', '1502872941', '127.0.0.1', '0');
 
 -- ----------------------------
 -- Table structure for stjy_article
@@ -3475,7 +3471,7 @@ CREATE TABLE `stjy_node` (
   KEY `pid` (`pid`),
   KEY `status` (`status`),
   KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_node
@@ -3503,7 +3499,6 @@ INSERT INTO `stjy_node` VALUES ('26', 'editQishu', '修改期数页面', '1', nu
 INSERT INTO `stjy_node` VALUES ('27', 'delete', '删除网站设置', '1', null, '1', '13', '3');
 INSERT INTO `stjy_node` VALUES ('28', 'del', '删除导入的表格', '1', null, '8', '12', '3');
 INSERT INTO `stjy_node` VALUES ('30', 'download', '数据总表下载已导入表格', '1', null, '9', '12', '3');
-INSERT INTO `stjy_node` VALUES ('31', 'sub_xz', '数据总表(通知行政经理)', '1', null, '10', '12', '3');
 INSERT INTO `stjy_node` VALUES ('35', 'TableCount', '业绩表格生成', '1', null, '1', '5', '2');
 INSERT INTO `stjy_node` VALUES ('36', 'index', '市场业绩总表', '1', null, '2', '35', '3');
 INSERT INTO `stjy_node` VALUES ('37', 'yejilist', '业绩表列表页', '1', null, '3', '35', '3');
@@ -3513,9 +3508,12 @@ INSERT INTO `stjy_node` VALUES ('40', 'xzmxb_xq', '新增明细表详情', '1', 
 INSERT INTO `stjy_node` VALUES ('41', 'jsmxb_xq', '减少明细表详情', '1', null, '7', '35', '3');
 INSERT INTO `stjy_node` VALUES ('42', 'jysjb_xq', '经营数据表详情', '1', null, '8', '35', '3');
 INSERT INTO `stjy_node` VALUES ('43', 'tfb_xq', '退费表详情', '1', null, '9', '35', '3');
-INSERT INTO `stjy_node` VALUES ('44', 'thxz', '退回行政操作', '1', null, '10', '35', '3');
-INSERT INTO `stjy_node` VALUES ('45', 'cwtgsh', '财务通过审核操作', '1', null, '11', '35', '3');
-INSERT INTO `stjy_node` VALUES ('46', 'cancel_xz', '取消通知(行政)', '1', null, '11', '12', '3');
+INSERT INTO `stjy_node` VALUES ('49', 'Common', '总表操作', '1', null, '1', '5', '2');
+INSERT INTO `stjy_node` VALUES ('50', 'back', '退回操作(业绩表操作)', '1', null, '5', '49', '3');
+INSERT INTO `stjy_node` VALUES ('51', 'checked', '审核后提交操作(业绩表操作)', '1', null, '4', '49', '3');
+INSERT INTO `stjy_node` VALUES ('52', 'cancel', '取消通过审核操作(业绩表操作)', '1', null, '6', '49', '3');
+INSERT INTO `stjy_node` VALUES ('53', 'create', '提交行政经理(校管家表格操作)', '1', null, '2', '49', '3');
+INSERT INTO `stjy_node` VALUES ('54', 'rollBack', '取消提交行政经理(校管家表格操作)', '1', null, '3', '49', '3');
 
 -- ----------------------------
 -- Table structure for stjy_qishu
@@ -4166,23 +4164,26 @@ CREATE TABLE `stjy_sjzb` (
   `xyfyyjb` tinyint(1) DEFAULT '1' COMMENT '学员费用预警表状态:1,未导入;2,已导入;',
   `status_xz` tinyint(1) DEFAULT '1' COMMENT '行政状态:1,未操作;2,已提交;3,被退回;4,取消;',
   `status_xzjl` tinyint(1) DEFAULT NULL COMMENT '行政经理状态:1,未操作;2,已审核;3,退回;4,被退回;5,取消',
-  `status_cw` tinyint(1) DEFAULT NULL COMMENT '财务状态:1,未操作;2,已审核;3,退回;',
+  `status_cw` tinyint(1) DEFAULT NULL COMMENT '财务状态:1,未操作;2,已审核;3,退回;4,取消;',
+  `status_fzr` tinyint(1) DEFAULT NULL COMMENT '负责人状态:1,未操作;2,退回;',
   `xingzheng` varchar(255) DEFAULT '无' COMMENT '行政',
   `xingzhengjl` varchar(255) DEFAULT '无' COMMENT '行政经理',
   `caiwu` varchar(255) DEFAULT '无' COMMENT '财务',
-  `time_xz` varchar(255) DEFAULT NULL COMMENT '行政提交时间',
-  `time_xzjl` varchar(255) DEFAULT NULL COMMENT '行政经理通过审核时间',
-  `time_cw` varchar(255) DEFAULT NULL COMMENT '财务通过审核时间',
+  `fuzeren` varchar(255) DEFAULT '无' COMMENT '负责人',
+  `time_xz` varchar(255) DEFAULT NULL COMMENT '行政操作时间',
+  `time_xzjl` varchar(255) DEFAULT NULL COMMENT '行政经理操作时间',
+  `time_cw` varchar(255) DEFAULT NULL COMMENT '财务操作时间',
+  `time_fzr` varchar(255) DEFAULT NULL COMMENT '负责人操作时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_sjzb
 -- ----------------------------
-INSERT INTO `stjy_sjzb` VALUES ('3', '201709', '1', '2', '2', '2', '2', '2', '2', '2', '4', null, null, '梅梅', '无', '无', '2017-08-15 14:17:57', null, null);
-INSERT INTO `stjy_sjzb` VALUES ('4', '201709', '2', '2', '2', '2', '2', '2', '2', '2', '4', null, null, '行政经理', '无', '无', '2017-08-15 23:30:54', null, null);
-INSERT INTO `stjy_sjzb` VALUES ('5', '201707', '4', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, '梅梅', '无', '无', '2017-08-15 20:31:12', null, null);
-INSERT INTO `stjy_sjzb` VALUES ('6', '201707', '2', '1', '1', '1', '1', '1', '1', '1', '1', null, null, '无', '无', '无', null, null, null);
+INSERT INTO `stjy_sjzb` VALUES ('3', '201709', '1', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, '行政经理', '行政经理', '无', null, '2017-08-16 16:37:03', '2017-08-16 16:37:14', null, null);
+INSERT INTO `stjy_sjzb` VALUES ('4', '201709', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '无', '无', null, '2017-08-16 16:37:06', null, null, null);
+INSERT INTO `stjy_sjzb` VALUES ('5', '201707', '4', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '行政经理', '无', null, '2017-08-16 16:37:08', null, null, null);
+INSERT INTO `stjy_sjzb` VALUES ('6', '201707', '2', '1', '1', '1', '1', '1', '1', '1', '1', null, null, null, '无', '行政经理', '无', null, null, '2017-08-16 16:33:01', null, null);
 
 -- ----------------------------
 -- Table structure for stjy_table_name
