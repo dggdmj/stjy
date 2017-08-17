@@ -60,31 +60,30 @@ class TableImportAction extends CommonAction{
 	public function index(){
         // 获取当前用户的角色
         $username = $_SESSION['username'];
-        $uid = M('admin')->where('username ="'.$username.'"')->getField('id');
+        $temp = M('admin')->where('username ="'.$username.'"')->find();
+        $uid = $temp['id'];
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
-
+        $school_id = explode(",",$temp['school_id']);
+        $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
-        if($rid == 2){
-            $count = $data->count();// 查询满足要求的总记录数
-        }else if($rid == 4){
-            $count = $data->where('status_cw is not null')->count();
-        }else if($_SESSION['superadmin'] == true){
-            $count = $data->count();// 查询满足要求的总记录数
-        }else{
-            $count = $data->where('status_fxfzr is not null')->count();
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!查询条件可能需要完善!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //  or $_SESSION['superadmin'] == true,若需要用admin查看数据,把这个加入到if里面
+         // $where[''] =
+        if($rid == 2 or $rid == 3){
+            $count = $data->where($map)->count();// 查询满足要求的总记录数
         }
 
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        if($rid == 2){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->select();
-        }else if($_SESSION['superadmin'] == true){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
-        }else if($rid == 4){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
-        }else{
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_fxfzr is not null')->select();
+        if($rid == 2 or $rid == 3 or $_SESSION['superadmin'] == true){
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->select();
         }
 
         // 获取表明与序号对应的一维数组
@@ -168,7 +167,7 @@ class TableImportAction extends CommonAction{
         if (!empty($_FILES)) {
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
             // $_POST['suoshufx'] = M('school')->where('id ='.$_POST['suoshufx'])->getField('name');//所属校区
-            $_POST['uid'] = M('admin')->where('username ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
+            $_POST['uid'] = M('admin')->where('nicename ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
             $tid = $_POST["tid"];  //表名对应的序号
             $config = array(
                 'exts' => array('xlsx', 'xls'),
@@ -285,42 +284,45 @@ class TableImportAction extends CommonAction{
     // 下载表格
     public function download(){
         $data = M('qishu_history')->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_school.name as school_name,stjy_table_name.name')->where($_GET)->find();
-        $file = $data['filename'];
-        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['name'];
-        if (file_exists($file)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.$filename.'.xls');
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($file));
-            ob_clean();
-            flush();
-            readfile($file);
-            exit;
-        }
-    }
+        $file_url = $data['filename'];
 
-    // 通知财务
-    public function tzcw(){
+        if(!isset($file_url)||trim($file_url)==''){
+            return '500';
+        }
+        if(!file_exists($file_url)){ //检查文件是否存在
+            return '404';
+        }
+        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['name'];
+        $arr = explode('.',$file_url);
+        $file_type = $arr[count($arr)-1];
+        $file=fopen($file_url,'r'); //打开文件
+        //输入文件标签
+        header("Content-type: application/octet-stream");
+        header("Accept-Ranges: bytes");
+        header("Accept-Length: ".filesize($file_url));
+        header("Content-Disposition: attachment; filename=".$filename.'.'.$file_type);
+        //输出文件内容
+        echo fread($file,filesize($file_url));
+        fclose($file);
+        }
+
+    // 通知行政经理
+    public function sub_xz(){
         $tablenames = $this->getTabelnames();// 获取序号和表明对应的一维数组
         $field = implode(',',$tablenames);// 组成筛选条件
         $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
         // 若所有表格导入再进行操作
         $count = 0;
         $i = 1;
+        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
         foreach($data as $v){
            $count += $v[$tabelnames[$i]];
            $i++;
         }
         if($count == 14){
             $temp['time_xz'] = date('Y-m-d H:i:s');
-            $temp['time_cw'] = null;
-            $temp['time_fxfzr'] = null;
             $temp['status_xz'] = 2;
-            $temp['status_cw'] = 1;
+            $temp['status_xzjl'] = 1;
             $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             M('sjzb')->where($_GET)->save($temp);
             // $this->success('通知成功');
@@ -335,21 +337,17 @@ class TableImportAction extends CommonAction{
         }
     }
 
-    // 退回行政
-    public function thxz(){
-        $temp['status_xz'] = 3;
-        $temp['status_cw'] = null;
+    // 取消通知行政经理
+    public function cancel_xz(){
+        $temp['time_xz'] = date('Y-m-d H:i:s');
+        $temp['status_xz'] = 4;
+        $temp['status_xzjl'] = null;
+        $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
         M('sjzb')->where($_GET)->save($temp);
-        $this->success('退回行政操作成功');
-    }
-
-    // 财务通过审核
-    public function cwtgsh(){
-        $temp['status_cw'] = 2;
-        $temp['status_fxfzr'] = 1;
-        $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-        M('sjzb')->where($_GET)->save($temp);
-        $this->success('通过审核操作成功');
+        // $this->success('通知成功');
+        $arr['status'] = true;
+        $arr['info'] = '取消成功';
+        $this->ajaxReturn($arr);
     }
 
 }

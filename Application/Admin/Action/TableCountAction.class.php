@@ -54,34 +54,31 @@ class TableCountAction extends CommonAction{
 	//市场业绩总表
 	public function index(){
         // 获取当前用户的角色
-        $username = $_SESSION['username'];
-        $uid = M('admin')->where('username ="'.$username.'"')->getField('id');
-        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
+        $username = $_SESSION['username'];// 从session获取用户名
+        $temp = M('admin')->where('username ="'.$username.'"')->find();// 获取admin表的数据
+        $uid = $temp['id'];// 获取用户id
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
+        $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        if($rid == 3){
+            $map['status_xzjl'] = array('neq',3);// 查询条件
+        }elseif($rid == 4){
+            $map['status_cw'] = array('neq',3);// 查询条件
+        }
 
+        $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
-        if($rid == 2){
-            $count = $data->count();// 查询满足要求的总记录数
-        }else if($rid == 4){
-            $count = $data->where('status_cw is not null')->count();
-        }else if($_SESSION['superadmin'] == true){
-            $count = $data->where('status_cw is not null')->count();
-        }else{
-            $count = $data->where('status_fxfzr is not null')->count();
+        if($rid == 3 or $rid == 4){
+            $count = $data->where($map)->count();// 查询满足要求的总记录数
         }
 
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        if($rid == 2){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->select();
+        if($rid == 3){
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->select();
         }else if($rid == 4){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
-        }else if($_SESSION['superadmin'] == true){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_cw is not null')->select();
-        }else{
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where('stjy_sjzb.status_fxfzr is not null')->select();
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->select();
         }
-
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames();
 
@@ -118,40 +115,45 @@ class TableCountAction extends CommonAction{
 
 	//市场业绩表详情
 	public function scyjb_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
 	    $data = new \Admin\Action\CountScyjAction();
-	    $list = $data->getScyjbData("201709","1");//获得统计数据
-        dump($list);
+	    $list = $data->getScyjbData($qishu,$sid);//获得统计数据
         $this->assign("list",$list);
         $this->adminDisplay();
 	}
 
-	//市场占有率详情
+	//市场占有率表详情
 	public function sczylb_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountSczylAction();
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
-//        dump($list);
-        $this->assign("list",$list);
-        // $this->adminDisplay();
+        $arr['year'] = substr($qishu,0,4);
+        $arr['month'] = substr($qishu,4,2);
+        $arr['school'] = M('school')->where('id ='.$sid)->getField('name');
+        $this->assign("data",$list['data']);
+        $this->assign("heji",$list['heji']);
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
 	}
 
-	//新增明细详情
+	//新增明细表详情
 	public function xzmxb_xq(){
         $this->adminDisplay();
 	}
 
-	//减少明细详情
+	//减少明细表详情
 	public function jsmxb_xq(){
         $this->adminDisplay();
 	}
 
-	//经营数据表
+	//经营数据表详情
 	public function jysjb_xq(){
         $this->adminDisplay();
 	}
 
-	//经营数据表
+	//退费表详情
 	public function tfb_xq(){
         $this->adminDisplay();
 	}
