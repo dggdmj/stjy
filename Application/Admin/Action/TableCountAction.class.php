@@ -129,9 +129,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountSczylAction();
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
-        $arr['year'] = substr($qishu,0,4);
-        $arr['month'] = substr($qishu,4,2);
-        $arr['school'] = M('school')->where('id ='.$sid)->getField('name');
+        $arr = $this->getArr($qishu,$sid);// 获取当前期数和校区
         $this->assign("data",$list['data']);
         $this->assign("heji",$list['heji']);
         $this->assign('arr',$arr);
@@ -140,6 +138,13 @@ class TableCountAction extends CommonAction{
 
 	//新增明细表详情
 	public function xzmxb_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+        $data = new \Admin\Action\CountXzmxAction();
+        $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+        $arr = $this->getArr($qishu,$sid);// 获取当前期数和校区
+        $this->assign('list',$list);
+        $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
 

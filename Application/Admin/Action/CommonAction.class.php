@@ -201,4 +201,40 @@ class CommonAction extends Action {
         $arr['info'] = '操作成功';
         $this->ajaxReturn($arr);
     }
+
+    // 获取当前期数和校区
+    public function getArr($qishu,$sid){
+        $arr['year'] = substr($qishu,0,4);
+        $arr['month'] = substr($qishu,4,2);
+        $arr['school'] = M('school')->where('id ='.$sid)->getField('name');
+        return $arr;
+    }
+
+    // 获取上一月或下一月
+    // $sign默认为1,则得出上一个月,若想得出下一个月则设置为0
+    public function getMonth($qishu,$sign=1){
+        //切割出年份
+        $tmp_year = substr($qishu,0,4);
+        //切割出月份
+        $tmp_mon = substr($qishu,4,2);
+
+        if($tmp_mon == 12){
+            $tmp_nextmonth = mktime(0,0,0,1,1,$tmp_year+1);
+        }else{
+            $tmp_nextmonth = mktime(0,0,0,$tmp_mon+1,1,$tmp_year);
+        }
+        if($tmp_mon == 1){
+            $tmp_forwardmonth=mktime(0,0,0,12,1,$tmp_year-1);
+        }else{
+            $tmp_forwardmonth=mktime(0,0,0,$tmp_mon-1,1,$tmp_year);
+        }
+
+        if($sign==0){
+            //得到当前月的下一个月
+            return $fm_next_month=date("Ym",$tmp_nextmonth);
+        }else{
+            //得到当前月的上一个月
+            return $fm_forward_month=date("Ym",$tmp_forwardmonth);
+        }
+    }
 }
