@@ -46,6 +46,10 @@ class TableImportAction extends CommonAction{
                     'name' => '学员费用预警表导入',
                     'url' => U('/TableImport/tableList/tid/7'),
                 ),
+                array(
+                    'name' => '学习卡额度表导入',
+                    'url' => U('/TableImport/tableList/tid/14'),
+                ),
             ),
            // 'add' => array(
            //     array('name' => '添加文章',
@@ -179,7 +183,7 @@ class TableImportAction extends CommonAction{
             $upload = new \Think\Upload($config);
             if (!$info = $upload->upload()) {
                 $this->error($upload->getError());}
-            vendor("PHPExcel.PHPExcel");
+
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
             //在qishu_history中增加
             $_POST["filename"] = $file_name;
@@ -208,39 +212,125 @@ class TableImportAction extends CommonAction{
             }
             $qishu_id = M("qishu_history")->add($_POST);
 
+            $type = M('table_name')->where('id = '.$tid)->getField('type');// 获取表格类型
+
+            vendor("PHPExcel.PHPExcel");
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
             $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
-            $objReader->setReadDataOnly(true);
+            // $objReader->setReadDataOnly(true);
             $objPHPExcel = $objReader->load($file_name);
-            $sheet = $objPHPExcel->getSheet(0);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
             $highestRow = $sheet->getHighestRow(); // 取得总行数
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
-            // 获取excel里面的所有字段
-            for($i=0;$i<$colsNum;$i++){
-                $ziduan[]=$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
-            }
+
             // 获取excel里面注释和字段名拼接的数组
             $newTemp = $this->getcomment($tablename);
 
-            for($i=0;$i<count($ziduan);$i++){
-                if(array_key_exists($ziduan[$i], $newTemp)){//查询excel表里面的字段是否存在于数据库中
-                    $temp1 = $ziduan[$i];
-                    $temp2 = $newTemp[$temp1];
-                    $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+            if($type == 1){ // 表类型为1的导入表第一行为字段,2行及之后为数据
+                // 获取excel里面的所有字段
+                for($i=0;$i<$colsNum;$i++){
+                    $ziduan[]=$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
                 }
-            }
-            for ($j = 2; $j <= $highestRow; $j++) {
-                for($i=0;$i<count($ziduan);$i++){
-                    if(array_key_exists($ziduan[$i], $newTemp)){
-                        $temp1 = $ziduan[$i];
-                        $temp2 = $newTemp[$temp1];
-                        $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+                for ($j = 2; $j <= $highestRow; $j++) {
+                    for($i=0;$i<count($ziduan);$i++){
+                        if(array_key_exists($ziduan[$i], $newTemp)){
+                            $temp1 = $ziduan[$i];
+                            $temp2 = $newTemp[$temp1];
+                            $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+                            // if(substr($data[$temp2],0,1) == '='){
+                            //     $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getCalculatedValue();
+                            // }
+                        }
+                        $data['suoshudd'] = $qishu_id;  //所属订单id
+                        $data['daorusj'] = date('Y-m-d H:i:s');
                     }
-                    $data['suoshudd'] = $qishu_id;  //所属订单id
-                    $data['daorusj'] = date('Y-m-d H:i:s');
+                    M($tablename)->add($data);
                 }
-                M($tablename)->add($data);
+            }elseif($type == 3){ // 表类型为3的日常表第二行为字段,3行及之后的为数据
+                // 获取excel里面的所有字段
+                for($i=0;$i<$colsNum;$i++){
+                    $ziduan[]=$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+                }
+                for ($j = 3; $j <= $highestRow; $j++) {
+                    switch($tid){
+                        // 如果是学员信息表的姓名为空的行就跳过
+                        case 1:
+                            $name = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
+                            if(empty($name)){
+                                continue;
+                            }
+                        break;
+                        // 如果是班级信息表的班级为空的行就跳过
+                        case 2:
+                            $name = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
+                            if(empty($name)){
+                                continue;
+                            }
+                        break;
+                        // 如果是班级学员信息表的姓名为空就跳过
+                        case 3:
+                            $name = $objPHPExcel->getActiveSheet()->getCell('H'.$j)->getValue();
+                            if(empty($name)){
+                                continue;
+                            }
+                        break;
+                        // 如果是收据记录表的收据号为空就跳过
+                        case 4:
+                            $name = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
+                            if(empty($name)){
+                                continue;
+                            }
+                        break;
+                        // 如果是课消明细表的姓名为空就跳过
+                        case 5:
+                            $name = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
+                            if(empty($name)){
+                                continue;
+                            }
+                        break;
+                        // 如果是开班明细表的班级名称为空就跳过
+                        case 6:
+                            $name = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
+                            if(empty($name)){
+                                continue;
+                            }
+                        break;
+                        // 如果是学员费用预警表的姓名为空就跳过
+                        case 7:
+                            $name = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
+                            if(empty($name)){
+                                continue;
+                            }
+                        break;
+                        // 如果表格是学习卡额度表(对应tid为14),果姓名为空的行就跳过
+                        case 14:
+                            $name = $objPHPExcel->getActiveSheet()->getCell('E'.$j)->getValue();
+                            if(empty($name)){
+                                continue;
+                            }
+                        break;
+                    }
+
+                    for($i=0;$i<count($ziduan);$i++){
+                        if(array_key_exists($ziduan[$i], $newTemp)){
+                            $temp1 = $ziduan[$i];
+                            $temp2 = $newTemp[$temp1];
+                            $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+                            // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
+                            if(substr($data[$temp2],0,1) == '='){
+                                $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                            }
+                            // D和F列为日期格式数据,使用common控制器的excelTime函数读取正确的日期数据
+                            if($i == 3 || $i == 5){
+                                $data[$temp2] = $this->excelTime($data[$temp2]);
+                            }
+                        }
+                        $data['suoshudd'] = $qishu_id;  //所属订单id
+                        $data['daorusj'] = date('Y-m-d H:i:s');
+                    }
+                    M($tablename)->add($data);
+                }
             }
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
         } else {
@@ -279,76 +369,5 @@ class TableImportAction extends CommonAction{
             $this->ajaxReturn($arr);
         }
     }
-
-    // ---------------------数据总表操作---------------------
-    // 下载表格
-    public function download(){
-        $data = M('qishu_history')->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_school.name as school_name,stjy_table_name.name')->where($_GET)->find();
-        $file_url = $data['filename'];
-
-        if(!isset($file_url)||trim($file_url)==''){
-            return '500';
-        }
-        if(!file_exists($file_url)){ //检查文件是否存在
-            return '404';
-        }
-        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['name'];
-        $arr = explode('.',$file_url);
-        $file_type = $arr[count($arr)-1];
-        $file=fopen($file_url,'r'); //打开文件
-        //输入文件标签
-        header("Content-type: application/octet-stream");
-        header("Accept-Ranges: bytes");
-        header("Accept-Length: ".filesize($file_url));
-        header("Content-Disposition: attachment; filename=".$filename.'.'.$file_type);
-        //输出文件内容
-        echo fread($file,filesize($file_url));
-        fclose($file);
-        }
-
-    // 通知行政经理
-    public function sub_xz(){
-        $tablenames = $this->getTabelnames();// 获取序号和表明对应的一维数组
-        $field = implode(',',$tablenames);// 组成筛选条件
-        $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
-        // 若所有表格导入再进行操作
-        $count = 0;
-        $i = 1;
-        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
-        foreach($data as $v){
-           $count += $v[$tabelnames[$i]];
-           $i++;
-        }
-        if($count == 14){
-            $temp['time_xz'] = date('Y-m-d H:i:s');
-            $temp['status_xz'] = 2;
-            $temp['status_xzjl'] = 1;
-            $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-            M('sjzb')->where($_GET)->save($temp);
-            // $this->success('通知成功');
-            $arr['status'] = true;
-            $arr['info'] = '通知成功';
-            $this->ajaxReturn($arr);
-        }else{
-            // $this->error('请导入所有表格后再通知财务');
-            $arr['status'] = false;
-            $arr['info'] = '请导入所有表格后再通知财务';
-            $this->ajaxReturn($arr);
-        }
-    }
-
-    // 取消通知行政经理
-    public function cancel_xz(){
-        $temp['time_xz'] = date('Y-m-d H:i:s');
-        $temp['status_xz'] = 4;
-        $temp['status_xzjl'] = null;
-        $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-        M('sjzb')->where($_GET)->save($temp);
-        // $this->success('通知成功');
-        $arr['status'] = true;
-        $arr['info'] = '取消成功';
-        $this->ajaxReturn($arr);
-    }
-
 }
 ?>

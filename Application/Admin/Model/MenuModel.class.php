@@ -75,6 +75,12 @@ class MenuModel {
                         'url' => U('/TableImport/tableList/tid/7'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '学习卡额度表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/14'),
+                        'order' => 1
+                    ),
 //                    array(
 //                        'name' => '市场业绩表',
 //                        'icon' => 'sitemap',

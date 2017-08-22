@@ -150,6 +150,13 @@ class TableCountAction extends CommonAction{
 
 	//减少明细表详情
 	public function jsmxb_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+        $data = new \Admin\Action\CountJsmxAction();
+        $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
+        $arr = $this->getArr($qishu,$sid);// 获取当前期数和校区
+        $this->assign('list',$list);
+        $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
 

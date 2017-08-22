@@ -68,11 +68,13 @@ class CommonAction extends Action {
     }
 
 
-    // 获取表明与序号对应的一维数组
+    // 获取表明与id对应的一维数组
     public function getTabelnames(){
-        $tablenames = M('table_name')->field('xuhao,table_name')->limit(7)->select();
+        $map['type'] = array('in',array(1,3));
+        // 查询出所有导入表
+        $tablenames = M('table_name')->field('id,table_name')->where($map)->select();
         foreach($tablenames as $v){
-            $id = $v['xuhao'];
+            $id = $v['id'];
             $arr[$id] = $v['table_name'];
         }
         return $arr;
@@ -97,10 +99,10 @@ class CommonAction extends Action {
         $i = 1;
         // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
         foreach($data as $v){
-           $count += $v[$tabelnames[$i]];
+           $count += $v;
            $i++;
         }
-        if($count == 14){
+        if($count == 16){
             $temp['time_xz'] = date('Y-m-d H:i:s');
             $temp['status_xz'] = 2;
             $temp['status_xzjl'] = 1;
@@ -202,6 +204,31 @@ class CommonAction extends Action {
         $this->ajaxReturn($arr);
     }
 
+    // 下载表格
+    public function download(){
+        $data = M('qishu_history')->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_school.name as school_name,stjy_table_name.name')->where($_GET)->find();
+        $file_url = $data['filename'];
+
+        if(!isset($file_url)||trim($file_url)==''){
+            return '500';
+        }
+        if(!file_exists($file_url)){ //检查文件是否存在
+            return '404';
+        }
+        $filename = $data['qishu'].'-'.$data['school_name'].'-'.$data['name'];
+        $arr = explode('.',$file_url);
+        $file_type = $arr[count($arr)-1];
+        $file=fopen($file_url,'r'); //打开文件
+        //输入文件标签
+        header("Content-type: application/octet-stream");
+        header("Accept-Ranges: bytes");
+        header("Accept-Length: ".filesize($file_url));
+        header("Content-Disposition: attachment; filename=".$filename.'.'.$file_type);
+        //输出文件内容
+        echo fread($file,filesize($file_url));
+        fclose($file);
+    }
+
     // 获取当前期数和校区
     public function getArr($qishu,$sid){
         $arr['year'] = substr($qishu,0,4);
@@ -236,5 +263,44 @@ class CommonAction extends Action {
             //得到当前月的上一个月
             return $fm_forward_month=date("Ym",$tmp_forwardmonth);
         }
+    }
+
+    // 获取当月班级学员信息表的学号一位数组
+    public function getData($qishu){
+        $where['qishu'] = $qishu;
+        $where['tid'] = 3;
+        // 获取数据库上一月所属订单id
+        $fm_data_id = M('qishu_history')->where($where)->getField('id');
+        // 如果能得出上一月所属id则执行
+        if(is_numeric($fm_data_id)){
+            $fm_data = M('bjxyxxb')->where('suoshudd ='.$fm_data_id)->field('xuehao')->select();
+            // 得出学号的一维数组
+            foreach($fm_data as $v){
+                $fm[] = $v['xuehao'];
+            }
+        }
+        return $fm;
+    }
+
+    // phpexcel正确读取日期时间函数
+    function excelTime($date, $time = false) {
+        if(function_exists('GregorianToJD')){
+            if (is_numeric( $date )) {
+                $jd = GregorianToJD( 1, 1, 1970 );
+                $gregorian = JDToGregorian( $jd + intval ( $date ) - 25569 );
+                $date = explode( '/', $gregorian );
+                $date_str = str_pad( $date [2], 4, '0', STR_PAD_LEFT )
+                ."-". str_pad( $date [0], 2, '0', STR_PAD_LEFT )
+                ."-". str_pad( $date [1], 2, '0', STR_PAD_LEFT )
+                . ($time ? " 00:00:00" : '');
+                return $date_str;
+            }
+        }else{
+            $date=$date>25568?$date+1:25569;
+            /*There was a bug if Converting date before 1-1-1970 (tstamp 0)*/
+            $ofs=(70 * 365 + 17+2) * 86400;
+            $date = date("Y-m-d",($date * 86400) - $ofs).($time ? " 00:00:00" : '');
+        }
+        return $date;
     }
 }
