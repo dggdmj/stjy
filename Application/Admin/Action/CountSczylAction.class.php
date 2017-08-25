@@ -22,18 +22,7 @@ class CountSczylAction extends CommonAction {
 
         // $heji
         $arr = M('bjxyxxb')->field('count(*) as count,nianji')->where('gonglixx is not null and banji != "游学会员" and suoshudd ='.$id)->group('nianji')->select();
-        $heji['幼儿园'] = 0;
-        foreach($arr as $v){
-            if($v['nianji'] == '小班' or $v['nianji'] == '中班' or $v['nianji'] == '大班'){
-                $heji['幼儿园'] += $v['count'];
-            }else{
-                $heji[$v['nianji']] = $v['count'];
-            }
-        }
-        $heji['合计'] = 0;
-        foreach($heji as $v){
-            $heji['合计'] += $v;
-        }
+        $heji = $this->getHeji($arr);
 
         // $data
         $schools = M('bjxyxxb')->field('gonglixx')->where('gonglixx is not null and banji != "游学会员" and suoshudd ='.$id)->group('gonglixx')->select();// 得出所有公立学校的数组

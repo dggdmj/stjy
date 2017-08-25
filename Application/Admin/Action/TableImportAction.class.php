@@ -232,6 +232,7 @@ class TableImportAction extends CommonAction{
                 for($i=0;$i<$colsNum;$i++){
                     $ziduan[]=$objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
                 }
+                // 从第2行开始,到最后一行
                 for ($j = 2; $j <= $highestRow; $j++) {
                     for($i=0;$i<count($ziduan);$i++){
                         if(array_key_exists($ziduan[$i], $newTemp)){
