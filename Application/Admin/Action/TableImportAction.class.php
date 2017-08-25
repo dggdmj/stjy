@@ -258,61 +258,39 @@ class TableImportAction extends CommonAction{
                         // 如果是学员信息表的姓名为空的行就跳过
                         case 1:
                             $name = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
-                            if(empty($name)){
-                                continue;
-                            }
                         break;
                         // 如果是班级信息表的班级为空的行就跳过
                         case 2:
                             $name = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
-                            if(empty($name)){
-                                continue;
-                            }
                         break;
                         // 如果是班级学员信息表的姓名为空就跳过
                         case 3:
                             $name = $objPHPExcel->getActiveSheet()->getCell('H'.$j)->getValue();
-                            if(empty($name)){
-                                continue;
-                            }
                         break;
                         // 如果是收据记录表的收据号为空就跳过
                         case 4:
                             $name = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
-                            if(empty($name)){
-                                continue;
-                            }
                         break;
                         // 如果是课消明细表的姓名为空就跳过
                         case 5:
                             $name = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
-                            if(empty($name)){
-                                continue;
-                            }
                         break;
                         // 如果是开班明细表的班级名称为空就跳过
                         case 6:
                             $name = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
-                            if(empty($name)){
-                                continue;
-                            }
                         break;
                         // 如果是学员费用预警表的姓名为空就跳过
                         case 7:
                             $name = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
-                            if(empty($name)){
-                                continue;
-                            }
                         break;
                         // 如果表格是学习卡额度表(对应tid为14),果姓名为空的行就跳过
                         case 14:
                             $name = $objPHPExcel->getActiveSheet()->getCell('E'.$j)->getValue();
-                            if(empty($name)){
-                                continue;
-                            }
                         break;
                     }
-
+                    if(empty($name)){
+                        continue;
+                    }
                     for($i=0;$i<count($ziduan);$i++){
                         if(array_key_exists($ziduan[$i], $newTemp)){
                             $temp1 = $ziduan[$i];
