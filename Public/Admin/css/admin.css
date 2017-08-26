@@ -6,7 +6,7 @@ body {
 
 .one-head {
     height: 40px;
-    background-color: #2d3e50;
+    background-color: #80CD0D;
     z-index: 1000;
     position: fixed;
     width: 100%;
@@ -20,20 +20,21 @@ body {
     background-color: #3190ee;
 }
 .one-head .one-logo img {
+    width: 150px;
     padding-top: 3px;
 }
 .one-head .nav-inline {
     border: none;
 }
 .one-head .nav-inline>li>a {
-    color: #ccc;
+    color: #fff;
     padding: 10px 20px;
     border-radius: 0;
 }
 .one-head .nav-inline>li>a:hover,
 .one-head .nav-inline>.active>a {
-    background-color: #34495e;
-    color: #ddd;
+    background-color: #7B7632;
+    color: #fff;
     font-weight: normal;
 }
 .one-head .nav-inline li .one-logout {
