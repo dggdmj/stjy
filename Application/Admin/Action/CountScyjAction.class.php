@@ -34,14 +34,20 @@ class CountScyjAction extends CommonAction {
         foreach ($list as $k=>$v){
             $beizhu = $v['data']['beizhu'];
             $xishu = $v['xishu'];
+
+            $xxked = M("xxkedb")->where("xingming = '".$v['yejigsr']."'")->getField("edu");    //学习卡额度
+            $arr[$v['yejigsr']]['xxked'] = $xxked?$xxked:0;
+
+            //计算备注产生的扩展数据
+//            $arr[$v['yejigsr']]['extend'] = $this->explodeBeizhu($v['data'],$xxked);
+
             //查看数组的键名中是否有业绩归属人的名字
             if(!array_key_exists($v['yejigsr'],$arr)){
                 $arr[$v['yejigsr']]['name'] = $v['yejigsr'];    //业绩归属人的名字
                 //如果此业绩归属人不在数组中，则新增此业绩归属人信息
                 $arr[$v['yejigsr']]['rentou'] = (double)$this->getRentou($v);  //获得人头数
                 $arr[$v['yejigsr']]['jrt'] = $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
-                $arr[$v['yejigsr']]['yeji'] = $this->explodeBeizhu($beizhu);  //通过备注获得业绩
-//                dump($arr);
+
 //                dump($beizhu);
 //                if($v['yejigsr'] == '张松煌' && $xishu*(double)$this->getJingrentou($beizhu)){
 //                    dump($v['data']['xuehao']);
@@ -61,23 +67,28 @@ class CountScyjAction extends CommonAction {
 //                    }
 //                 }
             }
+            dump($arr);
         }
         return $arr;
     }
 
     //根据签单类型返回人头数
-    public function explodeBeizhu($beizhu){
+    public function explodeBeizhu($data,$xxked){
         $arr = array();
-        $arr['xinlao'] = substr($beizhu,0,6);   //获得是新生还是老生
-        $arr['type'] = substr($beizhu,6,6);   //获得是收据类型
-        $arr['nianji'] = substr($beizhu,12,6);   //年级
-        $arr['baodusc'] = substr($beizhu,18,4);   //报读时长
+        $arr['xinlao'] = substr($data['beizhu'],0,6);   //获得是新生还是老生
+        $arr['type'] = substr($data['beizhu'],6,6);   //获得是收据类型
+        $arr['nianji'] = substr($data['beizhu'],12,6);   //年级
+        $arr['baodusc'] = substr($data['beizhu'],18,4);   //报读时长
+        $arr['jsfs'] = $xxked>0?'学习卡':'老结算';  //结算方式：学习卡、老结算
+        //主要备注
+        if(strpos($data['beizhu'],"／")){
+            $zybz_arr = explode("／",$data['beizhu']);
+            $arr['zybz'] = $zybz_arr[0];
+        }else{
+            $arr['zybz'] = '';
+        }
+        $arr['scjfrqdylx'] = '';   //首次交费日期对应类型：新生、1年追补、老生
         return $arr;
-    }
-
-    //根据签单类型返回人头数
-    public function getYeji($beizhu){
-        $this->explodeBeizhu($beizhu);
     }
 
     //根据签单类型返回人头数
