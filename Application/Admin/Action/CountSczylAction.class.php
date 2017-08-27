@@ -11,10 +11,10 @@ class CountSczylAction extends CommonAction {
      */
     public function getSczylbData($qishu,$sid){
         $where['qishu'] = $qishu;// 获取期数
-        $whewe['sid'] = $sid;// 获取学校id
+        $where['sid'] = $sid;// 获取学校id
         $where['tid'] = 3;// 从班级学员信息表获取信息,它的tid是3
         $id = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id,也就是bjxyxxb里面的suoshudd的订单号
-
+        dump($id);
         // ------------以下所有数据都根据suoshudd的id号查询出------------
         // $heji是每个年级对应的合计数
         // $data是每个公立学校对应的每个年级的合计数
@@ -22,7 +22,9 @@ class CountSczylAction extends CommonAction {
 
         // $heji
         $arr = M('bjxyxxb')->field('count(*) as count,nianji')->where('gonglixx is not null and banji != "游学会员" and suoshudd ='.$id)->group('nianji')->select();
+        dump($arr);
         $heji = $this->getHeji($arr);
+        dump($heji);
 
         // $data
         $schools = M('bjxyxxb')->field('gonglixx')->where('gonglixx is not null and banji != "游学会员" and suoshudd ='.$id)->group('gonglixx')->select();// 得出所有公立学校的数组
