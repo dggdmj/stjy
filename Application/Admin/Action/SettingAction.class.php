@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Admin\Action;
 use Think\Action;
 use Admin\Model;
@@ -21,6 +21,10 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/Qishu'),
                     'icon' => 'list',
                 ),
+                array('name' => '人事列表',
+                    'url' => url('Setting/Renshi'),
+                    'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -29,11 +33,14 @@ class SettingAction extends CommonAction{
                 array('name' => '添加期数',
                     'url' => url('Setting/Qishu_add'),
                 ),
-            )
+                array('name' => '添加人事',
+                    'url' => url('Setting/Renshi_add'),
+                ),
+            ),
         );
         return $data;
     }
-	
+
 	//校区列表页
 	public function school(){
 		$data = M('school'); // 实例化对象
@@ -111,6 +118,45 @@ class SettingAction extends CommonAction{
         $id = $_GET['id'];
         $this->list=D('qishu')->where(array('id'=>$id))->find();
         $this->adminDisplay('qishu_add');
+    }
+
+    //人事列表页
+    public function renshi(){
+        $data = M('renshi'); // 实例化对象
+        $list = $data->order('id desc')->select();
+        $this->assign('list',$list);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //添加校区页面
+    public function renshi_add(){
+        $this->adminDisplay();
+    }
+
+    //添加校区
+    public function addRenshi(){
+        if(empty($_GET['id'])) {
+            if($bid=M('renshi')->add($_POST)) {
+                $this->success('添加成功',U('renshi'));
+            } else {
+                $this->error('添加失败');
+            }
+        }
+        else {
+            $bid=$_GET['id'];
+            if(M('renshi')->where(array('id'=>$bid))->save($_POST)) {
+                $this->success('修改成功',U('renshi'));
+            } else {
+                $this->error('修改失败');
+            }
+        }
+    }
+
+    // 修改校区
+    public function editRenshi() {
+        $id = $_GET['id'];
+        $this->list=D('renshi')->where(array('id'=>$id))->find();
+        $this->adminDisplay('renshi_add');
     }
 
     //彻底删除
