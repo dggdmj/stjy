@@ -41,8 +41,8 @@ class CountScyjAction extends CommonAction {
                 $arr[$v['yejigsr']]['rentou'] = (double)$this->getRentou($v);  //获得人头数
                 $arr[$v['yejigsr']]['jrt'] = $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
                 $arr[$v['yejigsr']]['yeji'] = $this->explodeBeizhu($beizhu);  //通过备注获得业绩
-                dump($arr);
-                dump($beizhu);
+//                dump($arr);
+//                dump($beizhu);
 //                if($v['yejigsr'] == '张松煌' && $xishu*(double)$this->getJingrentou($beizhu)){
 //                    dump($v['data']['xuehao']);
 //                    dump($arr[$v['yejigsr']]);
