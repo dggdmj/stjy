@@ -252,6 +252,12 @@ class MenuModel {
                         'url' => U('Setting/school'),
                         'order' => 1
                     ),
+                   array(
+                        'name' => '人事档案',
+                        'icon' => 'home',
+                        'url' => U('Setting/school'),
+                        'order' => 1
+                    ),
                     array(
                         'name' => '期数管理',
                         'icon' => 'crosshairs',
