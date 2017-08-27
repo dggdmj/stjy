@@ -258,6 +258,12 @@ class MenuModel {
                         'url' => U('Setting/qishu'),
                         'order' => 2
                     ),
+                    array(
+                        'name' => '人事管理',
+                        'icon' => 'user',
+                        'url' => U('Setting/renshi'),
+                        'order' => 3
+                    ),
 //                    array(
 //                        'name' => '扩展模型管理',
 //                        'icon' => 'puzzle-piece',
