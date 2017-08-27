@@ -237,6 +237,39 @@ class TableImportAction extends CommonAction{
                 }
                 // 从第2行开始,到最后一行
                 for ($j = 2; $j <= $highestRow; $j++) {
+                    switch($tid){
+                        // 如果是学员信息表的姓名为空的行就跳过
+                        case 1:
+                            $col = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
+                        break;
+                        // 如果是班级信息表的班级为空的行就跳过
+                        case 2:
+                            $col = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
+                        break;
+                        // 如果是班级学员信息表的姓名为空就跳过
+                        case 3:
+                            $col = $objPHPExcel->getActiveSheet()->getCell('G'.$j)->getValue();
+                        break;
+                        // 如果是收据记录表的收据号为空就跳过
+                        case 4:
+                            $col = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
+                        break;
+                        // 如果是课消明细表的姓名为空就跳过
+                        case 5:
+                            $col = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
+                        break;
+                        // 如果是开班明细表的班级名称为空就跳过
+                        case 6:
+                            $col = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
+                        break;
+                        // 如果是学员费用预警表的姓名为空就跳过
+                        case 7:
+                            $col = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
+                        break;
+                    }
+                    if(empty($col) || $col == '' || is_null($col)){
+                        continue;
+                    }
                     for($i=0;$i<count($ziduan);$i++){
                         if(array_key_exists($ziduan[$i], $newTemp)){
                             $temp1 = $ziduan[$i];
@@ -264,40 +297,12 @@ class TableImportAction extends CommonAction{
                 }
                 for ($j = 3; $j <= $highestRow; $j++) {
                     switch($tid){
-                        // 如果是学员信息表的姓名为空的行就跳过
-                        case 1:
-                            $col = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
-                        break;
-                        // 如果是班级信息表的班级为空的行就跳过
-                        case 2:
-                            $col = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
-                        break;
-                        // 如果是班级学员信息表的姓名为空就跳过
-                        case 3:
-                            $col = $objPHPExcel->getActiveSheet()->getCell('H'.$j)->getValue();
-                        break;
-                        // 如果是收据记录表的收据号为空就跳过
-                        case 4:
-                            $col = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
-                        break;
-                        // 如果是课消明细表的姓名为空就跳过
-                        case 5:
-                            $col = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
-                        break;
-                        // 如果是开班明细表的班级名称为空就跳过
-                        case 6:
-                            $col = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
-                        break;
-                        // 如果是学员费用预警表的姓名为空就跳过
-                        case 7:
-                            $col = $objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue();
-                        break;
                         // 如果表格是学习卡额度表(对应tid为14),果姓名为空的行就跳过
                         case 14:
                             $col = $objPHPExcel->getActiveSheet()->getCell('E'.$j)->getValue();
                         break;
                     }
-                    if(empty($col)){
+                    if(empty($col) || $col == '' || is_null($col)){
                         continue;
                     }
                     for($i=0;$i<count($ziduan);$i++){

@@ -63,7 +63,21 @@ class CountXzmxAction extends CommonAction {
             }
             return $list;
         }else{
-            return false;
+            $new = $xueyuan;
+            // dump(count($new));
+            $map['stjy_bjxyxxb.xuehao'] = array('in',$new);// 查询条件
+            $list = M('bjxyxxb')->join('LEFT JOIN stjy_sjjlb on stjy_bjxyxxb.xuehao=stjy_sjjlb.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,stjy_sjjlb.yejigsr,stjy_sjjlb.zhaoshengly,stjy_xyxxb.shoujihm')->where($map)->group('stjy_bjxyxxb.xuehao')->select();
+
+            foreach($list as $k=>$v){
+                if(in_array($v['xuehao'],$zhuan)){
+                    $list[$k]['addtype'] = '转入';
+                }elseif(in_array($v['xuehao'],$fm3) and !in_array($v['xuehao'],$fm2) and !in_array($v['xuehao'],$fm)){
+                    $list[$k]['addtype'] = '流失回来';
+                }else{
+                    $list[$k]['addtype'] = '新生';
+                }
+            }
+            return $list;
         }
     }
 
