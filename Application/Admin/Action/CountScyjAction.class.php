@@ -50,10 +50,10 @@ class CountScyjAction extends CommonAction {
                 //计算备注产生的扩展数据
                 $extend = $this->explodeBeizhu($v['data'],$xxked);
                 if(!empty($extend)){
-                    $arr[$v['yejigsr']][$extend['zzjslx']] = (float)$extend['jsyj'];
+                    $arr[$v['yejigsr']][$extend['zzjslx']] = $xishu*(float)$extend['jsyj'];
                 }
                 //计算合计营业额
-                $arr[$v['yejigsr']]['total'] += (float)$extend['jsyj'];
+                $arr[$v['yejigsr']]['total'] += $xishu*(float)$extend['jsyj'];
             }else{
                 //如果此业绩归属人在数组中，则累计此业绩归属人信息
                 $arr[$v['yejigsr']]['rentou'] += (double)$this->getRentou($v);  //获得人头数
@@ -61,10 +61,10 @@ class CountScyjAction extends CommonAction {
                 //计算备注产生的扩展数据
                 $extend = $this->explodeBeizhu($v['data'],$xxked);
                 if(!empty($extend)){
-                    $arr[$v['yejigsr']][$extend['zzjslx']] += (float)$extend['jsyj'];
+                    $arr[$v['yejigsr']][$extend['zzjslx']] += $xishu*(float)$extend['jsyj'];
                 }
                 //计算合计营业额
-                $arr[$v['yejigsr']]['total'] += (float)$extend['jsyj'];
+                $arr[$v['yejigsr']]['total'] += $xishu*(float)$extend['jsyj'];
             }
         }
         $i = 1;
