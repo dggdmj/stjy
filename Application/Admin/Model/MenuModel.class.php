@@ -227,13 +227,13 @@ class MenuModel {
 //                'menu' => array(
 //                    array(
 //                        'name' => '产品管理',
-//                        'url' => U('/Goods/index'),
+//                        'url' => U('/Case/index'),
 //                        'icon' => 'camera',
 //                        'order' => 1
 //                    ),
 //                    array(
 //                        'name' => '产品分类管理',
-//                        'url' => U('/GoodsSort/index'),
+//                        'url' => U('/CaseSort/index'),
 //                        'icon' => 'sitemap',
 //                        'order' => 1
 //                    ),
