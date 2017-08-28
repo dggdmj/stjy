@@ -37,9 +37,9 @@ class CountScyjAction extends CommonAction {
 
             $xxked = M("xxkedb")->where("xingming = '".$v['yejigsr']."'")->getField("edu");    //学习卡额度
             $arr[$v['yejigsr']]['xxked'] = $xxked?$xxked:0;
+            $arr[$v['yejigsr']]['total'] = 0;
 
-            //计算备注产生的扩展数据
-//            $arr[$v['yejigsr']]['extend'] = $this->explodeBeizhu($v['data'],$xxked);
+
 
             //查看数组的键名中是否有业绩归属人的名字
             if(!array_key_exists($v['yejigsr'],$arr)){
@@ -47,47 +47,132 @@ class CountScyjAction extends CommonAction {
                 //如果此业绩归属人不在数组中，则新增此业绩归属人信息
                 $arr[$v['yejigsr']]['rentou'] = (double)$this->getRentou($v);  //获得人头数
                 $arr[$v['yejigsr']]['jrt'] = $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
-
-//                dump($beizhu);
-//                if($v['yejigsr'] == '张松煌' && $xishu*(double)$this->getJingrentou($beizhu)){
-//                    dump($v['data']['xuehao']);
-//                    dump($arr[$v['yejigsr']]);
-//                    dump($xishu*(double)$this->getJingrentou($beizhu));
-//                }
+                //计算备注产生的扩展数据
+                $extend = $this->explodeBeizhu($v['data'],$xxked);
+                if(!empty($extend)){
+                    $arr[$v['yejigsr']][$extend['zzjslx']] = $xishu*(float)$extend['jsyj'];
+                }
+                //计算合计营业额
+                $arr[$v['yejigsr']]['total'] += $xishu*(float)$extend['jsyj'];
             }else{
                 //如果此业绩归属人在数组中，则累计此业绩归属人信息
                 $arr[$v['yejigsr']]['rentou'] += (double)$this->getRentou($v);  //获得人头数
                 $arr[$v['yejigsr']]['jrt'] += $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
-//                if($v['yejigsr'] == '张松煌' && $xishu*(double)$this->getJingrentou($beizhu)){
-//                    dump($v['data']['xuehao']);
-//                    dump($arr[$v['yejigsr']]);
-//                    dump($xishu*(double)$this->getJingrentou($beizhu));
-//                    if($v['data']['xuehao'] == 'S18271'){
-//                        dump($v);
-//                    }
-//                 }
+                //计算备注产生的扩展数据
+                $extend = $this->explodeBeizhu($v['data'],$xxked);
+                if(!empty($extend)){
+                    $arr[$v['yejigsr']][$extend['zzjslx']] += $xishu*(float)$extend['jsyj'];
+                }
+                //计算合计营业额
+                $arr[$v['yejigsr']]['total'] += $xishu*(float)$extend['jsyj'];
             }
-            dump($arr);
         }
+        $i = 1;
+        foreach ($arr as $k=>$v){
+            $arr[$k]['xuhao'] = $i;
+            $i++;
+        }
+        dump($arr);
         return $arr;
     }
 
     //根据签单类型返回人头数
     public function explodeBeizhu($data,$xxked){
+//        dump($data);
+        if(empty($data['beizhu'])){
+            return;
+        }
+        $zybz_count = count(explode("／",$data['beizhu']));
+        if($zybz_count <= 1){
+            return;
+        }
         $arr = array();
-        $arr['xinlao'] = substr($data['beizhu'],0,6);   //获得是新生还是老生
-        $arr['type'] = substr($data['beizhu'],6,6);   //获得是收据类型
-        $arr['nianji'] = substr($data['beizhu'],12,6);   //年级
-        $arr['baodusc'] = substr($data['beizhu'],18,4);   //报读时长
+        $arr['xinlao'] = mb_substr($data['beizhu'],0,2,"utf-8");   //获得是新生还是老生
+        $arr['type'] = mb_substr($data['beizhu'],2,2,"utf-8");   //获得是收据类型
+        $arr['nianji'] = mb_substr($data['beizhu'],4,2,"utf-8");   //年级
         $arr['jsfs'] = $xxked>0?'学习卡':'老结算';  //结算方式：学习卡、老结算
-        //主要备注
-        if(strpos($data['beizhu'],"／")){
+//        主要备注
+        if($zybz_count>1){
             $zybz_arr = explode("／",$data['beizhu']);
             $arr['zybz'] = $zybz_arr[0];
+            //根据备注分割
+            $bz_arr = array();
+            foreach ($zybz_arr as $v){
+                //根据：继续分割数组  如：首次缴费日期：2017-07-03缴费
+                $a = explode("：",$v);
+                if(count($a)>1){
+                    $bz_arr[$a[0]] = $a[1];
+                }
+            }
+            $arr['scjfrq'] = str_replace("缴费","",$bz_arr['首次缴费日期']);  //首次缴费日期
         }else{
             $arr['zybz'] = '';
         }
-        $arr['scjfrqdylx'] = '';   //首次交费日期对应类型：新生、1年追补、老生
+        //如果主要备注是空，首次交费日期对应类型为空
+        if(empty($arr['zybz'])){
+            $arr['scjfrqdylx'] = '';   //首次交费日期对应类型：新生、1年追补、老生
+        }else{
+            //如果是新生，则首次交费类型是新生，否则继续判断
+            if($arr["xinlao"] == '新生'){
+                $arr['scjfrqdylx'] = '新生';
+            }else{
+                //首次缴费时间 比较 2016年7月1日，在此之前是老生
+                if(strtotime($arr['scjfrq']) <= strtotime('2016-7-1')){
+                    $arr['scjfrqdylx'] = '老生';
+                }else{
+                    $arr['scjfrqdylx'] = '1年追补';
+                }
+            }
+        }
+        //报读类型，根据主要备注截取最后四个字符
+        if(!empty($arr['zybz'])){
+            $arr['bdlx'] = mb_substr(trim($arr['zybz']),-4,4,"utf-8");
+        }else{
+            $arr['bdlx'] = '';
+        }
+        //交费金额
+        $arr['jiaofeije'] = $data['jiaofeije'];
+        //教材费
+        preg_match_all("/（.*?）/",$data['beizhu'],$pre_arr);
+        foreach ($pre_arr as $v){
+            $v = str_replace("（",'',$v);
+            $v = str_replace("）",'',$v);
+            $p_arr = explode("：",$v);
+            if($p_arr[0] == '教材费'){
+                $arr['jiaocaifei'] = $p_arr[1];
+            }
+        }
+        $arr['jiaocaifei'] = empty($arr['jiaocaifei'])?0:$arr['jiaocaifei'];
+        //结算业绩计算
+        //如果课程名称为空，并且备注中不含"预缴定金"，结算业绩等于交费金额
+        if(empty($data['kechengmc']) && !empty(strstr($data["beizhu"],"预缴定金"))){
+            $arr['jsyj'] = $arr["jiaofeije"];
+        }else {
+            //否则：结算业绩 = 交费金额 - 教材费
+            $arr['jsyj'] = $arr["jiaofeije"] - $arr['jiaocaifei'];
+        }
+        //报读类型2，关联老结算类型,如果主要备注为空，报读类型为空
+        if(empty($arr['zybz'])){
+            $arr["old_bdlx"] = '';
+        }else{
+            $baodu = $this->baoduType();
+            $arr["old_bdlx"] = $baodu[$arr['bdlx']]["老结算"];
+        }
+        //老结算的结算类型 = 首次缴费日期对应类型 + 老计算报读类型
+        $arr["old_jslx"] = $arr['scjfrqdylx'].$arr['old_bdlx'];
+
+        //学习卡结算类型
+        $arr["xxk_jslx"] = '1期秒杀';
+
+        //最终结算类型,如果结算方式是学习卡，就是学习卡结算类型，如果是老结算，就是老结算类型
+        if($arr['jsfs'] == '学习卡'){
+            $arr['zzjslx'] = $arr['xxk_jslx'];
+        }else{
+            $arr['zzjslx'] = $arr['old_jslx'];
+        }
+
+//        dump($data['beizhu']);
+//        dump($arr);
         return $arr;
     }
 
@@ -99,6 +184,41 @@ class CountScyjAction extends CommonAction {
         }else{
             return 0;
         }
+    }
+
+    //根据签单类型返回人头数
+    public function baoduType(){
+        $arr = array(
+          '国际会员'=>array(
+              '学习卡'=>'国际班',
+              '老结算'=>'国际班'
+          ),
+          '线上学员'=>array(
+              '学习卡'=>'爱外教',
+              '老结算'=>'国际班'
+          ),
+          '拼单会员'=>array(
+              '学习卡'=>'国际班',
+              '老结算'=>'国际班'
+          ),
+          '领袖课程'=>array(
+              '学习卡'=>'领袖课程',
+              '老结算'=>'国际班'
+          ),
+          '特色喜剧班'=>array(
+              '学习卡'=>'国际班',
+              '老结算'=>'国际班'
+          ),
+          '自然拼音版'=>array(
+              '学习卡'=>'国际班',
+              '老结算'=>'国际班'
+          ),
+          '返现会员'=>array(
+              '学习卡'=>'国际班',
+              '老结算'=>'国际班'
+          ),
+        );
+        return $arr;
     }
 
     //如果业绩归属人有2个，去除掉重复的，返回业绩归属人的唯一数组
