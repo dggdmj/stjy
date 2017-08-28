@@ -227,13 +227,13 @@ class MenuModel {
 //                'menu' => array(
 //                    array(
 //                        'name' => '产品管理',
-//                        'url' => U('/Goods/index'),
+//                        'url' => U('/Case/index'),
 //                        'icon' => 'camera',
 //                        'order' => 1
 //                    ),
 //                    array(
 //                        'name' => '产品分类管理',
-//                        'url' => U('/GoodsSort/index'),
+//                        'url' => U('/CaseSort/index'),
 //                        'icon' => 'sitemap',
 //                        'order' => 1
 //                    ),
@@ -252,11 +252,23 @@ class MenuModel {
                         'url' => U('Setting/school'),
                         'order' => 1
                     ),
+                   array(
+                        'name' => '人事档案',
+                        'icon' => 'home',
+                        'url' => U('Setting/school'),
+                        'order' => 1
+                    ),
                     array(
                         'name' => '期数管理',
                         'icon' => 'crosshairs',
                         'url' => U('Setting/qishu'),
                         'order' => 2
+                    ),
+                    array(
+                        'name' => '人事管理',
+                        'icon' => 'user',
+                        'url' => U('Setting/renshi'),
+                        'order' => 3
                     ),
 //                    array(
 //                        'name' => '扩展模型管理',
