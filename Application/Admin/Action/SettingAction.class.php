@@ -17,6 +17,10 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/School'),
                     'icon' => 'list',
                 ),
+                array('name' => '部门列表',
+                    'url' => url('Setting/Department'),
+                    'icon' => 'list',
+                ),
                 array('name' => '期数列表',
                     'url' => url('Setting/Qishu'),
                     'icon' => 'list',
@@ -29,6 +33,9 @@ class SettingAction extends CommonAction{
             'add' => array(
                 array('name' => '添加校区',
                     'url' => url('Setting/School_add'),
+                ),
+                array('name' => '添加部门',
+                    'url' => url('Setting/Department_add'),
                 ),
                 array('name' => '添加期数',
                     'url' => url('Setting/Qishu_add'),
@@ -80,6 +87,44 @@ class SettingAction extends CommonAction{
         $this->adminDisplay('school_add');
     }
 
+    //部门列表页
+    public function department(){
+        $data = M('department'); // 实例化对象
+        $list = $data->order('id desc')->select();
+        $this->assign('list',$list);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //添加校区页面
+    public function department_add(){
+        $this->adminDisplay();
+    }
+
+    //添加校区
+    public function addDepartment(){
+        if(empty($_GET['id'])) {
+            if($bid=M('department')->add($_POST)) {
+                $this->success('添加成功',U('Department'));
+            } else {
+                $this->error('添加失败');
+            }
+        }
+        else {
+            $bid=$_GET['id'];
+            if(M('department')->where(array('id'=>$bid))->save($_POST)) {
+                $this->success('修改成功',U('Department'));
+            } else {
+                $this->error('修改失败');
+            }
+        }
+    }
+
+    // 修改校区
+    public function editDepartment() {
+        $id = $_GET['id'];
+        $this->list=D('department')->where(array('id'=>$id))->find();
+        $this->adminDisplay('department_add');
+    }
 
     //期数列表页
     public function qishu(){
@@ -130,11 +175,26 @@ class SettingAction extends CommonAction{
 
     //添加校区页面
     public function renshi_add(){
+        $school = M('school')->where('isuse = 1')->select();
+        $this->assign('school',$school);
         $this->adminDisplay();
     }
 
     //添加校区
     public function addRenshi(){
+        dump($_POST);
+        die;
+        $bitian = array('xingming'=>'姓名','zhiwu'=>'职务','leixing'=>'类型','xiaoqu'=>'校区','bumen'=>'部门','chushengrq'=>'出生日期','diyixl'=>'第一学历','diyixlyx'=>'第一学历院校','zuigaoxl'=>'最高学历','zuigaoxlyx'=>'最高学历院校','ruzhirq'=>'入职日期','hetongkssj'=>'合同开始时间','hetongdqsj'=>'合同到期时间');// 所有必填项目
+        foreach($bitian as $k=>$v){
+            if(empty($_POST[$k])){
+                $err[] = $v;
+            }
+        }
+        if(!empty($err)){
+            $notice = implode(',',$err);
+            $this->error($notice.'没有填写');
+        }
+
         if(empty($_GET['id'])) {
             if($bid=M('renshi')->add($_POST)) {
                 $this->success('添加成功',U('renshi'));

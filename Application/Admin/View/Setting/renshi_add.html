@@ -1,68 +1,597 @@
-<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Setting/addSchool',array('id'=>$list['id']))}">
+<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Setting/addRenshi',array('id'=>$list['id']))}">
 	 <div class="panel one-box  active">
         <div class="panel-head">
-            <strong>添加校区</strong>
+            <strong>添加人事档案</strong>
         </div>
         <div class="panel-body">
-			<div class="form-group">
+            <div class="form-group">
                 <div class="label">
-                    <label>校区名称</label>
+                    <label>员工编号</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="name" size="60" value="{$list.name}">
+                    <input type="text" class="input" name="yuangongbh" size="60" value="{$list.yuangongbh}">
                 </div>
             </div>
-			<div class="form-group">
+            <div class="form-group">
                 <div class="label">
-                    <label>是否启用</label>
+                    <label>姓名</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="xingming" size="60" value="{$list.xingming}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>性别</label>
                 </div>
                 <div class="field">
                     <div class="button-group radio">
-                        <if condition="$list.isuse == 1">
                             <label class="button active">
-                                <input name="isuse" value="1" checked="checked" type="radio">
-                                <span class="icon icon-check"></span> 启用
+                                <input name="xingbie" value="1" checked="checked" type="radio">
+                                <span class="icon icon-check"></span> 男
                             </label>
                             <label class="button">
-                                <input name="isuse" value="0" type="radio">
-                                <span class="icon icon-times"></span> 不启用
+                                <input name="xingbie" value="2" type="radio">
+                                <span class="icon icon-check"></span> 女
                             </label>
-                        <else/>
-                            <label class="button ">
-                                <input name="isuse" value="1"type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button active">
-                                <input name="isuse" value="0" checked="checked"  type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                        </if>
                     </div>
-                    <div class="input-note">是否启用校区</div>
+                    <span style="color:red;"> *必选</span>
                 </div>
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>校区面积</label>
+                    <label>职务</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="mianji" size="60" value="{$list.mianji}">
+                    <select class="select" name="gid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择职务</option>
+                        <option value="1">教师</option>
+                        <option value="2">外教</option>
+                        <option value="3">行政</option>
+                        <option value="4">行政经理</option>
+                        <option value="5">财务总监</option>
+                        <option value="6">总经理助理</option>
+                        <option value="7">副总经理</option>
+                        <option value="8">总经理</option>
+                        <option value="9">董事长</option>
+                    </select>
+                    <span style="color:red;"> *必选</span>
                 </div>
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>课室数</label>
+                    <label>类型</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="classnum" size="60" value="{$list.classnum}">
+                    <select class="select" name="leixing" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择类型</option>
+                        <option value="1">试用</option>
+                        <option value="2">正式</option>
+                        <option value="3">停薪留职</option>
+                    </select>
+                    <span style="color:red;"> *必选</span>
                 </div>
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>分成比例</label>
+                    <label>岗位类型</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="fencheng" size="60" value="{$list.fencheng}"><span style="color:red;">  如:5,5或4,6</span>
+                    <div class="button-group radio">
+                            <label class="button active">
+                                <input name="xingbie" value="1" checked="checked" type="radio">
+                                <span class="icon icon-check"></span> 全职
+                            </label>
+                            <label class="button">
+                                <input name="xingbie" value="2" type="radio">
+                                <span class="icon icon-check"></span> 兼职
+                            </label>
+                    </div>
+                    <span style="color:red;"> *必选</span>
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <div class="label">
+                    <label>区域</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="cid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择区域</option>
+                        <option value="1">中国</option>
+                        <option value="2">外国</option>
+                    </select>
+                    <span style="color:red;"> *必选</span>
+                </div>
+            </div> -->
+            <div class="form-group">
+                <div class="label">
+                    <label>校区</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="sid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择校区</option>
+                        <foreach name="school" item="v">
+                            <option value="{$v.id}">{$v.name}</option>
+                        </foreach>
+                    </select>
+                    <span style="color:red;"> *必选</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>部门</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="gid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择部门</option>
+                        <option value="1">市场部</option>
+                        <option value="2">行政部</option>
+                        <option value="3">教学部</option>
+                    </select>
+                    <span style="color:red;"> *必选</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>二级部门</label>
+                </div>
+                <div class="field">
+                    <div class="field">
+                        <select class="select" name="gid2" style="height:32px;border-radius: 4px;" disabled="disabled">
+                            <option value="">请选择二级部门</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>出生日期</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input datetimepicker" name="chushengrq" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>第一学历</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="diyixl" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择第一学历</option>
+                        <option value="1">本科</option>
+                        <option value="2">大专</option>
+                        <option value="3">研究生</option>
+                        <option value="4">博士</option>
+                        <option value="5">高中</option>
+                        <option value="6">专科及以下</option>
+                    </select>
+                    <span style="color:red;"> *必选</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>第一学历院校</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="diyixlyx" size="60" value="{$list.diyixlyx}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>第一学历专业</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="diyixlzy" size="60" value="{$list.diyixlzy}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>第一学历毕业时间</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input datetimepicker" name="diyixlbysj" size="60" value="">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>最高学历</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="zuigaoxl" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择第一学历</option>
+                        <option value="1">本科</option>
+                        <option value="2">大专</option>
+                        <option value="3">研究生</option>
+                        <option value="4">博士</option>
+                        <option value="5">高中</option>
+                        <option value="6">专科及以下</option>
+                    </select>
+                    <span style="color:red;"> *必选</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>最高学历院校</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="zuigaoxlyx" size="60" value="{$list.zuigaoxlyx}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>最高学历专业</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="zuigaoxlzy" size="60" value="{$list.zuigaoxlzy}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>最高学历毕业时间</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input datetimepicker" name="zuigaoxlbysj" size="60" value="">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>资格证书</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="zigezs" size="60" value="{$list.zigezs}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>入职日期</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input datetimepicker" name="ruzhirq" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>合同开始时间</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input datetimepicker" name="hetongkssj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>合同到期时间</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input datetimepicker" name="hetongdqsj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>婚否</label>
+                </div>
+                <div class="field">
+                    <div class="button-group radio">
+                        <label class="button active">
+                            <input name="hunfou" value="1" checked="checked" type="radio">
+                            <span class="icon icon-check"></span> 已婚
+                        </label>
+                        <label class="button">
+                            <input name="hunfou" value="2" type="radio">
+                            <span class="icon icon-check"></span> 未婚
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>生育状况</label>
+                </div>
+                <div class="field">
+                    <div class="button-group radio">
+                        <label class="button active">
+                            <input name="shengyuzh" value="1" checked="checked" type="radio">
+                            <span class="icon icon-check"></span> 是
+                        </label>
+                        <label class="button">
+                            <input name="shengyuzh" value="2" type="radio">
+                            <span class="icon icon-check"></span> 否
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>户口性质</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="hukouxz" style="height:32px;border-radius: 4px;">
+                        <option value="">请选择户口性质</option>
+                        <option value="1">外地农业户口</option>
+                        <option value="2">外地非农业户口</option>
+                        <option value="3">本地农业户口</option>
+                        <option value="4">本地非农业户口</option>
+                    </select>
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <div class="label">
+                    <label>工作所在地</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="gongzuoszd" size="60" value="{$list.gongzuoszd}">
+                </div>
+            </div> -->
+            <div class="form-group">
+                <div class="label">
+                    <label>联系电话</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="lianxidh" size="60" value="{$list.lianxidh}">
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <div class="label">
+                    <label>户口所在地</label>
+                </div>
+                <div class="field">
+                    <div data-toggle="distpicker">
+                        <select data-province="---- 选择省 ----" name="hukousheng"></select>
+                        <select data-city="---- 选择市 ----" name="hukoushi"></select>
+                        <select data-district="---- 选择区 ----" name="hukouqu"></select>
+                    </div>
+                </div>
+            </div> -->
+            <div class="form-group">
+                <div class="label">
+                    <label>邮箱</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="youxiang" size="60" value="{$list.youxiang}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>身高(cm)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="shengao" size="60" value="{$list.shengao}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>体重(kg)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="tizhong" size="60" value="{$list.tizhong}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>穿衣尺寸</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="chuanyicc" style="height:32px;border-radius: 4px;">
+                        <option value="">请选择穿衣尺寸</option>
+                        <option value="1">XS</option>
+                        <option value="2">S</option>
+                        <option value="3">M</option>
+                        <option value="4">L</option>
+                        <option value="5">XL</option>
+                        <option value="6">XXL</option>
+                        <option value="7">XXL</option>
+                        <option value="8">XXXL</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>合同签订公司</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="hetongqdgs" size="60" value="{$list.hetongqdgs}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>社保购买公司</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="shebaogmgs" size="60" value="{$list.shebaogmgs}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>户籍地址</label>
+                </div>
+                <div class="field">
+                    <div data-toggle="distpicker">
+                        <select data-province="---- 选择省 ----" name="hujisheng" style="height:32px;border-radius: 4px;"></select>
+                        <select data-city="---- 选择市 ----" name="hujishi" style="height:32px;border-radius: 4px;"></select>
+                        <select data-district="---- 选择区 ----" name="hujiqu" style="height:32px;border-radius: 4px;"></select>
+                    </div>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="hujidz" size="60" value="{$list.hujidz}" style="margin-top:10px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>通讯地址</label>
+                </div>
+                <div class="field">
+                    <div data-toggle="distpicker">
+                        <select data-province="---- 选择省 ----" name="tongxunsheng" style="height:32px;border-radius: 4px;"></select>
+                        <select data-city="---- 选择市 ----" name="tongxunshi" style="height:32px;border-radius: 4px;"></select>
+                        <select data-district="---- 选择区 ----" name="tongxunqu" style="height:32px;border-radius: 4px;"></select>
+                    </div>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="tongxundz" size="60" value="{$list.tongxundz}" style="margin-top:10px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>聘用渠道</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="pinyongqd" style="height:32px;border-radius: 4px;">
+                        <option value="">请选择聘用渠道</option>
+                        <option value="1">聘用合同</option>
+                        <option value="2">劳务合同</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>公积金购买公司</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="gongjijgmgs" size="60" value="{$list.gongjijgmgs}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>紧急联系人</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jingjilxr" size="60" value="{$list.jingjilxr}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>关系</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="guanxi" size="60" value="{$list.guanxi}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>紧急联系人电话</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jingjilxrdh" size="60" value="{$list.jingjilxrdh}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>社保号</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="shebaohao" size="60" value="{$list.shebaohao}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>兴业银行卡号</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="xingyeyhkh" size="60" value="{$list.xingyeyhkh}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>其他银行卡号</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="qitayhkh" size="60" value="{$list.qitayhkh}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>是否有担保人</label>
+                </div>
+                <div class="field">
+                    <div class="button-group radio">
+                        <label class="button active">
+                            <input name="shifouydbr" value="1" checked="checked" type="radio">
+                            <span class="icon icon-check"></span> 是
+                        </label>
+                        <label class="button">
+                            <input name="shifouydbr" value="2" type="radio">
+                            <span class="icon icon-check"></span> 否
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>担保人姓名</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="danbaorxm" size="60" value="{$list.danbaorxm}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>担保人电话</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="danbaordh" size="60" value="{$list.danbaordh}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>担保人身份证号码</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="danbaorsfzhm" size="60" value="{$list.danbaorsfzhm}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>护照号码</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="huzhaohm" size="60" value="{$list.huzhaohm}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>护照有效期</label>
+                </div>
+                <div class="field">
+                    <input type="text" id="datetimepicker" class="input" name="huzhaoyxq" size="60" value="">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>持有签证类型</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="chiyouqzlx" style="height:32px;border-radius: 4px;">
+                        <option value="">请选择持有签证类型</option>
+                        <option value="1">外交签证</option>
+                        <option value="2">探亲签证</option>
+                        <option value="3">旅游签证</option>
+                        <option value="4">学习签证</option>
+                        <option value="5">职业签证</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>签证有效期</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input datetimepicker" name="qianzhengyxq" size="60" value="">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>国籍</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="guoji" size="60" value="{$list.guoji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>备注</label>
+                </div>
+                <div class="field">
+                    <!-- <input type="text" class="input" name="leixing" size="60" value="{$list.leixing}"> -->
+                    <textarea name="beizhu" class="input" style="width:465px;height:98px;resize:none;">{$list.beizhu}</textarea>
                 </div>
             </div>
         </div>
@@ -78,6 +607,29 @@
     </div>
 </form>
 
+<!-- 日期选择插件载入开始 -->
+<script src="__PUBLIC__/time/jquery.datetimepicker.js"></script>
+<!-- 日期选择插件载入结束 -->
+
+<!-- 日期选择插件初始化开始 -->
+<script>
+    $('.datetimepicker').datetimepicker({
+        lang:"ch", //语言选择中文 注：旧版本 新版方法：$.datetimepicker.setLocale('ch');
+        format:"Y-m-d",      //格式化日期
+        timepicker:false,    //关闭时间选项
+        // yearStart：2000,     //设置最小年份
+        // yearEnd:2050,        //设置最大年份
+        // todayButton:false    //关闭选择今天按钮
+    });
+</script>
+<!-- 日期选择插件初始化结束 -->
+
+<!-- 地址联动插件载入开始 -->
+<script src="__PUBLIC__/address/distpicker.data.js"></script>
+<script src="__PUBLIC__/address/distpicker.js"></script>
+<script src="__PUBLIC__/address/main.js"></script>
+<!-- 地址联动插件载入结束 -->
+
 <script>
     KindEditor.ready(function(K) {
         var editor1 = K.create('textarea[name="content"]', {
@@ -91,3 +643,5 @@
 </script>
 
 <script type="text/javascript" src="__PUBLIC__/webuploader/FileUpload.js"></script>
+
+

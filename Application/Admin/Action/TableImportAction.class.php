@@ -267,7 +267,7 @@ class TableImportAction extends CommonAction{
                             $col = $objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue();
                         break;
                     }
-                    if(empty($col) || $col == '' || is_null($col)){
+                    if(empty(trim($col))){
                         continue;
                     }
                     for($i=0;$i<count($ziduan);$i++){
@@ -302,7 +302,7 @@ class TableImportAction extends CommonAction{
                             $col = $objPHPExcel->getActiveSheet()->getCell('E'.$j)->getValue();
                         break;
                     }
-                    if(empty($col) || $col == '' || is_null($col)){
+                    if(empty(trim($col))){
                         continue;
                     }
                     for($i=0;$i<count($ziduan);$i++){

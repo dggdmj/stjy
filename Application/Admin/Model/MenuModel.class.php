@@ -253,22 +253,22 @@ class MenuModel {
                         'order' => 1
                     ),
                    array(
-                        'name' => '人事档案',
-                        'icon' => 'home',
-                        'url' => U('Setting/school'),
-                        'order' => 1
+                        'name' => '部门管理',
+                        'icon' => 'leaf',
+                        'url' => U('Setting/department'),
+                        'order' => 2
                     ),
                     array(
                         'name' => '期数管理',
                         'icon' => 'crosshairs',
                         'url' => U('Setting/qishu'),
-                        'order' => 2
+                        'order' => 3
                     ),
                     array(
                         'name' => '人事管理',
                         'icon' => 'user',
                         'url' => U('Setting/renshi'),
-                        'order' => 3
+                        'order' => 4
                     ),
 //                    array(
 //                        'name' => '扩展模型管理',
