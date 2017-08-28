@@ -72,7 +72,7 @@ class CountScyjAction extends CommonAction {
             $arr[$k]['xuhao'] = $i;
             $i++;
         }
-        dump($arr);
+//        dump($arr);
         return $arr;
     }
 
@@ -89,7 +89,7 @@ class CountScyjAction extends CommonAction {
         $arr = array();
         $arr['xinlao'] = mb_substr($data['beizhu'],0,2,"utf-8");   //获得是新生还是老生
         $arr['type'] = mb_substr($data['beizhu'],2,2,"utf-8");   //获得是收据类型
-        $arr['nianji'] = mb_substr($data['beizhu'],4,2,"utf-8");   //年级
+        $arr['nianji'] = mb_substr($data['beizhu'],4,2,"utf-8");   //年级，幼儿或小学
         $arr['jsfs'] = $xxked>0?'学习卡':'老结算';  //结算方式：学习卡、老结算
 //        主要备注
         if($zybz_count>1){
@@ -161,8 +161,83 @@ class CountScyjAction extends CommonAction {
         //老结算的结算类型 = 首次缴费日期对应类型 + 老计算报读类型
         $arr["old_jslx"] = $arr['scjfrqdylx'].$arr['old_bdlx'];
 
+        //返回备注中包含的类型
+        $beizhu_type_arr = array("创始会员","国际领袖课程","国内领袖课程","1期秒杀","游学免费读","买三送二","2折秒杀");
+        foreach ($beizhu_type_arr as $v){
+            if(strpos($data['beizhu'],$v)){
+                $arr["bhlx"] = $v;
+            }
+        }
+        if(empty($arr["bhlx"])){
+            $arr["bhlx"] = '';
+        }
+        //结算类型1
+        if(empty($arr["zybz"])){
+            $arr['jslx1'] = '';
+        }else{
+            if($arr['scjfrqdylx'] == "新生" || $arr['scjfrqdylx'] == "1年追补" ){
+                $arr['jslx1'] = '新生';
+            }else{
+                $arr['jslx1'] = '老生';
+            }
+        }
+        //报读类型2,学习卡报读类型
+        if(empty($arr["zybz"])){
+            $arr['xxk_bdlx'] = '';
+        }else{
+            $baodu = $this->baoduType();
+            $arr["xxk_bdlx"] = $baodu[$arr['bdlx']]["学习卡"];
+        }
         //学习卡结算类型
-        $arr["xxk_jslx"] = '1期秒杀';
+        if(empty($arr["zybz"])){
+            $arr["xxk_jslx"] = '';
+        }else{
+            if($arr["bhlx"] == '1期秒杀' && $arr['xinlao'] == '新生'){
+                $arr["xxk_jslx"] = '1期秒杀';
+            }else{
+                if($arr["bhlx"] == '1期秒杀' && $arr['scjfrqdylx'] == '1年追补'){
+                    $arr["xxk_jslx"] = '1期秒杀';
+                }else{
+                    if($arr["bhlx"] == '游学免费读' && $arr['xinlao'] == '新生'){
+                        $arr["xxk_jslx"] = '游学免费读';
+                    }else{
+                        if($arr["bhlx"] == '游学免费读' && $arr['scjfrqdylx'] == '1年追补'){
+                            $arr["xxk_jslx"] = '游学免费读';
+                        }else{
+                            if($arr["bhlx"] == '买三送二' && $arr['xinlao'] == '新生'){
+                                $arr["xxk_jslx"] = '买三送二';
+                            }else{
+                                if($arr["bhlx"] == '买三送二' && $arr['scjfrqdylx'] == '1年追补'){
+                                    $arr["xxk_jslx"] = '买三送二';
+                                }else{
+                                    if($arr["bhlx"] == '2折秒杀' && $arr['xinlao'] == '新生'){
+                                        $arr["xxk_jslx"] = '新生小学国际班1年';
+                                    }else{
+                                        if($arr["bhlx"] == '2折秒杀' && $arr['scjfrqdylx'] == '1年追补'){
+                                            $arr["xxk_jslx"] = '新生小学国际班1年';
+                                        }else{
+                                            if($arr["bhlx"] == '国际领袖课程' || $arr["bhlx"] == '国内领袖课程'){
+                                                $arr["xxk_jslx"] = $arr["bhlx"];
+                                            }else{
+                                                if($arr["bhlx"] == '创始会员' && $arr['jslx1'] == "老生" && $arr["xxk_bdlx"] == "游学会员"){
+                                                    $arr["xxk_jslx"] = '老生创始会员游学会员';
+                                                }else{
+                                                    if($arr["xxk_bdlx"] == "国际班" && $arr['jslx1'] == "新生"){
+                                                        $arr["xxk_jslx"] = $arr['jslx1'].$arr['nianji'].$arr['xxk_bdlx'];
+                                                    }else{
+                                                        $arr["xxk_jslx"] = $arr['jslx1'].$arr['xxk_bdlx'];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         //最终结算类型,如果结算方式是学习卡，就是学习卡结算类型，如果是老结算，就是老结算类型
         if($arr['jsfs'] == '学习卡'){
@@ -193,12 +268,28 @@ class CountScyjAction extends CommonAction {
               '学习卡'=>'国际班',
               '老结算'=>'国际班'
           ),
+          '国际学员'=>array(
+              '学习卡'=>'国际班',
+              '老结算'=>'国际班'
+          ),
+          '平时晚班'=>array(
+              '学习卡'=>'国际班',
+              '老结算'=>'平时晚班'
+          ),
+          '一对一'=>array(
+              '学习卡'=>'国际班',
+              '老结算'=>'国际班'
+          ),
           '线上学员'=>array(
               '学习卡'=>'爱外教',
               '老结算'=>'国际班'
           ),
           '拼单会员'=>array(
               '学习卡'=>'国际班',
+              '老结算'=>'国际班'
+          ),
+          '游学会员'=>array(
+              '学习卡'=>'游学会员',
               '老结算'=>'国际班'
           ),
           '领袖课程'=>array(
