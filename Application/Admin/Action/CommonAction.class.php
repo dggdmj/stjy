@@ -69,13 +69,23 @@ class CommonAction extends Action {
 
 
     // 获取表明与id对应的一维数组
-    public function getTabelnames(){
+    // 1取拼音名,2取中文名
+    public function getTabelnames($sign=1){
         $map['type'] = array('in',array(1,3));
         // 查询出所有导入表
-        $tablenames = M('table_name')->field('id,table_name')->where($map)->select();
+        if($sign == 1){
+            $tablenames = M('table_name')->field('id,table_name')->where($map)->select();
+        }elseif($sign == 2){
+            $tablenames = M('table_name')->field('id,name')->where($map)->select();
+        }
+
         foreach($tablenames as $v){
             $id = $v['id'];
-            $arr[$id] = $v['table_name'];
+            if($sign == 1){
+                $arr[$id] = $v['table_name'];
+            }elseif($sign == 2){
+                $arr[$id] = $v['name'];
+            }
         }
         return $arr;
     }
@@ -193,7 +203,7 @@ class CommonAction extends Action {
             break;
             case 4:
                 $temp['time_cw'] = date('Y-m-d H:i:s');
-                $temp['status_cw'] = 4;
+                $temp['status_cw'] = 5;
                 $temp['status_fzr'] = null;
                 $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             break;

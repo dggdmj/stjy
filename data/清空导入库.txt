@@ -1,0 +1,10 @@
+truncate stjy_xxkedb;
+truncate stjy_bjxxb;
+truncate stjy_bjxyxxb;
+truncate stjy_xyxxb;
+truncate stjy_sjjlb;
+truncate stjy_kxmxb;
+truncate stjy_kbmxb;
+truncate stjy_xyfyyjb;
+truncate stjy_qishu_history;
+truncate stjy_sjzb;

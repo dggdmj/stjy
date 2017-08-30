@@ -63,11 +63,13 @@ class TableCountAction extends CommonAction{
             $map['status_xzjl'] = array('neq',3);// 查询条件
         }elseif($rid == 4){
             $map['status_cw'] = array('neq',3);// 查询条件
+        }elseif($rid == 5){
+            $map['status_fzr'] = array('eq',1);// 查询条件
         }
 
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
-        if(in_array($rid,[2,3,4])){
+        if(in_array($rid,[2,3,4,5])){
             $count = $data->where($map)->count();// 查询满足要求的总记录数
         }
 
@@ -78,6 +80,8 @@ class TableCountAction extends CommonAction{
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->select();
         }else if($rid == 4){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->select();
+        }else if($rid == 5){
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_fzr is not null')->select();
         }
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames();
