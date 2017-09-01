@@ -276,8 +276,9 @@ class CommonAction extends Action {
     }
 
     // 获取当月班级学员信息表的学号一位数组
-    public function getData($qishu){
+    public function getData($qishu,$sid){
         $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
         $where['tid'] = 3;
         // 获取数据库上一月所属订单id
         $fm_data_id = M('qishu_history')->where($where)->getField('id');

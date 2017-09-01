@@ -12,19 +12,20 @@ class CountXzmxAction extends CommonAction {
     public function getXzmxbData($qishu,$sid){
         // 获取上一月的学号数组
         $fmonth = $this->getMonth($qishu);
-        $fm = $this->getData($fmonth);
+        $fm = $this->getData($fmonth,$sid);
 
         // 获取前上二月的学号数组
         $fmonth2 = $this->getMonth($fmonth);
-        $fm2 = $this->getData($fmonth2);
+        $fm2 = $this->getData($fmonth2,$sid);
 
         // 获取前上三月的学号数组
         $fmonth3 = $this->getMonth($fmonth2);
-        $fm3 = $this->getData($fmonth3);
+        $fm3 = $this->getData($fmonth3,$sid);
 
         // 在收据记录表查询当期转入学号
         $where1['qishu'] = $qishu;
         $where1['tid'] = 4;
+        $where1['sid'] = $sid;
         $where2['suoshudd'] = M('qishu_history')->where($where1)->getField('id');
         // dump($where2['id']);
         $where2['qiandanlx'] = "转校";
@@ -37,6 +38,7 @@ class CountXzmxAction extends CommonAction {
         // 查询本期所有学员
         unset($where);
         $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
         $where['tid'] = 3;
         $id = M('qishu_history')->where($where)->getField('id');
         $stu = M('bjxyxxb')->where('suoshudd ='.$id)->field('xuehao')->select();
@@ -66,7 +68,7 @@ class CountXzmxAction extends CommonAction {
             $new = $xueyuan;
             // dump(count($new));
             $map['stjy_bjxyxxb.xuehao'] = array('in',$new);// 查询条件
-            $list = M('bjxyxxb')->join('LEFT JOIN stjy_sjjlb on stjy_bjxyxxb.xuehao=stjy_sjjlb.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,stjy_sjjlb.yejigsr,stjy_sjjlb.zhaoshengly,stjy_xyxxb.shoujihm')->where($map)->group('stjy_bjxyxxb.xuehao')->select();
+            $list = M('bjxyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_bjxyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN stjy_sjjlb on stjy_bjxyxxb.xuehao=stjy_sjjlb.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,stjy_sjjlb.yejigsr,stjy_sjjlb.zhaoshengly,stjy_xyxxb.shoujihm,stjy_xyfyyjb.shuliang,stjy_xyfyyjb.danwei,stjy_xyfyyjb.feiyong')->where($map)->group('stjy_bjxyxxb.xuehao')->select();
 
             foreach($list as $k=>$v){
                 if(in_array($v['xuehao'],$zhuan)){
