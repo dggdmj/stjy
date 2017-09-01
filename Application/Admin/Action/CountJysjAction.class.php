@@ -12,10 +12,11 @@ class CountJysjAction extends CommonAction {
     public function getJysjbData($qishu,$sid){
 
         $where['qishu'] = $qishu;// 获取期数
-        $whewe['sid'] = $sid;// 获取学校id
+        $where['sid'] = $sid;// 获取学校id
         $where['tid'] = 3;// 从班级学员信息表获取信息,它的tid是3
+        dump($where);
         $id = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id,也就是bjxyxxb里面的suoshudd的订单号
-
+        dump($id);
         // ------------以下所有数据都根据suoshudd的id号查询出------------
         // $heji是每个年级对应的合计数
         // $data是每个公立学校对应的每个年级的合计数
