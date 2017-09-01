@@ -9,7 +9,7 @@ class CountScyjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getScyjbData($qishu,$sid){1
+    public function getScyjbData($qishu,$sid){
         //按照期数和分校查询出结果，并以表名为键拼接成一个数组
         $Model = M();
         $tablelist = array();  //初始化要返回的数据
