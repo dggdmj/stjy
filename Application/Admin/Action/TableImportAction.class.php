@@ -78,7 +78,7 @@ class TableImportAction extends CommonAction{
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //  or $_SESSION['superadmin'] == true,若需要用admin查看数据,把这个加入到if里面
-         // $where[''] =
+        //
         if($rid == 2 or $rid == 3){
             $count = $data->where($map)->count();// 查询满足要求的总记录数
         }
@@ -181,7 +181,7 @@ class TableImportAction extends CommonAction{
 
             $tid = $_POST["tid"];  //表名对应的序号
 
-            $need = $tablenames[$tid]; // 需要上传的表名
+            $num = count(explode(explode('表',$tablenames[$tid])[0],$name));// 判断上传表格是否正确的条件,如果上传表名含有需要上传表格名的关键字段,即num>=2,若<2就是非正确的上传表名
 
             // $_POST['suoshufx'] = M('school')->where('id ='.$_POST['suoshufx'])->getField('name');//所属校区
             $_POST['uid'] = M('admin')->where('nicename ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
@@ -203,9 +203,9 @@ class TableImportAction extends CommonAction{
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
 
             // 判断上传的表格是否正确
-            if($name != $need){
+            if($num < 2){
                 unlink($file_name);// 删除excel文档
-                $this->error('请检查上传表格的名字是否为'.$need);
+                $this->error('上传失败,请检查上传的文档是否正确');
             }
 
             //在qishu_history中增加
