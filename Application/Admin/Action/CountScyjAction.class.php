@@ -15,7 +15,7 @@ class CountScyjAction extends CommonAction {
         $tablelist = array();  //初始化要返回的数据
         $where['qishu'] = $qishu;// 获取期数
         $whewe['sid'] = $sid;// 获取学校id
-        $where['tid'] = 4;// 从班级学员信息表获取信息,它的tid是3
+        $where['tid'] = 4;// 从收据记录表获取信息,它的tid是4
         $suoshuid = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id
         //查询出所有数据
         $list = $Model->query("select * from stjy_sjjlb where suoshudd = $suoshuid and `yejigsr` != '' order by `xuehao` ");
@@ -38,9 +38,6 @@ class CountScyjAction extends CommonAction {
             $xxked = M("xxkedb")->where("xingming = '".$v['yejigsr']."'")->getField("edu");    //学习卡额度
             $arr[$v['yejigsr']]['xxked'] = $xxked?$xxked:0;
             $arr[$v['yejigsr']]['total'] = 0;
-
-
-
             //查看数组的键名中是否有业绩归属人的名字
             if(!array_key_exists($v['yejigsr'],$arr)){
                 $arr[$v['yejigsr']]['name'] = $v['yejigsr'];    //业绩归属人的名字

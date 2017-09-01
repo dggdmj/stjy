@@ -170,53 +170,9 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountJysjAction();
         $list = $data->getJysjbData($qishu,$sid);//获得统计数据
-        foreach($list as $key=>$val){
-            foreach($val as $k=>$v){
-                switch($k){
-                    case 'youeryuan':
-                        $temp['youeryuan'][$key] = $v;
-                    break;
-                    case 'yinianji':
-                        $temp['yinianji'][$key] = $v;
-                    break;
-                    case 'ernianji':
-                        $temp['ernianji'][$key] = $v;
-                    break;
-                    case 'sannianji':
-                        $temp['sannianji'][$key] = $v;
-                    break;
-                    case 'sinianji':
-                        $temp['sinianji'][$key] = $v;
-                    break;
-                    case 'wunianji':
-                        $temp['wunianji'][$key] = $v;
-                    break;
-                    case 'liunianji':
-                        $temp['liunianji'][$key] = $v;
-                    break;
-                    case 'chuyi':
-                        $temp['chuyi'][$key] = $v;
-                    break;
-                    case 'chuer':
-                        $temp['chuer'][$key] = $v;
-                    break;
-                    case 'chusan':
-                        $temp['chusan'][$key] = $v;
-                    break;
-                    case 'heji':
-                        $temp['heji'][$key] = $v;
-                    break;
-                }
-            }
-        }
-        dump($temp);
-        $nianji = array('youeryuan'=>'幼儿园','yinianji'=>'一年级','ernianji'=>'二年级','sannianji'=>'三年级','sinianji'=>'四年级','wunianji'=>'五年级','liunianji'=>'六年级','chuyi'=>'初一','chuer'=>'初二','chusan'=>'初二以上','heji'=>'合计');
-        $arr = $this->getArr($qishu,$sid);// 获取当前期数和校区
-        $school_info = M('school')->where('name ="'.$arr['school'].'"')->find();// 获取校区信息
-        $this->assign('list',$temp);
-        $this->assign('arr',$arr);
-        $this->assign('nianji',$nianji);
-        $this->assign('school_info',$school_info);
+        $title = $this->getArr($qishu,$sid);// 获取当前期数和校区
+        $this->assign('list',$list);
+        $this->assign('arr',$title);
         $this->adminDisplay();
 	}
 
