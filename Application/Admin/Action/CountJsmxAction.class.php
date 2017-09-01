@@ -12,15 +12,15 @@ class CountJsmxAction extends CommonAction {
     public function getJsmxbData($qishu,$sid){
         // 获取上一月的学号数组
         $fmonth = $this->getMonth($qishu);
-        $fm = $this->getData($fmonth);
+        $fm = $this->getData($fmonth,$sid);
 
         // 获取前上二月的学号数组
         $fmonth2 = $this->getMonth($fmonth);
-        $fm2 = $this->getData($fmonth2);
+        $fm2 = $this->getData($fmonth2,$sid);
 
         // 获取前上三月的学号数组
         $fmonth3 = $this->getMonth($fmonth2);
-        $fm3 = $this->getData($fmonth3);
+        $fm3 = $this->getData($fmonth3,$sid);
 
         // 查询本期所有学员
         unset($where);
