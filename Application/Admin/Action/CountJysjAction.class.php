@@ -28,8 +28,9 @@ class CountJysjAction extends CommonAction {
 
     public function getkksd($qishu,$sid){
         $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
-        $list = M("bjxxb")->where("suoshudd = ".$suoshudd)->select();dump($list);
-        echo M("bjxxb")->getLastSql();
+        $list = M("bjxxb")->where("suoshudd = ".$suoshudd)->select();
+//        dump($list);
+//        echo M("bjxxb")->getLastSql();
         //根据课程名称判断时间段
         $arr = array();
         foreach ($list as $k=>$v){
