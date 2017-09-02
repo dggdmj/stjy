@@ -319,10 +319,54 @@ class CommonAction extends Action {
     public function getHeji($arr){
         $heji['youeryuan'] = 0;
         foreach($arr as $v){
-            if($v['nianji'] == '小班' or $v['nianji'] == '中班' or $v['nianji'] == '大班'){
-                $heji['youeryuan'] += $v['count'];
-            }else{
-                $heji[$this->encode($v['nianji'],'all')] = $v['count'];
+            // if($v['nianji'] == '小班' or $v['nianji'] == '中班' or $v['nianji'] == '大班'){
+            //     $heji['youeryuan'] += $v['count'];
+            // }else{
+            //     $heji[$this->encode($v['nianji'],'all')] = $v['count'];
+            // }
+            switch($v['nianji']){
+                case '小班':
+                case '中班':
+                case '大班':
+                    $heji['youeryuan'] += $v['count'];
+                break;
+                case '一年级':
+                case '二年级':
+                case '三年级':
+                case '四年级':
+                case '五年级':
+                case '六年级':
+                case '初一':
+                case '初二':
+                    $heji[$this->encode($v['nianji'],'all')] = $v['count'];
+                break;
+                // case '一年级':
+                //     $heji['yinianji'] = $v['count'];
+                // break;
+                // case '二年级':
+                //     $heji['ernianji'] = $v['count'];
+                // break;
+                // case '三年级':
+                //     $heji['sannianji'] = $v['count'];
+                // break;
+                // case '四年级':
+                //     $heji['sinianji'] = $v['count'];
+                // break;
+                // case '五年级':
+                //     $heji['wunianji'] = $v['count'];
+                // break;
+                // case '六年级':
+                //     $heji['liunianji'] = $v['count'];
+                // break;
+                // case '初一':
+                //     $heji['chuyi'] = $v['count'];
+                // break;
+                // case '初二':
+                //     $heji['chuer'] = $v['count'];
+                // break;
+                default:
+                    $heji['chuerys'] += $v['count'];
+                break;
             }
         }
         $heji['heji'] = 0;

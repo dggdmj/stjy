@@ -21,15 +21,16 @@ class CountSczylAction extends CommonAction {
         // $res是返回的数据,$res = ['data'=>$data,'heji'=>$heji];
 
         // $heji
-        $arr = M('bjxyxxb')->field('count(*) as count,nianji')->where('gonglixx is not null and banji != "游学会员" and banji != "广州区域-游学会员（2016年48800元）_殷聆菲_吴易辰_戴梓煊_杨濠歌_顾珊瑜_王宇翔_韦佳烨" and banji != "广州区域-游学会员（2016年48800元）_张茗茹" and banji != "金牌P01K12G1202" and suoshudd ='.$id)->group('nianji')->select();
-        dump($arr);
+        unset($where);
+        $where = 'gonglixx !="" and xuehao !="" and beizhu ="" and suoshudd ='.$id;// 下面$arr和$schools获取数据的查询条件
+        $arr = M('bjxyxxb')->field('count(*) as count,nianji')->where($where)->group('nianji')->select();
         $heji = $this->getHeji($arr);
-        dump($heji);
 
         // $data
-        $schools = M('bjxyxxb')->field('gonglixx')->where('gonglixx is not null and banji != "游学会员" and suoshudd ='.$id)->group('gonglixx')->select();// 得出所有公立学校的数组
+        $schools = M('bjxyxxb')->field('gonglixx')->where($where)->group('gonglixx')->select();// 得出所有公立学校的数组
+
         foreach($schools as $k=>$v){
-            $temp = M('bjxyxxb')->field('count(*) as count,nianji,gonglixx')->where('gonglixx ="'.$v['gonglixx'].'" and banji != "游学会员" and suoshudd ='.$id)->group('nianji')->select();
+            $temp = M('bjxyxxb')->field('count(*) as count,nianji,gonglixx')->where('gonglixx ="'.$v['gonglixx'].'" and xuehao !="" and beizhu = "" and suoshudd ='.$id)->group('nianji')->select();
             $youeryuan = 0;
             $count = 0;
             foreach($temp as $v1){
@@ -40,35 +41,44 @@ class CountSczylAction extends CommonAction {
                     case '小班':
                     case '中班':
                     case '大班':
-                        $youeryuan += $v1['count'];
-                        $data[$k+1]['youeryuan'] = $youeryuan;
+                        $data[$k+1]['youeryuan'] += $v1['count'];
                     break;
                     case '一年级':
-                        $data[$k+1]['yinianji'] = $v1['count'];
-                    break;
                     case '二年级':
-                        $data[$k+1]['ernianji'] = $v1['count'];
-                    break;
                     case '三年级':
-                        $data[$k+1]['sannianji'] = $v1['count'];
-                    break;
                     case '四年级':
-                        $data[$k+1]['sinianji'] = $v1['count'];
-                    break;
                     case '五年级':
-                        $data[$k+1]['wunianji'] = $v1['count'];
-                    break;
                     case '六年级':
-                        $data[$k+1]['liunianji'] = $v1['count'];
-                    break;
                     case '初一':
-                        $data[$k+1]['chuyi'] = $v1['count'];
-                    break;
                     case '初二':
-                        $data[$k+1]['chuer'] = $v1['count'];
+                        $data[$k+1][$this->encode($v1['nianji'],'all')] = $v1['count'];
                     break;
-                    case '初三':
-                        $data[$k+1]['chusan'] = $v1['count'];
+                    // case '一年级':
+                    //     $data[$k+1]['yinianji'] = $v1['count'];
+                    // break;
+                    // case '二年级':
+                    //     $data[$k+1]['ernianji'] = $v1['count'];
+                    // break;
+                    // case '三年级':
+                    //     $data[$k+1]['sannianji'] = $v1['count'];
+                    // break;
+                    // case '四年级':
+                    //     $data[$k+1]['sinianji'] = $v1['count'];
+                    // break;
+                    // case '五年级':
+                    //     $data[$k+1]['wunianji'] = $v1['count'];
+                    // break;
+                    // case '六年级':
+                    //     $data[$k+1]['liunianji'] = $v1['count'];
+                    // break;
+                    // case '初一':
+                    //     $data[$k+1]['chuyi'] = $v1['count'];
+                    // break;
+                    // case '初二':
+                    //     $data[$k+1]['chuer'] = $v1['count'];
+                    // break;
+                    default:
+                        $data[$k+1]['chuerys'] += $v1['count'];
                     break;
                 }
                 $data[$k+1]['gonglixx'] = $v1['gonglixx'];
