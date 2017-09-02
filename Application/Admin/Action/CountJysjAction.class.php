@@ -18,6 +18,7 @@ class CountJysjAction extends CommonAction {
         $arr['school_info'] = $school_info;
         $arr['kksd'] = $arr_kksd;
         $arr['zaice'] = $arr_zaice;
+        $arr['kecheng']  = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
         return $arr;
 
     }
@@ -90,7 +91,7 @@ class CountJysjAction extends CommonAction {
                 if($v["banji"] == '未进班'){
                     $list[$k]["zhuangtai"] = "未进班";
                 }else{
-                    if($v['banji'] == '' && $v["xuehao"] != ""){
+                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
                         $list[$k]["zhuangtai"] = "在读";
                     }else{
                         $list[$k]["zhuangtai"] = "";
@@ -98,80 +99,101 @@ class CountJysjAction extends CommonAction {
                 }
             }
             //统计各年级未进班的人数
-            if($list[$k]["zhuangtai"] == '未进班' && $list[$k]["jibie"] == '未进班'){
-                if($v["nianji"] == '大班' || $v["nianji"] == '中班' || $v["nianji"] == '小班'){
-                    $arr['幼儿园']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '一年级'){
-                    $arr['一年级']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '二年级'){
-                    $arr['二年级']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '三年级'){
-                    $arr['三年级']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '四年级'){
-                    $arr['四年级']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '五年级'){
-                    $arr['五年级']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '六年级'){
-                    $arr['六年级']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '初一'){
-                    $arr['初一']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '初二'){
-                    $arr['初二']['weijinban'] += 1;
-                }
-                if($v["nianji"] == '初三' || $v["nianji"] == '高一' || $v["nianji"] == '高二' || $v["nianji"] == '高三' || $v["nianji"] == '其他'){
-                    $arr['初二以上']['weijinban'] += 1;
-                }
-                $arr['合计']['weijinban'] += 1;
-            }
-
+            $arr = $this->getZaiceArr($list[$k]["zhuangtai"],"未进班",$list[$k]["jibie"],"未进班","weijinban",$v["nianji"],$arr);
             //统计各年级停读的人数
-            if($list[$k]["zhuangtai"] == '停读' && $list[$k]["jibie"] == '停读'){
-                if($v["nianji"] == '大班' || $v["nianji"] == '中班' || $v["nianji"] == '小班'){
-                    $arr['幼儿园']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '一年级'){
-                    $arr['一年级']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '二年级'){
-                    $arr['二年级']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '三年级'){
-                    $arr['三年级']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '四年级'){
-                    $arr['四年级']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '五年级'){
-                    $arr['五年级']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '六年级'){
-                    $arr['六年级']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '初一'){
-                    $arr['初一']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '初二'){
-                    $arr['初二']['tingdu'] += 1;
-                }
-                if($v["nianji"] == '初三' || $v["nianji"] == '高一' || $v["nianji"] == '高二' || $v["nianji"] == '高三' || $v["nianji"] == '其他'){
-                    $arr['初二以上']['tingdu'] += 1;
-                }
-                $arr['合计']['tingdu'] += 1;
+            $arr = $this->getZaiceArr($list[$k]["zhuangtai"],"停读",$list[$k]["jibie"],"停读","tingdu",$v["nianji"],$arr);
+            //统计每个课程各年级在读的人数
+            $kecheng_arr = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
+            foreach ($kecheng_arr as $k1=>$v1){
+                $arr = $this->getZaiceArr($list[$k]["zhuangtai"],"在读",$list[$k]["jibie"],$v1,$v1,$v["nianji"],$arr);
             }
-            foreach ($nianji as $k => $v){
-                $data[$v] = $arr[$v];
+            foreach ($nianji as $k2 => $v2){
+                $data[$v2] = $arr[$v2];
             }
         }
 //        dump($data);
         return $data;
+    }
+
+    public function getZaiceArr($zhuangtai,$zhuangtai_if,$jibie,$jibie_if,$name,$nianji,$arr){
+        if($zhuangtai == $zhuangtai_if && $jibie == $jibie_if){
+            if($nianji == '大班' || $nianji == '中班' || $nianji == '小班'){
+                $arr['幼儿园'][$name] += 1;
+                $arr['幼儿园']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['幼儿园']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '一年级'){
+                $arr['一年级'][$name] += 1;
+                $arr['一年级']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['一年级']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '二年级'){
+                $arr['二年级'][$name] += 1;
+                $arr['二年级']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['二年级']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '三年级'){
+                $arr['三年级'][$name] += 1;
+                $arr['三年级']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['三年级']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '四年级'){
+                $arr['四年级'][$name] += 1;
+                $arr['四年级']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['四年级']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '五年级'){
+                $arr['五年级'][$name] += 1;
+                $arr['五年级']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['五年级']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '六年级'){
+                $arr['六年级'][$name] += 1;
+                $arr['六年级']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['六年级']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '初一'){
+                $arr['初一'][$name] += 1;
+                $arr['初一']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['初一']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '初二'){
+                $arr['初二'][$name] += 1;
+                $arr['初二']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['初二']["sjzbrs"] += 1;
+                }
+            }
+            if($nianji == '初三' || $nianji == '高一' || $nianji == '高二' || $nianji == '高三' || $nianji == '其他'){
+                $arr['初二以上'][$name] += 1;
+                $arr['初二以上']["zrs"] += 1;
+                if($zhuangtai_if == "在读"){
+                    $arr['初二以上']["sjzbrs"] += 1;
+                }
+            }
+            $arr['合计'][$name] += 1;
+            $arr['合计']["zrs"] += 1;
+            if($zhuangtai_if == "在读"){
+                $arr['合计']["sjzbrs"] += 1;
+            }
+        }
+        return $arr;
     }
 
 }
