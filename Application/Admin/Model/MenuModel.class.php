@@ -270,12 +270,12 @@ class MenuModel {
                         'url' => U('Setting/renshi'),
                         'order' => 4
                     ),
-//                    array(
-//                        'name' => '扩展模型管理',
-//                        'icon' => 'puzzle-piece',
-//                        'url' => U('/Expand/index'),
-//                        'order' => 3
-//                    ),
+                    array(
+                        'name' => '班级编号管理',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/banjibianhao'),
+                        'order' => 5
+                    ),
 //                    array(
 //                        'name' => '表单管理',
 //                        'icon' => 'file-text-o',
