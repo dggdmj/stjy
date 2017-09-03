@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-09-02 15:52:27
+Date: 2017-09-03 15:14:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -166,11 +166,11 @@ CREATE TABLE `stjy_admin` (
 -- ----------------------------
 -- Records of stjy_admin
 -- ----------------------------
-INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1504319747', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1504422657', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2,4', '1504319731', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('3', 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', '1501780416', '127.0.0.1', '1');
 INSERT INTO `stjy_admin` VALUES ('4', 'caiwu', 'f5b5ec699ed736de89336fbce0bc9890', '财务', 'caiwu@caiwu.com', '1,2,3,4', '1504078099', '127.0.0.1', '0');
-INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4,5', '1504327711', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4,5', '1504419714', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('6', 'fuzeren', 'e10adc3949ba59abbe56e057f20f883e', 'fuzeren', 'fuzeren@stjy.com', '1,2,3,4', '1503977551', '127.0.0.1', '0');
 
 -- ----------------------------
@@ -196,6 +196,65 @@ CREATE TABLE `stjy_article` (
 -- ----------------------------
 -- Records of stjy_article
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for stjy_banjibianhao
+-- ----------------------------
+DROP TABLE IF EXISTS `stjy_banjibianhao`;
+CREATE TABLE `stjy_banjibianhao` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `jingdujb` varchar(255) NOT NULL COMMENT '精读级别',
+  `fandujb` varchar(255) DEFAULT NULL COMMENT '泛读级别',
+  `fandujb1` varchar(255) DEFAULT NULL COMMENT '泛读级别1',
+  `fandujb2` varchar(255) DEFAULT NULL COMMENT '泛读级别2',
+  `fandujb3` varchar(255) DEFAULT NULL COMMENT '泛读级别3',
+  `shifoutsb` varchar(255) DEFAULT NULL COMMENT '是否特色班',
+  `xueshengnj` varchar(255) DEFAULT NULL COMMENT '学生年级',
+  `banjixh` varchar(255) DEFAULT NULL COMMENT '班级序号',
+  `banxing` varchar(255) DEFAULT NULL COMMENT '班型',
+  `shiyongnj` varchar(255) DEFAULT NULL COMMENT '适用年级',
+  `bianma` varchar(255) DEFAULT NULL COMMENT '编码',
+  `beizhu` varchar(255) DEFAULT NULL COMMENT '备注',
+  `banxing2` varchar(255) DEFAULT NULL COMMENT '班型2',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COMMENT='班级编号表';
+
+-- ----------------------------
+-- Records of stjy_banjibianhao
+-- ----------------------------
+INSERT INTO `stjy_banjibianhao` VALUES ('2', 'K01', null, 'KGF', null, null, 'T', 'XD', '01', '幼儿部', '小班', 'K01KGFTXD01', 'kitty goes fishing（小猫钓鱼）', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('3', 'K02', null, '000', null, null, 'G', '0X', '02', '幼儿部', '小班', 'K02000G0X02', null, '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('4', 'K03', null, 'ADP', null, null, 'T', 'ZD', '03', '幼儿部', '中班', 'K03ADPTZD03', 'a Dirty Pig《小脏猪》', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('5', 'K04', null, 'CAB', null, null, 'G', '0Z', '04', '幼儿部', '中班', 'K04CABG0Z04', 'The Cat and the Bell《猫和铃铛》', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('6', 'K05', null, 'WAR', null, null, 'T', '0D', '05', '幼儿部', '大班', 'K05WART0D05', 'The Wolf and the Rabbits《大灰狼与兔子们》', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('7', 'K06', null, 'TLP', null, null, 'G', 'XZ', '06', '幼儿部', '大班', 'K06TLPGXZ06', 'Three Little Pigs《三只小猪》', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('8', 'P01', null, 'K12', 'K34', 'K56', 'T', '12', '07', '小初部', '一年级', 'P01K12T1207', '故事一期 New Phonics for kids 1课本 原版', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('9', 'P02', null, 'K34', 'K12', 'K56', 'G', '12', '08', '小初部', '一年级', 'P02K34G1208', '故事二期', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('10', 'P03', null, 'K56', 'K12', 'K34', 'T', '12', '09', '小初部', '一年级', 'P03K56T1209', '故事三期', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('11', 'P1A', null, 'F01', null, null, 'G', '23', '10', '小初部', '二年级', 'P1AF01G2310', 'Phonics fun 1课本 原版', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('12', 'P1B', null, 'F02', null, null, 'T', '12', '11', '小初部', '二年级', 'P1BF02T1211', 'Phonics fun 2课本 原版', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('13', 'P2A', null, 'F03', null, null, 'G', '12', '12', '小初部', '二年级', 'P2AF03G1212', 'Phonics fun 3课本 原版', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('14', 'P2B', null, 'F04', null, null, 'T', '34', '13', '小高部', '三年级', 'P2BF04T3413', 'Phonics fun 4课本 原版', '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('15', 'P3A', null, 'F05', null, null, 'G', '34', '14', '小高部', '三年级', 'P3AF05G3414', 'Phonics fun 5课本 原版', '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('16', 'P3B', null, 'F06', null, null, 'T', '34', '15', '小高部', '三年级', 'P3BF06T3415', 'Phonics fun 6课本 原版；bright readers 3 上册(A)', '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('17', 'P4A', null, 'BR3', null, null, 'G', '34', '16', '小高部', '四年级', 'P4ABR3G3416', 'bright readers 3 下册(B) ；X计划5', '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('18', 'P4B', null, 'BR4', null, null, 'T', '45', '17', '小高部', '四年级', 'P4BBR4T4517', 'bright readers 4 下册(A) ；X计划6', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('19', 'P5A', null, 'BR4', null, null, 'G', '34', '18', '初中部', '四年级', 'P5ABR4G3418', 'bright readers 4 下册(B) ；X计划7', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('20', 'P5B', null, 'BR5', null, null, 'T', '05', '19', '初中部', '五年级', 'P5BBR5T0519', 'bright readers 5 下册(A) ；X计划8', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('21', 'P6A', null, 'BR5', null, null, 'G', '56', '20', '初中部', '五年级', 'P6ABR5G5620', 'bright readers 5 下册(B) ；X计划9（夏季班）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('22', 'P6A', null, 'BR6', null, null, 'T', '05', '21', '初中部', '五年级', 'P6ABR6T0521', 'bright readers 6 下册(A) ；X计划10（秋季班）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('23', 'P6B', null, 'BR6', null, null, 'G', '56', '22', '初中部', '五年级', 'P6BBR6G5622', 'bright readers 6 下册(B) ；小升初冲刺', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('24', 'J1A', null, 'SR3', null, null, 'T', '56', '23', '初中部', '六年级', 'J1ASR3T5623', '新课标百科丛书3（1-7）  secondary readers', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('25', 'J1B', null, 'SR3', null, null, 'G', '56', '24', '初中部', '六年级', 'J1BSR3G5624', '新课标百科丛书3（8-14）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('26', 'J2A', null, 'SR5', 'SR7', null, 'T', '06', '25', '初中部', '初一', 'J2ASR5T0625', '新课标百科丛书5（1-7）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('27', 'J2B', null, 'SR5', 'SR7', null, 'G', '67', '26', '初中部', '初一', 'J2BSR5G6726', '新课标百科丛书5（8-14）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('28', 'J3A', null, 'SR7', 'SR9', null, 'T', '78', '27', '初中部', '初二', 'J3ASR7T7827', '新课标百科丛书7（1-7）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('29', 'J3B', null, 'SR7', 'SR9', null, 'G', '78', '28', '初中部', '初二', 'J3BSR7G7828', '新课标百科丛书7（8-14）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('30', 'NS1', null, 'SR9', null, null, 'T', '09', '29', '初中部', '初三', 'NS1SR9T0929', '1-4单元', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('31', 'NS2', null, 'SR9', null, null, 'G', '89', '30', '初中部', '初三', 'NS2SR9G8930', '5-8单元', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('32', 'SWN', null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_banjibianhao` VALUES ('33', 'S1B', null, null, null, null, null, '01', '01', '小初部', '二年级', null, null, '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('34', 'S2B', null, null, null, null, null, '02', null, '小高部', '三年级', null, null, '小高部');
 
 -- ----------------------------
 -- Table structure for stjy_bjxxb
@@ -3921,7 +3980,7 @@ CREATE TABLE `stjy_qishu_history` (
   `qishu` varchar(255) DEFAULT '' COMMENT '期数',
   `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_qishu_history
@@ -3950,6 +4009,9 @@ INSERT INTO `stjy_qishu_history` VALUES ('33', '1', './Public/Uploads/20170831/5
 INSERT INTO `stjy_qishu_history` VALUES ('34', '1', './Public/Uploads/20170831/59a7bcda884b2.xlsx', '7', '5', '5', '201707', '2017-08-31 15:38:02');
 INSERT INTO `stjy_qishu_history` VALUES ('35', '1', './Public/Uploads/20170831/59a7bceb2f2b9.xlsx', '14', '5', '5', '201707', '2017-08-31 15:38:19');
 INSERT INTO `stjy_qishu_history` VALUES ('36', '1', './Public/Uploads/20170901/59a8fcb1ca72f.xlsx', '14', '4', '5', '201706', '2017-09-01 14:22:41');
+INSERT INTO `stjy_qishu_history` VALUES ('46', '1', '', '8', '5', '5', '201707', '2017-09-02 16:34:03');
+INSERT INTO `stjy_qishu_history` VALUES ('48', '1', '', '9', '5', '5', '201707', '2017-09-03 00:45:19');
+INSERT INTO `stjy_qishu_history` VALUES ('49', '1', '', '10', '5', '5', '201707', '2017-09-03 14:35:03');
 
 -- ----------------------------
 -- Table structure for stjy_renshi
@@ -4127,13 +4189,20 @@ CREATE TABLE `stjy_scyjb` (
   `huiyuanldxyye` double(11,2) DEFAULT NULL COMMENT '会员老带新营业额',
   `qianming` varchar(255) DEFAULT NULL COMMENT '签名',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_scyjb
 -- ----------------------------
+INSERT INTO `stjy_scyjb` VALUES ('36', '1', '彭永红', null, null, '120000.00', '4.00', '2.00', null, null, null, null, null, null, '96.00', null, null, '16.00', null, null, null, null, null, null, null, '48.00', null, null, '46', '2017-09-02 16:34:03');
+INSERT INTO `stjy_scyjb` VALUES ('37', '2', '张松煌', null, null, '75000.00', '21.00', '3.40', null, null, null, null, null, null, '24.00', null, '3937.00', '16.00', null, null, null, null, null, null, null, '1.00', null, null, '46', '2017-09-02 16:34:03');
+INSERT INTO `stjy_scyjb` VALUES ('38', '3', '梁彩红', null, null, '0.00', '4.00', '0.00', null, null, null, null, null, null, '24.00', null, '3937.00', '16.00', null, null, null, null, null, null, null, '0.00', null, null, '46', '2017-09-02 16:34:03');
+INSERT INTO `stjy_scyjb` VALUES ('39', '4', '王圆圆', null, null, '275000.00', '18.00', '2.85', null, null, null, null, null, null, '25.00', null, '3930.50', '16.00', null, null, null, null, null, null, null, '1.00', null, null, '46', '2017-09-02 16:34:03');
+INSERT INTO `stjy_scyjb` VALUES ('40', '5', '吴彩红', null, null, '75000.00', '4.00', '0.20', null, null, null, null, null, null, '25.00', null, '2.00', '16.00', null, null, null, null, null, null, null, '0.50', null, null, '46', '2017-09-02 16:34:03');
+INSERT INTO `stjy_scyjb` VALUES ('41', '6', '翟志翔', null, null, '240000.00', '2.00', '0.15', null, null, null, null, null, null, '25.00', null, '1.50', '16.00', null, null, null, null, null, null, null, '1.00', null, null, '46', '2017-09-02 16:34:03');
+INSERT INTO `stjy_scyjb` VALUES ('42', '7', '陈健霞', null, null, '0.00', '0.00', '0.00', null, null, null, null, null, null, '25.00', null, '1.50', '16.00', null, null, null, null, null, null, null, '0.00', null, null, '46', '2017-09-02 16:34:03');
 
 -- ----------------------------
 -- Table structure for stjy_sczylb
@@ -4142,7 +4211,7 @@ DROP TABLE IF EXISTS `stjy_sczylb`;
 CREATE TABLE `stjy_sczylb` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `xuhao` int(11) DEFAULT NULL COMMENT '序号',
-  `xuexiao` varchar(255) DEFAULT NULL COMMENT '学校',
+  `gonglixx` varchar(255) DEFAULT NULL COMMENT '学校',
   `youeryuan` double(11,2) DEFAULT NULL COMMENT '幼儿园',
   `yinianji` double(11,2) DEFAULT NULL COMMENT '一年级',
   `ernianji` double(11,2) DEFAULT NULL COMMENT '二年级',
@@ -4156,12 +4225,104 @@ CREATE TABLE `stjy_sczylb` (
   `heji` double(11,2) DEFAULT NULL COMMENT '合计',
   `xuexiaogms` double(11,2) DEFAULT NULL COMMENT '学校规模数',
   `zhanyoulv` double(11,2) DEFAULT NULL COMMENT '占有率',
+  `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
+  `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=181 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_sczylb
 -- ----------------------------
+INSERT INTO `stjy_sczylb` VALUES ('91', '0', '合计', '123.00', '114.00', '69.00', '66.00', '34.00', '34.00', '39.00', '16.00', '20.00', '4.00', '519.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('92', '1', '113中学陶育实验学校', null, null, null, '1.00', null, null, null, null, null, '1.00', '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('93', '2', '中大附属幼儿园', '2.00', null, null, null, null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('94', '3', '中山大学附属中学', null, null, null, null, null, null, null, null, null, '1.00', '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('95', '4', '丽晴轩幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('96', '5', '华南师范大学附属小学', null, '1.00', null, null, null, '1.00', null, '1.00', null, null, '3.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('97', '6', '华南师范大学附属幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('98', '7', '华南理工大学幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('99', '8', '华南理工大学附属中学', null, null, null, null, null, null, null, '1.00', '1.00', null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('100', '9', '华南理工大学附属实验学校', null, '2.00', '1.00', '1.00', null, '1.00', null, null, null, null, '5.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('101', '10', '天河区东圃幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('102', '11', '天河区五一小学', null, '4.00', '5.00', '10.00', '12.00', '1.00', '3.00', null, null, null, '35.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('103', '12', '天河区五山小学', '1.00', '2.00', null, null, '1.00', '1.00', null, null, null, null, '5.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('104', '13', '天河区体育东小学', null, null, '2.00', null, '1.00', null, '1.00', null, null, null, '4.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('105', '14', '天河区体育西路小学', null, '1.00', null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('106', '15', '天河区先烈东小学', null, '1.00', null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('107', '16', '天河区华康小学', null, null, '1.00', '1.00', null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('108', '17', '天河区华阳小学', null, '1.00', '2.00', '2.00', '2.00', '1.00', '7.00', '1.00', null, null, '16.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('109', '18', '天河区四十七中汇景实验学校', null, null, null, null, '1.00', null, '2.00', '3.00', '1.00', null, '7.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('110', '19', '天河区天府路小学', null, '1.00', null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('111', '20', '天河区天润幼儿园', '2.00', null, null, null, null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('112', '21', '天河区帝景苑幼儿园', '5.00', null, null, null, null, null, null, null, null, null, '5.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('113', '22', '天河区棠下小学', null, null, null, '2.00', null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('114', '23', '天河区汇景新城实验小学', null, null, '1.00', null, null, null, '1.00', null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('115', '24', '天河区瀚景幼儿园', '2.00', null, null, null, null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('116', '25', '天河区石牌小学', null, '1.00', '5.00', null, null, null, null, null, null, null, '6.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('117', '26', '天河区第一实验小学', null, null, null, null, null, '1.00', null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('118', '27', '天河区第二实验幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('119', '28', '天河区远景幼儿园', '3.00', null, null, null, null, null, null, null, null, null, '3.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('120', '29', '天河区银河小学', null, null, '1.00', null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('121', '30', '天河区长湴小学', null, null, null, '1.00', null, '1.00', '1.00', null, null, null, '3.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('122', '31', '天河区龙口西小学', '1.00', '74.00', '34.00', '38.00', '13.00', '24.00', '16.00', null, null, null, '200.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('123', '32', '天河区龙口西幼儿园', '1.00', '1.00', null, null, null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('124', '33', '天河区龙洞小学', null, null, '1.00', '1.00', null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('125', '34', '天河区龙空中幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('126', '35', '天河实验幼儿园', '2.00', null, null, null, null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('127', '36', '岭南中英文小学', null, '1.00', null, '2.00', null, null, null, null, null, null, '3.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('128', '37', '岭南中英文幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('129', '38', '广东省公安厅幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('130', '39', '广东省委机关幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('131', '40', '广东省委机关幼儿院', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('132', '41', '广州军区空军直属机关幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('133', '42', '广州军区空军直属机关第二幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('134', '43', '广州华南农业大学附属小学', null, '1.00', '2.00', null, null, null, '2.00', null, null, null, '5.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('135', '44', '广州启蒙中英文幼儿园', '19.00', null, null, null, null, null, null, null, null, '2.00', '21.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('136', '45', '广州外国语学校', null, null, null, null, null, null, null, null, '1.00', null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('137', '46', '广州市八一实验学校', null, null, null, null, null, null, '1.00', null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('138', '47', '广州市华侨外国语学校', null, null, null, null, null, null, null, null, '1.00', null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('139', '48', '广州市华师附中番禺学校', null, null, null, null, null, null, null, null, '1.00', null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('140', '49', '广州市协和小学', null, '1.00', null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('141', '50', '广州市天河中学', null, null, null, null, null, null, null, '3.00', '2.00', null, '5.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('142', '51', '广州市天河区万锦国际幼儿园', '3.00', null, null, null, null, null, null, null, null, null, '3.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('143', '52', '广州市天河区中怡幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('144', '53', '广州市天河区五一小学', null, '5.00', '6.00', '2.00', '1.00', '1.00', null, null, null, null, '15.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('145', '54', '广州市天河区五山花园幼儿园', '2.00', null, null, null, null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('146', '55', '广州市天河区侨乐小学', null, null, '1.00', '1.00', null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('147', '56', '广州市天河区华南农业大学附属小学', null, '1.00', null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('148', '57', '广州市天河区华景泽晖幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('149', '58', '广州市天河区华阳小学', null, null, null, null, null, null, '3.00', null, null, null, '3.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('150', '59', '广州市天河区名雅幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('151', '60', '广州市天河区汇景新城幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('152', '61', '广州市天河区金太阳幼儿园', '3.00', null, null, null, null, null, null, null, null, null, '3.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('153', '62', '广州市天河区鸣远幼儿园', '11.00', null, null, null, null, null, null, null, null, null, '11.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('154', '63', '广州市天河区龙口中路幼儿园', '10.00', null, null, null, null, null, null, null, null, null, '10.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('155', '64', '广州市天河区龙口西小学', null, '12.00', '6.00', '1.00', null, '1.00', null, null, null, null, '20.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('156', '65', '广州市天河区龙口西幼儿园', '2.00', null, null, null, null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('157', '66', '广州市天河外国语学校', null, null, null, null, null, null, null, null, '2.00', null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('158', '67', '广州市幼儿师范学校附属幼儿园', '6.00', null, null, null, null, null, null, null, null, null, '6.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('159', '68', '广州市政府机关幼儿园', '14.00', null, null, null, null, null, null, null, null, null, '14.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('160', '69', '广州市暨南大学附属小学', null, '1.00', '1.00', null, null, null, null, null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('161', '70', '广州市民政局幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('162', '71', '广州市海珠区知信小学', null, null, null, null, null, '1.00', null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('163', '72', '广州市海珠区赤岗东小学', null, null, null, '1.00', null, null, '1.00', null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('164', '73', '广州市番禺区香江育才实验学校', null, null, null, null, null, null, null, null, '1.00', null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('165', '74', '广州市白云区华师附中实验小学', null, '1.00', null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('166', '75', '广州市白云区培英实验小学', null, null, null, '1.00', null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('167', '76', '广州市第七十五中学', null, null, null, null, null, null, null, null, '1.00', null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('168', '77', '广州市第四十七中学', null, null, null, null, null, null, null, '7.00', '8.00', null, '15.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('169', '78', '广州市绿翠现代实验学校', null, null, null, null, null, null, null, null, '1.00', null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('170', '79', '广州市荔湾区西关实验小学', null, '1.00', null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('171', '80', '广州市越秀区东风东路小学', null, '1.00', null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('172', '81', '广州市越秀区中星小学', null, null, null, null, '1.00', null, '1.00', null, null, null, '2.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('173', '82', '广州市越秀区育才小学', null, null, null, null, '1.00', null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('174', '83', '广州市黄埔职业技术学校附属东港幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('175', '84', '广州思源学校', null, null, null, null, '1.00', null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('176', '85', '广州金太阳幼儿园', '6.00', null, null, null, null, null, null, null, null, null, '6.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('177', '86', '汇景心园幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('178', '87', '育华小学', null, null, null, '1.00', null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('179', '88', '荟雅苑幼儿园', '1.00', null, null, null, null, null, null, null, null, null, '1.00', null, null, '48', '2017-09-03 00:45:19');
+INSERT INTO `stjy_sczylb` VALUES ('180', '89', '金海幼儿园', '8.00', null, null, null, null, null, null, null, null, null, '8.00', null, null, '48', '2017-09-03 00:45:19');
 
 -- ----------------------------
 -- Table structure for stjy_sjjlb
@@ -4368,7 +4529,7 @@ CREATE TABLE `stjy_sjzb` (
 -- ----------------------------
 INSERT INTO `stjy_sjzb` VALUES ('2', '201707', '4', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '无', '无', '无', '2017-09-01 22:41:36', null, null, null);
 INSERT INTO `stjy_sjzb` VALUES ('3', '201706', '4', '2', '2', '2', '2', '2', '2', '2', '2', '4', null, null, null, '行政经理', '无', '无', '无', '2017-09-02 12:48:56', null, null, null);
-INSERT INTO `stjy_sjzb` VALUES ('4', '201707', '5', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '行政经理', '无', '无', '2017-09-02 10:28:38', '2017-09-02 00:09:53', null, null);
+INSERT INTO `stjy_sjzb` VALUES ('4', '201707', '5', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '行政经理', '无', '无', '2017-09-03 14:35:02', '2017-09-02 00:09:53', null, null);
 
 -- ----------------------------
 -- Table structure for stjy_table_name
@@ -5445,7 +5606,7 @@ CREATE TABLE `stjy_xyxxb` (
   `zhanghuye` double(11,2) DEFAULT NULL COMMENT '账户余额',
   `shengao` varchar(255) DEFAULT NULL COMMENT '身高',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
-  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+  `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1138 DEFAULT CHARSET=utf8;
 
@@ -6493,8 +6654,528 @@ CREATE TABLE `stjy_xzmxb` (
   `jiuduxx` varchar(255) DEFAULT NULL COMMENT '就读学校',
   `jiuduxxnj` varchar(255) DEFAULT NULL COMMENT '就读学校年级',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1062 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_xzmxb
 -- ----------------------------
+INSERT INTO `stjy_xzmxb` VALUES ('534', null, null, null, null, 'S02388', '保思雨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('535', null, null, null, null, 'S02390', '蔡皓年', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('536', null, null, null, null, 'S02391', '蔡佳乐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('537', null, null, null, null, 'S02392', '蔡孟航', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('538', null, null, null, null, 'S02393', '蔡士宏', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('539', null, null, null, null, 'S02394', '曹嗣卓', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('540', null, null, null, null, 'S02395', '曹烯隽', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('541', null, null, null, null, 'S02396', '曹烯玥', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('542', null, null, null, null, 'S02397', '车林轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('543', null, null, null, null, 'S02398', '陈锦昊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('544', null, null, null, null, 'S02399', '陈芊希', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('545', null, null, null, null, 'S02400', '陈柔安8528', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('546', null, null, null, null, 'S02401', '陈瑞霖', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('547', null, null, null, null, 'S02402', '陈睿言', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('548', null, null, null, null, 'S02403', '陈思琪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('549', null, null, null, null, 'S02404', '陈思颖3778', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('550', null, null, null, null, 'S02405', '陈希勤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('551', null, null, null, null, 'S02406', '陈相宇2809', null, null, null, null, null, null, null, null, null, null, '', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('552', null, null, null, null, 'S02407', '陈奕忻', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('553', null, null, null, null, 'S02408', '陈奕舟7788', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('554', null, null, null, null, 'S02409', '陈宥霖', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('555', null, null, null, null, 'S02410', '陈昱霖1499', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('556', null, null, null, null, 'S02411', '陈兆君', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('557', null, null, null, null, 'S02412', '陈贞熹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('558', null, null, null, null, 'S02413', '陈致一', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('559', null, null, null, null, 'S02414', '成柏萱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('560', null, null, null, null, 'S02415', '戴梓煊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('562', null, null, null, null, 'S02416', '邓涵月', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('563', null, null, null, null, 'S02417', '邓瑞涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('564', null, null, null, null, 'S02418', '邓颖乐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('565', null, null, null, null, 'S02419', '邓之尚', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('566', null, null, null, null, 'S02420', '邓之聿', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('567', null, null, null, null, 'S02421', '杜南宏', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('568', null, null, null, null, 'S02422', '杜依琳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('569', null, null, null, null, 'S02423', '杜艺文', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('570', null, null, null, null, 'S02424', '段沣轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('571', null, null, null, null, 'S02426', '关杰洋', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('572', null, null, null, null, 'S02427', '郭品烔', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('573', null, null, null, null, 'S02428', '郭芷彤7107', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('574', null, null, null, null, 'S02429', '韩雨竹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('575', null, null, null, null, 'S02430', '何艾霖', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('576', null, null, null, null, 'S02431', '何佳珂', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('577', null, null, null, null, 'S02432', '何炯', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('578', null, null, null, null, 'S02433', '何睿祺', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('579', null, null, null, null, 'S02435', '贺振轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('580', null, null, null, null, 'S02436', '胡德胜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('581', null, null, null, null, 'S02437', '胡家莹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('582', null, null, null, null, 'S02438', '胡铭轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('583', null, null, null, null, 'S02439', '胡彦超', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('584', null, null, null, null, 'S02440', '黄春献', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('585', null, null, null, null, 'S02441', '黄琮胜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('586', null, null, null, null, 'S02442', '黄丽榕5165', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('587', null, null, null, null, 'S02443', '黄麟越', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('588', null, null, null, null, 'S02445', '黄希玮', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('589', null, null, null, null, 'S02446', '黄臻', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('590', null, null, null, null, 'S02448', '黄梓昊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('591', null, null, null, null, 'S02450', '江盈熹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('592', null, null, null, null, 'S02452', '阚一诺', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('593', null, null, null, null, 'S02453', '康洪铭', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('594', null, null, null, null, 'S02454', '邝悦琳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('595', null, null, null, null, 'S02455', '赖怡丹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('596', null, null, null, null, 'S02456', '劳宇恒', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('597', null, null, null, null, 'S02457', '劳泽炜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('598', null, null, null, null, 'S02459', '黎子杰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('599', null, null, null, null, 'S02460', '李承锴', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('600', null, null, null, null, 'S02461', '李瀚达', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('601', null, null, null, null, 'S02462', '李弘锐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('602', null, null, null, null, 'S02463', '李华松', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('603', null, null, null, null, 'S02464', '李佳霖', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('604', null, null, null, null, 'S02465', '李佳晔', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('605', null, null, null, null, 'S02466', '李璐妍', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('606', null, null, null, null, 'S02467', '李孟璘', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('607', null, null, null, null, 'S02469', '李诗泳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('608', null, null, null, null, 'S02471', '李思源', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('609', null, null, null, null, 'S02472', '李苏南', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('610', null, null, null, null, 'S02473', '李贤乐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('611', null, null, null, null, 'S02474', '李向涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('612', null, null, null, null, 'S02475', '李心然2630', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('613', null, null, null, null, 'S02476', '李昕烁', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('614', null, null, null, null, 'S02477', '李昕瑶', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('615', null, null, null, null, 'S02478', '李欣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('616', null, null, null, null, 'S02479', '李伊然', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('617', null, null, null, null, 'S02480', '李宜臻', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('618', null, null, null, null, 'S02481', '李奕萱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('619', null, null, null, null, 'S02482', '李颖彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('620', null, null, null, null, 'S02483', '李与同', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('621', null, null, null, null, 'S02484', '李雨佳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('622', null, null, null, null, 'S02485', '李芷君', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('623', null, null, null, null, 'S02486', '梁杰玮', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('624', null, null, null, null, 'S02488', '梁梓政', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('625', null, null, null, null, 'S02492', '林筱语', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('626', null, null, null, null, 'S02493', '林野', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('627', null, null, null, null, 'S02494', '林已晞', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('628', null, null, null, null, 'S02495', '林之韵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('629', null, null, null, null, 'S02496', '林梓钊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('630', null, null, null, null, 'S02497', '刘秉哲', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('631', null, null, null, null, 'S02498', '刘晨宇', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('632', null, null, null, null, 'S02499', '刘桥', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('633', null, null, null, null, 'S02500', '刘伟玲', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('634', null, null, null, null, 'S02501', '刘雅暄', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('635', null, null, null, null, 'S02502', '刘懿萱0509', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('636', null, null, null, null, 'S02503', '刘泽涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('637', null, null, null, null, 'S02505', '卢俊文', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('638', null, null, null, null, 'S02507', '卢宇皓', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('639', null, null, null, null, 'S02509', '鲁子瑜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('640', null, null, null, null, 'S02510', '陆浩贤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('641', null, null, null, null, 'S02511', '陆玥锜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('642', null, null, null, null, 'S02512', '吕紫玥', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('643', null, null, null, null, 'S02513', '罗晨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('644', null, null, null, null, 'S02515', '罗梓泰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('645', null, null, null, null, 'S02516', '马浩宇', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('646', null, null, null, null, 'S02518', '毛馨妤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('647', null, null, null, null, 'S02521', '莫思欣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('648', null, null, null, null, 'S02522', '莫思韵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('649', null, null, null, null, 'S02523', '倪策', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('650', null, null, null, null, 'S02524', '宁晨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('651', null, null, null, null, 'S02525', '钱俊伊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('652', null, null, null, null, 'S02526', '邱丹彦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('653', null, null, null, null, 'S02527', '邱逸琳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('654', null, null, null, null, 'S02528', '邱颍冉', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('655', null, null, null, null, 'S02530', '任迦辉', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('656', null, null, null, null, 'S02531', '任彤玥', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('657', null, null, null, null, 'S02532', '容梓祺', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('658', null, null, null, null, 'S02533', '阮芊馨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('659', null, null, null, null, 'S02535', '申峤纯', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('660', null, null, null, null, 'S02536', '申诗玥', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('661', null, null, null, null, 'S02538', '石晗', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('662', null, null, null, null, 'S02539', '宋勇熹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('663', null, null, null, null, 'S02540', '苏子芸', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('664', null, null, null, null, 'S02541', '粟蔚然', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('665', null, null, null, null, 'S02543', '谭乔元', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('666', null, null, null, null, 'S02544', '汤星月', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('667', null, null, null, null, 'S02545', '唐基航', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('668', null, null, null, null, 'S02546', '唐乐桐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('669', null, null, null, null, 'S02547', '遆羿帆', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('670', null, null, null, null, 'S02548', '汪良邦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('671', null, null, null, null, 'S02549', '汪子琪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('672', null, null, null, null, 'S02550', '汪子翔', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('673', null, null, null, null, 'S02551', '王骅妍', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('674', null, null, null, null, 'S02552', '王骅悦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('675', null, null, null, null, 'S02553', '王佳旺', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('676', null, null, null, null, 'S02554', '王嘉皓', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('677', null, null, null, null, 'S02555', '王均', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('678', null, null, null, null, 'S02556', '王茹萱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('679', null, null, null, null, 'S02557', '王一安', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('680', null, null, null, null, 'S02558', '王奕菡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('681', null, null, null, null, 'S02560', '王昱哲', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('682', null, null, null, null, 'S02562', '王智博', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('683', null, null, null, null, 'S02563', '王梓畅', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('684', null, null, null, null, 'S02564', '王梓丞', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('685', null, null, null, null, 'S02565', '王梓潼', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('686', null, null, null, null, 'S02566', '韦佳烨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('688', null, null, null, null, 'S02567', '魏兰璎', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('689', null, null, null, null, 'S02568', '魏通', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('690', null, null, null, null, 'S02570', '温子晞', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('691', null, null, null, null, 'S02571', '文子妍', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('692', null, null, null, null, 'S02572', '吴邦诚', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('693', null, null, null, null, 'S02573', '吴冰凌', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('694', null, null, null, null, 'S02574', '吴嘉南', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('695', null, null, null, null, 'S02575', '吴柯锜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('696', null, null, null, null, 'S02576', '吴尚婕', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('697', null, null, null, null, 'S02577', '吴思睿7232', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('698', null, null, null, null, 'S02578', '吴文杰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('699', null, null, null, null, 'S02580', '伍珊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('700', null, null, null, null, 'S02582', '夏伯文', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('701', null, null, null, null, 'S02584', '夏紫萱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('702', null, null, null, null, 'S02585', '向恒欣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('703', null, null, null, null, 'S02586', '肖晗1576', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('704', null, null, null, null, 'S02587', '肖栩洁', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('705', null, null, null, null, 'S02588', '谢欣彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('706', null, null, null, null, 'S02589', '谢一腾', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('707', null, null, null, null, 'S02590', '谢宗润', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('708', null, null, null, null, 'S02591', '徐丹蕾', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('709', null, null, null, null, 'S02592', '徐涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('710', null, null, null, null, 'S02593', '许嘉仪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('711', null, null, null, null, 'S02594', '许晓', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('712', null, null, null, null, 'S02595', '许玉谦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('713', null, null, null, null, 'S02596', '许钰灵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('714', null, null, null, null, 'S02597', '薛元媛', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('715', null, null, null, null, 'S02598', '严钧6357', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('716', null, null, null, null, 'S02599', '严梓轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('717', null, null, null, null, 'S02600', '羊沐容', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('718', null, null, null, null, 'S02601', '杨濠歌', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('720', null, null, null, null, 'S02602', '杨家源', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('721', null, null, null, null, 'S02603', '杨乐婷', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('722', null, null, null, null, 'S02604', '杨明浩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('723', null, null, null, null, 'S02605', '杨淇茵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('724', null, null, null, null, 'S02606', '杨濡嫣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('725', null, null, null, null, 'S02607', '杨思宇5006', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('726', null, null, null, null, 'S02608', '杨淞麟', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('727', null, null, null, null, 'S02610', '杨欣熙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('728', null, null, null, null, 'S02611', '杨玥', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('729', null, null, null, null, 'S02612', '杨子萱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('730', null, null, null, null, 'S02613', '杨紫晴', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('731', null, null, null, null, 'S02614', '姚丁睿', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('732', null, null, null, null, 'S02615', '姚沁妍', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('733', null, null, null, null, 'S02616', '叶博文', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('734', null, null, null, null, 'S02617', '叶华怡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('735', null, null, null, null, 'S02618', '叶嘉盛', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('736', null, null, null, null, 'S02619', '叶芷荧', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('737', null, null, null, null, 'S02620', '余欣怡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('738', null, null, null, null, 'S02621', '余芷轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('739', null, null, null, null, 'S02622', '袁鸿文', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('740', null, null, null, null, 'S02623', '袁梦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('741', null, null, null, null, 'S02625', '袁正熙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('742', null, null, null, null, 'S02626', '袁梓慧', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('743', null, null, null, null, 'S02628', '曾心彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('744', null, null, null, null, 'S02629', '曾星然', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('745', null, null, null, null, 'S02630', '曾延宽', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('746', null, null, null, null, 'S02631', '曾韵伊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('747', null, null, null, null, 'S02632', '张楚冉', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('748', null, null, null, null, 'S02634', '张家豪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('749', null, null, null, null, 'S02635', '张景涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('750', null, null, null, null, 'S02637', '张俊林', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('751', null, null, null, null, 'S02638', '张康妮', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('752', null, null, null, null, 'S02639', '张柳欣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('753', null, null, null, null, 'S02641', '张明臻', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('754', null, null, null, null, 'S02642', '张茗茹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('756', null, null, null, null, 'S02643', '张倩维', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('757', null, null, null, null, 'S02644', '张升平', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('758', null, null, null, null, 'S02645', '张思恩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('759', null, null, null, null, 'S02647', '张馨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('760', null, null, null, null, 'S02649', '张轩赫', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('761', null, null, null, null, 'S02651', '张茵雷', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('762', null, null, null, null, 'S02653', '赵常欢', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('763', null, null, null, null, 'S02654', '郑敬深', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('764', null, null, null, null, 'S02655', '郑凯文', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('766', null, null, null, null, 'S02656', '郑林佳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('767', null, null, null, null, 'S02657', '郑雅兰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('768', null, null, null, null, 'S02658', '钟茂源', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('769', null, null, null, null, 'S02659', '钟佩琦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('770', null, null, null, null, 'S02660', '钟思璇', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('771', null, null, null, null, 'S02661', '钟宇茵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('772', null, null, null, null, 'S02662', '钟子欣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('773', null, null, null, null, 'S02663', '周仪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('774', null, null, null, null, 'S02665', '朱婧睿', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('775', null, null, null, null, 'S02666', '朱骏昊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('776', null, null, null, null, 'S02667', '朱珮嘉', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('777', null, null, null, null, 'S02668', '朱雅琪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('778', null, null, null, null, 'S02669', '邹星龙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('779', null, null, null, null, 'S02670', '左欣怡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('780', null, null, null, null, 'S06187', '田笑薇', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('781', null, null, null, null, 'S06188', '殷聆菲', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('783', null, null, null, null, 'S06201', '李昱楠', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('784', null, null, null, null, 'S06205', '顾珊瑜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('785', null, null, null, null, 'S06206', '王宇翔', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('787', null, null, null, null, 'S07173', '吴易辰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('789', null, null, null, null, 'S07359', '谢高峻', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('790', null, null, null, null, 'S07371', '林一鸣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('791', null, null, null, null, 'S07477', '黄帅翔', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('792', null, null, null, null, 'S07508', '张坤忠', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('793', null, null, null, null, 'S07548', '黄梓成', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('794', null, null, null, null, 'S07569', '徐子睿', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('795', null, null, null, null, 'S07576', '胡美莹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('796', null, null, null, null, 'S07585', '朱梓歆', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('797', null, null, null, null, 'S07607', '黄俊宁', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('798', null, null, null, null, 'S07608', '黄春润', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('799', null, null, null, null, 'S07661', '郑立暄', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('800', null, null, null, null, 'S07663', '宋若菲', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('801', null, null, null, null, 'S07706', '宋承骏', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('802', null, null, null, null, 'S07708', '刘俊萌', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('803', null, null, null, null, 'S07721', '张楚瑜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('804', null, null, null, null, 'S07722', '范依馨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('805', null, null, null, null, 'S07744', '林欣盈', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('806', null, null, null, null, 'S07747', '陈曦0030', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('807', null, null, null, null, 'S07760', '苗恭溥', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('808', null, null, null, null, 'S07761', '李雨彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('809', null, null, null, null, 'S07842', '陈泓羲', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('810', null, null, null, null, 'S07913', '钟悦心', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('811', null, null, null, null, 'S07914', '何翰霖', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('812', null, null, null, null, 'S07931', '黄从熙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('813', null, null, null, null, 'S07932', '朱希文', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('814', null, null, null, null, 'S07954', '叶可昕', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('815', null, null, null, null, 'S07989', '宁旭', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('816', null, null, null, null, 'S08023', '廖鹏程', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('817', null, null, null, null, 'S08036', '魏焕恩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('818', null, null, null, null, 'S08039', '周紫陌', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('819', null, null, null, null, 'S08056', '周廷科', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('820', null, null, null, null, 'S08067', '邓熙岚', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('821', null, null, null, null, 'S08131', '郭子钧', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('822', null, null, null, null, 'S08133', '陈思颖2633', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('823', null, null, null, null, 'S08189', '邓梓昕5173', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('824', null, null, null, null, 'S08194', '郑岱轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('825', null, null, null, null, 'S08195', '陈芷萱8988', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('826', null, null, null, null, 'S08214', '关鑫', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('827', null, null, null, null, 'S08254', '高莉雅', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('828', null, null, null, null, 'S08255', '梁佳颖', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('829', null, null, null, null, 'S08256', '陈沁元', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('830', null, null, null, null, 'S08257', '单玟希', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('831', null, null, null, null, 'S08260', '余宗翰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('832', null, null, null, null, 'S08267', '彭海博', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('833', null, null, null, null, 'S08341', '陈玥旖', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('834', null, null, null, null, 'S08353', '李伊彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('835', null, null, null, null, 'S08494', '李紫萱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('836', null, null, null, null, 'S08495', '陆悦灵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('837', null, null, null, null, 'S08515', '张嘉城', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('838', null, null, null, null, 'S08520', '蔡泓毅', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('839', null, null, null, null, 'S08521', '孙泽宇', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('840', null, null, null, null, 'S09197', '郭彤萱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('841', null, null, null, null, 'S09209', '胡德平', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('842', null, null, null, null, 'S09252', '林思萱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('843', null, null, null, null, 'S09256', '陈佳乐1215', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('844', null, null, null, null, 'S09310', '易思桐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('845', null, null, null, null, 'S09316', '王浩然6511', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('846', null, null, null, null, 'S09593', '林煜琪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('847', null, null, null, null, 'S09716', '汪良谦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('848', null, null, null, null, 'S09892', '黄子涵2185', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('849', null, null, null, null, 'S09895', '卢昱恺', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('850', null, null, null, null, 'S09897', '黄兰婷', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('851', null, null, null, null, 'S09900', '梁文杰2923', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('852', null, null, null, null, 'S09905', '方宁', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('853', null, null, null, null, 'S09908', '张德邦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('854', null, null, null, null, 'S09914', '丛熙茜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('855', null, null, null, null, 'S09916', '李钊仪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('856', null, null, null, null, 'S09921', '虞鹭飞', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('857', null, null, null, null, 'S09923', '李子玥3219', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('858', null, null, null, null, 'S09930', '李子天5090', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('859', null, null, null, null, 'S09935', '吴佳妮', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('860', null, null, null, null, 'S09944', '田宇涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('861', null, null, null, null, 'S09946', '陈俊宁', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('862', null, null, null, null, 'S09950', '张梓祺0598', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('863', null, null, null, null, 'S09952', '冯敏敏', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('864', null, null, null, null, 'S09956', '阮子桐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('865', null, null, null, null, 'S09961', '冯奕慈', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('866', null, null, null, null, 'S09968', '凃晨枫', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('867', null, null, null, null, 'S09973', '宋锦乐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('868', null, null, null, null, 'S10039', '温童翔', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('869', null, null, null, null, 'S10046', '赖舒晴', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('870', null, null, null, null, 'S10054', '文杨乔', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('871', null, null, null, null, 'S10061', '胡雯童', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('872', null, null, null, null, 'S10099', '张铭轩2415', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('873', null, null, null, null, 'S10132', '王梓涵5859', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('874', null, null, null, null, 'S10151', '陈佐瑾', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('875', null, null, null, null, 'S10156', '陈佑琳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('876', null, null, null, null, 'S10159', '李思遥6885', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('877', null, null, null, null, 'S10181', '刘垲烨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('878', null, null, null, null, 'S10190', '黎树铭', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('879', null, null, null, null, 'S10201', '林沐然', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('880', null, null, null, null, 'S10221', '姜映琳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('881', null, null, null, null, 'S10231', '邓皓俊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('882', null, null, null, null, 'S10235', '杨润达', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('883', null, null, null, null, 'S10243', '王朝立', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('884', null, null, null, null, 'S10281', '杜璟熙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('885', null, null, null, null, 'S10296', '刘悦能', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('886', null, null, null, null, 'S10302', '罗嘉琪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('887', null, null, null, null, 'S10330', '何家安', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('888', null, null, null, null, 'S10344', '王一鸣9711', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('889', null, null, null, null, 'S10352', '黄子洋2622', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('890', null, null, null, null, 'S10356', '何予希', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('891', null, null, null, null, 'S10366', '胡耀琦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('892', null, null, null, null, 'S10372', '苏子忻', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('893', null, null, null, null, 'S10380', '龙泽昊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('894', null, null, null, null, 'S10385', '黄思行', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('895', null, null, null, null, 'S10389', '陈思榆', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('896', null, null, null, null, 'S10394', '梁梓彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('897', null, null, null, null, 'S10396', '刘昕宇6068', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('898', null, null, null, null, 'S10407', '李冠毅', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('899', null, null, null, null, 'S10516', '苏子彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('900', null, null, null, null, 'S10530', '苏贤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('901', null, null, null, null, 'S10566', '谭祺昱', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('902', null, null, null, null, 'S10627', '吴振睿', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('903', null, null, null, null, 'S10643', '吴振铭', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('904', null, null, null, null, 'S10700', '郑梓煜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('905', null, null, null, null, 'S10712', '郑奕桦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('906', null, null, null, null, 'S10753', '曹月如', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('907', null, null, null, null, 'S10770', '孙绍杰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('908', null, null, null, null, 'S10780', '蒲芝辰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('909', null, null, null, null, 'S10790', '王康睿5730', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('910', null, null, null, null, 'S10801', '胡轩溢', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('911', null, null, null, null, 'S10821', '莫凡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('912', null, null, null, null, 'S10835', '杨恩溢', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('913', null, null, null, null, 'S10870', '王熙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('914', null, null, null, null, 'S10878', '张弛1698', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('915', null, null, null, null, 'S10890', '曲乐文', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('916', null, null, null, null, 'S10918', '黄藝', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('917', null, null, null, null, 'S10928', '邹瀚贤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('918', null, null, null, null, 'S10985', '尹紫涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('919', null, null, null, null, 'S10991', '雷一诺', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('920', null, null, null, null, 'S11000', '雷骐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('921', null, null, null, null, 'S11009', '谭佩琳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('922', null, null, null, null, 'S11020', '陈沐琪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('923', null, null, null, null, 'S11037', '祝小有', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('924', null, null, null, null, 'S11051', '张静如', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('925', null, null, null, null, 'S11063', '姜亦楠', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('926', null, null, null, null, 'S11078', '吴婧童', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('927', null, null, null, null, 'S11101', '梁垲唐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('928', null, null, null, null, 'S11827', '阮韦一', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('929', null, null, null, null, 'S12050', '熊诗晨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('930', null, null, null, null, 'S12079', '裘奕然', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('931', null, null, null, null, 'S12331', '高皓月', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('932', null, null, null, null, 'S12406', '刘辰熙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('933', null, null, null, null, 'S12523', '范子高', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('934', null, null, null, null, 'S12654', '蔡懿妮', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('935', null, null, null, null, 'S12656', '魏子奕', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('936', null, null, null, null, 'S12657', '冯孜维', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('937', null, null, null, null, 'S12659', '刘浩沣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('938', null, null, null, null, 'S12662', '白敏桦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('939', null, null, null, null, 'S12670', '朱芷彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('940', null, null, null, null, 'S12674', '王梓6896', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('941', null, null, null, null, 'S12679', '邓亦璇', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('942', null, null, null, null, 'S12682', '林子铨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('943', null, null, null, null, 'S12685', '杨其霖', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('944', null, null, null, null, 'S12691', '谌思言', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('945', null, null, null, null, 'S12703', '王梓悦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('946', null, null, null, null, 'S12705', '叶梓曦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('947', null, null, null, null, 'S12706', '吴一涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('948', null, null, null, null, 'S12710', '张德睿', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('949', null, null, null, null, 'S12724', '郭昱辰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('950', null, null, null, null, 'S12728', '饶雅怡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('951', null, null, null, null, 'S12737', '熊曹洋', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('952', null, null, null, null, 'S12796', '林弘毅', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('953', null, null, null, null, 'S12797', '林弘悦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('954', null, null, null, null, 'S12802', '陈泳苏', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('955', null, null, null, null, 'S12803', '胡温庭', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('956', null, null, null, null, 'S12823', '潘浩铭', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('957', null, null, null, null, 'S12841', '茹千航', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('958', null, null, null, null, 'S12974', '柯皓', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('959', null, null, null, null, 'S12986', '毕轩畅', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('960', null, null, null, null, 'S13030', '王梓睿0853', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('961', null, null, null, null, 'S13083', '李立夫', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('962', null, null, null, null, 'S13120', '肖丁一', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('963', null, null, null, null, 'S13123', '吴樾', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('964', null, null, null, null, 'S13139', '严艺灵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('965', null, null, null, null, 'S13140', '苏恒杰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('966', null, null, null, null, 'S13141', '吴嘉玥', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('967', null, null, null, null, 'S13142', '方欣悦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('968', null, null, null, null, 'S13143', '陈志昊', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('969', null, null, null, null, 'S13144', '王城珺', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('970', null, null, null, null, 'S13145', '胡刘昕伦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('971', null, null, null, null, 'S13146', '范煊怡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('972', null, null, null, null, 'S13148', '文梓旭', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('973', null, null, null, null, 'S13149', '田凌凡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('974', null, null, null, null, 'S13150', '田凌菲', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('975', null, null, null, null, 'S13152', '周逸欣', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('976', null, null, null, null, 'S13153', '刘骐明', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('977', null, null, null, null, 'S13156', '周凯曦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('978', null, null, null, null, 'S13158', '王昶钧', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('979', null, null, null, null, 'S13162', '李隽熙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('980', null, null, null, null, 'S13163', '潘恪贤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('981', null, null, null, null, 'S13164', '朱凌羽', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('982', null, null, null, null, 'S13167', '林隽茼', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('983', null, null, null, null, 'S13168', '王乐然', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('984', null, null, null, null, 'S13169', '佘佳桐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('985', null, null, null, null, 'S13171', '徐馨雨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('986', null, null, null, null, 'S13173', '许靖芸', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('987', null, null, null, null, 'S13174', '江姿烨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('988', null, null, null, null, 'S13176', '郑瑾瑜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('989', null, null, null, null, 'S13181', '袁朗峰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('990', null, null, null, null, 'S13182', '郝思睿', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('991', null, null, null, null, 'S13185', '欧宝锴', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('992', null, null, null, null, 'S13266', '李梦娆', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('993', null, null, null, null, 'S13363', '毛斐霆', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('994', null, null, null, null, 'S13471', '黄思澄', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('995', null, null, null, null, 'S13510', '张一帆7597', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('996', null, null, null, null, 'S14531', '杨智涵8011', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('997', null, null, null, null, 'S14653', '詹子宸', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('998', null, null, null, null, 'S14874', '杨泽瀚', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('999', null, null, null, null, 'S14914', '张桠侨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1000', null, null, null, null, 'S14918', '陈郭子琳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1001', null, null, null, null, 'S15350', '段奕彤', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1002', null, null, null, null, 'S15503', '龙冠豪', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1003', null, null, null, null, 'S15559', '刘隽', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1004', null, null, null, null, 'S15565', '任子安', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1005', null, null, null, null, 'S15566', '王子凌', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1006', null, null, null, null, 'S15652', '刘恒乐9835', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1007', null, null, null, null, 'S15657', '马梓萱9349', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1008', null, null, null, null, 'S15756', '陈泓霖9999', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1009', null, null, null, null, 'S15774', '黎语', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1010', null, null, null, null, 'S16022', '黎沛宜', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1011', null, null, null, null, 'S16093', '孙泽莹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1012', null, null, null, null, 'S16096', '王雅滢', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1013', null, null, null, null, 'S16097', '黄楚岚', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1014', null, null, null, null, 'S16098', '潘慧娟', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1015', null, null, null, null, 'S16099', '陈俊霖5591', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1016', null, null, null, null, 'S16100', '祝翎轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1017', null, null, null, null, 'S16101', '邱思铭', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1018', null, null, null, null, 'S16104', '林俊全', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1019', null, null, null, null, 'S16105', '关艳阳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1020', null, null, null, null, 'S16106', '张蘅辉', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1021', null, null, null, null, 'S16107', '伍顺7129', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1022', null, null, null, null, 'S16137', '肖晋诚', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1023', null, null, null, null, 'S16149', '宋若曦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1024', null, null, null, null, 'S16187', '邱炜轩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1025', null, null, null, null, 'S16201', '肖涵婧', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1026', null, null, null, null, 'S16224', '孙逸梦', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1027', null, null, null, null, 'S16225', '陈芊贝', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1028', null, null, null, null, 'S16226', '徐梓桐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1029', null, null, null, null, 'S16359', '郭玥希', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1030', null, null, null, null, 'S16455', '钟瑞桐', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1031', null, null, null, null, 'S16514', '彭梓晴', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1032', null, null, null, null, 'S16518', '李承翰', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1033', null, null, null, null, 'S16571', '林靖洋', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1034', null, null, null, null, 'S16575', '林靖雅', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1035', null, null, null, null, 'S16589', '李一桢', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1036', null, null, null, null, 'S16597', '温泓罡', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1037', null, null, null, null, 'S16598', '范舒涵', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1038', null, null, null, null, 'S16601', '范泓熙', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1039', null, null, null, null, 'S16645', '罗玥熹', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1040', null, null, null, null, 'S16652', '钟咏恩', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1041', null, null, null, null, 'S16726', '乔子崧', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1042', null, null, null, null, 'S16768', '江宣鸿宇', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1043', null, null, null, null, 'S16775', '柯林纹0960', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1044', null, null, null, null, 'S16776', '陈沐蓉', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1045', null, null, null, null, 'S16780', '吴子墨', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1046', null, null, null, null, 'S16781', '谢依恬', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1047', null, null, null, null, 'S16783', '周子淳', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1048', null, null, null, null, 'S16900', '廖梓凌', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1049', null, null, null, null, 'S17056', '刘子傲', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1050', null, null, null, null, 'S17202', '侯景元', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1051', null, null, null, null, 'S17343', '董自如', null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1052', null, null, null, null, 'S17550', '姜欣彤8660', null, null, null, null, null, null, null, null, null, null, '01-老带新', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1061', null, null, null, null, 'S17993', '黄俊宁0422', null, null, null, null, null, null, null, null, null, null, '05-地推', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1053', null, null, null, null, 'S18131', '孟怀钰9655', null, null, null, null, null, null, null, null, null, null, '09-教师推荐', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1054', null, null, null, null, 'S18132', '孟紫钰9655', null, null, null, null, null, null, null, null, null, null, '09-教师推荐', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1055', null, null, null, null, 'S18133', '李馨钰', null, null, null, null, null, null, null, null, null, null, '09-教师推荐', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1056', null, null, null, null, 'S18323', '符雅熙', null, null, null, null, null, null, null, null, null, null, '01-老带新', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1057', null, null, null, null, 'S18433', '陈沁妤', null, null, null, null, null, null, null, null, null, null, '06-上门咨询', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1058', null, null, null, null, 'S19326', '张悦4221', null, null, null, null, null, null, null, null, null, null, '03-课题：自然拼音', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1059', null, null, null, null, 'S19330', '邓婕妤', null, null, null, null, null, null, null, null, null, null, '01-老带新', null, null);
+INSERT INTO `stjy_xzmxb` VALUES ('1060', null, null, null, null, 'S19361', '宋维欣', null, null, null, null, null, null, null, null, null, null, '05-地推', null, null);
