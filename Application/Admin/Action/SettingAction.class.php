@@ -245,14 +245,31 @@ class SettingAction extends CommonAction{
 
     //班级编号管理导入
     public function banjibianhao_import(){
-        $list = M("banjibianhao")->select();
-        $this->assign("list",$list);
-        $this->adminDisplay("banjibianhao");
+        if (!empty($_FILES)) {
+            $res = M('banjibianhao')->select();
+            //如果没有清空表格，就不允许导入
+            if($res){
+                $this->error('请先清空表格再导入');
+            }
+            $temp = M("banjibianhao")->query("SHOW FULL COLUMNS FROM stjy_banjibianhao");
+            $comment = array();
+            $field = array();
+            foreach($temp as $v){
+                $field[]=$v['field'];
+                $comment[]=$v['comment'];
+            }
+            $newTemp = array_combine($comment,$field);
+            //上传表格并导入数据
+
+            dump($newTemp);die;
+            }else{
+            $this->error('请先上传文件');
+        }
     }
 
     //班级编号管理清空
     public function banjibianhao_delete(){
-        if(M("banjibianhao")->query("truncate table stjy_banjibianhao")) {
+        if(M('banjibianhao')->where("1 = 1")->delete()) {
             $this->success('删除成功');
         }else {
             $this->error('删除失败');
