@@ -200,9 +200,42 @@ class CountJysjAction extends CommonAction {
 
     //获得班级部门数据
     public function getbjbmsj($qishu,$sid){
-        $arr = array();
+        $ssid = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
+        //获得班级信息表的数据
+        $bjxx_list = M("bjxxb")->where("suoshudd = $ssid")->select();
+        $bumen_arr = array("幼儿部","小初部","小高部","初中部","一对一");
+        $bumen_count = array();
+        foreach ($bumen_arr as $key =>$b){
+            $bumen_count[$key]['bumen'] = $b;
+        }
+        $bumen_count['dybjs'] = 0;   //初始化当月班级数
+        foreach ($bjxx_list as $k=>$v){
+            //如果课程名称中包含"一"，级别为"一对一"，否则取班级名称的前三位
+            if(strpos($v['kechengmc'],"一")){
+                $bjxx_list[$k]["jibie"] = "一对一";
+            }else{
+                $bjxx_list[$k]["jibie"] = mb_substr($v['banjimc'],0,3,"utf-8");
+            }
 
-        return $arr;
+            if(strpos($v['kechengmc'],"一")){
+                $list[$k]["bumen"] = "一对一";
+            }else{
+                $list[$k]["bumen"] = M("banjibianhao")->where("jingdujb = '".$bjxx_list[$k]["jibie"]."'")->getField("banxing2");
+            }
+            //统计各部门的班级人数等数据，并且状态是未结业
+            foreach ($bumen_count as $k2=>$b2){
+
+                if($list[$k]["bumen"] == $b2['bumen'] && $v['jieyezt'] == "未结业"){
+                    if(empty($b2["bumen"])){
+                        continue;
+                    }
+                    $bumen_count[$k2]["dybjs"] += 1;
+                    $bumen_count['dybjs_total'] += 1;
+                }
+            }
+        }
+//        dump($bumen_count);
+        return $bumen_count;
     }
 
 }
