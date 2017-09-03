@@ -608,13 +608,15 @@
 </form>
 
 <!-- 日期选择插件载入开始 -->
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/time/jquery.datetimepicker.css"/ >
 <script src="__PUBLIC__/time/jquery.datetimepicker.js"></script>
+<script src="__PUBLIC__/time/jquery.js"></script>
 <!-- 日期选择插件载入结束 -->
 
 <!-- 日期选择插件初始化开始 -->
 <script>
     $('.datetimepicker').datetimepicker({
-        lang:"ch", //语言选择中文 注：旧版本 新版方法：$.datetimepicker.setLocale('ch');
+        // lang:"ch", //语言选择中文 注：旧版本 新版方法：$.datetimepicker.setLocale('ch');
         format:"Y-m-d",      //格式化日期
         timepicker:false,    //关闭时间选项
         // yearStart：2000,     //设置最小年份

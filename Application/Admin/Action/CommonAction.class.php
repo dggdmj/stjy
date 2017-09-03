@@ -370,7 +370,9 @@ class CommonAction extends Action {
             // 市场业绩数据写入数据库
             // $res_scyj = $this->getScyj($qishu,$sid);
             // 市场占有率写入数据库
-            $res_sczyl = $this->getSczyl($qishu,$sid);
+            // $res_sczyl = $this->getSczyl($qishu,$sid);
+            // 新增明细写入数据库
+            $res_xzmx = $this->getXzmx($qishu,$sid);
 
             $arr['status'] = true;
             $arr['info'] = '操作成功';
@@ -615,6 +617,14 @@ class CommonAction extends Action {
         // unset($temp);
         $qishu_id = $this->insertQishuHistory(10,$qishu,$sid);
 
+        foreach($list as $val){
+            foreach($val as $k=>$v){
+                $temp[$k] = $v;
+            }
+            $temp['suoshudd'] = $qishu_id;
+            M('xzmxb')->add($temp);
+            unset($temp);
+        }
 
         return true;
     }

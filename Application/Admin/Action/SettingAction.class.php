@@ -246,23 +246,88 @@ class SettingAction extends CommonAction{
     //班级编号管理导入
     public function banjibianhao_import(){
         if (!empty($_FILES)) {
-            $res = M('banjibianhao')->select();
-            //如果没有清空表格，就不允许导入
-            if($res){
-                $this->error('请先清空表格再导入');
-            }
-            $temp = M("banjibianhao")->query("SHOW FULL COLUMNS FROM stjy_banjibianhao");
-            $comment = array();
-            $field = array();
-            foreach($temp as $v){
-                $field[]=$v['field'];
-                $comment[]=$v['comment'];
-            }
-            $newTemp = array_combine($comment,$field);
+            $newTemp = $this->getComment('banjibianhao');// 获得班级编号表字段和备注一一对应的数组
+            dump($newTemp);
             //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
 
-            dump($newTemp);die;
-            }else{
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+
+            // 获取excel里面的所有字段
+            for($i=0;$i<$colsNum;$i++){// 从第一行获取所有字段
+                $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
+
+                // 如果取出的obj,则转为string
+                if(is_object($cell_val)){
+                    $cell_val= $cell_val->__toString();
+                }
+                // echo $cell_val.'<br>';
+                $ziduan[] = $cell_val;
+            }
+            dump($ziduan);
+            // 从第2行开始,到最后一行
+            for($j=2;$j<=$highestRow;$j++){
+                for($i=0;$i<count($ziduan);$i++){
+                    if(array_key_exists($ziduan[$i], $newTemp)){
+                        $temp1 = $ziduan[$i];// 字段名称
+                        $temp2 = $newTemp[$temp1];// 数组newTemp里面字段名称对应的拼音,则数据库对应表的字段名称
+
+                        // 自动判断单元格是时间格式
+                        $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
+                        $value = $cell->getValue();
+
+                        // $cell->getCoordinate()当前单元格,如A1
+
+                        // 自动识别单元格为日期格式
+                        if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
+                            $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
+                            $formatcode=$cellstyleformat->getFormatCode();
+                            if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
+                                $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
+                            }else{
+                                $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                            }
+                        }
+                        $data[$temp2] = $value;
+                        // $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+
+
+                        // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
+                        if(substr($data[$temp2],0,1) == '='){
+                            $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                        }
+                    }
+                }
+                // dump($data);
+                // die;
+                M('banjibianhao')->add($data);
+            }
+            $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
+
+            // dump($newTemp);die;
+        }else{
             $this->error('请先上传文件');
         }
     }
