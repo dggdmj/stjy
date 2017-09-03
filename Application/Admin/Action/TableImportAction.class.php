@@ -121,7 +121,7 @@ class TableImportAction extends CommonAction{
         $tid = $_GET['tid'];// 表格类型id
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
         $list = M($tablename)->where("suoshudd = ".$id)->select();
-        $filedname = array_flip($this->getcomment($tablename));
+        $filedname = array_flip($this->getComment($tablename));
         $this->assign('list',$list);// 赋值数据集
         $this->assign('filedname',$filedname);// 赋值数据集
         $this->adminDisplay();
@@ -156,16 +156,6 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
-	//返回数据表中以注释为键，字段名为值的数组,例如： ["姓名" => string(8) "xingming"]
-    public function getcomment($table_name){
-        $temp = M($table_name)->query("SHOW FULL COLUMNS FROM stjy_".$table_name);
-        foreach($temp as $v){
-            $field[]=$v['field'];
-            $comment[]=$v['comment'];
-        }
-        return array_combine($comment,$field);
-    }
-
     //数据导入
     public function dataUpload() {
         if (!empty($_FILES)) {
@@ -175,7 +165,7 @@ class TableImportAction extends CommonAction{
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
 
             // 获取excel里面注释和字段名拼接的数组
-            $newTemp = $this->getcomment($tablename);// 如['学号'=>'xuehao',...]
+            $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
 
             $tablenames = $this->getTabelnames(2);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
 

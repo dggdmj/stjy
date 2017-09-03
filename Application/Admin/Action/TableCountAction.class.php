@@ -123,7 +123,9 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 	    $data = new \Admin\Action\CountScyjAction();
 	    $list = $data->getScyjbData($qishu,$sid);//获得统计数据
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign("list",$list);
+        $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
 
@@ -133,7 +135,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountSczylAction();
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
-        $arr = $this->getArr($qishu,$sid);// 获取当前期数和校区
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign("data",$list['data']);
         $this->assign("heji",$list['heji']);
         $this->assign('arr',$arr);
@@ -146,7 +148,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountXzmxAction();
         $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
-        $arr = $this->getArr($qishu,$sid);// 获取当前期数和校区
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign('list',$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
@@ -158,7 +160,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountJsmxAction();
         $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
-        $arr = $this->getArr($qishu,$sid);// 获取当前期数和校区
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign('list',$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
@@ -170,7 +172,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountJysjAction();
         $list = $data->getJysjbData($qishu,$sid);//获得统计数据
-        $title = $this->getArr($qishu,$sid);// 获取当前期数和校区
+        $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign('list',$list);
         $this->assign('arr',$title);
         $this->adminDisplay();

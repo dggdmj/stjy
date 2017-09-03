@@ -86,7 +86,7 @@ class CountSczylAction extends CommonAction {
             $data[$k+1]['heji'] = $count;
         }
         $res = ['data'=>$data,'heji'=>$heji];
-        // return $res;
+
         return $res;
     }
 

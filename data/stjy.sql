@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-09-02 10:33:56
+Date: 2017-09-02 15:52:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -166,11 +166,11 @@ CREATE TABLE `stjy_admin` (
 -- ----------------------------
 -- Records of stjy_admin
 -- ----------------------------
-INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1504319268', '127.0.0.1', '0');
-INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2,4', '1503977650', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1504319747', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2,4', '1504319731', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('3', 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', '1501780416', '127.0.0.1', '1');
 INSERT INTO `stjy_admin` VALUES ('4', 'caiwu', 'f5b5ec699ed736de89336fbce0bc9890', '财务', 'caiwu@caiwu.com', '1,2,3,4', '1504078099', '127.0.0.1', '0');
-INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4,5', '1504319312', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4,5', '1504327711', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('6', 'fuzeren', 'e10adc3949ba59abbe56e057f20f883e', 'fuzeren', 'fuzeren@stjy.com', '1,2,3,4', '1503977551', '127.0.0.1', '0');
 
 -- ----------------------------
@@ -3913,7 +3913,7 @@ INSERT INTO `stjy_qishu` VALUES ('7', '201704', '1', '2017-08-17 16:53:54');
 DROP TABLE IF EXISTS `stjy_qishu_history`;
 CREATE TABLE `stjy_qishu_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态：1，未提交；2已提交;',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态:1,可下载;2:不可下载;',
   `filename` varchar(255) NOT NULL COMMENT '上传的文件路径',
   `tid` int(11) DEFAULT NULL COMMENT '表类型id',
   `sid` int(11) DEFAULT NULL COMMENT '所属校区id',
@@ -4106,26 +4106,28 @@ CREATE TABLE `stjy_scyjb` (
   `edu` double(11,2) DEFAULT NULL COMMENT '额度',
   `rentoushu` double(11,2) DEFAULT NULL COMMENT '人头数',
   `jingrentou` double(11,2) DEFAULT NULL COMMENT '净人头',
-  `guojibanye1` double(11,2) DEFAULT NULL COMMENT '国际班(幼儿)1年',
-  `guojibanye3` double(11,2) DEFAULT NULL COMMENT '国际班(幼儿)3年',
-  `guojibanye5` double(11,2) DEFAULT NULL COMMENT '国际班(幼儿)5年',
-  `guojibanxx1` double(11,2) DEFAULT NULL COMMENT '国际班(小学)1年',
-  `guojibanxx2` double(11,2) DEFAULT NULL COMMENT '国际班(小学)2年',
-  `guojibanxx5` double(11,2) DEFAULT NULL COMMENT '国际班(小学)5年',
+  `guojibanye1` double(11,2) DEFAULT NULL COMMENT '新生幼儿国际班1年',
+  `guojibanye3` double(11,2) DEFAULT NULL COMMENT '新生幼儿国际班3年',
+  `guojibanye5` double(11,2) DEFAULT NULL COMMENT '新生幼儿国际班5年',
+  `guojibanxx1` double(11,2) DEFAULT NULL COMMENT '新生小学国际班1年',
+  `guojibanxx2` double(11,2) DEFAULT NULL COMMENT '新生小学国际班2年',
+  `guojibanxx5` double(11,2) DEFAULT NULL COMMENT '新生小学国际班5年',
   `xinshengyxhy` double(11,2) DEFAULT NULL COMMENT '新生游学会员',
   `guojilxkc` double(11,2) DEFAULT NULL COMMENT '国际领袖课程',
-  `yiqims` double(11,2) DEFAULT NULL COMMENT '一期秒杀',
+  `yiqims` double(11,2) DEFAULT NULL COMMENT '1期秒杀',
   `maisanse` double(11,2) DEFAULT NULL COMMENT '买三送二',
   `laoshengcsyxhy` double(11,2) DEFAULT NULL COMMENT '老生创始游学会员',
   `xinshengyxmfd` double(11,2) DEFAULT NULL COMMENT '新生游学免费读',
   `laoshengxf` double(11,2) DEFAULT NULL COMMENT '老生续费',
-  `xinshengyye` double(11,2) DEFAULT NULL COMMENT '新生营业额',
-  `xinshengynnzb` double(11,2) DEFAULT NULL COMMENT '新生1年内追补',
-  `xinshengpsb` double(11,2) DEFAULT NULL COMMENT '新生平时班',
-  `pingshibynnzb` double(11,2) DEFAULT NULL COMMENT '平时班1年内追补',
+  `xinshenggjb` double(11,2) DEFAULT NULL COMMENT '新生国际班',
+  `yinianzbgjb` double(11,2) DEFAULT NULL COMMENT '1年追补国际班',
+  `xinshengpswb` double(11,2) DEFAULT NULL COMMENT '新生平时晚班',
+  `yinianzbpswb` double(11,2) DEFAULT NULL COMMENT '1年追补平时晚班',
   `hejiyye` double(11,2) DEFAULT NULL COMMENT '合计营业额',
   `huiyuanldxyye` double(11,2) DEFAULT NULL COMMENT '会员老带新营业额',
   `qianming` varchar(255) DEFAULT NULL COMMENT '签名',
+  `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
+  `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -4365,7 +4367,7 @@ CREATE TABLE `stjy_sjzb` (
 -- Records of stjy_sjzb
 -- ----------------------------
 INSERT INTO `stjy_sjzb` VALUES ('2', '201707', '4', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '无', '无', '无', '2017-09-01 22:41:36', null, null, null);
-INSERT INTO `stjy_sjzb` VALUES ('3', '201706', '4', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '无', '无', '无', '2017-09-01 22:41:38', null, null, null);
+INSERT INTO `stjy_sjzb` VALUES ('3', '201706', '4', '2', '2', '2', '2', '2', '2', '2', '2', '4', null, null, null, '行政经理', '无', '无', '无', '2017-09-02 12:48:56', null, null, null);
 INSERT INTO `stjy_sjzb` VALUES ('4', '201707', '5', '2', '2', '2', '2', '2', '2', '2', '2', '2', '1', null, null, '行政经理', '行政经理', '无', '无', '2017-09-02 10:28:38', '2017-09-02 00:09:53', null, null);
 
 -- ----------------------------
