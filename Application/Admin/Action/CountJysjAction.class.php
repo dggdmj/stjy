@@ -14,11 +14,13 @@ class CountJysjAction extends CommonAction {
         $school_info = M("school")->where("id = ".$sid)->find();
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
         $arr_kksd = $this->getkksd($qishu,$sid);   //获得开课时段和班级数统计
+        $arr_bjbmsj = $this->getbjbmsj($qishu,$sid);   //获得班级部门数据
 
         $arr['school_info'] = $school_info;
         $arr['kksd'] = $arr_kksd;
         $arr['zaice'] = $arr_zaice;
         $arr['kecheng']  = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
+        $arr['bjbmsj'] = $arr_bjbmsj;
         return $arr;
 
     }
@@ -193,6 +195,13 @@ class CountJysjAction extends CommonAction {
                 $arr['合计']["sjzbrs"] += 1;
             }
         }
+        return $arr;
+    }
+
+    //获得班级部门数据
+    public function getbjbmsj($qishu,$sid){
+        $arr = array();
+
         return $arr;
     }
 

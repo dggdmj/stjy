@@ -229,5 +229,34 @@ class SettingAction extends CommonAction{
             $this->error('删除失败');
         }
     }
+
+    //班级编号管理
+    public function banjibianhao(){
+        $res = M()->query("SELECT COLUMN_NAME,COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'stjy_banjibianhao' AND TABLE_SCHEMA = 'stjy'");
+        $fields = array();
+        foreach ($res as $k=>$v){
+            $fields[$v["column_name"]] = $v["column_comment"];
+        }
+        $list = M("banjibianhao")->select();
+        $this->assign("list",$list);
+        $this->assign("fields",$fields);
+        $this->adminDisplay("banjibianhao");
+    }
+
+    //班级编号管理导入
+    public function banjibianhao_import(){
+        $list = M("banjibianhao")->select();
+        $this->assign("list",$list);
+        $this->adminDisplay("banjibianhao");
+    }
+
+    //班级编号管理清空
+    public function banjibianhao_delete(){
+        if(M("banjibianhao")->query("truncate table stjy_banjibianhao")) {
+            $this->success('删除成功');
+        }else {
+            $this->error('删除失败');
+        }
+    }
 }
 ?>
