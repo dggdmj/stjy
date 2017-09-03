@@ -43,7 +43,7 @@ class CountJysjAction extends CommonAction {
             }else{
                 $list[$k]["day"] = mb_substr($v["shangkesj"],0,2,"utf-8");
                 $list[$k]["shiduan"] = mb_substr($v["shangkesj"],2,2,"utf-8");
-                if((int)$list[$k]["shiduan"] >= 0 && (int)$list[$k]["shiduan"] <= 12){
+                if((int)$list[$k]["shiduan"] >= 1 && (int)$list[$k]["shiduan"] <= 12){
                     $list[$k]["shijianduan"] = $list[$k]["day"]."上午";
                 }elseif ((int)$list[$k]["shiduan"] >= 13 && (int)$list[$k]["shiduan"] <= 17){
                     $list[$k]["shijianduan"] = $list[$k]["day"]."下午";
@@ -259,6 +259,7 @@ class CountJysjAction extends CommonAction {
         //获得班级学员信息表的数据
         $bjxyxxb = M("bjxyxxb")->where("suoshudd = $ssid")->select();
         $bumen_arr = $this->getBumenarr();
+        $kecheng_arr = $this->getKechengarr();
         $bumen_count = array();
         foreach ($bumen_arr as $key =>$b){
             $bumen_count[$key]['bumen'] = $b;
@@ -281,7 +282,7 @@ class CountJysjAction extends CommonAction {
             //判断部门信息
             if($bjxyxxb[$k]["zhuangtai"] == "在读"){
                 //如果课程名称中包含"一"，级别为"一对一"，否则取班级名称的前三位
-                if(strpos($v['kecheng'],"一")){
+                if(strpos($v['banji'],"一")){
                     $bjxyxxb[$k]["bumen"] = "一对一";
                 }else{
                     $bjxyxxb[$k]["jibie"] = mb_substr($v['banji'],0,3,"utf-8");
@@ -300,19 +301,55 @@ class CountJysjAction extends CommonAction {
             //判断时间段
             $bjxyxxb[$k]["shijianduan"] == "一对一";
             //获得开课时段
-            $this->getkksd2($qishu,$sid,'');
-
+            $bjxyxxb[$k]["shijianduan"] = $this->getkksd2($qishu,$sid,$v['banji']);
+            //获得开课时长
+            $bjxyxxb[$k]["shijianchang"] = $this->getshichang($qishu,$sid,$v['banji']);
             //判断班型详情
             if($bjxyxxb[$k]["banxing"] == "幼儿班" || $bjxyxxb[$k]["banxing"] == "中学班" || $bjxyxxb[$k]["banxing"] == "一对一"){
                 $bjxyxxb[$k]["banxing_xq"] = $bjxyxxb[$k]["banxing"];
             }else{
-
+                if($bjxyxxb[$k]["shijianduan"] == "周日晚上" || $bjxyxxb[$k]["shijianduan"] == "周六晚上" || $bjxyxxb[$k]["shijianduan"] == "周五晚上"){
+                    $bjxyxxb[$k]["banxing_xq"] = $bjxyxxb[$k]["shijianduan"];
+                }else{
+                    if($bjxyxxb[$k]["shijianduan"] == "周六上午" || $bjxyxxb[$k]["shijianduan"] == "周六下午" || $bjxyxxb[$k]["shijianduan"] == "周日上午" || $bjxyxxb[$k]["shijianduan"] == "周日下午"){
+                        $bjxyxxb[$k]["banxing_xq"] = '小学周末白天班';
+                    }else{
+                        $bjxyxxb[$k]["banxing_xq"] = '小学平时'.$bjxyxxb[$k]["shijianchang"].'班';
+                    }
+                }
+            }
+            foreach ($kecheng_arr as $k_key=>$kecheng){
+                foreach ($bumen_count as $key=>$c){
+                    if($bjxyxxb[$k]["zhuangtai"] == "在读" && $kecheng == $bjxyxxb[$k]["banxing_xq"] && $bjxyxxb[$k]["bumen"] == $c["bumen"]){
+                        $bumen_count[$key][$k_key] += 1;
+                    }
+                }
             }
         }
-        dump($bjxyxxb);
+        foreach ($bumen_count as $k=>$v){
+            foreach ($v as $key=>$vo){
+                if($key != "bumen"){
+                    $bumen_count[$k]["heji"] += $vo;
+                }
+                if($key != "bumen"){
+                    $bumen_count[5][$key] += $vo;
+                }
+            }
+            $bumen_count[5]['heji_t'] += $bumen_count[$k]["heji"];
+        }
+//        dump($bumen_count);
         return $bumen_count;
     }
 
+    //期数，学校Id,班级名称
+    public function getshichang($qishu,$sid,$bjmc){
+        $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
+        $field = M("bjxxb")->where("banjimc = '".$bjmc."'and suoshudd = ".$suoshudd)->getField("nianji");
+        $field = $field?$field:0;
+        return $field;
+    }
+
+    //期数，学校Id,班级名称
     public function getkksd2($qishu,$sid,$bjmc){
         $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
         $list = M("bjxxb")->where("suoshudd = ".$suoshudd)->select();
@@ -328,7 +365,7 @@ class CountJysjAction extends CommonAction {
             }else{
                 $list[$k]["day"] = mb_substr($v["shangkesj"],0,2,"utf-8");
                 $list[$k]["shiduan"] = mb_substr($v["shangkesj"],2,2,"utf-8");
-                if((int)$list[$k]["shiduan"] >= 0 && (int)$list[$k]["shiduan"] <= 12){
+                if((int)$list[$k]["shiduan"] >= 1 && (int)$list[$k]["shiduan"] <= 12){
                     $list[$k]["shijianduan"] = $list[$k]["day"]."上午";
                 }elseif ((int)$list[$k]["shiduan"] >= 13 && (int)$list[$k]["shiduan"] <= 17){
                     $list[$k]["shijianduan"] = $list[$k]["day"]."下午";
@@ -343,8 +380,27 @@ class CountJysjAction extends CommonAction {
         return false;
     }
 
+    //部门数组
     public function getBumenarr(){
         $arr = array("幼儿部","小初部","小高部","初中部","一对一");
+        return $arr;
+    }
+
+    //课程数组
+    public function getKechengarr(){
+        $arr = array(
+            "yeb"=>"幼儿班",
+            "xxzmb"=>"小学周末白天班",
+            "zxb"=>"中学班",
+            "xxps15ban"=>"小学平时1.5小时班",
+            "xxps20ban"=>"小学平时2小时班",
+            "xxps25ban"=>"小学平时2.5小时班",
+            "xxps30ban"=>"小学平时3小时班",
+            "zsws"=>"周日晚上",
+            "zwws"=>"周五晚上",
+            "zlws"=>"周六晚上",
+            "ydy"=>"一对一",
+            );
         return $arr;
     }
 
@@ -365,6 +421,7 @@ class CountJysjAction extends CommonAction {
           "高一"=>"中学班",
           "高二"=>"中学班",
           "高三"=>"中学班",
+          "其他"=>"中学班",
         );
         return $arr;
     }
