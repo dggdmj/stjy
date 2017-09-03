@@ -157,6 +157,14 @@ class CommonAction extends Action {
         $this->ajaxReturn($return);
     }
 
+    // 获取班级编码对应的数据,如'K01' => array(),K01为班级编码前三位
+    public function getBjbm(){
+        $data = M('banjibianhao')->select();
+        foreach($data as $v){
+            $temp[strtolower($v['jingdujb'])] = $v;
+        }
+        return $temp;
+    }
 
     // 获取表明与id对应的一维数组
     // 1取拼音名,2取中文名
@@ -279,6 +287,21 @@ class CommonAction extends Action {
         }
         return $date;
     }
+
+    // 查询本期所有学员的学号
+    public function getStu($qishu,$sid){
+        $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
+        $where['tid'] = 3;
+        $id = M('qishu_history')->where($where)->getField('id');
+        $stu = M('bjxyxxb')->where('suoshudd ='.$id)->field('xuehao')->select();
+        // dump($stu);
+        foreach($stu as $v){
+            $xueyuan[] = $v['xuehao'];
+        }
+        return $xueyuan;
+    }
+
 
     // 取得每个班级的统计结果
     public function getHeji($arr){

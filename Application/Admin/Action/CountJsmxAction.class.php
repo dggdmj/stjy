@@ -24,31 +24,26 @@ class CountJsmxAction extends CommonAction {
 
         // 查询本期所有学员
         unset($where);
-        $where['qishu'] = $qishu;
-        $where['tid'] = 3;
-        $id = M('qishu_history')->where($where)->getField('id');
-        $stu = M('bjxyxxb')->where('suoshudd ='.$id)->field('xuehao')->select();
-        // dump($stu);
-        foreach($stu as $v){
-            $xueyuan[] = $v['xuehao'];
-        }
+        $xueyuan = $this->getStu($qishu,$sid);
 
         // $new为新增学员,取本月和上月学员差集
         if(!is_null($fm)){
-            $zhuanchu = array_diff($fm,$xueyuan);
+            $jianshao = array_diff($fm,$xueyuan);// 减少人员取上一月和本月的差集,即上一月存在,本月不存在
             // dump(count($new));
-            $map['stjy_bjxyxxb.xuehao'] = array('in',$zhuanchu);// 查询条件
+            $map['stjy_bjxyxxb.xuehao'] = array('in',$jianshao);// 查询条件
             $list = M('bjxyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_bjxyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,stjy_xyfyyjb.shuliang,stjy_xyfyyjb.feiyong,stjy_xyxxb.shoujihm,stjy_xyxxb.zhaoshengly')->where($map)->group('stjy_bjxyxxb.xuehao')->select();
-            var_dump($list);
-            foreach($list as $k=>$v){
-                if(in_array($v['xuehao'],$zhuan)){
-                    $list[$k]['addtype'] = '转入';
-                }elseif(in_array($v['xuehao'],$fm3) and !in_array($v['xuehao'],$fm2) and !in_array($v['xuehao'],$fm)){
-                    $list[$k]['addtype'] = '流失回来';
-                }else{
-                    $list[$k]['addtype'] = '新生';
-                }
-            }
+
+            // foreach($list as $k=>$v){
+            //     // ------------------写三种流失类型的逻辑------------------
+
+            //     if(in_array($v['xuehao'],$zhuan)){
+            //         $list[$k]['addtype'] = '转入';
+            //     }elseif(in_array($v['xuehao'],$fm3) and !in_array($v['xuehao'],$fm2) and !in_array($v['xuehao'],$fm)){
+            //         $list[$k]['addtype'] = '流失回来';
+            //     }else{
+            //         $list[$k]['addtype'] = '新生';
+            //     }
+            // }
             return $list;
         }else{
             return false;

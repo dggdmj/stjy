@@ -14,7 +14,7 @@ class CountSczylAction extends CommonAction {
         $where['sid'] = $sid;// 获取学校id
         $where['tid'] = 3;// 从班级学员信息表获取信息,它的tid是3
         $id = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id,也就是bjxyxxb里面的suoshudd的订单号
-
+        dump($id);
         // ------------以下所有数据都根据suoshudd的id号查询出------------
         // $heji是每个年级对应的合计数
         // $data是每个公立学校对应的每个年级的合计数
@@ -22,7 +22,7 @@ class CountSczylAction extends CommonAction {
 
         // $heji
         unset($where);
-        $where = 'gonglixx !="" and xuehao !="" and beizhu ="" and suoshudd ='.$id;// 下面$arr和$schools获取数据的查询条件
+        $where = 'suoshudd ='.$id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';// 下面$arr获取数据的查询条件
         $arr = M('bjxyxxb')->field('count(*) as count,nianji')->where($where)->group('nianji')->select();
         $heji = $this->getHeji($arr);
 
@@ -30,7 +30,7 @@ class CountSczylAction extends CommonAction {
         $schools = M('bjxyxxb')->field('gonglixx')->where($where)->group('gonglixx')->select();// 得出所有公立学校的数组
 
         foreach($schools as $k=>$v){
-            $temp = M('bjxyxxb')->field('count(*) as count,nianji,gonglixx')->where('gonglixx ="'.$v['gonglixx'].'" and xuehao !="" and beizhu = "" and suoshudd ='.$id)->group('nianji')->select();
+            $temp = M('bjxyxxb')->field('count(*) as count,nianji,gonglixx')->where('gonglixx ="'.$v['gonglixx'].'" and suoshudd ='.$id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")')->group('nianji')->select();
             $youeryuan = 0;
             $count = 0;
             foreach($temp as $v1){
