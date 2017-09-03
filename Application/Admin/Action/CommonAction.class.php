@@ -167,9 +167,10 @@ class CommonAction extends Action {
     }
 
     // 获取表明与id对应的一维数组
-    // 1取拼音名,2取中文名
-    public function getTabelnames($sign=1){
-        $map['type'] = array('in',array(1,3));
+    // $sign:1取拼音名,2取中文名
+    // $array传需要获取表格名的数组,1,导入表;2生成表;3,附加表
+    public function getTabelnames($sign=1,$array=array(1,3)){
+        $map['type'] = array('in',$array);
         // 查询出所有导入表
         if($sign == 1){
             $tablenames = M('table_name')->field('id,table_name')->where($map)->select();
@@ -390,12 +391,8 @@ class CommonAction extends Action {
             $qishu = $_GET['qishu'];
             $sid = $_GET['sid'];
 
-            // 市场业绩数据写入数据库
-            // $res_scyj = $this->getScyj($qishu,$sid);
-            // 市场占有率写入数据库
-            // $res_sczyl = $this->getSczyl($qishu,$sid);
-            // 新增明细写入数据库
-            $res_xzmx = $this->getXzmx($qishu,$sid);
+            // 生成数据入库
+            $this->AlltoDb($qishu,$sid);
 
             $arr['status'] = true;
             $arr['info'] = '操作成功';
@@ -415,6 +412,13 @@ class CommonAction extends Action {
         $temp['status_xzjl'] = null;
         $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
         M('sjzb')->where($_GET)->save($temp);// 更新数据总表
+
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+
+        // 删除生成数据
+        $this->delAllScData($qishu,$sid);
+
         $arr['status'] = true;
         $arr['info'] = '操作成功';
         $this->ajaxReturn($arr);
@@ -423,12 +427,16 @@ class CommonAction extends Action {
     // 退回操作
     public function back(){
         $rid = $this->getRid();
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
         switch($rid){
             case 3:
                 $temp['time_xzjl'] = date('Y-m-d H:i:s');
                 $temp['status_xz'] = 3;// 行政状态变成被退回
                 $temp['status_xzjl'] = 3;// 行政经理状态变成退回
                 $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+                // 删除生成数据
+                $this->delAllScData($qishu,$sid);
             break;
             case 4:
                 $temp['time_cw'] = date('Y-m-d H:i:s');
@@ -492,7 +500,7 @@ class CommonAction extends Action {
         $this->ajaxReturn($arr);
     }
 
-    // 下载表格
+    // 下载导入表格
     public function download(){
         $data = M('qishu_history')->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_school.name as school_name,stjy_table_name.name')->where($_GET)->find();
         $file_url = $data['filename'];
@@ -517,10 +525,115 @@ class CommonAction extends Action {
         fclose($file);
     }
 
+    // 下载生成表格
+    public function downloadScb(){
+        $tid = $_GET['tid'];
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+
+        $id = M('qishu_history')->where($_GET)->getField('id');
+
+        $tbnames = $this->getTabelnames(1,[2]);
+        $tbnames_cn = $this->getTabelnames(2,[2]);
+        // dump($tbnames);
+        // 获取字段
+        // $ziduan = $this->getComment($tbnames[$tid]);
+        // unset($ziduan['id']);
+        // 获取数据
+
+        // dump($data);
+        // dump($ziduan);
+        $filename = $tbnames_cn[$tid];
+        $info = $this->getInfo($qishu,$sid);
+        // dump($info);
+        switch($tid){
+            case 8:
+                $start_row = 5;
+                $data = M($tbnames[$tid])->field('xuhao,xingming,zhiwei,ruzhirq,edu,rentoushu,jingrentou,guojibanye1,guojibanye3,guojibanye5,guojibanxx1,guojibanxx2,guojibanxx5,xinshengyxhy,guojilxkc,yiqims,maisanse,laoshengcsyxhy,xinshengyxmfd,laoshengxf,xinshenggjb,yinianzbgjb,xinshengpswb,yinianzbpswb,hejiyye,huiyuanldxyye,qianming')->where('suoshudd ='.$id)->order('xuhao')->select();
+            break;
+            case 9:
+                $start_row = 6;
+                $data = M($tbnames[$tid])->field('xuhao,gonglixx,youeryuan,yinianji,ernianji,sannianji,sinianji,wunianji,liunianji,chuyi,chuer,chuerys,heji,xuexiaogms,zhanyoulv')->where('suoshudd ='.$id)->order('xuhao')->select();
+            break;
+            case 10:
+                $start_row = 2;
+                $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,xinzenglx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,shengyukc,yucunxfje,lianxidh,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+            break;
+            case 11:
+                $start_row = 2;
+                $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+            break;
+        }
+        $this->exportExcel($tid,$start_row,$data,$filename,$info);
+    }
+    // $list,$filename,$indexKey=array()
+    public function exportExcel($tid,$start_row,$list,$filename,$info=array()){
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+        //$objPHPExcel = new PHPExcel();                        //初始化PHPExcel(),不使用模板
+        switch($tid){
+            case 8:
+                $template = __ROOT__.'Public/template/template_scyj.xlsx';          //使用模板
+            break;
+            case 9:
+                $template = __ROOT__.'Public/template/template_sczyl.xlsx';          //使用模板
+            break;
+            case 10:
+                $template = __ROOT__.'Public/template/template_xzmx.xlsx';          //使用模板
+            break;
+            case 11:
+                $template = __ROOT__.'Public/template/template_jsmx.xlsx';          //使用模板
+            break;
+        }
+
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+
+        switch($tid){
+            case 8:
+                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');          //使用模板
+            break;
+            case 9:
+                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场占有率统计表');          //使用模板
+            break;
+        }
+        // $objActSheet->setCellValue('坐标','值');
+
+        $i = $start_row;// 列从5开始
+
+        foreach ($list as $row) {
+            $j = 0;// 行从0开始,即从A开始
+            foreach($row as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+        // 1.保存至本地Excel表格
+        //$objWriter->save($filename.'.xls');
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");;
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+    }
+
     // -------------------总表操作结束-------------------
 
     // 市场业绩数据入库
-    public function getScyj($qishu,$sid){
+    public function ScyjToDb($qishu,$sid){
         // ======================获取市场业绩数据开始======================
         $scyj = new \Admin\Action\CountScyjAction();
         $scyj_data = $scyj->getScyjbData($qishu,$sid);//获得统计数据
@@ -588,7 +701,7 @@ class CommonAction extends Action {
     }
 
     // 市场占有率数据入库
-    public function getSczyl($qishu,$sid){
+    public function SczylToDb($qishu,$sid){
         $data = new \Admin\Action\CountSczylAction();
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
 
@@ -626,30 +739,131 @@ class CommonAction extends Action {
     }
 
     // 新增明细数据入库
-    public function getXzmx($qishu,$sid){
+    public function XzmxToDb($qishu,$sid){
         $data = new \Admin\Action\CountXzmxAction();
         $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
 
-        // $temp['tid'] = 10;
-        // $temp['uid'] = $this->getUid();// 获取生成表格的行政uid
-        // $temp['qishu'] = $qishu;
-        // $temp['sid'] = $sid;
-        // $temp['filename'] = '';
-        // $qishu_id = M("qishu_history")->add($temp);
-
-        // unset($temp);
+        // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(10,$qishu,$sid);
-
-        foreach($list as $val){
-            foreach($val as $k=>$v){
-                $temp[$k] = $v;
-            }
+        // 插入xzmxb
+        foreach($list as $k=>$v){
+            $temp['xuhao'] = $k+1;
+            $temp['yuefen'] = substr($qishu,4,2).'月';
+            $temp['fenxiao'] = $v['xiaoqu'];
+            $temp['xuhao'] = $k+1;
+            // $temp['xinzenglx'] = ;
+            $temp['xuehao'] = $v['xuehao'];
+            $temp['xingming'] = $v['xingming'];
+            $temp['suoshubm'] = $v['suoshubm'];
+            $temp['banjibh'] = $v['banji'];
+            $temp['jingduls'] = $v['jingduls'];
+            $temp['fanduls'] = $v['fanduls'];
+            // $temp['kaibanrq'] = $v['kaibanrq'];
+            // $temp['jiebanrq'] = $v['jiebanrq'];
+            // $temp['liushitfyy'] = $v['liushitfyy'];
+            // $temp['tingduxqjkc'] = $v['tingduxqjkc'];
+            $temp['shengyukc'] = $v['shuliang'];
+            $temp['yucunxfje'] = $v['feiyong'];
+            $temp['lianxidh'] = $v['shoujihm'];
+            // $temp['yujifdsj'] = $v['yujifdsj'];
+            $temp['zhaoshenggw'] = $v['yejigsr'];
+            $temp['zhaoshengly'] = $v['zhaoshengly'];
+            $temp['jiuduxx'] = $v['gonglixx'];
+            $temp['jiuduxxnj'] = $v['nianji'];
             $temp['suoshudd'] = $qishu_id;
             M('xzmxb')->add($temp);
             unset($temp);
         }
 
         return true;
+    }
+
+    // 减少明细数据入库
+    public function JsmxToDb($qishu,$sid){
+        $data = new \Admin\Action\CountJsmxAction();
+        $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
+
+        // 插入qishu_history
+        $qishu_id = $this->insertQishuHistory(11,$qishu,$sid);
+        // 插入xzmxb
+        foreach($list as $k=>$v){
+            $temp['xuhao'] = $k+1;
+            $temp['yuefen'] = substr($qishu,4,2).'月';
+            $temp['fenxiao'] = $v['xiaoqu'];
+            $temp['xuhao'] = $k+1;
+            // $temp['jianshaolx'] = ;
+            $temp['xuehao'] = $v['xuehao'];
+            $temp['xingming'] = $v['xingming'];
+            $temp['suoshubm'] = $v['suoshubm'];
+            $temp['banjibh'] = $v['banji'];
+            $temp['jingduls'] = $v['jingduls'];
+            $temp['fanduls'] = $v['fanduls'];
+            // $temp['kaibanrq'] = $v['kaibanrq'];
+            // $temp['jiebanrq'] = $v['jiebanrq'];
+            $temp['shengyukc'] = $v['shuliang'];
+            $temp['yucunxfje'] = $v['feiyong'];
+            $temp['lianxidh'] = $v['shoujihm'];
+            $temp['zhaoshenggw'] = $v['yejigsr'];
+            $temp['zhaoshengly'] = $v['zhaoshengly'];
+            $temp['jiuduxx'] = $v['gonglixx'];
+            $temp['jiuduxxnj'] = $v['nianji'];
+            $temp['suoshudd'] = $qishu_id;
+            M('jsmxb')->add($temp);
+            unset($temp);
+        }
+
+        return true;
+    }
+
+    public function AlltoDb($qishu,$sid){
+        // -----------------------生成数据入库开始-----------------------
+        // 市场业绩数据写入数据库
+        $res_scyj = $this->ScyjToDb($qishu,$sid);
+        // 市场占有率数据写入数据库
+        $res_sczyl = $this->SczylToDb($qishu,$sid);
+        // 新增明细数据写入数据库
+        $res_xzmx = $this->XzmxToDb($qishu,$sid);
+        // 减少明细数据写入数据库
+        $res_jsmx = $this->jsmxToDb($qishu,$sid);
+        // 经营数据写入数据库
+        //
+        // 退费数据写入数据库
+        //
+        // -----------------------生成数据入库结束-----------------------
+    }
+
+    public function delScData($qishu,$sid,$tid){
+        $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
+        $where['tid'] = $tid;
+        $id = M('qishu_history')->where($where)->getField('id');// 取得suoshudd的值
+
+
+        $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
+
+        $res = M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
+
+        if ($res) {
+            M('qishu_history')->where($where)->delete();// 从qishu_history中删除
+        }
+
+    }
+
+    public function delAllScData($qishu,$sid){
+        // -----------------------生成数据从库删除开始-----------------------
+        // 删除市场业绩数据
+        $res_scyj = $this->delScData($qishu,$sid,8);
+        // 删除市场占有率数据
+        $res_sczyl = $this->delScData($qishu,$sid,9);
+        // 删除新增明细数据
+        $res_xzmx = $this->delScData($qishu,$sid,10);
+        // 删除减少明细数据
+        $res_jsmx = $this->delScData($qishu,$sid,11);
+        // 删除经营数据数据
+        //
+        // 删除退费数据
+        //
+        // -----------------------生成数据从库删除结束-----------------------
     }
 
     // 生成表写入qishu_history

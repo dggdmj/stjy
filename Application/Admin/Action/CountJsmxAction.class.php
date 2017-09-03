@@ -32,7 +32,7 @@ class CountJsmxAction extends CommonAction {
             // dump(count($new));
             $map['stjy_bjxyxxb.xuehao'] = array('in',$jianshao);// 查询条件
             $list = M('bjxyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_bjxyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,stjy_xyfyyjb.shuliang,stjy_xyfyyjb.feiyong,stjy_xyxxb.shoujihm,stjy_xyxxb.zhaoshengly')->where($map)->group('stjy_bjxyxxb.xuehao')->select();
-
+            $res = $this->doList($list,$qishu,$sid);
             // foreach($list as $k=>$v){
             //     // ------------------写三种流失类型的逻辑------------------
 
@@ -44,13 +44,38 @@ class CountJsmxAction extends CommonAction {
             //         $list[$k]['addtype'] = '新生';
             //     }
             // }
-            return $list;
+            return $res;
         }else{
             return false;
         }
     }
 
+    // 处理$list数据
+    public function doList($list,$qishu,$sid){
+        $bjbm = $this->getBjbm();// 获取班级编码数据
+        foreach($list as $k=>$v){
+            $jdjb = substr($v['banji'],0,3);
+            // dump(strtolower($jdjb));
+            if(strlen($jdjb) == mb_strlen($jdjb,'gb2312')){
+                $list[$k]['suoshubm'] = $bjbm[strtolower($jdjb)]['banxing'];
+            }else{
+                $list[$k]['suoshubm'] = $v['banji'];
+            }
 
+            $t_arr = explode(',',$v['shangkels']);
+            $list[$k]['jingduls'] = $t_arr[0];
+
+            // 判断外教和泛读老师的逻辑,截取前面3个字符,如果是英文就是外教,否则就是泛读
+            if(strlen(substr($t_arr[1],0,3)) == mb_strlen(substr($t_arr[1],0,3),'gb2312')){
+                $list[$k]['waijiao'] = $t_arr[1];
+                $list[$k]['fanduls'] = $t_arr[2];
+            }else{
+                $list[$k]['waijiao'] = $t_arr[2];
+                $list[$k]['fanduls'] = $t_arr[1];
+            }
+        }
+        return $list;
+    }
 
 
 }
