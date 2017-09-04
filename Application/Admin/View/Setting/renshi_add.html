@@ -43,7 +43,7 @@
                     <label>职务</label>
                 </div>
                 <div class="field">
-                    <select class="select" name="gid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                    <select class="select" name="zhiwu" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
                         <option value="">请选择职务</option>
                         <option value="教师">教师</option>
                         <option value="教学组长">教学组长</option>
@@ -76,11 +76,11 @@
                 <div class="field">
                     <div class="button-group radio">
                             <label class="button active">
-                                <input name="xingbie" value="1" checked="checked" type="radio">
+                                <input name="gangweilx" value="1" checked="checked" type="radio">
                                 <span class="icon icon-check"></span> 全职
                             </label>
                             <label class="button">
-                                <input name="xingbie" value="2" type="radio">
+                                <input name="gangweilx" value="2" type="radio">
                                 <span class="icon icon-check"></span> 兼职
                             </label>
                     </div>
@@ -119,7 +119,7 @@
                     <label>部门</label>
                 </div>
                 <div class="field">
-                    <select class="select" name="gid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                    <select class="select" name="bumen" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
                         <option value="">请选择部门</option>
                         <option value="市场部">市场部</option>
                         <option value="行政部">行政部</option>
@@ -134,7 +134,7 @@
                 </div>
                 <div class="field">
                     <div class="field">
-                        <select class="select" name="gid2" style="height:32px;border-radius: 4px;" disabled="disabled">
+                        <select class="select" name="bumen2" style="height:32px;border-radius: 4px;" disabled="disabled">
                             <option value="">请选择二级部门</option>
                         </select>
                     </div>
@@ -243,7 +243,7 @@
                     <label>入职日期</label>
                 </div>
                 <div class="field">
-                    <input type="date" class="input datetimepicker" name="ruzhirq" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="date" class="input datetimepicker" name="ruzhirq" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填,格式如2011/11/11</span>
                 </div>
             </div>
             <div class="form-group">
@@ -251,7 +251,7 @@
                     <label>合同开始时间</label>
                 </div>
                 <div class="field">
-                    <input type="date" class="input datetimepicker" name="hetongkssj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="date" class="input datetimepicker" name="hetongkssj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填,格式如2011/11/11</span>
                 </div>
             </div>
             <div class="form-group">
@@ -259,7 +259,7 @@
                     <label>合同到期时间</label>
                 </div>
                 <div class="field">
-                    <input type="date" class="input datetimepicker" name="hetongdqsj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="date" class="input datetimepicker" name="hetongdqsj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填,格式如2011/11/11</span>
                 </div>
             </div>
             <div class="form-group">
@@ -268,12 +268,12 @@
                 </div>
                 <div class="field">
                     <div class="button-group radio">
-                        <label class="button active">
-                            <input name="hunfou" value="1" checked="checked" type="radio">
+                        <label class="button">
+                            <input name="hunfou" value="1" type="radio">
                             <span class="icon icon-check"></span> 已婚
                         </label>
-                        <label class="button">
-                            <input name="hunfou" value="2" type="radio">
+                        <label class="button active">
+                            <input name="hunfou" value="2" checked="checked" type="radio">
                             <span class="icon icon-check"></span> 未婚
                         </label>
                     </div>
@@ -285,12 +285,12 @@
                 </div>
                 <div class="field">
                     <div class="button-group radio">
-                        <label class="button active">
-                            <input name="shengyuzh" value="1" checked="checked" type="radio">
+                        <label class="button">
+                            <input name="shengyuzh" value="1" type="radio">
                             <span class="icon icon-check"></span> 是
                         </label>
-                        <label class="button">
-                            <input name="shengyuzh" value="2" type="radio">
+                        <label class="button active">
+                            <input name="shengyuzh" value="2" checked="checked" type="radio">
                             <span class="icon icon-check"></span> 否
                         </label>
                     </div>
@@ -451,7 +451,7 @@
                     <label>紧急联系人</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jingjilxr" size="60" value="{$list.jingjilxr}">
+                    <input type="text" class="input" name="jinjilxr" size="60" value="{$list.jingjilxr}">
                 </div>
             </div>
             <div class="form-group">
@@ -500,12 +500,12 @@
                 </div>
                 <div class="field">
                     <div class="button-group radio">
-                        <label class="button active">
-                            <input name="shifouydbr" value="1" checked="checked" type="radio">
+                        <label class="button">
+                            <input name="shifouydbr" value="1" type="radio">
                             <span class="icon icon-check"></span> 是
                         </label>
-                        <label class="button">
-                            <input name="shifouydbr" value="2" type="radio">
+                        <label class="button active">
+                            <input name="shifouydbr" value="2" checked="checked" type="radio">
                             <span class="icon icon-check"></span> 否
                         </label>
                     </div>
@@ -548,7 +548,7 @@
                     <label>护照有效期</label>
                 </div>
                 <div class="field">
-                    <input type="date" class="datetimepicker" class="input" name="huzhaoyxq" size="60" value="">
+                    <input type="date" class="datetimepicker" class="input" name="huzhaoyxq" size="60" value=""><span style="color:red;"> 格式如2011/11/11</span>
                 </div>
             </div>
             <div class="form-group">
@@ -571,7 +571,7 @@
                     <label>签证有效期</label>
                 </div>
                 <div class="field">
-                    <input type="date" class="input datetimepicker" name="qianzhengyxq" size="60" value="">
+                    <input type="date" class="input datetimepicker" name="qianzhengyxq" size="60" value=""><span style="color:red;"> 格式如2011/11/11</span>
                 </div>
             </div>
             <div class="form-group">

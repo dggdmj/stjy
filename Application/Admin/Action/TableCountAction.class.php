@@ -59,7 +59,7 @@ class TableCountAction extends CommonAction{
         $uid = $temp['id'];// 获取用户id
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
         $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
-        if($rid == 3 || $rid == 2){
+        if($rid == 3 || $rid == 2 || $rid == 1){
             $map['status_xzjl'] = array('neq',3);// 查询条件
         }elseif($rid == 4){
             $map['status_cw'] = array('neq',3);// 查询条件
@@ -69,14 +69,14 @@ class TableCountAction extends CommonAction{
 
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
-        if(in_array($rid,[2,3,4,5])){
+        if(in_array($rid,[1,2,3,4,5])){
             $count = $data->where($map)->count();// 查询满足要求的总记录数
         }
 
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        if($rid == 3 || $rid == 2){
+        if($rid == 3 || $rid == 2 || $rid == 1){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->order('stjy_sjzb.qishu desc')->select();
         }else if($rid == 4){
             $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->order('stjy_sjzb.qishu desc')->select();
@@ -123,6 +123,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 	    $data = new \Admin\Action\CountScyjAction();
 	    $list = $data->getScyjbData($qishu,$sid);//获得统计数据
+        dump($list);
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign("list",$list);
         $this->assign('arr',$arr);

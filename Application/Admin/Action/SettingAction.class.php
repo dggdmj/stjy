@@ -14,34 +14,38 @@ class SettingAction extends CommonAction{
         ),
             'menu' => array(
                 array('name' => '校区列表',
-                    'url' => url('Setting/School'),
+                    'url' => url('Setting/school'),
                     'icon' => 'list',
                 ),
                 array('name' => '部门列表',
-                    'url' => url('Setting/Department'),
+                    'url' => url('Setting/department'),
                     'icon' => 'list',
                 ),
                 array('name' => '期数列表',
-                    'url' => url('Setting/Qishu'),
+                    'url' => url('Setting/qishu'),
                     'icon' => 'list',
                 ),
                 array('name' => '人事列表',
-                    'url' => url('Setting/Renshi'),
+                    'url' => url('Setting/renshi'),
+                    'icon' => 'list',
+                ),
+                array('name' => '班级编码',
+                    'url' => url('Setting/banjibianhao'),
                     'icon' => 'list',
                 ),
             ),
             'add' => array(
                 array('name' => '添加校区',
-                    'url' => url('Setting/School_add'),
+                    'url' => url('Setting/school_add'),
                 ),
                 array('name' => '添加部门',
-                    'url' => url('Setting/Department_add'),
+                    'url' => url('Setting/department_add'),
                 ),
                 array('name' => '添加期数',
-                    'url' => url('Setting/Qishu_add'),
+                    'url' => url('Setting/qishu_add'),
                 ),
                 array('name' => '添加人事',
-                    'url' => url('Setting/Renshi_add'),
+                    'url' => url('Setting/renshi_add'),
                 ),
             ),
         );
@@ -173,27 +177,25 @@ class SettingAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    //添加校区页面
+    //添加人士页面
     public function renshi_add(){
         $school = M('school')->where('isuse = 1')->select();
         $this->assign('school',$school);
         $this->adminDisplay();
     }
 
-    //添加校区
+    //添加人士
     public function addRenshi(){
-        dump($_POST);
-        die;
-        $bitian = array('xingming'=>'姓名','zhiwu'=>'职务','leixing'=>'类型','xiaoqu'=>'校区','bumen'=>'部门','chushengrq'=>'出生日期','diyixl'=>'第一学历','diyixlyx'=>'第一学历院校','zuigaoxl'=>'最高学历','zuigaoxlyx'=>'最高学历院校','ruzhirq'=>'入职日期','hetongkssj'=>'合同开始时间','hetongdqsj'=>'合同到期时间');// 所有必填项目
-        foreach($bitian as $k=>$v){
-            if(empty($_POST[$k])){
-                $err[] = $v;
-            }
-        }
-        if(!empty($err)){
-            $notice = implode(',',$err);
-            $this->error($notice.'没有填写');
-        }
+        // $bitian = array('xingming'=>'姓名','zhiwu'=>'职务','leixing'=>'类型','xiaoqu'=>'校区','bumen'=>'部门','chushengrq'=>'出生日期','diyixl'=>'第一学历','diyixlyx'=>'第一学历院校','zuigaoxl'=>'最高学历','zuigaoxlyx'=>'最高学历院校','ruzhirq'=>'入职日期','hetongkssj'=>'合同开始时间','hetongdqsj'=>'合同到期时间');// 所有必填项目
+        // foreach($bitian as $k=>$v){
+        //     if(empty($_POST[$k])){
+        //         $err[] = $v;
+        //     }
+        // }
+        // if(!empty($err)){
+        //     $notice = implode(',',$err);
+        //     $this->error($notice.'没有填写');
+        // }
 
         if(empty($_GET['id'])) {
             if($bid=M('renshi')->add($_POST)) {
@@ -201,8 +203,7 @@ class SettingAction extends CommonAction{
             } else {
                 $this->error('添加失败');
             }
-        }
-        else {
+        }else {
             $bid=$_GET['id'];
             if(M('renshi')->where(array('id'=>$bid))->save($_POST)) {
                 $this->success('修改成功',U('renshi'));
@@ -212,11 +213,12 @@ class SettingAction extends CommonAction{
         }
     }
 
-    // 修改校区
+    // 修改人士
     public function editRenshi() {
         $id = $_GET['id'];
         $this->list=D('renshi')->where(array('id'=>$id))->find();
         $this->adminDisplay('renshi_add');
+        // view未套数据
     }
 
     //彻底删除
@@ -246,6 +248,7 @@ class SettingAction extends CommonAction{
     //班级编号管理导入
     public function banjibianhao_import(){
         if (!empty($_FILES)) {
+            M('banjibianhao')->where("1 = 1")->delete();// 清空班级编码表的数据
             $newTemp = $this->getComment('banjibianhao');// 获得班级编号表字段和备注一一对应的数组
             dump($newTemp);
             //上传表格并导入数据
@@ -324,7 +327,7 @@ class SettingAction extends CommonAction{
                 // die;
                 M('banjibianhao')->add($data);
             }
-            $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
+            $this->success('导入成功！');//获得成功跳转的链接
 
             // dump($newTemp);die;
         }else{

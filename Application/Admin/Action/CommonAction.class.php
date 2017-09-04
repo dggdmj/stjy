@@ -566,6 +566,79 @@ class CommonAction extends Action {
         }
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
     }
+
+    // 下载汇总表
+    public function downloadHzb(){
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $template = __ROOT__.'Public/template/template_hz.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+
+        // --------------------接下来就是写数据到表格里面去--------------------
+
+        // $objActSheet = $objPHPExcel->getActiveSheet();
+        $objPHPExcel->setActiveSheetIndex(0); //设置第一个工作表为活动工作表
+        // $objActSheet = $objPHPExcel->getActiveSheet();
+        // $objPHPExcel->getActiveSheet()->setTitle('1-学员信息表'); //设置工作表名称
+        $_GET['tid'] = 1;
+        $id1 = M('qishu_history')->where($_GET)->getField('id');
+        $data1 = M('xyxxb')->where('suoshudd ='.$id1)->select();
+        // $this->doData($objPHPExcel,$data1,2);
+        // dump($data1);die;
+        $i = 2;// 行从5开始
+
+        foreach ($data1 as $row) {
+            $j = 0;// 行从0开始,即从A开始
+            foreach($row as $v){
+                // 写入数值
+                $objPHPExcel->getActiveSheet()->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                // 水平垂直居中
+                $objPHPExcel->getActiveSheet()->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN)->getColor()->setARGB('FFFF0000');
+                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');// 设置单元格背景颜色为绿色
+                $j++;
+            }
+            $i++;
+        }
+        // dump($template);
+        // $objPHPExcel->setActiveSheetIndex(1); //设置第二个工作表为活动工作表
+        // $objPHPExcel->getActiveSheet()->setTitle('2-班级信息'); //设置工作表名称
+        // $_GET['tid'] = 2;
+        // $template = M('qishu_history')->where($_GET)->getField('filename');
+
+
+
+        // 接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");;
+        header('Content-Disposition:attachment;filename="汇总表.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+    }
+
+    public function doData($objPHPExcel,$data,$start_row){
+        $i = $start_row;// 行从5开始
+
+        foreach ($data as $row) {
+            $j = 0;// 行从0开始,即从A开始
+            foreach($row as $v){
+                // 写入数值
+                $objPHPExcel->getActiveSheet()->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                // 水平垂直居中
+                $objPHPExcel->getActiveSheet()->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN)->getColor()->setARGB('FFFF0000');
+                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');// 设置单元格背景颜色为绿色
+                $j++;
+            }
+            $i++;
+        }
+    }
+
     // $list,$filename,$indexKey=array()
     public function exportExcel($tid,$start_row,$list,$filename,$info=array()){
         vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
