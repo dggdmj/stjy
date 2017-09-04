@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-09-04 16:39:42
+Date: 2017-09-05 00:43:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -56,60 +56,6 @@ INSERT INTO `stjy_access` VALUES ('1', '21', '3', null);
 INSERT INTO `stjy_access` VALUES ('1', '22', '3', null);
 INSERT INTO `stjy_access` VALUES ('1', '8', '2', null);
 INSERT INTO `stjy_access` VALUES ('1', '9', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '5', '1', null);
-INSERT INTO `stjy_access` VALUES ('5', '35', '2', null);
-INSERT INTO `stjy_access` VALUES ('5', '36', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '37', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '38', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '39', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '40', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '41', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '42', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '43', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '49', '2', null);
-INSERT INTO `stjy_access` VALUES ('5', '53', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '54', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '51', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '50', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '52', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '55', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '56', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '13', '2', null);
-INSERT INTO `stjy_access` VALUES ('5', '27', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '23', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '24', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '25', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '26', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '19', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '20', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '21', '3', null);
-INSERT INTO `stjy_access` VALUES ('5', '22', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '5', '1', null);
-INSERT INTO `stjy_access` VALUES ('2', '12', '2', null);
-INSERT INTO `stjy_access` VALUES ('2', '14', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '15', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '16', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '17', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '18', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '28', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '57', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '35', '2', null);
-INSERT INTO `stjy_access` VALUES ('2', '36', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '37', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '38', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '39', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '40', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '41', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '42', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '43', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '49', '2', null);
-INSERT INTO `stjy_access` VALUES ('2', '53', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '54', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '51', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '50', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '52', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '55', '3', null);
-INSERT INTO `stjy_access` VALUES ('2', '56', '3', null);
 INSERT INTO `stjy_access` VALUES ('3', '5', '1', null);
 INSERT INTO `stjy_access` VALUES ('3', '12', '2', null);
 INSERT INTO `stjy_access` VALUES ('3', '14', '3', null);
@@ -136,6 +82,34 @@ INSERT INTO `stjy_access` VALUES ('3', '50', '3', null);
 INSERT INTO `stjy_access` VALUES ('3', '52', '3', null);
 INSERT INTO `stjy_access` VALUES ('3', '55', '3', null);
 INSERT INTO `stjy_access` VALUES ('3', '56', '3', null);
+INSERT INTO `stjy_access` VALUES ('3', '58', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '5', '1', null);
+INSERT INTO `stjy_access` VALUES ('2', '12', '2', null);
+INSERT INTO `stjy_access` VALUES ('2', '14', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '15', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '16', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '17', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '18', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '28', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '57', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '35', '2', null);
+INSERT INTO `stjy_access` VALUES ('2', '36', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '37', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '38', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '39', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '40', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '41', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '42', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '43', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '49', '2', null);
+INSERT INTO `stjy_access` VALUES ('2', '53', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '54', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '51', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '50', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '52', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '55', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '56', '3', null);
+INSERT INTO `stjy_access` VALUES ('2', '58', '3', null);
 INSERT INTO `stjy_access` VALUES ('4', '5', '1', null);
 INSERT INTO `stjy_access` VALUES ('4', '12', '2', null);
 INSERT INTO `stjy_access` VALUES ('4', '14', '3', null);
@@ -156,6 +130,36 @@ INSERT INTO `stjy_access` VALUES ('4', '50', '3', null);
 INSERT INTO `stjy_access` VALUES ('4', '52', '3', null);
 INSERT INTO `stjy_access` VALUES ('4', '55', '3', null);
 INSERT INTO `stjy_access` VALUES ('4', '56', '3', null);
+INSERT INTO `stjy_access` VALUES ('4', '58', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '5', '1', null);
+INSERT INTO `stjy_access` VALUES ('5', '35', '2', null);
+INSERT INTO `stjy_access` VALUES ('5', '36', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '37', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '38', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '39', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '40', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '41', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '42', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '43', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '49', '2', null);
+INSERT INTO `stjy_access` VALUES ('5', '53', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '54', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '51', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '50', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '52', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '55', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '56', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '58', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '13', '2', null);
+INSERT INTO `stjy_access` VALUES ('5', '27', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '23', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '24', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '25', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '26', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '19', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '20', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '21', '3', null);
+INSERT INTO `stjy_access` VALUES ('5', '22', '3', null);
 
 -- ----------------------------
 -- Table structure for stjy_admin
@@ -177,11 +181,11 @@ CREATE TABLE `stjy_admin` (
 -- ----------------------------
 -- Records of stjy_admin
 -- ----------------------------
-INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3', '1504508844', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', '', '1,2,3,4,5', '1504541980', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2,4', '1504509810', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('3', 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', '1501780416', '127.0.0.1', '1');
 INSERT INTO `stjy_admin` VALUES ('4', 'caiwu', 'f5b5ec699ed736de89336fbce0bc9890', '财务', 'caiwu@caiwu.com', '1,2,3,4', '1504510569', '127.0.0.1', '0');
-INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4,5', '1504512161', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4,5', '1504542058', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('6', 'fuzeren', 'e10adc3949ba59abbe56e057f20f883e', 'fuzeren', 'fuzeren@stjy.com', '1,2,3,4', '1503977551', '127.0.0.1', '0');
 
 -- ----------------------------
@@ -228,44 +232,44 @@ CREATE TABLE `stjy_banjibianhao` (
   `beizhu` varchar(255) DEFAULT NULL COMMENT '备注',
   `banxing2` varchar(255) DEFAULT NULL COMMENT '班型2',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COMMENT='班级编号表';
+) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8mb4 COMMENT='班级编号表';
 
 -- ----------------------------
 -- Records of stjy_banjibianhao
 -- ----------------------------
-INSERT INTO `stjy_banjibianhao` VALUES ('2', 'K01', null, 'KGF', null, null, 'T', 'XD', '01', '幼儿部', '小班', 'K01KGFTXD01', 'kitty goes fishing（小猫钓鱼）', '幼儿部');
-INSERT INTO `stjy_banjibianhao` VALUES ('3', 'K02', null, '000', null, null, 'G', '0X', '02', '幼儿部', '小班', 'K02000G0X02', null, '幼儿部');
-INSERT INTO `stjy_banjibianhao` VALUES ('4', 'K03', null, 'ADP', null, null, 'T', 'ZD', '03', '幼儿部', '中班', 'K03ADPTZD03', 'a Dirty Pig《小脏猪》', '幼儿部');
-INSERT INTO `stjy_banjibianhao` VALUES ('5', 'K04', null, 'CAB', null, null, 'G', '0Z', '04', '幼儿部', '中班', 'K04CABG0Z04', 'The Cat and the Bell《猫和铃铛》', '幼儿部');
-INSERT INTO `stjy_banjibianhao` VALUES ('6', 'K05', null, 'WAR', null, null, 'T', '0D', '05', '幼儿部', '大班', 'K05WART0D05', 'The Wolf and the Rabbits《大灰狼与兔子们》', '幼儿部');
-INSERT INTO `stjy_banjibianhao` VALUES ('7', 'K06', null, 'TLP', null, null, 'G', 'XZ', '06', '幼儿部', '大班', 'K06TLPGXZ06', 'Three Little Pigs《三只小猪》', '幼儿部');
-INSERT INTO `stjy_banjibianhao` VALUES ('8', 'P01', null, 'K12', 'K34', 'K56', 'T', '12', '07', '小初部', '一年级', 'P01K12T1207', '故事一期 New Phonics for kids 1课本 原版', '小初部');
-INSERT INTO `stjy_banjibianhao` VALUES ('9', 'P02', null, 'K34', 'K12', 'K56', 'G', '12', '08', '小初部', '一年级', 'P02K34G1208', '故事二期', '小初部');
-INSERT INTO `stjy_banjibianhao` VALUES ('10', 'P03', null, 'K56', 'K12', 'K34', 'T', '12', '09', '小初部', '一年级', 'P03K56T1209', '故事三期', '小初部');
-INSERT INTO `stjy_banjibianhao` VALUES ('11', 'P1A', null, 'F01', null, null, 'G', '23', '10', '小初部', '二年级', 'P1AF01G2310', 'Phonics fun 1课本 原版', '小初部');
-INSERT INTO `stjy_banjibianhao` VALUES ('12', 'P1B', null, 'F02', null, null, 'T', '12', '11', '小初部', '二年级', 'P1BF02T1211', 'Phonics fun 2课本 原版', '小初部');
-INSERT INTO `stjy_banjibianhao` VALUES ('13', 'P2A', null, 'F03', null, null, 'G', '12', '12', '小初部', '二年级', 'P2AF03G1212', 'Phonics fun 3课本 原版', '小初部');
-INSERT INTO `stjy_banjibianhao` VALUES ('14', 'P2B', null, 'F04', null, null, 'T', '34', '13', '小高部', '三年级', 'P2BF04T3413', 'Phonics fun 4课本 原版', '小高部');
-INSERT INTO `stjy_banjibianhao` VALUES ('15', 'P3A', null, 'F05', null, null, 'G', '34', '14', '小高部', '三年级', 'P3AF05G3414', 'Phonics fun 5课本 原版', '小高部');
-INSERT INTO `stjy_banjibianhao` VALUES ('16', 'P3B', null, 'F06', null, null, 'T', '34', '15', '小高部', '三年级', 'P3BF06T3415', 'Phonics fun 6课本 原版；bright readers 3 上册(A)', '小高部');
-INSERT INTO `stjy_banjibianhao` VALUES ('17', 'P4A', null, 'BR3', null, null, 'G', '34', '16', '小高部', '四年级', 'P4ABR3G3416', 'bright readers 3 下册(B) ；X计划5', '小高部');
-INSERT INTO `stjy_banjibianhao` VALUES ('18', 'P4B', null, 'BR4', null, null, 'T', '45', '17', '小高部', '四年级', 'P4BBR4T4517', 'bright readers 4 下册(A) ；X计划6', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('19', 'P5A', null, 'BR4', null, null, 'G', '34', '18', '初中部', '四年级', 'P5ABR4G3418', 'bright readers 4 下册(B) ；X计划7', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('20', 'P5B', null, 'BR5', null, null, 'T', '05', '19', '初中部', '五年级', 'P5BBR5T0519', 'bright readers 5 下册(A) ；X计划8', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('21', 'P6A', null, 'BR5', null, null, 'G', '56', '20', '初中部', '五年级', 'P6ABR5G5620', 'bright readers 5 下册(B) ；X计划9（夏季班）', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('22', 'P6A', null, 'BR6', null, null, 'T', '05', '21', '初中部', '五年级', 'P6ABR6T0521', 'bright readers 6 下册(A) ；X计划10（秋季班）', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('23', 'P6B', null, 'BR6', null, null, 'G', '56', '22', '初中部', '五年级', 'P6BBR6G5622', 'bright readers 6 下册(B) ；小升初冲刺', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('24', 'J1A', null, 'SR3', null, null, 'T', '56', '23', '初中部', '六年级', 'J1ASR3T5623', '新课标百科丛书3（1-7）  secondary readers', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('25', 'J1B', null, 'SR3', null, null, 'G', '56', '24', '初中部', '六年级', 'J1BSR3G5624', '新课标百科丛书3（8-14）', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('26', 'J2A', null, 'SR5', 'SR7', null, 'T', '06', '25', '初中部', '初一', 'J2ASR5T0625', '新课标百科丛书5（1-7）', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('27', 'J2B', null, 'SR5', 'SR7', null, 'G', '67', '26', '初中部', '初一', 'J2BSR5G6726', '新课标百科丛书5（8-14）', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('28', 'J3A', null, 'SR7', 'SR9', null, 'T', '78', '27', '初中部', '初二', 'J3ASR7T7827', '新课标百科丛书7（1-7）', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('29', 'J3B', null, 'SR7', 'SR9', null, 'G', '78', '28', '初中部', '初二', 'J3BSR7G7828', '新课标百科丛书7（8-14）', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('30', 'NS1', null, 'SR9', null, null, 'T', '09', '29', '初中部', '初三', 'NS1SR9T0929', '1-4单元', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('31', 'NS2', null, 'SR9', null, null, 'G', '89', '30', '初中部', '初三', 'NS2SR9G8930', '5-8单元', '初中部');
-INSERT INTO `stjy_banjibianhao` VALUES ('32', 'SWN', null, null, null, null, null, null, null, null, null, null, null, null);
-INSERT INTO `stjy_banjibianhao` VALUES ('33', 'S1B', null, null, null, null, null, '01', '01', '小初部', '二年级', null, null, '小初部');
-INSERT INTO `stjy_banjibianhao` VALUES ('34', 'S2B', null, null, null, null, null, '02', null, '小高部', '三年级', null, null, '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('134', 'K01', null, 'KGF', null, null, 'T', 'XD', '01', '幼儿部', '小班', 'K01KGFTXD01', 'kitty goes fishing（小猫钓鱼）', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('135', 'K02', null, '000', null, null, 'G', '0X', '02', '幼儿部', '小班', 'K02000G0X02', null, '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('136', 'K03', null, 'ADP', null, null, 'T', 'ZD', '03', '幼儿部', '中班', 'K03ADPTZD03', 'a Dirty Pig《小脏猪》', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('137', 'K04', null, 'CAB', null, null, 'G', '0Z', '04', '幼儿部', '中班', 'K04CABG0Z04', 'The Cat and the Bell《猫和铃铛》', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('138', 'K05', null, 'WAR', null, null, 'T', '0D', '05', '幼儿部', '大班', 'K05WART0D05', 'The Wolf and the Rabbits《大灰狼与兔子们》', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('139', 'K06', null, 'TLP', null, null, 'G', 'XZ', '06', '幼儿部', '大班', 'K06TLPGXZ06', 'Three Little Pigs《三只小猪》', '幼儿部');
+INSERT INTO `stjy_banjibianhao` VALUES ('140', 'P01', null, 'K12', 'K34', 'K56', 'T', '12', '07', '小初部', '一年级', 'P01K12T1207', '故事一期 New Phonics for kids 1课本 原版', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('141', 'P02', null, 'K34', 'K12', 'K56', 'G', '12', '08', '小初部', '一年级', 'P02K34G1208', '故事二期', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('142', 'P03', null, 'K56', 'K12', 'K34', 'T', '12', '09', '小初部', '一年级', 'P03K56T1209', '故事三期', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('143', 'P1A', null, 'F01', null, null, 'G', '23', '10', '小初部', '二年级', 'P1AF01G2310', 'Phonics fun 1课本 原版', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('144', 'P1B', null, 'F02', null, null, 'T', '12', '11', '小初部', '二年级', 'P1BF02T1211', 'Phonics fun 2课本 原版', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('145', 'P2A', null, 'F03', null, null, 'G', '12', '12', '小初部', '二年级', 'P2AF03G1212', 'Phonics fun 3课本 原版', '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('146', 'P2B', null, 'F04', null, null, 'T', '34', '13', '小高部', '三年级', 'P2BF04T3413', 'Phonics fun 4课本 原版', '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('147', 'P3A', null, 'F05', null, null, 'G', '34', '14', '小高部', '三年级', 'P3AF05G3414', 'Phonics fun 5课本 原版', '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('148', 'P3B', null, 'F06', null, null, 'T', '34', '15', '小高部', '三年级', 'P3BF06T3415', 'Phonics fun 6课本 原版；bright readers 3 上册(A)', '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('149', 'P4A', null, 'BR3', null, null, 'G', '34', '16', '小高部', '四年级', 'P4ABR3G3416', 'bright readers 3 下册(B) ；X计划5', '小高部');
+INSERT INTO `stjy_banjibianhao` VALUES ('150', 'P4B', null, 'BR4', null, null, 'T', '45', '17', '小高部', '四年级', 'P4BBR4T4517', 'bright readers 4 下册(A) ；X计划6', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('151', 'P5A', null, 'BR4', null, null, 'G', '34', '18', '初中部', '四年级', 'P5ABR4G3418', 'bright readers 4 下册(B) ；X计划7', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('152', 'P5B', null, 'BR5', null, null, 'T', '05', '19', '初中部', '五年级', 'P5BBR5T0519', 'bright readers 5 下册(A) ；X计划8', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('153', 'P6A', null, 'BR5', null, null, 'G', '56', '20', '初中部', '五年级', 'P6ABR5G5620', 'bright readers 5 下册(B) ；X计划9（夏季班）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('154', 'P6A', null, 'BR6', null, null, 'T', '05', '21', '初中部', '五年级', 'P6ABR6T0521', 'bright readers 6 下册(A) ；X计划10（秋季班）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('155', 'P6B', null, 'BR6', null, null, 'G', '56', '22', '初中部', '五年级', 'P6BBR6G5622', 'bright readers 6 下册(B) ；小升初冲刺', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('156', 'J1A', null, 'SR3', null, null, 'T', '56', '23', '初中部', '六年级', 'J1ASR3T5623', '新课标百科丛书3（1-7）  secondary readers', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('157', 'J1B', null, 'SR3', null, null, 'G', '56', '24', '初中部', '六年级', 'J1BSR3G5624', '新课标百科丛书3（8-14）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('158', 'J2A', null, 'SR5', 'SR7', null, 'T', '06', '25', '初中部', '初一', 'J2ASR5T0625', '新课标百科丛书5（1-7）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('159', 'J2B', null, 'SR5', 'SR7', null, 'G', '67', '26', '初中部', '初一', 'J2BSR5G6726', '新课标百科丛书5（8-14）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('160', 'J3A', null, 'SR7', 'SR9', null, 'T', '78', '27', '初中部', '初二', 'J3ASR7T7827', '新课标百科丛书7（1-7）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('161', 'J3B', null, 'SR7', 'SR9', null, 'G', '78', '28', '初中部', '初二', 'J3BSR7G7828', '新课标百科丛书7（8-14）', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('162', 'NS1', null, 'SR9', null, null, 'T', '09', '29', '初中部', '初三', 'NS1SR9T0929', '1-4单元', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('163', 'NS2', null, 'SR9', null, null, 'G', '89', '30', '初中部', '初三', 'NS2SR9G8930', '5-8单元', '初中部');
+INSERT INTO `stjy_banjibianhao` VALUES ('164', 'SWN', null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `stjy_banjibianhao` VALUES ('165', 'S1B', null, null, null, null, null, '01', '01', '小初部', '二年级', null, null, '小初部');
+INSERT INTO `stjy_banjibianhao` VALUES ('166', 'S2B', null, null, null, null, null, '02', null, '小高部', '三年级', null, null, '小高部');
 
 -- ----------------------------
 -- Table structure for stjy_bjxxb
@@ -1817,7 +1821,7 @@ CREATE TABLE `stjy_node` (
   KEY `pid` (`pid`),
   KEY `status` (`status`),
   KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_node
@@ -1862,6 +1866,7 @@ INSERT INTO `stjy_node` VALUES ('54', 'rollBack', '取消提交行政经理(校�
 INSERT INTO `stjy_node` VALUES ('55', 'download', '下载表格', '1', null, '7', '49', '3');
 INSERT INTO `stjy_node` VALUES ('56', 'downloadScb', '生成表下载', '1', null, '8', '49', '3');
 INSERT INTO `stjy_node` VALUES ('57', 'delRow', '删除数据总表的行', '1', null, '9', '12', '3');
+INSERT INTO `stjy_node` VALUES ('58', 'downloadHzb', '下载汇总表', '1', null, '9', '49', '3');
 
 -- ----------------------------
 -- Table structure for stjy_qishu
@@ -1943,72 +1948,75 @@ DROP TABLE IF EXISTS `stjy_renshi`;
 CREATE TABLE `stjy_renshi` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `xingming` varchar(255) DEFAULT NULL COMMENT '姓名',
-  `leixing` int(11) DEFAULT NULL COMMENT '类型:1,试用;2,正式;3,停薪留职;',
+  `leixing` varchar(255) DEFAULT NULL COMMENT '类型',
   `gangweilx` tinyint(1) DEFAULT NULL COMMENT '岗位类型:1,全职;2,兼职;',
-  `quyu` varchar(255) DEFAULT NULL,
   `sid` int(11) DEFAULT NULL COMMENT '校区id',
-  `yuangongbh` varchar(255) DEFAULT NULL,
-  `gid` int(11) DEFAULT NULL COMMENT '部门id:1,市场部;2,行政部;3,教学部;',
-  `gid2` int(11) DEFAULT NULL COMMENT '第二部门id',
-  `zhiwu` int(11) DEFAULT NULL COMMENT '职务:1,教师;2,外教;3,行政;4,行政经理;5,财务总监;6,总经理助理;7,副总经理;8,总经理;9,董事长;',
+  `yuangongbh` varchar(255) DEFAULT NULL COMMENT '员工编号',
+  `bumen` int(11) DEFAULT NULL COMMENT '部门',
+  `bumen2` int(11) DEFAULT NULL COMMENT '二级部门',
+  `zhiwu` varchar(255) DEFAULT NULL COMMENT '职务',
   `xingbie` tinyint(1) DEFAULT NULL COMMENT '性别:1,男;2,女;',
   `chushengrq` varchar(255) DEFAULT NULL COMMENT '出生日期',
   `hunfou` tinyint(4) DEFAULT NULL COMMENT '婚否:1,已婚;2,未婚;',
   `shengyuzh` tinyint(4) DEFAULT NULL COMMENT '生育状况:1,是;2,否;',
-  `hukouxz` tinyint(4) DEFAULT NULL COMMENT '户口性质:1,外地农业户口;2,外地非农业户口;3,本地农业户口;4:本地非农业户口;',
-  `gongzuoszd` varchar(255) DEFAULT NULL,
-  `lianxidh` varchar(255) DEFAULT NULL,
-  `tongxunsheng` varchar(255) DEFAULT NULL,
-  `tongxunshi` varchar(255) DEFAULT NULL,
-  `tongxunqu` varchar(255) DEFAULT NULL,
-  `tongxundz` varchar(255) DEFAULT NULL,
-  `hukouszd` varchar(255) DEFAULT NULL,
-  `youxiang` varchar(255) DEFAULT NULL,
-  `chuanyicc` varchar(255) DEFAULT NULL,
-  `shengao` double(11,2) DEFAULT NULL,
-  `tizhong` double(11,2) DEFAULT NULL,
-  `diyixl` int(11) DEFAULT NULL,
-  `diyixlyx` varchar(255) DEFAULT NULL,
-  `diyixlzy` varchar(255) DEFAULT NULL,
-  `diyixlbysj` varchar(255) DEFAULT NULL,
-  `zuigaoxl` int(11) DEFAULT NULL,
-  `zuigaoxlyx` varchar(255) DEFAULT NULL,
-  `zuigaoxlzy` varchar(255) DEFAULT NULL,
-  `zuigaoxlbysj` varchar(255) DEFAULT NULL,
-  `zigezs` varchar(255) DEFAULT NULL,
-  `ruzhirq` varchar(255) DEFAULT NULL,
-  `hetongkssj` varchar(255) DEFAULT NULL,
-  `hetongdqsj` varchar(255) DEFAULT NULL,
-  `hetongqdgs` varchar(255) DEFAULT NULL,
-  `shebaogmgs` varchar(255) DEFAULT NULL,
-  `hujisheng` varchar(255) DEFAULT NULL,
-  `hujishi` varchar(255) DEFAULT NULL,
-  `hujiqu` varchar(255) DEFAULT NULL,
-  `hujidz` varchar(255) DEFAULT NULL,
-  `pinyongqd` int(11) DEFAULT NULL,
-  `gongjijgmgs` varchar(255) DEFAULT NULL,
-  `jinjilxr` varchar(255) DEFAULT NULL,
-  `guanxi` varchar(255) DEFAULT NULL,
-  `jinjilxrdh` varchar(255) DEFAULT NULL,
-  `shebaohao` varchar(255) DEFAULT NULL,
-  `xingyeyhkkh` varchar(255) DEFAULT NULL,
-  `qitayhkkh` varchar(255) DEFAULT NULL,
-  `shifouydbr` tinyint(4) DEFAULT NULL,
-  `danbaorxm` varchar(255) DEFAULT NULL,
-  `danbaordh` varchar(255) DEFAULT NULL,
-  `danbaorsfzh` varchar(255) DEFAULT NULL,
-  `huzhaohm` varchar(255) DEFAULT NULL,
-  `huzhaoyxq` varchar(255) DEFAULT NULL,
-  `chiyouqzlx` int(255) DEFAULT NULL,
-  `qianzhengyxq` varchar(255) DEFAULT NULL,
-  `guoji` varchar(255) DEFAULT NULL,
-  `beizhu` text,
+  `hukouxz` tinyint(4) DEFAULT NULL COMMENT '户口性质',
+  `lianxidh` varchar(255) DEFAULT NULL COMMENT '联系电话',
+  `tongxunsheng` varchar(255) DEFAULT NULL COMMENT '通讯省',
+  `tongxunshi` varchar(255) DEFAULT NULL COMMENT '通讯市',
+  `tongxunqu` varchar(255) DEFAULT NULL COMMENT '通讯区',
+  `tongxundz` varchar(255) DEFAULT NULL COMMENT '通讯地址',
+  `youxiang` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '邮箱',
+  `chuanyicc` varchar(255) DEFAULT NULL COMMENT '穿衣尺寸',
+  `shengao` double(11,2) DEFAULT NULL COMMENT '身高',
+  `tizhong` double(11,2) DEFAULT NULL COMMENT '体重',
+  `diyixl` varchar(255) DEFAULT NULL COMMENT '第一学历',
+  `diyixlyx` varchar(255) DEFAULT NULL COMMENT '第一学历院校',
+  `diyixlzy` varchar(255) DEFAULT NULL COMMENT '第一学历专业',
+  `diyixlbysj` varchar(255) DEFAULT NULL COMMENT '第一学历毕业时间',
+  `zuigaoxl` varchar(255) DEFAULT NULL COMMENT '最高学历',
+  `zuigaoxlyx` varchar(255) DEFAULT NULL COMMENT '最高学历院校',
+  `zuigaoxlzy` varchar(255) DEFAULT NULL COMMENT '最高学历专业',
+  `zuigaoxlbysj` varchar(255) DEFAULT NULL COMMENT '最高学历毕业时间',
+  `zigezs` varchar(255) DEFAULT NULL COMMENT '资格证书',
+  `ruzhirq` varchar(255) DEFAULT NULL COMMENT '入职日期',
+  `hetongkssj` varchar(255) DEFAULT NULL COMMENT '合同开始时间',
+  `hetongdqsj` varchar(255) DEFAULT NULL COMMENT '合同到期时间',
+  `hetongqdgs` varchar(255) DEFAULT NULL COMMENT '合同签订公司',
+  `shebaogmgs` varchar(255) DEFAULT NULL COMMENT '社保购买公司',
+  `hujisheng` varchar(255) DEFAULT NULL COMMENT '户籍省',
+  `hujishi` varchar(255) DEFAULT NULL COMMENT '户籍市',
+  `hujiqu` varchar(255) DEFAULT NULL COMMENT '户籍区',
+  `hujidz` varchar(255) DEFAULT NULL COMMENT '户籍地址',
+  `pinyongqd` int(11) DEFAULT NULL COMMENT '聘用渠道:1,聘用合同;2,劳务合同',
+  `gongjijgmgs` varchar(255) DEFAULT NULL COMMENT '公积金购买公司',
+  `jinjilxr` varchar(255) DEFAULT NULL COMMENT '紧急联系人',
+  `guanxi` varchar(255) DEFAULT NULL COMMENT '关系',
+  `jinjilxrdh` varchar(255) DEFAULT NULL COMMENT '紧急联系人电话',
+  `shebaohao` varchar(255) DEFAULT NULL COMMENT '社保号',
+  `xingyeyhkh` varchar(255) DEFAULT NULL COMMENT '兴业银行卡号',
+  `qitayhkh` varchar(255) DEFAULT NULL COMMENT '其他银行卡号',
+  `shifouydbr` tinyint(4) DEFAULT NULL COMMENT '是否有担保人:1,有;2,没有;',
+  `danbaorxm` varchar(255) DEFAULT NULL COMMENT '担保人姓名',
+  `danbaordh` varchar(255) DEFAULT NULL COMMENT '担保人电话',
+  `danbaorsfzhm` varchar(255) DEFAULT NULL COMMENT '担保人身份证号码',
+  `huzhaohm` varchar(255) DEFAULT NULL COMMENT '护照号码',
+  `huzhaoyxq` varchar(255) DEFAULT NULL COMMENT '护照有效期',
+  `chiyouqzlx` varchar(255) DEFAULT NULL COMMENT '持有签证类型',
+  `qianzhengyxq` varchar(255) DEFAULT NULL COMMENT '签证有效期',
+  `guoji` varchar(255) DEFAULT NULL COMMENT '国籍',
+  `beizhu` text COMMENT '备注',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_renshi
 -- ----------------------------
+INSERT INTO `stjy_renshi` VALUES ('1', '张松煌', '', '1', '0', '', '0', null, '招生顾问', '1', '', '1', '1', '0', '', '北京市', '北京市市辖区', '东城区', '', '', '', '0.00', '0.00', '', '', '', '', '', '', '', '', '', '2017/2/25', '', '', '', '', '北京市', '北京市市辖区', '东城区', '', '0', '', null, '', null, '', '', '', '1', '', '', '', '', '', '', '', '', '');
+INSERT INTO `stjy_renshi` VALUES ('2', '王圆圆', '', '1', '0', '', '0', null, '招生主任', '2', '', '1', '1', '0', '', '北京市', '北京市市辖区', '东城区', '', '', '', '0.00', '0.00', '', '', '', '', '', '', '', '', '', '2017/3/31', '', '', '', '', '北京市', '北京市市辖区', '东城区', '', '0', '', '', '', null, '', '', '', '1', '', '', '', '', '', '', '', '', '');
+INSERT INTO `stjy_renshi` VALUES ('3', '朱晓佳', '', '1', '0', '', '0', null, '招生校长', '1', '', '1', '1', '0', '', '北京市', '北京市市辖区', '东城区', '', '', '', '0.00', '0.00', '', '', '', '', '', '', '', '', '', '2016/3/22', '', '', '', '', '北京市', '北京市市辖区', '东城区', '', '0', '', '', '', null, '', '', '', '1', '', '', '', '', '', '', '', '', '');
+INSERT INTO `stjy_renshi` VALUES ('4', '翟志翔', '', '1', '0', '', '0', null, '教学组长', '1', '', '2', '2', '0', '', '北京市', '北京市市辖区', '东城区', '', '', '', '0.00', '0.00', '', '', '', '', '', '', '', '', '', '2017/1/13', '', '', '', '', '北京市', '北京市市辖区', '东城区', '', '0', '', '', '', null, '', '', '', '2', '', '', '', '', '', '', '', '', '');
+INSERT INTO `stjy_renshi` VALUES ('5', '吴彩红', '', '1', '0', '', '0', null, '教师', '1', '', '2', '2', '0', '', '北京市', '北京市市辖区', '东城区', '', '', '', '0.00', '0.00', '', '', '', '', '', '', '', '', '', '2017/4/8', '', '', '', '', '北京市', '北京市市辖区', '东城区', '', '0', '', '', '', null, '', '', '', '2', '', '', '', '', '', '', '', '', '');
+INSERT INTO `stjy_renshi` VALUES ('6', '彭永红', '', '1', '0', '', '0', null, '教务主任', '1', '', '2', '2', '0', '', '北京市', '北京市市辖区', '东城区', '', '', '', '0.00', '0.00', '', '', '', '', '', '', '', '', '', '2015/8/1', '', '', '', '', '北京市', '北京市市辖区', '东城区', '', '0', '', '', '', null, '', '', '', '2', '', '', '', '', '', '', '', '', '');
 
 -- ----------------------------
 -- Table structure for stjy_role
@@ -2048,12 +2056,12 @@ CREATE TABLE `stjy_role_user` (
 -- ----------------------------
 -- Records of stjy_role_user
 -- ----------------------------
-INSERT INTO `stjy_role_user` VALUES ('1', '1');
 INSERT INTO `stjy_role_user` VALUES ('2', '3');
 INSERT INTO `stjy_role_user` VALUES ('2', '2');
 INSERT INTO `stjy_role_user` VALUES ('4', '4');
 INSERT INTO `stjy_role_user` VALUES ('5', '6');
 INSERT INTO `stjy_role_user` VALUES ('3', '5');
+INSERT INTO `stjy_role_user` VALUES ('1', '1');
 
 -- ----------------------------
 -- Table structure for stjy_school
