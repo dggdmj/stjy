@@ -85,7 +85,7 @@ class TableCountAction extends CommonAction{
         }
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames(1,[2]);
-        dump($arr);
+
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('rid',$rid);// 赋值角色id
@@ -160,7 +160,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountJsmxAction();
         $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
-        dump($list);
+        // dump($list);
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign('list',$list);
         $this->assign('arr',$arr);
@@ -183,8 +183,8 @@ class TableCountAction extends CommonAction{
 	public function tfb_xq(){
         // $bjbm = $this->getBjbm();
         // dump($bjbm);
-        $tbnames = $this->getTabelnames(1,[2]);
-        dump($tbnames);
+        // $tbnames = $this->getTabelnames(1,[2]);
+        // dump($tbnames);
         $this->adminDisplay();
 	}
 

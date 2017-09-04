@@ -79,16 +79,16 @@ class TableImportAction extends CommonAction{
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //  or $_SESSION['superadmin'] == true,若需要用admin查看数据,把这个加入到if里面
         //
-        if($rid == 2 or $rid == 3){
-            $count = $data->where($map)->count();// 查询满足要求的总记录数
-        }
+        // if($rid == 2 or $rid == 3){
+        $count = $data->where($map)->count();// 查询满足要求的总记录数
+        // }
 
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        if($rid == 2 or $rid == 3 or $_SESSION['superadmin'] == true){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->select();
-        }
+        // if($rid == 2 or $rid == 3 or $_SESSION['superadmin'] == true){
+        $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->select();
+        // }
 
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames();
@@ -102,13 +102,20 @@ class TableImportAction extends CommonAction{
 
     // 列表页
     public function tableList(){
+        $username = $_SESSION['username'];
+        $temp = M('admin')->where('username ="'.$username.'"')->find();
+        $uid = $temp['id'];
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
+        $school_id = explode(",",$temp['school_id']);
+        $map['sid'] = array('in',$school_id);// 查询条件
+
         $tid = $_GET['tid'];//获取表格类型id
         $data = M('qishu_history'); // 实例化对象
-        $count = $data->where("tid = ".$tid)->count();// 查询满足要求的总记录数
+        $count = $data->where($map)->where("tid = ".$tid)->count();// 查询满足要求的总记录数
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_admin.nicename,stjy_school.name as school_name,stjy_school.id as sid,stjy_table_name.name,stjy_table_name.table_name')->where("tid = ".$tid)->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $list = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_admin.nicename,stjy_school.name as school_name,stjy_school.id as sid,stjy_table_name.name,stjy_table_name.table_name')->where($map)->where("tid = ".$tid)->order('id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('tid',$tid);
@@ -117,13 +124,18 @@ class TableImportAction extends CommonAction{
 
     // 详情页
     public function table_xq(){
-        $id = $_GET['id'];// 订单id
+        if(isset($_GET['id'])){
+            $id = $_GET['id'];// 订单id
+        }else{
+            $id = M('qishu_history')->where($_GET)->getField('id');
+        }
+
         $tid = $_GET['tid'];// 表格类型id
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
         $list = M($tablename)->where("suoshudd = ".$id)->select();
-        $filedname = array_flip($this->getComment($tablename));
+        $tbnames = array_flip($this->getComment($tablename));
         $this->assign('list',$list);// 赋值数据集
-        $this->assign('filedname',$filedname);// 赋值数据集
+        $this->assign('tbnames',$tbnames);// 赋值数据集
         $this->adminDisplay();
     }
 
@@ -343,7 +355,11 @@ class TableImportAction extends CommonAction{
 
     //彻底删除
     public function del() {
-        $id=(int)$_GET['id'];// qishu_history表的id
+        if(isset($_GET['id'])){
+            $id = (int)$_GET['id'];// 订单id
+        }else{
+            $id = M('qishu_history')->where($_GET)->getField('id');
+        }
         $tid = $_GET['tid'];// 表格id
         $where['qishu'] = $_GET['qishu'];// 期数
         $where['sid'] = $_GET['sid'];// 学校id
@@ -370,6 +386,34 @@ class TableImportAction extends CommonAction{
         $arr['status'] = true;
         $arr['info'] = '删除成功';
         $this->ajaxReturn($arr);
+    }
+
+    // 删除总表行操作
+    public function delRow(){
+        $tablenames = $this->getTabelnames();// 获取序号和导入表名对应的一维数组
+        $field = implode(',',$tablenames);// 组成筛选条件
+        $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
+        // 若所有表格导入再进行操作
+        $count = 0;
+        $i = 1;
+        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
+        foreach($data as $v){
+           $count += $v;
+           $i++;
+        }
+        if($count == 8){
+            // 删除此行在sjzb的记录
+            M('sjzb')->where($_GET)->delete();
+
+            $arr['status'] = true;
+            $arr['info'] = '操作成功';
+            $this->ajaxReturn($arr);
+        }else{
+            // $this->error('请导入所有表格后再通知财务');
+            $arr['status'] = false;
+            $arr['info'] = '请把此行表格都删除再执行此操作';
+            $this->ajaxReturn($arr);
+        }
     }
 }
 ?>
