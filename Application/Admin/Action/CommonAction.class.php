@@ -583,23 +583,9 @@ class CommonAction extends Action {
         $_GET['tid'] = 1;
         $id1 = M('qishu_history')->where($_GET)->getField('id');
         $data1 = M('xyxxb')->where('suoshudd ='.$id1)->select();
-        // $this->doData($objPHPExcel,$data1,2);
-        // dump($data1);die;
-        $i = 2;// 行从5开始
+        $this->doData($objPHPExcel,$data1,2);
 
-        foreach ($data1 as $row) {
-            $j = 0;// 行从0开始,即从A开始
-            foreach($row as $v){
-                // 写入数值
-                $objPHPExcel->getActiveSheet()->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                // 水平垂直居中
-                $objPHPExcel->getActiveSheet()->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
-                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN)->getColor()->setARGB('FFFF0000');
-                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');// 设置单元格背景颜色为绿色
-                $j++;
-            }
-            $i++;
-        }
+
         // dump($template);
         // $objPHPExcel->setActiveSheetIndex(1); //设置第二个工作表为活动工作表
         // $objPHPExcel->getActiveSheet()->setTitle('2-班级信息'); //设置工作表名称
@@ -630,7 +616,7 @@ class CommonAction extends Action {
                 // 写入数值
                 $objPHPExcel->getActiveSheet()->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
                 // 水平垂直居中
-                $objPHPExcel->getActiveSheet()->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                // $objPHPExcel->getActiveSheet()->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
                 // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN)->getColor()->setARGB('FFFF0000');
                 // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');// 设置单元格背景颜色为绿色
                 $j++;
