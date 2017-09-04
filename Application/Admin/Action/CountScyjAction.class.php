@@ -44,7 +44,6 @@ class CountScyjAction extends CommonAction {
 
             $xxked = M("xxkedb")->where("suoshudd = $xxk_id and xingming = '".$v['yejigsr']."'")->getField("edu");    //学习卡额度
             $arr[$v['yejigsr']]['xxked'] = $xxked?$xxked:0;
-            $arr[$v['yejigsr']]['total'] = 0;
             //查看数组的键名中是否有业绩归属人的名字
             //如果此业绩归属人在数组中，则累计此业绩归属人信息
             $arr[$v['yejigsr']]['rentou'] += round($xishu*(double)$this->getRentou($v),2);  //获得人头数
