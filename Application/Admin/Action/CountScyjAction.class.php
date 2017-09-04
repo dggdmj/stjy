@@ -30,7 +30,7 @@ class CountScyjAction extends CommonAction {
                 continue;
             }
             $nlist[$k] = $v;
-            $nlist[$k]["zhiwei"] = M("renshi")->where("xingming = '".$k."'")->getField("zhiwu");  //职位
+            $nlist[$k]["zhiwu"] = M("renshi")->where("xingming = '".$k."'")->getField("zhiwu");  //职位
             $nlist[$k]["ruzhirq"] = M("renshi")->where("xingming = '".$k."'")->getField("ruzhirq"); //入职日期
 
         }
@@ -80,7 +80,6 @@ class CountScyjAction extends CommonAction {
 
     //根据签单类型返回人头数
     public function explodeBeizhu($data,$xxked,$xishu){
-//        dump($data);
         if(empty($data['beizhu'])){
             return;
         }
@@ -388,7 +387,6 @@ class CountScyjAction extends CommonAction {
                 }
             }
         }
-//        dump($arr);
         return $arr;
     }
 
