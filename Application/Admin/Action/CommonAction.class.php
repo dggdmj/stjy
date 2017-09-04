@@ -603,16 +603,31 @@ class CommonAction extends Action {
         }
         // $objActSheet->setCellValue('坐标','值');
 
-        $i = $start_row;// 列从5开始
+        $i = $start_row;// 行从5开始
 
         foreach ($list as $row) {
             $j = 0;// 行从0开始,即从A开始
             foreach($row as $v){
+                // 写入数值
                 $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                // 水平垂直居中
+                $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                if(in_array($j,[0,1,2,3])){
+                    $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->getStartColor()->setARGB('00ff99cc'); // 将背景设置为浅粉色
+
+                }
+                // 添加边框
+                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
                 $j++;
             }
             $i++;
         }
+
+        // 如果中文输入有问题,使用下面这个函数
+        // function convertUTF8($str){
+        //    if(empty($str)) return '';
+        //    return  iconv('gb2312', 'utf-8', $str);
+        // }
 
         // 1.保存至本地Excel表格
         //$objWriter->save($filename.'.xls');
