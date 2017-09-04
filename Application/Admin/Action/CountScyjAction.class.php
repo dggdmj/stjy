@@ -54,10 +54,10 @@ class CountScyjAction extends CommonAction {
             //计算备注产生的扩展数据
             $extend = $this->explodeBeizhu($v['data'],$xxked,$xishu);
             if(!empty($extend)){
-                $arr[$v['yejigsr']][$extend['zzjslx']] += $extend['jsyj'];
+                $arr[$v['yejigsr']][$extend['zzjslx']] += round($extend['jsyj'],0);
             }
             //计算合计营业额
-            $arr[$v['yejigsr']]['total'] += $extend['jsyj'];
+            $arr[$v['yejigsr']]['total'] += round($extend['jsyj'],0);
 
 //            if($v['yejigsr'] == "张松煌" && $v['data']['xingming'] == '熊睿') {
 //                dump($extend);
