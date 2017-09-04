@@ -612,22 +612,14 @@ class CommonAction extends Action {
                 $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
                 // 水平垂直居中
                 $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
-                if(in_array($j,[0,1,2,3])){
-                    $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->getStartColor()->setARGB('00ff99cc'); // 将背景设置为浅粉色
-
-                }
-                // 添加边框
-                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
+                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN)->getColor()->setARGB('FFFF0000');
+                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');// 设置单元格背景颜色为绿色
                 $j++;
             }
             $i++;
         }
 
-        // 如果中文输入有问题,使用下面这个函数
-        // function convertUTF8($str){
-        //    if(empty($str)) return '';
-        //    return  iconv('gb2312', 'utf-8', $str);
-        // }
+
 
         // 1.保存至本地Excel表格
         //$objWriter->save($filename.'.xls');
@@ -891,4 +883,10 @@ class CommonAction extends Action {
         $qishu_id = M("qishu_history")->add($tmp);
         return $qishu_id;
     }
+
+    // 如果phpexcel中文输入有问题,使用下面这个函数
+    // public function convertUTF8($str){
+    //    if(empty($str)) return '';
+    //    return  iconv('gb2312', 'utf-8', $str);
+    // }
 }
