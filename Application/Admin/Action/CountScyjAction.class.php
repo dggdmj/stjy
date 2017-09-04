@@ -44,44 +44,39 @@ class CountScyjAction extends CommonAction {
 
             $xxked = M("xxkedb")->where("suoshudd = $xxk_id and xingming = '".$v['yejigsr']."'")->getField("edu");    //学习卡额度
             $arr[$v['yejigsr']]['xxked'] = $xxked?$xxked:0;
-            $arr[$v['yejigsr']]['total'] = 0;
             //查看数组的键名中是否有业绩归属人的名字
-            if(!array_key_exists($v['yejigsr'],$arr)){
-                $arr[$v['yejigsr']]['name'] = $v['yejigsr'];    //业绩归属人的名字
-                //如果此业绩归属人不在数组中，则新增此业绩归属人信息
-                $arr[$v['yejigsr']]['rentou'] = (double)$this->getRentou($v);  //获得人头数
-                $arr[$v['yejigsr']]['jrt'] = round($xishu*(double)$this->getJingrentou($beizhu),2);  //通过备注获得净人头
-                //计算备注产生的扩展数据
-                $extend = $this->explodeBeizhu($v['data'],$xxked);
-                if(!empty($extend)){
-                    $arr[$v['yejigsr']][$extend['zzjslx']] = $xishu*(float)$extend['jsyj'];
-                }
-                //计算合计营业额
-                $arr[$v['yejigsr']]['total'] += $xishu*(float)$extend['jsyj'];
-            }else{
-                //如果此业绩归属人在数组中，则累计此业绩归属人信息
-                $arr[$v['yejigsr']]['rentou'] += (double)$this->getRentou($v);  //获得人头数
-                $arr[$v['yejigsr']]['jrt'] += round($xishu*(double)$this->getJingrentou($beizhu),2);  //通过备注获得净人头
-                //计算备注产生的扩展数据
-                $extend = $this->explodeBeizhu($v['data'],$xxked);
-                if(!empty($extend)){
-                    $arr[$v['yejigsr']][$extend['zzjslx']] += $xishu*(float)$extend['jsyj'];
-                }
-                //计算合计营业额
-                $arr[$v['yejigsr']]['total'] += $xishu*(float)$extend['jsyj'];
+            //如果此业绩归属人在数组中，则累计此业绩归属人信息
+            $arr[$v['yejigsr']]['rentou'] += round($xishu*(double)$this->getRentou($v),2);  //获得人头数
+            $arr[$v['yejigsr']]['jrt'] += round($xishu*(double)$this->getJingrentou($beizhu),2);  //通过备注获得净人头
+            //计算备注产生的扩展数据
+            $extend = $this->explodeBeizhu($v['data'],$xxked,$xishu);
+            if(!empty($extend)){
+                $arr[$v['yejigsr']][$extend['zzjslx']] += $extend['jsyj'];
             }
+            //计算合计营业额
+            $arr[$v['yejigsr']]['total'] += $extend['jsyj'];
+
+//            if($v['yejigsr'] == "张松煌" && $v['data']['xingming'] == '熊睿') {
+//                dump($extend);
+//
+//                dump($v['data']['xingming']);
+//            }
+//            if($v['yejigsr'] == "张松煌" && $extend['zzjslx'] == '买三送二'){
+//                dump($beizhu);
+//                dump($v['data']['xingming']);
+//                dump($extend);
+//            }
         }
         $i = 1;
         foreach ($arr as $k=>$v){
             $arr[$k]['xuhao'] = $i;
             $i++;
         }
-//        dump($arr);
         return $arr;
     }
 
     //根据签单类型返回人头数
-    public function explodeBeizhu($data,$xxked){
+    public function explodeBeizhu($data,$xxked,$xishu){
 //        dump($data);
         if(empty($data['beizhu'])){
             return;
@@ -150,10 +145,10 @@ class CountScyjAction extends CommonAction {
         //结算业绩计算
         //如果课程名称为空，并且备注中不含"预缴定金"，结算业绩等于交费金额
         if(empty($data['kechengmc']) && !empty(strstr($data["beizhu"],"预缴定金"))){
-            $arr['jsyj'] = $arr["jiaofeije"];
+            $arr['jsyj'] = $xishu*$arr["jiaofeije"];
         }else {
             //否则：结算业绩 = 交费金额 - 教材费
-            $arr['jsyj'] = $arr["jiaofeije"] - $arr['jiaocaifei'];
+            $arr['jsyj'] = $xishu*($arr["jiaofeije"] - $arr['jiaocaifei']);
         }
         //报读类型2，关联老结算类型,如果主要备注为空，报读类型为空
         if(empty($arr['zybz'])){
@@ -167,9 +162,11 @@ class CountScyjAction extends CommonAction {
 
         //返回备注中包含的类型
         $beizhu_type_arr = array("创始会员","国际领袖课程","国内领袖课程","1期秒杀","游学免费读","买三送二","2折秒杀");
+//        $beizhu_type_arr = array("2折秒杀","买三送二","游学免费读","1期秒杀","国内领袖课程","国际领袖课程","创始会员");
         foreach ($beizhu_type_arr as $v){
             if(strpos($data['beizhu'],$v)){
                 $arr["bhlx"] = $v;
+                break;
             }
         }
         if(empty($arr["bhlx"])){
@@ -185,6 +182,19 @@ class CountScyjAction extends CommonAction {
                 $arr['jslx1'] = '老生';
             }
         }
+        //报读时长
+        if(empty($arr["zybz"])){
+            $arr["xxk_bdsc"] = '';
+        }else{
+            $arr["xxk_bdsc"] = mb_substr($arr["zybz"],6,2,'utf-8');
+        }
+        //报读类型,学习卡报读类型
+        $arr_bdlx = array("1期"=>"1年","2期"=>"1年","3期"=>"1年","4期"=>"1年","5期"=>"1年","6期"=>"2年","7期"=>"2年","8期"=>"2年","9期"=>"3年","10期"=>"3年","11期"=>"3年","12期"=>"4年","13期"=>"4年","14期"=>"4年","15期"=>"5年","1.0期"=>"1年","2.7期"=>"1年","2.8期"=>"1年","2.85年"=>"1年","2.9期"=>"1年","1.0年"=>"1年","1年"=>"1年","2年"=>"2年","3年"=>"3年","4年"=>"4年","5年"=>"5年","1.0年"=>"1年","3.0年"=>"3年","1.5年"=>"1年","3.5年"=>"3年","2.5年"=>"2年",);
+        if(empty($arr["zybz"])){
+            $arr["xxk_bdscfl"] = '';
+        }else{
+            $arr["xxk_bdscfl"] = $arr_bdlx[$arr["xxk_bdsc"]];
+        }
         //报读类型2,学习卡报读类型
         if(empty($arr["zybz"])){
             $arr['xxk_bdlx'] = '';
@@ -192,6 +202,19 @@ class CountScyjAction extends CommonAction {
             $baodu = $this->baoduType();
             $arr["xxk_bdlx"] = $baodu[$arr['bdlx']]["学习卡"];
         }
+        //报读时长分类2,学习卡报读时长
+        if($arr["bdlx"] == "拼单会员"){
+            $arr['xxk_bdscfl2'] = '5年';
+        }else{
+            $arr_bdlx2 = array("小学1年"=>"1年","小学2年"=>"2年","小学2.5年"=>"2年","小学3年"=>"2年","小学4年"=>"2年","小学5年"=>"5年","幼儿1年"=>"1年","幼儿2年"=>"3年","幼儿2.5年"=>"3年","幼儿3年"=>"3年","幼儿4年"=>"3年","幼儿5年"=>"5年",);
+            if(empty($arr["zybz"])){
+                $arr['xxk_bdscfl2'] = '';
+            }else{
+                $lx2 = $arr['nianji'].$arr["xxk_bdscfl"];
+                $arr["xxk_bdscfl2"] = $arr_bdlx2[$lx2];
+            }
+        }
+
         //学习卡结算类型
         if(empty($arr["zybz"])){
             $arr["xxk_jslx"] = '';
@@ -227,7 +250,7 @@ class CountScyjAction extends CommonAction {
                                                     $arr["xxk_jslx"] = '老生创始会员游学会员';
                                                 }else{
                                                     if($arr["xxk_bdlx"] == "国际班" && $arr['jslx1'] == "新生"){
-                                                        $arr["xxk_jslx"] = $arr['jslx1'].$arr['nianji'].$arr['xxk_bdlx'];
+                                                        $arr["xxk_jslx"] = $arr['jslx1'].$arr['nianji'].$arr['xxk_bdlx'].$arr["xxk_bdscfl2"];
                                                     }else{
                                                         $arr["xxk_jslx"] = $arr['jslx1'].$arr['xxk_bdlx'];
                                                     }
@@ -249,7 +272,7 @@ class CountScyjAction extends CommonAction {
         }else{
             $arr['zzjslx'] = $arr['old_jslx'];
         }
-
+//
 //        dump($data['beizhu']);
 //        dump($arr);
         return $arr;
@@ -344,6 +367,7 @@ class CountScyjAction extends CommonAction {
                     $arr[$a]['isshuang'] = 1;    //是否双人业绩。1，是；2，否；
                     $arr[$a]['xishu'] = $xishu[$i];    //双人业绩的系数为0.5
                     $arr[$a]['data'] = $v;
+                    $arr[$a]['data']['jfje'] = $xishu[$i]*$v['jfje'];  //结算业绩乘以系数
                     $a++;
                 }
             }elseif(count($yjgsr_arr) == 3){
@@ -414,32 +438,23 @@ class CountScyjAction extends CommonAction {
 
     //从收据记录表中的备注中获得净人头
     public function getJingrentou($str){
+        $arr = array();
        $arr = explode("／",$str);
-       if(count($arr)<2){
-           return 0;
-       }
-       $arr2 = explode("）",$arr[1]);
-       $arr3 = explode("：",$arr2[0]);
-        return $arr3[1];
-    }
-
-    //从收据记录表中的备注中获得净人头
-    public function getJingrentou2($str){
-        $jrt = '';
-        //计算净人头
-        $pos_jrt_start = strpos($str, '：');     //截取第一个全角 ：的出现位置
-        $pos_jrt_end = strpos($str, '）');
-        $jrt = substr($str,($pos_jrt_start+3),($pos_jrt_end-$pos_jrt_start));//中文字符占三个位置，所以排除全角：要加3
-//        dump($str);
-//        dump($pos_jrt_start);
-//        dump($pos_jrt_end);
-//        dump($jrt);
-        if($jrt === false){
-            $jrt = 0;    //如果计算错误,净人头数返回 0
-        }else{
-            $jrt = (double)$jrt;    //强制转换净人头数为数值
+        if(count($arr)<2){
+            return 0;
         }
-        return $jrt;
+        if(empty($arr[1])){
+            return 0;
+        }
+       $arr2 = explode("）",$arr[1]);
+        if(empty($arr2[0])){
+            return 0;
+        }
+       $arr3 = explode("：",$arr2[0]);
+        if(empty($arr3[1])){
+            return 0;
+        }
+        return $arr3[1];
     }
 
 }
