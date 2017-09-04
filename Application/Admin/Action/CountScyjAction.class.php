@@ -30,6 +30,9 @@ class CountScyjAction extends CommonAction {
                 continue;
             }
             $nlist[$k] = $v;
+            $nlist[$k]["zhiwu"] = M("renshi")->where("xingming = '".$k."'")->getField("zhiwu");  //职位
+            $nlist[$k]["ruzhirq"] = M("renshi")->where("xingming = '".$k."'")->getField("ruzhirq"); //入职日期
+
         }
 //        dump($nlist);die;
         return $nlist;
@@ -51,10 +54,10 @@ class CountScyjAction extends CommonAction {
             //计算备注产生的扩展数据
             $extend = $this->explodeBeizhu($v['data'],$xxked,$xishu);
             if(!empty($extend)){
-                $arr[$v['yejigsr']][$extend['zzjslx']] += $extend['jsyj'];
+                $arr[$v['yejigsr']][$extend['zzjslx']] += round($extend['jsyj'],0);
             }
             //计算合计营业额
-            $arr[$v['yejigsr']]['total'] += $extend['jsyj'];
+            $arr[$v['yejigsr']]['total'] += round($extend['jsyj'],0);
 
 //            if($v['yejigsr'] == "张松煌" && $v['data']['xingming'] == '熊睿') {
 //                dump($extend);
@@ -77,7 +80,6 @@ class CountScyjAction extends CommonAction {
 
     //根据签单类型返回人头数
     public function explodeBeizhu($data,$xxked,$xishu){
-//        dump($data);
         if(empty($data['beizhu'])){
             return;
         }
@@ -385,7 +387,6 @@ class CountScyjAction extends CommonAction {
                 }
             }
         }
-//        dump($arr);
         return $arr;
     }
 

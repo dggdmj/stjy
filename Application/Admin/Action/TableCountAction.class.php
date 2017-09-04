@@ -123,7 +123,6 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 	    $data = new \Admin\Action\CountScyjAction();
 	    $list = $data->getScyjbData($qishu,$sid);//获得统计数据
-        dump($list);
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign("list",$list);
         $this->assign('arr',$arr);
