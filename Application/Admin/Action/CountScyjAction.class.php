@@ -50,15 +50,21 @@ class CountScyjAction extends CommonAction {
             $arr[$v['yejigsr']]['rentou'] += round($xishu*(double)$this->getRentou($v),2);  //获得人头数
             $arr[$v['yejigsr']]['jrt'] += round($xishu*(double)$this->getJingrentou($beizhu),2);  //通过备注获得净人头
             //计算备注产生的扩展数据
-            $extend = $this->explodeBeizhu($v['data'],$xxked);
+            $extend = $this->explodeBeizhu($v['data'],$xxked,$xishu);
             if(!empty($extend)){
-                $arr[$v['yejigsr']][$extend['zzjslx']] += $xishu*(float)$extend['jsyj'];
+                $arr[$v['yejigsr']][$extend['zzjslx']] += $extend['jsyj'];
             }
             //计算合计营业额
-            $arr[$v['yejigsr']]['total'] += $xishu*(float)$extend['jsyj'];
+            $arr[$v['yejigsr']]['total'] += $extend['jsyj'];
 
-//            if($v['data']["xingming"] == "许馨之"){
+//            if($v['yejigsr'] == "张松煌" && $v['data']['xingming'] == '熊睿') {
+//                dump($extend);
+//
+//                dump($v['data']['xingming']);
+//            }
+//            if($v['yejigsr'] == "张松煌" && $extend['zzjslx'] == '买三送二'){
 //                dump($beizhu);
+//                dump($v['data']['xingming']);
 //                dump($extend);
 //            }
         }
@@ -71,7 +77,7 @@ class CountScyjAction extends CommonAction {
     }
 
     //根据签单类型返回人头数
-    public function explodeBeizhu($data,$xxked){
+    public function explodeBeizhu($data,$xxked,$xishu){
 //        dump($data);
         if(empty($data['beizhu'])){
             return;
@@ -140,10 +146,10 @@ class CountScyjAction extends CommonAction {
         //结算业绩计算
         //如果课程名称为空，并且备注中不含"预缴定金"，结算业绩等于交费金额
         if(empty($data['kechengmc']) && !empty(strstr($data["beizhu"],"预缴定金"))){
-            $arr['jsyj'] = $arr["jiaofeije"];
+            $arr['jsyj'] = $xishu*$arr["jiaofeije"];
         }else {
             //否则：结算业绩 = 交费金额 - 教材费
-            $arr['jsyj'] = $arr["jiaofeije"] - $arr['jiaocaifei'];
+            $arr['jsyj'] = $xishu*($arr["jiaofeije"] - $arr['jiaocaifei']);
         }
         //报读类型2，关联老结算类型,如果主要备注为空，报读类型为空
         if(empty($arr['zybz'])){
@@ -157,9 +163,11 @@ class CountScyjAction extends CommonAction {
 
         //返回备注中包含的类型
         $beizhu_type_arr = array("创始会员","国际领袖课程","国内领袖课程","1期秒杀","游学免费读","买三送二","2折秒杀");
+//        $beizhu_type_arr = array("2折秒杀","买三送二","游学免费读","1期秒杀","国内领袖课程","国际领袖课程","创始会员");
         foreach ($beizhu_type_arr as $v){
             if(strpos($data['beizhu'],$v)){
                 $arr["bhlx"] = $v;
+                break;
             }
         }
         if(empty($arr["bhlx"])){
@@ -360,6 +368,7 @@ class CountScyjAction extends CommonAction {
                     $arr[$a]['isshuang'] = 1;    //是否双人业绩。1，是；2，否；
                     $arr[$a]['xishu'] = $xishu[$i];    //双人业绩的系数为0.5
                     $arr[$a]['data'] = $v;
+                    $arr[$a]['data']['jfje'] = $xishu[$i]*$v['jfje'];  //结算业绩乘以系数
                     $a++;
                 }
             }elseif(count($yjgsr_arr) == 3){
