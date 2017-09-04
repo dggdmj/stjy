@@ -10,7 +10,7 @@ class CountJysjAction extends CommonAction {
      * @return array
      */
     public function getJysjbData($qishu,$sid){
-        //过得经营数据汇总表各数据
+        //获得经营数据汇总表各数据
         $school_info = M("school")->where("id = ".$sid)->find();
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
         $arr_kksd = $this->getkksd($qishu,$sid);   //获得开课时段和班级数统计
@@ -335,7 +335,8 @@ class CountJysjAction extends CommonAction {
                     $bumen_count[5][$key] += $vo;
                 }
             }
-            $bumen_count[5]['heji_t'] += $bumen_count[$k]["heji"];
+            $bumen_count[5]['heji'] += $bumen_count[$k]["heji"];
+            $bumen_count[5]['bumen'] = '总计';
         }
 //        dump($bumen_count);
         return $bumen_count;

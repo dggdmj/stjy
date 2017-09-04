@@ -563,6 +563,91 @@ class CommonAction extends Action {
                 $start_row = 2;
                 $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
             break;
+            case 12:
+
+                vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+                $template = __ROOT__.'Public/template/template_jysj.xlsx';          //使用模板
+
+                $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+
+                $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+
+                //接下来就是写数据到表格里面去
+                $objActSheet = $objPHPExcel->getActiveSheet();
+                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'教学部经营数据汇总表');          //使用模板
+                $school_data = M('school')->where('name ="'.$info['school'].'"')->find();
+                $objActSheet->setCellValue('C4',$school_data['mianji']);
+                $objActSheet->setCellValue('C5',$school_data['classnum']);
+                $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+                $i = 9;// 行从5开始
+
+                foreach ($data1 as $row) {
+                    $j = 1;// 行从0开始,即从A开始
+                    foreach($row as $v){
+                        // 写入数值
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                        $j++;
+                    }
+                    $i++;
+                }
+
+                $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+                $i = 26;// 行从26开始
+
+                foreach ($data2 as $row) {
+                    $j = 1;
+                    foreach($row as $v){
+                        // 写入数值
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                        $j++;
+                    }
+                    $i++;
+                }
+
+                $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+                $i = 52;// 行从52开始
+
+                foreach ($data3 as $row) {
+                    $j = 1;
+                    foreach($row as $v){
+                        // 写入数值
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                        $j++;
+                    }
+                    $i++;
+                }
+
+                $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+                $i = 61;// 行从62开始
+
+                foreach ($data4 as $row) {
+                    $j = 1;
+                    foreach($row as $v){
+                        // 写入数值
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                        $j++;
+                    }
+                    $i++;
+                }
+
+
+                // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+                header("Pragma: public");
+                header("Expires: 0");
+                header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+                header("Content-Type:application/force-download");
+                header("Content-Type:application/vnd.ms-execl");
+                header("Content-Type:application/octet-stream");
+                header("Content-Type:application/download");;
+                header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+                header("Content-Transfer-Encoding:binary");
+                $objWriter->save('php://output');
+                die;
+            break;
         }
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
     }
@@ -612,6 +697,74 @@ class CommonAction extends Action {
         $objPHPExcel->setActiveSheetIndex(10);
         $_GET['tid'] = 11;
         $this->doData($objPHPExcel,$_GET,2);
+
+        // 经营数据
+        $objPHPExcel->setActiveSheetIndex(11);
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'教学部经营数据汇总表');          //使用模板
+        $school_data = M('school')->where('name ="'.$info['school'].'"')->find();
+        $objActSheet->setCellValue('C4',$school_data['mianji']);
+        $objActSheet->setCellValue('C5',$school_data['classnum']);
+        $where['tid'] = 12;
+        $where['qishu'] = $_GET['qishu'];
+        $where['sid'] = $_GET['sid'];
+        $id = M('qishu_history')->where($where)->getField('id');
+
+        $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+        $i = 9;// 行从5开始
+
+        foreach ($data1 as $row) {
+            $j = 1;// 行从0开始,即从A开始
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+        $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+        $i = 26;// 行从26开始
+
+        foreach ($data2 as $row) {
+            $j = 1;
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+        $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+        $i = 52;// 行从52开始
+
+        foreach ($data3 as $row) {
+            $j = 1;
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+        $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+        $i = 61;// 行从62开始
+
+        foreach ($data4 as $row) {
+            $j = 1;
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
 
         // 接下来当然是下载这个表格了，在浏览器输出就好了
         header("Pragma: public");
@@ -693,7 +846,7 @@ class CommonAction extends Action {
                 // 写入数值
                 $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
                 // 水平垂直居中
-                $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
                 // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN)->getColor()->setARGB('FFFF0000');
                 // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');// 设置单元格背景颜色为绿色
                 $j++;
@@ -905,6 +1058,103 @@ class CommonAction extends Action {
         return true;
     }
 
+    // 经营数据入库
+    public function JysjToDb($qishu,$sid){
+        $data = new \Admin\Action\CountJysjAction();
+        $list = $data->getJysjbData($qishu,$sid);//获得统计数据
+        // 插入qishu_history
+        $qishu_id = $this->insertQishuHistory(12,$qishu,$sid);
+
+        // 导入分校开课表数据
+        foreach($list['kksd'] as $k=>$v){
+            $temp['kaikesjd'] = $k;
+            $temp['banjishu'] = $v;
+            $temp['suoshudd'] = $qishu_id;
+            M('fxkkb')->add($temp);
+            unset($temp);
+        }
+
+        // 导入在册学生学期状态表数据
+        foreach($list['zaice'] as $k1=>$v1){
+            $temp['nianji'] = $k1;
+            $temp['zongrenshu'] = $v1['zrs'];
+            $temp['weijinban'] = $v1['weijinban'];
+            // $temp['yubaoming'] = $v1['yubaoming'];
+            // $temp['tingdukfx'] = $v1['ztingdukfxrs'];
+            // $temp['tingdubkfx'] = $v1['ztingdubkfxrs'];
+            $temp['shijizbrs'] = $v1['sjzbrs'];
+            $temp['k01'] = $v1['K01'];
+            $temp['k02'] = $v1['K02'];
+            $temp['k03'] = $v1['K03'];
+            $temp['k04'] = $v1['K04'];
+            $temp['k05'] = $v1['K05'];
+            $temp['k06'] = $v1['K06'];
+            $temp['p01'] = $v1['P01'];
+            $temp['p02'] = $v1['P02'];
+            $temp['p03'] = $v1['P03'];
+            $temp['p1a'] = $v1['P1A'];
+            $temp['p1b'] = $v1['P1B'];
+            $temp['p2a'] = $v1['P2A'];
+            $temp['p2b'] = $v1['P2B'];
+            $temp['p3a'] = $v1['P3A'];
+            $temp['p3b'] = $v1['P3B'];
+            $temp['p4a'] = $v1['P4A'];
+            $temp['p4b'] = $v1['P4B'];
+            $temp['p5a'] = $v1['P5A'];
+            $temp['p5b'] = $v1['P5B'];
+            $temp['p6a'] = $v1['P6A'];
+            $temp['p6b'] = $v1['P6B'];
+            $temp['j1a'] = $v1['J1A'];
+            $temp['j1b'] = $v1['J1B'];
+            $temp['j2a'] = $v1['J2A'];
+            $temp['j2b'] = $v1['J2B'];
+            $temp['j3a'] = $v1['J3A'];
+            $temp['j3b'] = $v1['J3B'];
+            $temp['yiduiyi'] = $v1['yiduiyi'];
+            $temp['ns1'] = $v1['ns1'];
+            $temp['suoshudd'] = $qishu_id;
+            M('zcxsxqztb')->add($temp);
+            unset($temp);
+        }
+
+        // 导入班级重要数据
+        $list['bjbmsj'][] = array('bumen'=>'总计','dybjs'=>$list['bjbmsj']['dybjs_total'],'rszj'=>$list['bjbmsj']['rszj_total'],'baoguanglv'=>$list['bjbmsj']['baoguanglv_total']);
+
+        foreach($list['bjbmsj'] as $k2=>$v2){
+            if(is_numeric($k2)){
+                $temp['bumen'] = $v2['bumen'];
+                $temp['dangyuebjs'] = $v2['dybjs'];
+                $temp['renshuzj'] = $v2['rszj'];
+                $temp['banjibhl'] = $v2['baoguanglv'];
+                $temp['suoshudd'] = $qishu_id;
+            }
+
+            M('bjzysjb')->add($temp);
+            unset($temp);
+        }
+
+        // 导入各班型在读人数统计数据
+        foreach($list['gbxzdrstj'] as $v3){
+            $temp['bumen'] = $v3['bumen'];
+            $temp['youerban'] = $v3['yeb'];
+            $temp['xiaoxuezmbtb'] = $v3['xxzmb'];
+            $temp['zhongxueban'] = $v3['zxb'];
+            $temp['xiaoxueps1d5'] = $v3['xxps15ban'];
+            $temp['xiaoxueps2'] = $v3['xxps20ban'];
+            $temp['xiaoxueps2d5'] = $v3['xxps25ban'];
+            $temp['xiaoxueps3'] = $v3['xxps30ban'];
+            $temp['zhouriws'] = $v3['zrws'];
+            $temp['zhouwuws'] = $v3['zwws'];
+            $temp['zhouliuws'] = $v3['zlws'];
+            $temp['yiduiyi'] = $v3['yiduiyi'];
+            $temp['heji'] = $v3['heji'];
+            $temp['suoshudd'] = $qishu_id;
+            M('gbxzdrstjb')->add($temp);
+            unset($temp);
+        }
+
+    }
+
     public function AlltoDb($qishu,$sid){
         // -----------------------生成数据入库开始-----------------------
         // 市场业绩数据写入数据库
@@ -916,7 +1166,7 @@ class CommonAction extends Action {
         // 减少明细数据写入数据库
         $res_jsmx = $this->jsmxToDb($qishu,$sid);
         // 经营数据写入数据库
-        //
+        $res_jsmx = $this->jysjToDb($qishu,$sid);
         // 退费数据写入数据库
         //
         // -----------------------生成数据入库结束-----------------------
@@ -927,15 +1177,27 @@ class CommonAction extends Action {
         $where['sid'] = $sid;
         $where['tid'] = $tid;
         $id = M('qishu_history')->where($where)->getField('id');// 取得suoshudd的值
+        // dump($where);
 
+        if($tid == 12){
+            $res1 = M('fxkkb')->where('suoshudd ='.$id)->delete();
+            $res2 = M('bjzysjb')->where('suoshudd ='.$id)->delete();
+            $res3 = M('gbxzdrstjb')->where('suoshudd ='.$id)->delete();
+            $res4 = M('zcxsxqztb')->where('suoshudd ='.$id)->delete();
+            // if($res1 && $res2 && $res3 && $res4){
+                M('qishu_history')->where($where)->delete();
+            // }
+            return ;
+
+        }
 
         $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
 
-        $res = M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
+        M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
 
-        if ($res) {
+        // if ($res) {
             M('qishu_history')->where($where)->delete();// 从qishu_history中删除
-        }
+        // }
 
     }
 
@@ -950,7 +1212,7 @@ class CommonAction extends Action {
         // 删除减少明细数据
         $res_jsmx = $this->delScData($qishu,$sid,11);
         // 删除经营数据数据
-        //
+        $res_jysj = $this->delScData($qishu,$sid,12);
         // 删除退费数据
         //
         // -----------------------生成数据从库删除结束-----------------------
