@@ -30,6 +30,9 @@ class CountScyjAction extends CommonAction {
                 continue;
             }
             $nlist[$k] = $v;
+            $nlist[$k]["zhiwei"] = M("renshi")->where("xingming = '".$k."'")->getField("zhiwu");  //职位
+            $nlist[$k]["ruzhirq"] = M("renshi")->where("xingming = '".$k."'")->getField("ruzhirq"); //入职日期
+
         }
 //        dump($nlist);die;
         return $nlist;
