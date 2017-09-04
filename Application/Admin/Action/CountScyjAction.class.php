@@ -25,11 +25,15 @@ class CountScyjAction extends CommonAction {
         $newlist = $this->getNewList($list,$sid);
         //2，遍历数组，按照业绩归属人的业绩归类统计
         $tablelist = $this->countList($newlist,$xxk_id);
+
+        $i = 1;
         foreach ($tablelist as $k=>$v){
             if($v["jrt"] == 0){
                 continue;
             }
             $nlist[$k] = $v;
+            $nlist[$k]['xuhao'] = $i;
+            $i++;
             $nlist[$k]["zhiwu"] = M("renshi")->where("xingming = '".$k."'")->getField("zhiwu");  //职位
             $nlist[$k]["ruzhirq"] = M("renshi")->where("xingming = '".$k."'")->getField("ruzhirq"); //入职日期
 
@@ -70,11 +74,11 @@ class CountScyjAction extends CommonAction {
 //                dump($extend);
 //            }
         }
-        $i = 1;
-        foreach ($arr as $k=>$v){
-            $arr[$k]['xuhao'] = $i;
-            $i++;
-        }
+        // $i = 1;
+        // foreach ($arr as $k=>$v){
+        //     $arr[$k]['xuhao'] = $i;
+        //     $i++;
+        // }
         return $arr;
     }
 

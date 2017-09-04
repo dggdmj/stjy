@@ -577,22 +577,41 @@ class CommonAction extends Action {
         // --------------------接下来就是写数据到表格里面去--------------------
 
         // $objActSheet = $objPHPExcel->getActiveSheet();
-        $objPHPExcel->setActiveSheetIndex(0); //设置第一个工作表为活动工作表
+        // $objPHPExcel->setActiveSheetIndex(0); //设置第一个工作表为活动工作表
         // $objActSheet = $objPHPExcel->getActiveSheet();
         // $objPHPExcel->getActiveSheet()->setTitle('1-学员信息表'); //设置工作表名称
-        $_GET['tid'] = 1;
-        $id1 = M('qishu_history')->where($_GET)->getField('id');
-        $data1 = M('xyxxb')->where('suoshudd ='.$id1)->select();
-        $this->doData($objPHPExcel,$data1,2);
+        // $_GET['tid'] = 1;
+        // $this->doData($objPHPExcel,$_GET,2);
 
+        $info = $this->getInfo($_GET['qishu'],$_GET['sid']);
+        // 导入表数据写到模板
+        for($i=0;$i<7;$i++){
+            $objPHPExcel->setActiveSheetIndex($i);
+            $_GET['tid'] = $i+1;
+            $this->doData($objPHPExcel,$_GET,2);
+        }
 
-        // dump($template);
-        // $objPHPExcel->setActiveSheetIndex(1); //设置第二个工作表为活动工作表
-        // $objPHPExcel->getActiveSheet()->setTitle('2-班级信息'); //设置工作表名称
-        // $_GET['tid'] = 2;
-        // $template = M('qishu_history')->where($_GET)->getField('filename');
+        // 市场业绩
+        $objPHPExcel->setActiveSheetIndex(7);
+        $_GET['tid'] = 8;
+        $this->doData($objPHPExcel,$_GET,5);
+        $objPHPExcel->getActiveSheet()->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
 
+        // 市场占有率
+        $objPHPExcel->setActiveSheetIndex(8);
+        $_GET['tid'] = 9;
+        $this->doData($objPHPExcel,$_GET,7);
+        $objPHPExcel->getActiveSheet()->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场占有率统计表');
 
+        // 新增明细
+        $objPHPExcel->setActiveSheetIndex(9);
+        $_GET['tid'] = 10;
+        $this->doData($objPHPExcel,$_GET,2);
+
+        // 减少明细
+        $objPHPExcel->setActiveSheetIndex(10);
+        $_GET['tid'] = 11;
+        $this->doData($objPHPExcel,$_GET,2);
 
         // 接下来当然是下载这个表格了，在浏览器输出就好了
         header("Pragma: public");
@@ -607,7 +626,11 @@ class CommonAction extends Action {
         $objWriter->save('php://output');
     }
 
-    public function doData($objPHPExcel,$data,$start_row){
+    public function doData($objPHPExcel,$where,$start_row){
+        $tbnames = $this->getTabelnames(1,[1,2,3]);
+        $id = M('qishu_history')->where($where)->getField('id');
+        $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
         $i = $start_row;// 行从5开始
 
         foreach ($data as $row) {
@@ -740,6 +763,7 @@ class CommonAction extends Action {
         //     $i++;
         // }
         // -----------------------------用于测试查看数据结束-----------------------------
+
         foreach($scyj_data as $k=>$v){
             $scyj_temp['xingming'] = $k;
             $scyj_temp['suoshudd'] = $qishu_id;
