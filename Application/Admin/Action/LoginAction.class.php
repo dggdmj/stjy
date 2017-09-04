@@ -12,7 +12,7 @@ class LoginAction extends Action {
     public function verify() {
     	$config = array(
         	'fontSize' => 30,      // 验证码字体大小
-        	'length' => 4,         // 验证码位数
+        	'length' => 1,         // 验证码位数
             'imageW' => 190,       // 验证码宽度
             'imageH' => 34,        // 验证码高度
         	'useNoise' => false,   // 关闭验证码杂点

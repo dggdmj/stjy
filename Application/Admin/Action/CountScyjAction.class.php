@@ -19,23 +19,30 @@ class CountScyjAction extends CommonAction {
         $suoshuid = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id
         //查询出所有数据
         $list = $Model->query("select * from stjy_sjjlb where suoshudd = $suoshuid and `yejigsr` != '' order by `xuehao` ");
-//        dump($list);
+        //学习卡额度数据
+        $xxk_id =  M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid =14")->getField('id');
         //1，遍历数组，如果业绩归属人是2个人的，增加两条记录，在重新拼接成新的数组
-        $newlist = $this->getNewList($list);
+        $newlist = $this->getNewList($list,$sid);
         //2，遍历数组，按照业绩归属人的业绩归类统计
-        $tablelist = $this->countList($newlist);
-//        dump($tablelist);die;
-        return $tablelist;
+        $tablelist = $this->countList($newlist,$xxk_id);
+        foreach ($tablelist as $k=>$v){
+            if($v["jrt"] == 0){
+                continue;
+            }
+            $nlist[$k] = $v;
+        }
+//        dump($nlist);die;
+        return $nlist;
     }
 
     //遍历新数组，统计业绩归属人的业绩数据
-    public function countList($list){
+    public function countList($list,$xxk_id){
         $arr = array();     //用于存放业绩归属人的信息
         foreach ($list as $k=>$v){
             $beizhu = $v['data']['beizhu'];
             $xishu = $v['xishu'];
 
-            $xxked = M("xxkedb")->where("xingming = '".$v['yejigsr']."'")->getField("edu");    //学习卡额度
+            $xxked = M("xxkedb")->where("suoshudd = $xxk_id and xingming = '".$v['yejigsr']."'")->getField("edu");    //学习卡额度
             $arr[$v['yejigsr']]['xxked'] = $xxked?$xxked:0;
             $arr[$v['yejigsr']]['total'] = 0;
             //查看数组的键名中是否有业绩归属人的名字
@@ -43,7 +50,7 @@ class CountScyjAction extends CommonAction {
                 $arr[$v['yejigsr']]['name'] = $v['yejigsr'];    //业绩归属人的名字
                 //如果此业绩归属人不在数组中，则新增此业绩归属人信息
                 $arr[$v['yejigsr']]['rentou'] = (double)$this->getRentou($v);  //获得人头数
-                $arr[$v['yejigsr']]['jrt'] = $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
+                $arr[$v['yejigsr']]['jrt'] = round($xishu*(double)$this->getJingrentou($beizhu),2);  //通过备注获得净人头
                 //计算备注产生的扩展数据
                 $extend = $this->explodeBeizhu($v['data'],$xxked);
                 if(!empty($extend)){
@@ -54,7 +61,7 @@ class CountScyjAction extends CommonAction {
             }else{
                 //如果此业绩归属人在数组中，则累计此业绩归属人信息
                 $arr[$v['yejigsr']]['rentou'] += (double)$this->getRentou($v);  //获得人头数
-                $arr[$v['yejigsr']]['jrt'] += $xishu*(double)$this->getJingrentou($beizhu);  //通过备注获得净人头
+                $arr[$v['yejigsr']]['jrt'] += round($xishu*(double)$this->getJingrentou($beizhu),2);  //通过备注获得净人头
                 //计算备注产生的扩展数据
                 $extend = $this->explodeBeizhu($v['data'],$xxked);
                 if(!empty($extend)){
@@ -309,26 +316,15 @@ class CountScyjAction extends CommonAction {
         return $arr;
     }
 
-    //如果业绩归属人有2个，去除掉重复的，返回业绩归属人的唯一数组
-    public function getNewList($list){
+    //如果业绩归属人有2，3个，去除掉重复的，返回业绩归属人的唯一数组
+    public function getNewList($list,$sid){
         //过滤掉名字中的数据
         $filter_arr = array('(主签单人)','(副签单人)','（副签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
         $arr = array();
         $a = 1;
         foreach ($list as $k=>$v){
             $yjgsr_arr = explode(',',$v['yejigsr']);    //将业绩归属人按英文逗号","拆分，如果有2个归属人，则按比例分业绩
-            if(count($yjgsr_arr)>1){
-                //如果有2个业绩归属人
-                for ($i=0;$i<count($yjgsr_arr);$i++){
-                    $name = $this->strFilter($yjgsr_arr[$i],$filter_arr);
-                    $arr[$a]['yejigsr'] = $name;
-                    $arr[$a]['zhufu'] = $this->strZhufu($yjgsr_arr[$i]);
-                    $arr[$a]['isshuang'] = 1;    //是否双人业绩。1，是；2，否；
-                    $arr[$a]['xishu'] = 0.5;    //双人业绩的系数为0.5
-                    $arr[$a]['data'] = $v;
-                    $a++;
-                }
-            }else{
+            if(count($yjgsr_arr) == 1){
                 //只有1个业绩归属人
                 $name = $this->strFilter($v['yejigsr'],$filter_arr);
                 $arr[$a]['yejigsr'] = $name;
@@ -337,9 +333,55 @@ class CountScyjAction extends CommonAction {
                 $arr[$a]['xishu'] = 1;    //单人业绩的系数为0.5
                 $arr[$a]['data'] = $v;
                 $a++;
+            }elseif(count($yjgsr_arr) == 2){
+                //获取系数信息
+                $xishu = $this->getXishu($sid,2);
+            //如果有2个业绩归属人
+                for ($i=0;$i<count($yjgsr_arr);$i++){
+                    $name = $this->strFilter($yjgsr_arr[$i],$filter_arr);
+                    $arr[$a]['yejigsr'] = $name;
+                    $arr[$a]['zhufu'] = $this->strZhufu($yjgsr_arr[$i]);
+                    $arr[$a]['isshuang'] = 1;    //是否双人业绩。1，是；2，否；
+                    $arr[$a]['xishu'] = $xishu[$i];    //双人业绩的系数为0.5
+                    $arr[$a]['data'] = $v;
+                    $a++;
+                }
+            }elseif(count($yjgsr_arr) == 3){
+                //获取系数信息
+                $xishu = $this->getXishu($sid,3);
+                //如果有3个业绩归属人
+                for ($i=0;$i<count($yjgsr_arr);$i++){
+                    $name = $this->strFilter($yjgsr_arr[$i],$filter_arr);
+                    $arr[$a]['yejigsr'] = $name;
+                    $arr[$a]['zhufu'] = $this->strZhufu($yjgsr_arr[$i]);
+                    $arr[$a]['isshuang'] = 1;    //是否双人业绩。1，是；2，否；
+                    $arr[$a]['xishu'] = $xishu[$i];    //三人业绩的系数
+                    $arr[$a]['data'] = $v;
+                    $a++;
+                }
             }
         }
+//        dump($arr);
         return $arr;
+    }
+
+    public function getXishu($sid,$count){
+        $list = "1,1,1";
+        $xishu = array();
+        if($count == 2){
+            $list = M("school")->where("id = $sid")->getField("fencheng");
+            $arr = explode(",",$list);
+            $xishu[0] = $arr[0]/($arr[0]+$arr[1]);
+            $xishu[1] = $arr[1]/($arr[0]+$arr[1]);
+        }elseif ($count == 3){
+            $list = M("school")->where("id = $sid")->getField("fencheng3");
+            $arr = explode(",",$list);
+            $arr = explode(",",$list);
+            $xishu[0] = $arr[0]/($arr[0]+$arr[1]+$arr[2]);
+            $xishu[1] = $arr[1]/($arr[0]+$arr[1]+$arr[2]);
+            $xishu[2] = $arr[2]/($arr[0]+$arr[1]+$arr[2]);
+        }
+        return $xishu;
     }
 
     //过滤掉字符串中在的指定字符
@@ -372,6 +414,17 @@ class CountScyjAction extends CommonAction {
 
     //从收据记录表中的备注中获得净人头
     public function getJingrentou($str){
+       $arr = explode("／",$str);
+       if(count($arr)<2){
+           return 0;
+       }
+       $arr2 = explode("）",$arr[1]);
+       $arr3 = explode("：",$arr2[0]);
+        return $arr3[1];
+    }
+
+    //从收据记录表中的备注中获得净人头
+    public function getJingrentou2($str){
         $jrt = '';
         //计算净人头
         $pos_jrt_start = strpos($str, '：');     //截取第一个全角 ：的出现位置
