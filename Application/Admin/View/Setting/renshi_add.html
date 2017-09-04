@@ -45,15 +45,12 @@
                 <div class="field">
                     <select class="select" name="gid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
                         <option value="">请选择职务</option>
-                        <option value="1">教师</option>
-                        <option value="2">外教</option>
-                        <option value="3">行政</option>
-                        <option value="4">行政经理</option>
-                        <option value="5">财务总监</option>
-                        <option value="6">总经理助理</option>
-                        <option value="7">副总经理</option>
-                        <option value="8">总经理</option>
-                        <option value="9">董事长</option>
+                        <option value="教师">教师</option>
+                        <option value="教学组长">教学组长</option>
+                        <option value="教务主任">教务主任</option>
+                        <option value="招生顾问">招生顾问</option>
+                        <option value="招生主任">招生主任</option>
+                        <option value="招生校长">招生校长</option>
                     </select>
                     <span style="color:red;"> *必选</span>
                 </div>
@@ -65,9 +62,9 @@
                 <div class="field">
                     <select class="select" name="leixing" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
                         <option value="">请选择类型</option>
-                        <option value="1">试用</option>
-                        <option value="2">正式</option>
-                        <option value="3">停薪留职</option>
+                        <option value="试用">试用</option>
+                        <option value="正式">正式</option>
+                        <option value="停薪留职">停薪留职</option>
                     </select>
                     <span style="color:red;"> *必选</span>
                 </div>
@@ -124,9 +121,9 @@
                 <div class="field">
                     <select class="select" name="gid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
                         <option value="">请选择部门</option>
-                        <option value="1">市场部</option>
-                        <option value="2">行政部</option>
-                        <option value="3">教学部</option>
+                        <option value="市场部">市场部</option>
+                        <option value="行政部">行政部</option>
+                        <option value="教学部">教学部</option>
                     </select>
                     <span style="color:red;"> *必选</span>
                 </div>
@@ -148,7 +145,7 @@
                     <label>出生日期</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input datetimepicker" name="chushengrq" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="date" class="input datetimepicker" name="chushengrq" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
                 </div>
             </div>
             <div class="form-group">
@@ -158,12 +155,12 @@
                 <div class="field">
                     <select class="select" name="diyixl" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
                         <option value="">请选择第一学历</option>
-                        <option value="1">本科</option>
-                        <option value="2">大专</option>
-                        <option value="3">研究生</option>
-                        <option value="4">博士</option>
-                        <option value="5">高中</option>
-                        <option value="6">专科及以下</option>
+                        <option value="本科">本科</option>
+                        <option value="大专">大专</option>
+                        <option value="研究生">研究生</option>
+                        <option value="博士">博士</option>
+                        <option value="高中">高中</option>
+                        <option value="专科及以下">专科及以下</option>
                     </select>
                     <span style="color:red;"> *必选</span>
                 </div>
@@ -189,7 +186,7 @@
                     <label>第一学历毕业时间</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input datetimepicker" name="diyixlbysj" size="60" value="">
+                    <input type="date" class="input datetimepicker" name="diyixlbysj" size="60" value="">
                 </div>
             </div>
             <div class="form-group">
@@ -199,12 +196,12 @@
                 <div class="field">
                     <select class="select" name="zuigaoxl" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
                         <option value="">请选择第一学历</option>
-                        <option value="1">本科</option>
-                        <option value="2">大专</option>
-                        <option value="3">研究生</option>
-                        <option value="4">博士</option>
-                        <option value="5">高中</option>
-                        <option value="6">专科及以下</option>
+                        <option value="本科">本科</option>
+                        <option value="大专">大专</option>
+                        <option value="研究生">研究生</option>
+                        <option value="博士">博士</option>
+                        <option value="高中">高中</option>
+                        <option value="专科及以下">专科及以下</option>
                     </select>
                     <span style="color:red;"> *必选</span>
                 </div>
@@ -230,7 +227,7 @@
                     <label>最高学历毕业时间</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input datetimepicker" name="zuigaoxlbysj" size="60" value="">
+                    <input type="date" class="input datetimepicker" name="zuigaoxlbysj" size="60" value="">
                 </div>
             </div>
             <div class="form-group">
@@ -246,7 +243,7 @@
                     <label>入职日期</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input datetimepicker" name="ruzhirq" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="date" class="input datetimepicker" name="ruzhirq" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
                 </div>
             </div>
             <div class="form-group">
@@ -254,7 +251,7 @@
                     <label>合同开始时间</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input datetimepicker" name="hetongkssj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="date" class="input datetimepicker" name="hetongkssj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
                 </div>
             </div>
             <div class="form-group">
@@ -262,7 +259,7 @@
                     <label>合同到期时间</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input datetimepicker" name="hetongdqsj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="date" class="input datetimepicker" name="hetongdqsj" size="60" value="" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
                 </div>
             </div>
             <div class="form-group">
@@ -306,10 +303,10 @@
                 <div class="field">
                     <select class="select" name="hukouxz" style="height:32px;border-radius: 4px;">
                         <option value="">请选择户口性质</option>
-                        <option value="1">外地农业户口</option>
-                        <option value="2">外地非农业户口</option>
-                        <option value="3">本地农业户口</option>
-                        <option value="4">本地非农业户口</option>
+                        <option value="外地农业户口">外地农业户口</option>
+                        <option value="外地非农业户口">外地非农业户口</option>
+                        <option value="本地农业户口">本地农业户口</option>
+                        <option value="本地非农业户口">本地非农业户口</option>
                     </select>
                 </div>
             </div>
@@ -372,14 +369,14 @@
                 <div class="field">
                     <select class="select" name="chuanyicc" style="height:32px;border-radius: 4px;">
                         <option value="">请选择穿衣尺寸</option>
-                        <option value="1">XS</option>
-                        <option value="2">S</option>
-                        <option value="3">M</option>
-                        <option value="4">L</option>
-                        <option value="5">XL</option>
-                        <option value="6">XXL</option>
-                        <option value="7">XXL</option>
-                        <option value="8">XXXL</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                        <option value="XXL">XXL</option>
+                        <option value="XXXL">XXXL</option>
                     </select>
                 </div>
             </div>
@@ -551,7 +548,7 @@
                     <label>护照有效期</label>
                 </div>
                 <div class="field">
-                    <input type="text" id="datetimepicker" class="input" name="huzhaoyxq" size="60" value="">
+                    <input type="date" class="datetimepicker" class="input" name="huzhaoyxq" size="60" value="">
                 </div>
             </div>
             <div class="form-group">
@@ -561,11 +558,11 @@
                 <div class="field">
                     <select class="select" name="chiyouqzlx" style="height:32px;border-radius: 4px;">
                         <option value="">请选择持有签证类型</option>
-                        <option value="1">外交签证</option>
-                        <option value="2">探亲签证</option>
-                        <option value="3">旅游签证</option>
-                        <option value="4">学习签证</option>
-                        <option value="5">职业签证</option>
+                        <option value="外交签证">外交签证</option>
+                        <option value="探亲签证">探亲签证</option>
+                        <option value="旅游签证">旅游签证</option>
+                        <option value="学习签证">学习签证</option>
+                        <option value="职业签证">职业签证</option>
                     </select>
                 </div>
             </div>
@@ -574,7 +571,7 @@
                     <label>签证有效期</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input datetimepicker" name="qianzhengyxq" size="60" value="">
+                    <input type="date" class="input datetimepicker" name="qianzhengyxq" size="60" value="">
                 </div>
             </div>
             <div class="form-group">
@@ -595,6 +592,7 @@
                 </div>
             </div>
         </div>
+
         <div class="panel-foot">
             <div class="form-button">
                 <div id="tips"></div>
@@ -608,21 +606,13 @@
 </form>
 
 <!-- 日期选择插件载入开始 -->
-<link rel="stylesheet" type="text/css" href="__PUBLIC__/time/jquery.datetimepicker.css"/ >
-<script src="__PUBLIC__/time/jquery.datetimepicker.js"></script>
-<script src="__PUBLIC__/time/jquery.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="__PUBLIC__/time/bootstrap-datetimepicker.css"/ > -->
+<!-- <script src="__PUBLIC__/time/bootstrap-datetimepicker.js"></script> -->
 <!-- 日期选择插件载入结束 -->
 
 <!-- 日期选择插件初始化开始 -->
 <script>
-    $('.datetimepicker').datetimepicker({
-        // lang:"ch", //语言选择中文 注：旧版本 新版方法：$.datetimepicker.setLocale('ch');
-        format:"Y-m-d",      //格式化日期
-        timepicker:false,    //关闭时间选项
-        // yearStart：2000,     //设置最小年份
-        // yearEnd:2050,        //设置最大年份
-        // todayButton:false    //关闭选择今天按钮
-    });
+    // $('#datetimepicker').datetimepicker();
 </script>
 <!-- 日期选择插件初始化结束 -->
 
