@@ -34,7 +34,7 @@ class CountScyjAction extends CommonAction {
             $nlist[$k] = $v;
             $nlist[$k]['xuhao'] = $i;
             $i++;
-            $nlist[$k]["zhiwu"] = M("renshi")->where("xingming = '".$k."'")->getField("zhiwu");  //职位
+            $nlist[$k]["zhiwei"] = M("renshi")->where("xingming = '".$k."'")->getField("zhiwu");  //职位
             $nlist[$k]["ruzhirq"] = M("renshi")->where("xingming = '".$k."'")->getField("ruzhirq"); //入职日期
 
         }
