@@ -669,6 +669,7 @@ class CommonAction extends Action {
         // $this->doData($objPHPExcel,$_GET,2);
 
         $info = $this->getInfo($_GET['qishu'],$_GET['sid']);
+        $HzbName = $info['year'].'年'.$info['month'].'月'.$info['school'].'汇总表';
         // 导入表数据写到模板
         for($i=0;$i<7;$i++){
             $objPHPExcel->setActiveSheetIndex($i);
@@ -774,7 +775,7 @@ class CommonAction extends Action {
         header("Content-Type:application/vnd.ms-execl");
         header("Content-Type:application/octet-stream");
         header("Content-Type:application/download");;
-        header('Content-Disposition:attachment;filename="汇总表.xlsx"');
+        header('Content-Disposition:attachment;filename="'.$HzbName.'.xlsx"');
         header("Content-Transfer-Encoding:binary");
         $objWriter->save('php://output');
     }
@@ -782,7 +783,11 @@ class CommonAction extends Action {
     public function doData($objPHPExcel,$where,$start_row){
         $tbnames = $this->getTabelnames(1,[1,2,3]);
         $id = M('qishu_history')->where($where)->getField('id');
-        $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+        if(in_array($where['tid'],[8,9,10,11])){
+            $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();
+        }else{
+            $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+        }
 
         $i = $start_row;// 行从5开始
 
@@ -887,6 +892,10 @@ class CommonAction extends Action {
         // $qishu_id = M("qishu_history")->add($scyj_temp);
 
         // unset($scyj_temp);
+        $res = $this->isInQishuHistory(8,$qishu,$sid);
+        if($res){
+            return false;
+        }
         $qishu_id = $this->insertQishuHistory(8,$qishu,$sid);
 
         $comment = $this->getComment('scyjb');// 获取市场业绩表字段和备注对应的数组
@@ -956,6 +965,10 @@ class CommonAction extends Action {
         // $qishu_id = M("qishu_history")->add($temp);
 
         // unset($temp);
+        $res = $this->isInQishuHistory(9,$qishu,$sid);
+        if($res){
+            return false;
+        }
         $qishu_id = $this->insertQishuHistory(9,$qishu,$sid);
 
         $list['heji']['gonglixx'] = "合计";
@@ -985,6 +998,11 @@ class CommonAction extends Action {
     public function XzmxToDb($qishu,$sid){
         $data = new \Admin\Action\CountXzmxAction();
         $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+
+        $res = $this->isInQishuHistory(10,$qishu,$sid);
+        if($res){
+            return false;
+        }
 
         // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(10,$qishu,$sid);
@@ -1026,6 +1044,11 @@ class CommonAction extends Action {
         $data = new \Admin\Action\CountJsmxAction();
         $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
 
+        $res = $this->isInQishuHistory(11,$qishu,$sid);
+        if($res){
+            return false;
+        }
+
         // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(11,$qishu,$sid);
         // 插入xzmxb
@@ -1062,6 +1085,12 @@ class CommonAction extends Action {
     public function JysjToDb($qishu,$sid){
         $data = new \Admin\Action\CountJysjAction();
         $list = $data->getJysjbData($qishu,$sid);//获得统计数据
+
+        $res = $this->isInQishuHistory(12,$qishu,$sid);
+        if($res){
+            return false;
+        }
+
         // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(12,$qishu,$sid);
 
@@ -1227,6 +1256,19 @@ class CommonAction extends Action {
         $tmp['filename'] = '';
         $qishu_id = M("qishu_history")->add($tmp);
         return $qishu_id;
+    }
+
+    // qishu_history是否有数据
+    public function isInQishuHistory($tid,$qishu,$sid){
+        $where['tid'] = $tid;
+        $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
+        $res = M('qishu_history')->where($where)->find();
+        if(!empty($res)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     // 如果phpexcel中文输入有问题,使用下面这个函数
