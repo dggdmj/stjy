@@ -7,7 +7,7 @@
     <!-- BEGIN HEAD -->
     <head>
         <meta charset="utf-8" />
-        <title>{$config.site_title}后台管理系统</title>
+        <title>{$config.site_title}信息化管理系统</title>
         <meta name="renderer" content="webkit|ie-comp|ie-stand" />
         <meta http-equiv="X-UA-Compatible" content="IE=12,chrome=1">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -31,18 +31,19 @@
     </head>
     <!-- END HEAD -->
 
-    <body class=" login">
+    <body class=" login" style="background-position: center center;">
         <div class="login_top_divide login_top_divide_event"></div>
         <div class="loge" style="text-align: center;margin-bottom: 20px">
-            <!-- <img src="__PUBLIC__/images/logo.png" width="380"> -->
+             <img src="__PUBLIC__/images/logo.png" width="380">
         </div>
         <!-- BEGIN LOGIN -->
         <div class="content content_event">
             <!-- BEGIN LOGIN FORM -->
             <form class="login-form login_form" action="{:U('/Login/login')}" method="post" onsubmit="return check();">
                 <h3 class="form-title">
-                    <span>后</span>
-                    <span>台</span>
+                    <span>信</span>
+                    <span>息</span>
+                    <span>化</span>
                     <span>管</span>
                     <span>理</span>
                     <span>系</span>
@@ -90,7 +91,7 @@
 
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-block btn-lg green pull-right login_btn"> 登录 </button>
+                    <button type="submit" class="btn btn-block btn-lg pull-right login_btn" style="background: #88e05b;border-color: #88e05b;color: #FFFFFF"> 登录 </button>
                 </div>
             </form>
             <!-- END LOGIN FORM -->
