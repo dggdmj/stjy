@@ -132,8 +132,8 @@ class TableImportAction extends CommonAction{
 
         $tid = $_GET['tid'];// 表格类型id
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
-        $list = M($tablename)->where("suoshudd = ".$id)->select();
-        $tbnames = array_flip($this->getComment($tablename));
+        $list = M($tablename)->field('id',true)->where("suoshudd = ".$id)->select();
+        $tbnames = array_flip(array_diff($this->getComment($tablename),array('id')));// array_diff第二个参数的数组里面写入不需要显示的字段
         $this->assign('list',$list);// 赋值数据集
         $this->assign('tbnames',$tbnames);// 赋值数据集
         $this->adminDisplay();
@@ -176,7 +176,7 @@ class TableImportAction extends CommonAction{
 
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
 
-            // 获取excel里面注释和字段名拼接的数组
+            // 获取对应数据库里面注释(与excel字段相同)和字段名拼接的数组
             $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
 
             $tablenames = $this->getTabelnames(2);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
@@ -243,114 +243,137 @@ class TableImportAction extends CommonAction{
             // $objReader->setReadDataOnly(true);
             $objPHPExcel = $objReader->load($file_name);
             $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
-            $highestRow = $sheet->getHighestRow(); // 取得总行数
-            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $highestRow = $sheet->getHighestRow(); // 取得最高行数,则总行数
+            $highestColumn = $sheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
 
-
-
             // 获取excel里面的所有字段
-            for($i=0;$i<$colsNum;$i++){// 从第一行获取所有字段
-                $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
+            $ziduan = $this->getExcelZiduan($objPHPExcel,$colsNum);
 
-                // 如果取出的obj,则转为string
-                if(is_object($cell_val)){
-                    $cell_val= $cell_val->__toString();
-                }
-                // echo $cell_val.'<br>';
-                $ziduan[] = $cell_val;
-            }
-            // 从第2行开始,到最后一行
-            for($j=2;$j<=$highestRow;$j++){
-                foreach($ziduan as $k=>$v){// 遍历字段数组
-                    switch($tid){
-                        case 1:
-                            if($v == '学号'){// 设置字段为学号的列如果值为空就跳过,其他跟这个原理一样
-                                $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
-                            }
-                        break;
-                        case 2:
-                            if($v == '班级名称'){
-                                $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
-                            }
-                        break;
-                        case 3:
-                            if($v == '学号'){
-                                $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
-                            }
-                        break;
-                        case 4:
-                            if($v == '收据号'){
-                                $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
-                            }
-                        break;
-                        case 5:
-                            if($v == '学号'){
-                                $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
-                            }
-                        break;
-                        case 6:
-                            if($v == '班级名称'){
-                                $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
-                            }
-                        break;
-                        case 7:
-                            if($v == '学号'){
-                                $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
-                            }
-                        break;
-                        case 14:
-                            if($v == '姓名'){
-                                $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
-                            }
-                        break;
-                    }
-                }
+            // 获取excel里面除字段以外的数据
+            $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$qishu_id,$ziduan,$newTemp);
 
-                // 上面得出$col的值如果是空就跳过
-                if(empty(trim($col))){
-                    continue;
-                }
+            // 将获取数组插入到数据库相应的表里面
+            $res = M($tablename)->addAll($excel_data);
+            // foreach($excel_data as $v){
+            //     M($tablename)->add($v);
+            // }
 
-                for($i=0;$i<count($ziduan);$i++){
-                    if(array_key_exists($ziduan[$i], $newTemp)){
-                        $temp1 = $ziduan[$i];// 字段名称
-                        $temp2 = $newTemp[$temp1];// 数组newTemp里面字段名称对应的拼音,则数据库对应表的字段名称
-
-                        // 自动判断单元格是时间格式
-                        $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
-                        $value = $cell->getValue();
-
-                        // $cell->getCoordinate()当前单元格,如A1
-
-                        // 自动识别单元格为日期格式
-                        if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
-                            $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
-                            $formatcode=$cellstyleformat->getFormatCode();
-                            if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
-                                $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
-                            }else{
-                                $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
-                            }
-                        }
-                        $data[$temp2] = $value;
-                        // $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
-
-
-                        // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
-                        if(substr($data[$temp2],0,1) == '='){
-                            $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
-                        }
-                    }
-                    $data['suoshudd'] = $qishu_id;  //所属订单id
-                    $data['daorusj'] = date('Y-m-d H:i:s');
-                }
-                M($tablename)->add($data);
-            }
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
         }else{
             $this->error("请选择上传的文件");
         }
+    }
+
+
+    /* $objPHPExcel:phpexcel对象;$colsNum:获取总列数(数字);*/
+    public function getExcelZiduan($objPHPExcel,$colsNum){
+        // 获取excel里面的所有字段
+        for($i=0;$i<$colsNum;$i++){// 从第一行获取所有字段
+            $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
+
+            // 如果取出的obj,则转为string
+            if(is_object($cell_val)){
+                $cell_val= $cell_val->__toString();
+            }
+            // echo $cell_val.'<br>';
+            $ziduan[] = $cell_val;
+        }
+        return $ziduan;
+    }
+
+    /* $objPHPExcel:phpexcel对象;$highestRow:取得最高行数,则总行数;$tid:表格的id;$qishu_id:qishu_history里面的id;$ziduan:excel的字段数组;$newTemp:获取对应数据库里面注释(与excel字段相同)和字段名拼接的数组; */
+    public function getExcelData($objPHPExcel,$highestRow,$tid,$qishu_id,$ziduan,$newTemp){
+        // 从第2行开始,到最后一行
+        for($j=2;$j<=$highestRow;$j++){
+            // 跳过空白行
+            foreach($ziduan as $k=>$v){// 遍历字段数组
+                switch($tid){
+                    case 1:
+                        if($v == '学号'){// 设置字段为学号的列如果值为空就跳过,其他跟这个原理一样
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 2:
+                        if($v == '班级名称'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 3:
+                        if($v == '学号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 4:
+                        if($v == '收据号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 5:
+                        if($v == '学号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 6:
+                        if($v == '班级名称'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 7:
+                        if($v == '学号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 14:
+                        if($v == '姓名'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                }
+            }
+
+            // 上面得出$col的值如果是空就跳过
+            if(empty(trim($col))){
+                continue;
+            }
+
+            for($i=0;$i<count($ziduan);$i++){
+                if(array_key_exists($ziduan[$i], $newTemp)){
+                    $temp1 = $ziduan[$i];// 字段名称
+                    $temp2 = $newTemp[$temp1];// 数组newTemp里面字段名称对应的拼音,则数据库对应表的字段名称
+
+                    // 自动判断单元格是时间格式
+                    $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
+                    $value = $cell->getValue();
+
+                    // $cell->getCoordinate()当前单元格,如A1
+
+                    // 自动识别单元格为日期格式
+                    if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
+                        $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
+                        $formatcode=$cellstyleformat->getFormatCode();
+                        if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
+                            $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
+                        }else{
+                            $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                        }
+                    }
+                    $data[$temp2] = $value;
+                    // $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+
+
+                    // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
+                    if(substr($data[$temp2],0,1) == '='){
+                        $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                    }
+                }
+                $data['suoshudd'] = $qishu_id;  //所属订单id
+                $data['daorusj'] = date('Y-m-d H:i:s');
+            }
+
+            $list[] = $data;
+        }
+        return $list;
     }
 
     //彻底删除
