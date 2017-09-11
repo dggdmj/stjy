@@ -398,12 +398,12 @@ class CountScyjAction extends CommonAction {
         $list = "1,1,1";
         $xishu = array();
         if($count == 2){
-            $list = M("school")->where("id = $sid")->getField("fencheng");
+            // $list = M("school")->where("id = $sid")->getField("fencheng");
             $arr = explode(",",$list);
             $xishu[0] = $arr[0]/($arr[0]+$arr[1]);
             $xishu[1] = $arr[1]/($arr[0]+$arr[1]);
         }elseif ($count == 3){
-            $list = M("school")->where("id = $sid")->getField("fencheng3");
+            // $list = M("school")->where("id = $sid")->getField("fencheng3");
             $arr = explode(",",$list);
             $arr = explode(",",$list);
             $xishu[0] = $arr[0]/($arr[0]+$arr[1]+$arr[2]);

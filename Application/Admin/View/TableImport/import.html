@@ -19,7 +19,7 @@
                     <label>当前期数</label>
                 </div>
                 <div class="field">
-                    <select name="qishu">
+                    <select name="qishu" style="height:32px;border-radius: 4px;">
                         <foreach name='qishu' item='v'>
 
                             <if condition="$v.name eq $extra['qishu']">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="field">
                     <!-- <input type="text" class="input" name="suoshufx" size="60" value="华景分校"> -->
-                    <select name="sid">
+                    <select name="sid" style="height:32px;border-radius: 4px;">
                         <foreach name='school' item='v' key='k'>
                             <!-- <input type="text" class="input" name="qishu" size="60" value="201706"> -->
                             <if condition="$k eq $extra['sid']">

@@ -168,7 +168,7 @@ class CommonAction extends Action {
 
     // 获取表明与id对应的一维数组
     // $sign:1取拼音名,2取中文名
-    // $array传需要获取表格名的数组,1,导入表;2生成表;3,附加表
+    // $array传需要获取表格名的数组,1,导入表;2生成表;3,附加表;4,工资表
     public function getTabelnames($sign=1,$array=array(1,3)){
         $map['type'] = array('in',$array);
         // 查询出所有导入表
@@ -368,9 +368,24 @@ class CommonAction extends Action {
     // -------------------总表操作开始-------------------
     // 生成业绩表
     public function create(){
-        $tablenames = $this->getTabelnames();// 获取序号和表明对应的一维数组
+        $tablenames = $this->getTabelnames(1,[1,3,4]);// 获取序号和表明对应的一维数组
         $field = implode(',',$tablenames);// 组成筛选条件
         $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
+
+        // 查询学校是否需要上传社保明细表和公积金明细表
+        $data2 = M('school')->field('isshebao,isgongjijin')->where('id = '.$_GET['sid'])->find();
+        // dump($data2);die;
+        if($data2['isshebao'] == 1){
+            $shebao = 2;
+        }else{
+            $shebao = 0;
+        }
+        if($data2['isgongjijin'] == 1){
+            $gongjijin = 2;
+        }else{
+            $gongjijin = 0;
+        }
+        $need = 16 + $shebao + $gongjijin;
         // 若所有表格导入再进行操作
         $count = 0;
         $i = 1;
@@ -379,7 +394,7 @@ class CommonAction extends Action {
            $count += $v;
            $i++;
         }
-        if($count == 16){
+        if($count == $need){
             $temp['time_xz'] = date('Y-m-d H:i:s');
             $temp['status_xz'] = 2;
             $temp['status_xzjl'] = 1;
@@ -781,7 +796,7 @@ class CommonAction extends Action {
     }
 
     public function doData($objPHPExcel,$where,$start_row){
-        $tbnames = $this->getTabelnames(1,[1,2,3]);
+        $tbnames = $this->getTabelnames(1,[1,2,3,4]);
         $id = M('qishu_history')->where($where)->getField('id');
         if(in_array($where['tid'],[8,9,10,11])){
             $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();

@@ -87,11 +87,14 @@ class TableImportAction extends CommonAction{
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
         // if($rid == 2 or $rid == 3 or $_SESSION['superadmin'] == true){
-        $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->order('stjy_sjzb.qishu desc')->select();
+        $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name,stjy_school.isshebao,stjy_school.isgongjijin')->where($map)->order('stjy_sjzb.qishu desc')->select();
         // }
+        // dump($list);
 
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames();
+
+        // 查询该学校是否需要
 
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
@@ -133,7 +136,8 @@ class TableImportAction extends CommonAction{
         $tid = $_GET['tid'];// 表格类型id
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
         $list = M($tablename)->field('id',true)->where("suoshudd = ".$id)->select();
-        $tbnames = array_flip(array_diff($this->getComment($tablename),array('id')));// array_diff第二个参数的数组里面写入不需要显示的字段
+        dump($id);
+        $tbnames = array_flip(array_diff($this->getComment($tablename),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
         $this->assign('list',$list);// 赋值数据集
         $this->assign('tbnames',$tbnames);// 赋值数据集
         $this->adminDisplay();
@@ -171,15 +175,15 @@ class TableImportAction extends CommonAction{
     //数据导入
     public function dataUpload() {
         if (!empty($_FILES)) {
-
+            // dump($_FILES);die;
             $name = explode('.',$_FILES['excel']['name'])[0];// 获取上传excel文档的文档名
 
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
 
             // 获取对应数据库里面注释(与excel字段相同)和字段名拼接的数组
             $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
-
-            $tablenames = $this->getTabelnames(2);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
+            // dump($newTemp);die;
+            $tablenames = $this->getTabelnames(2,[1,3,4]);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
 
             $tid = $_POST["tid"];  //表名对应的序号
 
@@ -249,15 +253,14 @@ class TableImportAction extends CommonAction{
 
             // 获取excel里面的所有字段
             $ziduan = $this->getExcelZiduan($objPHPExcel,$colsNum);
-
+            // dump($ziduan);
             // 获取excel里面除字段以外的数据
             $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$qishu_id,$ziduan,$newTemp);
-
             // 将获取数组插入到数据库相应的表里面
-            $res = M($tablename)->addAll($excel_data);
-            // foreach($excel_data as $v){
-            //     M($tablename)->add($v);
-            // }
+            // $res = M($tablename)->addAll($excel_data);
+            foreach($excel_data as $v){
+                M($tablename)->add($v);
+            }
 
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
         }else{
@@ -329,13 +332,24 @@ class TableImportAction extends CommonAction{
                             $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
                         }
                     break;
+                    case 15:
+                        if($v == '身份证号码'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 16:
+                        if($v == '证件号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
                 }
             }
 
             // 上面得出$col的值如果是空就跳过
-            if(empty(trim($col))){
+            if(isset($col) && empty(trim($col))){
                 continue;
             }
+
 
             for($i=0;$i<count($ziduan);$i++){
                 if(array_key_exists($ziduan[$i], $newTemp)){
