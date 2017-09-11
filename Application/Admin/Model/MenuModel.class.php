@@ -81,6 +81,18 @@ class MenuModel {
                         'url' => U('/TableImport/tableList/tid/14'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '社保管理',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/15'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '公积金管理',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/16'),
+                        'order' => 1
+                    ),
 //                    array(
 //                        'name' => '市场业绩表',
 //                        'icon' => 'sitemap',
@@ -98,6 +110,25 @@ class MenuModel {
 //                        'name' => '会员管理',
 //                        'icon' => 'sitemap',
 //                        'url' => U('/User/index'),
+//                        'order' => 1
+//                    ),
+//                )
+//            ),
+//            'Shebao' => array(
+//                'name' => '社保公积金管理',
+//                'icon' => 'tree',
+//                'order' => 1,
+//                'menu' => array(
+//                    array(
+//                        'name' => '社保管理',
+//                        'icon' => 'sitemap',
+//                        'url' => U('/TableImport/tableList/tid/15'),
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '公积金管理',
+//                        'icon' => 'sitemap',
+//                        'url' => U('/TableImport/tableList/tid/16'),
 //                        'order' => 1
 //                    ),
 //                )

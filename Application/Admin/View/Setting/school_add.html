@@ -59,23 +59,61 @@
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>2人分成比例</label>
+                    <label>是否管理社保</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="fencheng" size="60" value="{$list.fencheng}">
-                    <div class="input-note">按照签单人名字的顺序排列，个人份额=个人份额数/总份额数。如:5,5或4,6</div>
+                    <div class="button-group radio">
+                        <if condition="$list.isshebao == 1">
+                            <label class="button active">
+                                <input name="isshebao" value="1" checked="checked" type="radio">
+                                <span class="icon icon-check"></span> 启用
+                            </label>
+                            <label class="button">
+                                <input name="isshebao" value="0" type="radio">
+                                <span class="icon icon-times"></span> 不启用
+                            </label>
+                            <else/>
+                            <label class="button ">
+                                <input name="isshebao" value="1"type="radio">
+                                <span class="icon icon-check"></span> 启用
+                            </label>
+                            <label class="button active">
+                                <input name="isshebao" value="0" checked="checked"  type="radio">
+                                <span class="icon icon-times"></span> 不启用
+                            </label>
+                        </if>
+                    </div>
+                    <div class="input-note">是否管理社保</div>
                 </div>
-
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>3人分成比例</label>
+                    <label>是否管理公积金</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="fencheng3" size="60" value="{$list.fencheng3}">
-                    <div class="input-note">按照签单人名字的顺序排列，个人份额=个人份额数/总份额数。如:5,5,3或1,4,6</div>
+                    <div class="button-group radio">
+                        <if condition="$list.isgongjijin == 1">
+                            <label class="button active">
+                                <input name="isgongjijin" value="1" checked="checked" type="radio">
+                                <span class="icon icon-check"></span> 启用
+                            </label>
+                            <label class="button">
+                                <input name="isgongjijin" value="0" type="radio">
+                                <span class="icon icon-times"></span> 不启用
+                            </label>
+                            <else/>
+                            <label class="button ">
+                                <input name="isgongjijin" value="1"type="radio">
+                                <span class="icon icon-check"></span> 启用
+                            </label>
+                            <label class="button active">
+                                <input name="isgongjijin" value="0" checked="checked"  type="radio">
+                                <span class="icon icon-times"></span> 不启用
+                            </label>
+                        </if>
+                    </div>
+                    <div class="input-note">是否管理公积金</div>
                 </div>
-
             </div>
         </div>
         <div class="panel-foot">
