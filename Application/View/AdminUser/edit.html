@@ -1,0 +1,108 @@
+<form method="post" class="form-x one-form form-auto" id="form" action="{:U('AdminUser/edit')}">
+    <div class="panel one-box  active">
+        <div class="panel-head">
+            <strong>{$name}用户</strong>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="label">
+                    <label>用户名/登录名</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="username" name="username" size="60" datatype="s" value="{$info.username}">
+                    <div class="input-note">用户登录帐号</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>昵称</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="nicename" name="nicename" size="60" datatype="s" value="{$info.nicename}">
+                    <div class="input-note">用户姓名或昵称</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>邮箱</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" id="email" name="email" size="60" datatype="e" value="{$info.email}">
+                    <div class="input-note">用于接受邮件通知</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>密码</label>
+                </div>
+                <div class="field">
+                    <input type="password" class="input" id="password" name="password" size="60" >
+                    <div class="input-note">请输入密码，不修改请留空</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>重复密码</label>
+                </div>
+                <div class="field">
+                    <input type="password" class="input" id="password2" name="password2" size="60" >
+                    <div class="input-note">重复刚才输入的密码</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>用户状态</label>
+                </div>
+                <div class="field">
+                        <div class="button-group button-group-small radio">
+                            <if condition='$info.lock == 0'>
+                            <label class="button active"><input name="lock" value="0" checked="checked" type="radio">
+                            <else />
+                            <label class="button"><input name="lock" value="0" type="radio">
+                            </if>
+                            <span class="icon icon-check"></span> 正常</label>
+                            <if condition='$info.lock == 1'>
+                            <label class="button active"><input name="lock" checked="checked" value="1" type="radio">
+                            <else />
+                            <label class="button"><input name="lock" value="1" type="radio">
+                            </if>
+                            <span class="icon icon-times"></span> 禁用</label>
+                        </div>
+                        <div class="input-note">禁用后该用户将无法登录</div>
+                    </div>
+            </div>
+        </div>
+        <div class="panel-foot">
+            <div class="form-button">
+                <div id="tips"></div>
+                <input type="hidden" name="id" type="hidden" value="{$info.id}">
+                <button id="ajaxSave" class="button bg-main" type="button">保存</button>
+                <button class="button bg" type="reset">重置</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    // ajax 提交表单
+    $(document).ready(function(){
+        $("#ajaxSave").click(function(){    // 提交按钮触发事件
+            var url = $("#form").attr("action");    // 获取 表单的 提交地址
+            // 序列化 表单数据 后提交
+            $.post(url,$("form").serialize(),function(data){
+                // data 是 ajaxreturn 返回的 数据
+                if(data['status'] == 1){    // 处理成功后
+                    layer.alert(data['info'], {icon : 1} , function(index){        
+                        window.location.reload();   // 刷新当前页面
+                        layer.close(index); // 关闭遮罩层
+                    });
+                } else {
+                    // 处理失败后 刷新页面
+                    layer.alert(data['info'], {icon : 0} , function(index){
+                        layer.close(index); // 关闭遮罩层
+                    });
+                }
+                
+            });
+        });
+    });
+</script>

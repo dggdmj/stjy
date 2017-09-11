@@ -1,0 +1,67 @@
+<form method="post" class="form-x one-form form-auto" id="form" action="{:U('Category/edit')}">
+    <div class="tab one-tab">
+        <div class="panel one-box  active">
+            <div class="panel-head">
+                <div class="tab-head">
+                    <strong>{$name}页面</strong>
+                    <ul class="tab-nav">
+                        <li class="active"><a href="#tab-1">基本信息</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-body">
+                <div class="tab-panel active">
+                    <div class="form-group">
+                        <div class="label">
+                            <label>页面内容</label>
+                        </div>
+                        <div class="field">
+                            <textarea class="input js-editor" id="content" name="content" style="width: 100%; height: 200px;">{$info.content}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-foot">
+                <div class="form-button">
+                    <div id="tips"></div>
+                    <input type="hidden" name="class_id" type="hidden" value="{$info.class_id}">
+                    <button class="button bg-main" id="ajaxForm" type="submit">保存</button>
+                    <button class="button bg" type="reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="content"]', {
+            cssPath : '__PUBLIC__/keditor/plugins/code/prettify.css',
+            uploadJson : '__PUBLIC__/keditor/php/upload_json.php',
+            fileManagerJson : '__PUBLIC__/keditor/php/file_manager_json.php',
+            allowFileManager : true
+        });
+        prettyPrint();
+    });
+    // ajax 提交表单
+    /*$(document).ready(function(){
+        $("#ajaxForm").click(function(){    // 提交按钮触发事件
+            var url = $("#form").attr("action");    // 获取 表单的 提交地址
+            // 序列化 表单数据 后提交
+            $.post(url,$("form").serialize(),function(data){
+                // data 是 ajaxreturn 返回的 数据
+                if(data['status'] == 1){    // 处理成功后
+                    layer.alert(data['info'], {icon : 1} , function(index){        
+                        window.location.reload();   // 刷新当前页面
+                        layer.close(index); // 关闭遮罩层
+                    });
+                } else {
+                    // 处理失败后 刷新页面
+                    layer.alert(data['info'], {icon : 0} , function(index){        
+                        window.location.reload();   // 刷新当前页面
+                        layer.close(index); // 关闭遮罩层
+                    });
+                }
+            });
+        });
+    });*/
+</script>

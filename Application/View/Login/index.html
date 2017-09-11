@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="zh-CN" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="zh-CN" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="zh-CN">
+<!--<![endif]-->
+    <!-- BEGIN HEAD -->
+    <head>
+        <meta charset="utf-8" />
+        <title>{$config.site_title}信息化管理系统</title>
+        <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+        <meta http-equiv="X-UA-Compatible" content="IE=12,chrome=1">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta name="author" content="YS">
+        <!-- BEGIN GLOBAL MANDATORY STYLES -->
+        <link href="__PUBLIC__/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="__PUBLIC__/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME GLOBAL STYLES -->
+        <link href="__PUBLIC__/assets/global/css/components-rounded.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <!-- END THEME GLOBAL STYLES -->
+        <!-- BEGIN PAGE LEVEL STYLES -->
+        <link href="__PUBLIC__/assets/pages/css/login-4.min.css?v1.0" rel="stylesheet" type="text/css" />
+        <!-- END PAGE LEVEL STYLES -->
+        <!-- BEGIN THEME LAYOUT STYLES -->
+        <!-- END THEME LAYOUT STYLES -->
+        <script src="__PUBLIC__/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="../../../../Public/Admin/assets/pages/css/login-4.min.css">
+    </head>
+    <!-- END HEAD -->
+
+    <body class=" login" style="background-position: center center;">
+        <div class="login_top_divide login_top_divide_event"></div>
+        <div class="loge" style="text-align: center;margin-bottom: 20px">
+             <img src="__PUBLIC__/images/logo.png" width="380">
+        </div>
+        <!-- BEGIN LOGIN -->
+        <div class="content content_event">
+            <!-- BEGIN LOGIN FORM -->
+            <form class="login-form login_form" action="{:U('/Login/login')}" method="post" onsubmit="return check();">
+                <h3 class="form-title">
+                    <span>信</span>
+                    <span>息</span>
+                    <span>化</span>
+                    <span>管</span>
+                    <span>理</span>
+                    <span>系</span>
+                    <span>统</span>
+                </h3>
+
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    <span> 请正确填写 </span>
+                </div>
+
+                <div class="form-group">
+                    <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                    <label class="control-label visible-ie8 visible-ie9">用户名</label>
+                    <div class="input-icon">
+                        <i class="fa fa-user"></i>
+                        <input class="form-control input-lg placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" id="username" name="username" id="username"/> </div>
+                </div>
+
+                <div class="form-group password_group">
+                    <label class="control-label visible-ie8 visible-ie9">密码</label>
+                    <div class="input-icon">
+                        <i class="fa fa-lock"></i>
+                        <input class="form-control input-lg placeholder-no-fix" type="password" autocomplete="off" id="password" placeholder="密码" id="password" name="password" /> </div>
+                </div>
+                <script type="text/javascript">
+                if(document.getElementById("username").value){
+                    document.getElementById("password").focus();
+                }else{
+                    document.getElementById("username").focus();
+                }
+                </script>
+
+                    <div class="form-group verifyimg_group">
+                      <label class="control-label visible-ie8 visible-ie9">验证码</label>
+                      <div class="input-icon">
+                        <i class="fa fa-desktop"></i>
+                        <input class="form-control placeholder-no-fix input-lg verify_input" type="text" id="verty" autocomplete="off" placeholder="验证码" name="code"/>
+                      </div>
+                    </div>
+
+                    <div style="width: 330px;margin-bottom: 50px" class="form-group verifyimg_img" onclick="change_code(this)">
+                        <img style="width: 150px;float: left" class="img-responsive verifyimg verifyimg_event" id="code" alt="点击切换" title="点击切换" src="{:U('Login/verify')}">
+                        <p style="width: 150px;float: right;padding: 0;margin: 0;height: 26px;line-height: 26px">看不清楚，点击这里</p>
+                    </div>
+
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-block btn-lg pull-right login_btn" style="background: #88e05b;border-color: #88e05b;color: #FFFFFF"> 登录 </button>
+                </div>
+            </form>
+            <!-- END LOGIN FORM -->
+            <div class="clearfix"></div>
+            <p style="width: 100%;text-align: center;"><span style="font-size: 30px">©</span><span style="height: 30px;line-height: 30px;position: relative;top: -8px"> 东客技术支持</span></p>
+        </div>
+        <!-- END LOGIN -->
+
+
+        <!-- 提示的模态框 开始 ↓ -->
+        <div class="modal fade alert_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">温馨提示</h4>
+              </div>
+              <div class="modal-body">
+                 提示！
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default close_modal" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;关闭</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- 提示的模态框 结束 ↑ -->
+
+        <!--[if lt IE 9]>
+        <script src="__PUBLIC__/assets/global/plugins/respond.min.js"></script>
+        <script src="__PUBLIC__/assets/global/plugins/excanvas.min.js"></script>
+        <![endif]-->
+        <!-- BEGIN CORE PLUGINS -->
+        <script src="__PUBLIC__/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="__PUBLIC__/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+        <!-- END CORE PLUGINS -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <script src="__PUBLIC__/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME GLOBAL SCRIPTS -->
+        <script src="__PUBLIC__/assets/global/scripts/app.min.js" type="text/javascript"></script>
+        <!-- END THEME GLOBAL SCRIPTS -->
+        <!-- BEGIN PAGE LEVEL SCRIPTS -->
+        <!--<script src="__PUBLIC__/assets/pages/scripts/login-4.min.js?v1.0" type="text/javascript"></script>-->
+        <!-- END PAGE LEVEL SCRIPTS -->
+        <!-- BEGIN THEME LAYOUT SCRIPTS -->
+        <!-- END THEME LAYOUT SCRIPTS -->
+    </body>
+
+<script type="text/javascript">
+    var URL = "{:U('/Login/verify')}?";
+    function change_code(obj){
+        $("#code").attr("src",URL+Math.random());
+        $('#yzm').focus();
+        return false;
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {$('#username').focus();});
+    function check() {
+        if ($('#username').val() == "") {
+            $(".modal-body").text('用户名不能为空!');
+            $(".alert_modal").modal("show")
+            $('#username').focus();
+            return false;
+        }
+        if ($('#password').val() == "") {
+            $(".modal-body").text('密码不能为空!');
+            $(".alert_modal").modal("show")
+            $('#password').focus();
+            return false;
+        }
+        if ($('#verty').val() == "") {
+            $(".modal-body").text('验证码不能为空!');
+            $(".alert_modal").modal("show")
+            $('#verty').focus();
+            return false;
+        }
+    }
+</script>
+</html>
