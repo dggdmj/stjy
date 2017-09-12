@@ -22,7 +22,7 @@ class CountScyjAction extends CommonAction {
         //学习卡额度数据
         $xxk_id =  M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid =14")->getField('id');
         //1，遍历数组，如果业绩归属人是2个人的，增加两条记录，在重新拼接成新的数组
-        $newlist = $this->getNewList($list,$sid);
+        $newlist = $this->getNewList($list);
         //2，遍历数组，按照业绩归属人的业绩归类统计
         $tablelist = $this->countList($newlist,$xxk_id);
 
@@ -346,7 +346,7 @@ class CountScyjAction extends CommonAction {
     }
 
     //如果业绩归属人有2，3个，去除掉重复的，返回业绩归属人的唯一数组
-    public function getNewList($list,$sid){
+    public function getNewList($list){
         //过滤掉名字中的数据
         $filter_arr = array('(主签单人)','(副签单人)','（副签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
         $arr = array();
@@ -364,7 +364,7 @@ class CountScyjAction extends CommonAction {
                 $a++;
             }elseif(count($yjgsr_arr) == 2){
                 //获取系数信息
-                $xishu = $this->getXishu($sid,2);
+                $xishu = $this->getXishu($v['beizhu'],2);
             //如果有2个业绩归属人
                 for ($i=0;$i<count($yjgsr_arr);$i++){
                     $name = $this->strFilter($yjgsr_arr[$i],$filter_arr);
@@ -378,7 +378,7 @@ class CountScyjAction extends CommonAction {
                 }
             }elseif(count($yjgsr_arr) == 3){
                 //获取系数信息
-                $xishu = $this->getXishu($sid,3);
+                $xishu = $this->getXishu($v['beizhu'],3);
                 //如果有3个业绩归属人
                 for ($i=0;$i<count($yjgsr_arr);$i++){
                     $name = $this->strFilter($yjgsr_arr[$i],$filter_arr);
@@ -394,21 +394,34 @@ class CountScyjAction extends CommonAction {
         return $arr;
     }
 
-    public function getXishu($sid,$count){
-        $list = "1,1,1";
+    //获得系数
+    //备注示例------->新生连报幼儿1期秒杀／980X1（净人头：0.1）+0X0（教材费：0）-0（剩余学费：0）-0（已交定金）-0（优惠：0）-0（预减：0）-0（老带新：无）=980元／会员有效期：无／拼单对象：无／PRT跟进人：赵萍20%，张小明80%／首次缴费日期：2017-07-26／老带新：无／1期秒杀／其他说明：
+    public function getXishu($beizhu,$n){
         $xishu = array();
-        if($count == 2){
-            // $list = M("school")->where("id = $sid")->getField("fencheng");
-            $arr = explode(",",$list);
-            $xishu[0] = $arr[0]/($arr[0]+$arr[1]);
-            $xishu[1] = $arr[1]/($arr[0]+$arr[1]);
-        }elseif ($count == 3){
-            // $list = M("school")->where("id = $sid")->getField("fencheng3");
-            $arr = explode(",",$list);
-            $arr = explode(",",$list);
-            $xishu[0] = $arr[0]/($arr[0]+$arr[1]+$arr[2]);
-            $xishu[1] = $arr[1]/($arr[0]+$arr[1]+$arr[2]);
-            $xishu[2] = $arr[2]/($arr[0]+$arr[1]+$arr[2]);
+        $arr = explode("／",$beizhu);
+        if(count($arr) > 1){
+            //[4] =>  "PRT跟进人：赵萍20%，张小明80%"
+            $prt_arr = explode("：",$arr[4]);
+            //[1] =>  "赵萍20%，张小明80%"
+            $x_arr = explode('，',$prt_arr);
+            foreach ($x_arr as $k=>$v){
+                $xishu[$k] =  $this->filter_xishu($v,$n);
+            }
+            return $xishu;
+        }else{
+            return 0;
+        }
+    }
+
+    //取出备注中的系数值：张小明80%
+    public function filter_xishu($v,$n){
+        //匹配出字符串中的数字
+        $preg    = '/\d+/';
+        preg_match($preg, $v, $matchs);
+        if(empty($matchs[0]) || $matchs[0] == 0){
+            $xishu = 1/$n;
+        }else{
+            $xishu = $matchs[0]/100;
         }
         return $xishu;
     }
