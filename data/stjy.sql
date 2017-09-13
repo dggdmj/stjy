@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50711
 File Encoding         : 65001
 
-Date: 2017-09-13 12:41:51
+Date: 2017-09-13 12:45:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -185,7 +185,7 @@ INSERT INTO `stjy_admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e
 INSERT INTO `stjy_admin` VALUES ('2', 'meimei', 'e962c96829241f53c3d68a67f80c4eb7', '梅梅', 'meimei@163.com', '1,2,4,5,6', '1505142575', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('3', 'maomao', 'e2145387bcc7842edef4ccecc34b7da4', 'maomao', 'maomao', '2,3', '1501780416', '127.0.0.1', '1');
 INSERT INTO `stjy_admin` VALUES ('4', 'caiwu', 'f5b5ec699ed736de89336fbce0bc9890', '财务', 'caiwu@caiwu.com', '1,2,3,4', '1504510569', '127.0.0.1', '0');
-INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4,5,6', '1505219937', '127.0.0.1', '0');
+INSERT INTO `stjy_admin` VALUES ('5', 'exlee', 'e10adc3949ba59abbe56e057f20f883e', '行政经理', 'exlee@stjy.com', '1,2,3,4,5,6', '1505277886', '127.0.0.1', '0');
 INSERT INTO `stjy_admin` VALUES ('6', 'fuzeren', 'e10adc3949ba59abbe56e057f20f883e', 'fuzeren', 'fuzeren@stjy.com', '1,2,3,4', '1503977551', '127.0.0.1', '0');
 
 -- ----------------------------
@@ -2463,7 +2463,7 @@ CREATE TABLE `stjy_qishu_history` (
   `qishu` varchar(255) DEFAULT '' COMMENT '期数',
   `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=106 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=107 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_qishu_history
@@ -2500,7 +2500,7 @@ INSERT INTO `stjy_qishu_history` VALUES ('102', '1', './Public/Uploads/20170913/
 INSERT INTO `stjy_qishu_history` VALUES ('75', '1', './Public/Uploads/20170912/59b6b50e7f4df.xlsx', '16', '6', '5', '201707', '2017-09-12 00:08:46');
 INSERT INTO `stjy_qishu_history` VALUES ('76', '1', './Public/Uploads/20170912/59b7e287e4735.xlsx', '1', '4', '5', '201706', '2017-09-12 21:35:03');
 INSERT INTO `stjy_qishu_history` VALUES ('90', '1', './Public/Uploads/20170912/59b7f19b5d228.xlsx', '3', '4', '5', '201706', '2017-09-12 22:39:23');
-INSERT INTO `stjy_qishu_history` VALUES ('105', '1', './Public/Uploads/20170913/59b81db913a3b.xlsx', '14', '6', '5', '201707', '2017-09-13 01:47:37');
+INSERT INTO `stjy_qishu_history` VALUES ('106', '1', './Public/Uploads/20170913/59b8b7f1ee01d.xlsx', '14', '6', '5', '201707', '2017-09-13 12:45:37');
 
 -- ----------------------------
 -- Table structure for stjy_renshi
@@ -3323,11 +3323,11 @@ CREATE TABLE `stjy_xxkedb` (
   `benyuegmbj` double(11,2) DEFAULT NULL COMMENT '本月购买本金',
   `zongbenjin` double(11,2) DEFAULT NULL COMMENT '总本金',
   `edu` double(11,2) DEFAULT NULL COMMENT '额度',
-  `zhengshiqsfgmlzdbj` varchar(255) DEFAULT NULL COMMENT '正式期是否购买了最低本金',
+  `zhengsonged` varchar(255) DEFAULT NULL COMMENT '赠送额度',
   `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
   `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=80 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of stjy_xxkedb
@@ -3344,21 +3344,21 @@ INSERT INTO `stjy_xxkedb` VALUES ('9', '3', 'A类', '华景', '2017-07-01', '翟
 INSERT INTO `stjy_xxkedb` VALUES ('10', '4', 'A类', '华景', '2017-07-01', '王圆圆', '42825', '试用期', '40.00', '10.00', '50000.00', '275000.00', '', '38', '2017-09-05 15:41:03');
 INSERT INTO `stjy_xxkedb` VALUES ('11', '5', 'A类', '华景', '2017-07-01', '彭永红', '42217', '正式期', '30.00', '0.00', '30000.00', '120000.00', '否', '38', '2017-09-05 15:41:03');
 INSERT INTO `stjy_xxkedb` VALUES ('12', '6', 'A类', '华景', '2017-07-01', '吴彩红', '2017-04-08', '试用期', '10.00', null, '10000.00', '75000.00', '', '38', '2017-09-05 15:41:03');
-INSERT INTO `stjy_xxkedb` VALUES ('64', '15', 'A类', '五羊', '2017-07-01', '梁冠玉', '2016-12-12', '正式期', '0.00', null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('62', '13', 'A类', '五羊', '2017-07-01', '黄夏娴', '2016-06-04', '正式期', '0.00', null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('63', '14', 'A类', '五羊', '2017-07-01', '陈江英', '2012-07-09', '正式期', '0.00', null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('61', '12', 'A类', '五羊', '2017-07-01', '梁冠玉', '2016-12-12', '正式期', null, '45000.00', '45000.00', '180000.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('60', '11', 'A类', '五羊', '2017-07-01', '傅聪', '2012-06-01', '正式期', null, '60000.00', '60000.00', '288000.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('59', '10', 'A类', '五羊', '2017-07-01', '盛佩佩', '2012-03-01', '正式期', null, '29000.00', '29000.00', '116000.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('58', '9', 'A类', '五羊', '2017-07-01', '黄小舟', '2015-11-11', '正式期', null, null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('57', '8', 'A类', '五羊', '2017-07-01', '黄夏娴', '2016-06-04', '正式期', null, null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('56', '7', 'A类', '五羊', '2017-07-01', '周文丽', '2014-10-06', '正式期', null, null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('55', '6', 'A类', '五羊', '2017-07-01', '陈江英', '2012-07-09', '正式期', null, '30000.00', '30000.00', '120000.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('54', '5', 'A类', '五羊', '2017-07-01', '蒲静娴', '2016-10-09', '正式期', null, null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('53', '4', 'A类', '五羊', '2017-07-01', '梁文杰', '2012-08-16', '正式期', null, null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('52', '3', 'A类', '五羊', '2017-07-01', '张春燕', '2012-08-29', '正式期', '30000.00', null, '30000.00', '120000.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('51', '2', 'A类', '五羊', '2017-07-01', '赵萍', '2013-06-26', '正式期', '30000.00', null, '30000.00', '120000.00', null, '105', '2017-09-13 01:47:37');
-INSERT INTO `stjy_xxkedb` VALUES ('50', '1', 'A类', '五羊', '2017-07-01', '邓秋敏', '2016-05-25', '正式期', null, null, '0.00', '0.00', null, '105', '2017-09-13 01:47:37');
+INSERT INTO `stjy_xxkedb` VALUES ('78', '14', 'A类', '五羊', '2017-07-01', '陈江英', '2012-07-09', '正式期', '0.00', null, '0.00', '0.00', '20000', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('79', '15', 'A类', '五羊', '2017-07-01', '梁冠玉', '2016-12-12', '正式期', '0.00', null, '0.00', '0.00', '20000', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('77', '13', 'A类', '五羊', '2017-07-01', '黄夏娴', '2016-06-04', '正式期', '0.00', null, '0.00', '0.00', '20000', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('75', '11', 'A类', '五羊', '2017-07-01', '傅聪', '2012-06-01', '正式期', null, '60000.00', '60000.00', '288000.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('76', '12', 'A类', '五羊', '2017-07-01', '梁冠玉', '2016-12-12', '正式期', null, '45000.00', '45000.00', '180000.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('74', '10', 'A类', '五羊', '2017-07-01', '盛佩佩', '2012-03-01', '正式期', null, '29000.00', '29000.00', '116000.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('73', '9', 'A类', '五羊', '2017-07-01', '黄小舟', '2015-11-11', '正式期', null, null, '0.00', '0.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('72', '8', 'A类', '五羊', '2017-07-01', '黄夏娴', '2016-06-04', '正式期', null, null, '0.00', '0.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('71', '7', 'A类', '五羊', '2017-07-01', '周文丽', '2014-10-06', '正式期', null, null, '0.00', '0.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('70', '6', 'A类', '五羊', '2017-07-01', '陈江英', '2012-07-09', '正式期', null, '30000.00', '30000.00', '120000.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('69', '5', 'A类', '五羊', '2017-07-01', '蒲静娴', '2016-10-09', '正式期', null, null, '0.00', '0.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('67', '3', 'A类', '五羊', '2017-07-01', '张春燕', '2012-08-29', '正式期', '30000.00', null, '30000.00', '120000.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('68', '4', 'A类', '五羊', '2017-07-01', '梁文杰', '2012-08-16', '正式期', null, null, '0.00', '0.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('66', '2', 'A类', '五羊', '2017-07-01', '赵萍', '2013-06-26', '正式期', '30000.00', null, '30000.00', '120000.00', '0', '106', '2017-09-13 12:45:38');
+INSERT INTO `stjy_xxkedb` VALUES ('65', '1', 'A类', '五羊', '2017-07-01', '邓秋敏', '2016-05-25', '正式期', null, null, '0.00', '0.00', '0', '106', '2017-09-13 12:45:38');
 
 -- ----------------------------
 -- Table structure for stjy_xyfyyjb
