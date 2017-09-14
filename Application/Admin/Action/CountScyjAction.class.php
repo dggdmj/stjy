@@ -14,7 +14,7 @@ class CountScyjAction extends CommonAction {
         $Model = M();
         $tablelist = array();  //初始化要返回的数据
         $where['qishu'] = $qishu;// 获取期数
-        $whewe['sid'] = $sid;// 获取学校id
+        $where['sid'] = $sid;// 获取学校id
         $where['tid'] = 4;// 从收据记录表获取信息,它的tid是4
         $suoshuid = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id
         //查询出所有数据
