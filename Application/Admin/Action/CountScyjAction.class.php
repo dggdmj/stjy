@@ -28,9 +28,9 @@ class CountScyjAction extends CommonAction {
 
         $i = 1;
         foreach ($tablelist as $k=>$v){
-            if($v["jrt"] == 0){
-                continue;
-            }
+            // if($v["jrt"] == 0){
+            //     continue;
+            // }
             $nlist[$k] = $v;
             $nlist[$k]['xuhao'] = $i;
             $i++;
