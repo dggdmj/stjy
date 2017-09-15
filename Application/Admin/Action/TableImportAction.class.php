@@ -342,6 +342,7 @@ class TableImportAction extends CommonAction{
         // 从第2行开始,到最后一行
         for($j=2;$j<=$highestRow;$j++){
             // 跳过空白行
+            // 必须设置$col,否则会跳过所有
             foreach($ziduan as $k=>$v){// 遍历字段数组
                 switch($tid){
                     case 1:
@@ -427,8 +428,9 @@ class TableImportAction extends CommonAction{
                                 foreach($val_arr as $v){
                                     $val.=$v;
                                 }
+                                $value = (double)$val;
                             }
-                            $value = (double)$val;
+
                         }
                     }
 
