@@ -270,7 +270,8 @@ class TableImportAction extends CommonAction{
                 // 获取excel里面除字段以外的数据
                 $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$qishu_id,$ziduan,$newTemp);
             }
-
+            // dump($excel_data);
+            // die;
             // 将获取数组插入到数据库相应的表里面
             // $res = M($tablename)->addAll($excel_data);
             foreach($excel_data as $v){
@@ -296,7 +297,7 @@ class TableImportAction extends CommonAction{
                     $list_bjxyxxb[] = $v['xuehao'];
                 }
                 $yichang = array_diff($list_xyxxb,$list_bjxyxxb);// 产生异常清单
-                dump($yichang);
+                // dump($yichang);
                 if(!empty($yichang)){
                     // foreach($yichang as $v){
                     //     $_yichang[] = '"'.$v.'"';
@@ -331,7 +332,7 @@ class TableImportAction extends CommonAction{
                 $cell_val= $cell_val->__toString();
             }
             // echo $cell_val.'<br>';
-            $ziduan[] = $cell_val;
+            $ziduan[] = trim($cell_val);
         }
         return $ziduan;
     }
@@ -392,20 +393,18 @@ class TableImportAction extends CommonAction{
             }
 
             // 上面得出$col的值如果是空就跳过
-            if(isset($col) && empty(trim($col))){
+            if(empty(trim($col))){
                 continue;
             }
 
-
             for($i=0;$i<count($ziduan);$i++){
                 if(array_key_exists($ziduan[$i], $newTemp)){
-                    $temp1 = $ziduan[$i];// 字段名称
-                    $temp2 = $newTemp[$temp1];// 数组newTemp里面字段名称对应的拼音,则数据库对应表的字段名称
 
                     // 自动判断单元格是时间格式
                     $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
                     $value = $cell->getValue();
-
+                    // dump(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
+                    // dump($value);
                     if(is_object($value)){
                         $value= $value->__toString();
                     }
@@ -422,25 +421,31 @@ class TableImportAction extends CommonAction{
                             $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
                         }
                     }
-                    $data[$temp2] = $value;
+
                     // $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
 
 
                     // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
-                    if(substr($data[$temp2],0,1) == '='){
-                        $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                    if(substr($value,0,1) == '='){
+                        $value = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
                     }
+
+                    $temp1 = $ziduan[$i];// 字段名称
+                    $temp2 = $newTemp[$temp1];// 数组newTemp里面字段名称对应的拼音,则数据库对应表的字段名称
+                    $data[$temp2] = $value;
                 }
                 $data['suoshudd'] = $qishu_id;  //所属订单id
                 $data['daorusj'] = date('Y-m-d H:i:s');
             }
-
+            // dump($data);
+            // die;
             $list[] = $data;
         }
         return $list;
     }
 
     public function getExcelData2($objPHPExcel,$highestRow,$colsNum,$qishu_id){
+
         // 从第2行开始,到最后一行
         for($j=2;$j<=$highestRow;$j++){
             for($i=0;$i<=$colsNum;$i++){

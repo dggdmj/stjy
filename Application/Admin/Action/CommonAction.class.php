@@ -207,8 +207,8 @@ class CommonAction extends Action {
     public function getComment($table_name){
         $temp = M($table_name)->query("SHOW FULL COLUMNS FROM stjy_".$table_name);
         foreach($temp as $v){
-            $field[]=$v['field'];
-            $comment[]=$v['comment'];
+            $field[]=trim($v['field']);
+            $comment[]=trim($v['comment']);
         }
         return array_combine($comment,$field);
     }
@@ -249,24 +249,6 @@ class CommonAction extends Action {
         }
     }
 
-    // 获取当月班级学员信息表的学号一位数组
-    public function getData($qishu,$sid){
-        $where['qishu'] = $qishu;
-        $where['sid'] = $sid;
-        $where['tid'] = 3;
-        // 获取数据库上一月所属订单id
-        $fm_data_id = M('qishu_history')->where($where)->getField('id');
-        // 如果能得出上一月所属id则执行
-        if(is_numeric($fm_data_id)){
-            $fm_data = M('bjxyxxb')->where('suoshudd ='.$fm_data_id)->field('xuehao')->select();
-            // 得出学号的一维数组
-            foreach($fm_data as $v){
-                $fm[] = $v['xuehao'];
-            }
-        }
-        return $fm;
-    }
-
     // phpexcel正确读取日期时间函数
     function excelTime($date, $time = false) {
         if(function_exists('GregorianToJD')){
@@ -289,18 +271,24 @@ class CommonAction extends Action {
         return $date;
     }
 
-    // 查询本期所有学员的学号
-    public function getStu($qishu,$sid){
+    // 查询本期班级学员信息表所有学员的学号
+    public function getStu($qishu,$sid,$tid=3){
         $where['qishu'] = $qishu;
         $where['sid'] = $sid;
-        $where['tid'] = 3;
+        $where['tid'] = $tid;
         $id = M('qishu_history')->where($where)->getField('id');
-        $stu = M('bjxyxxb')->where('suoshudd ='.$id)->field('xuehao')->select();
-        // dump($stu);
-        foreach($stu as $v){
-            $xueyuan[] = $v['xuehao'];
+        $tbnames = $this->getTabelnames();
+        if(!empty($id)){
+            $stu = M($tbnames[$tid])->where('suoshudd ='.$id)->field('xuehao')->select();
+            // dump($stu);
+            foreach($stu as $v){
+                $xueyuan[] = $v['xuehao'];
+            }
+            return $xueyuan;
+        }else{
+            return false;
         }
-        return $xueyuan;
+
     }
 
 
