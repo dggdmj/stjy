@@ -189,7 +189,7 @@ class MenuModel {
                     array(
                         'name' => '市场部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wages/scbgzb'),
+                        'url' => U('/wages/scbgzb_xq'),
                         'order' => 1
                     ),
                     array(

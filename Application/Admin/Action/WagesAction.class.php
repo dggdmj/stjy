@@ -26,7 +26,7 @@ class WagesAction extends CommonAction{
                     'icon' => 'list',
                 ),
                 array('name' => '市场部工资表',
-                    'url' => url('Wages/scbgzb'),
+                    'url' => url('Wages/scbgzbx'),
                     'icon' => 'list',
                 ),
                 array('name' => '总监工资表',
@@ -57,8 +57,10 @@ class WagesAction extends CommonAction{
         echo "教学部工资表";
     }
 
-    public function scbgzb(){
-        echo "市场部工资表";
+    public function scbgzb_xq(){
+        $kecheng = M("kecheng")->order("paixu")->select();
+        $this->assign("kecheng",$kecheng);
+        $this->adminDisplay();
     }
 
     //总监工资表
