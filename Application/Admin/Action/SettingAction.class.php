@@ -355,7 +355,8 @@ class SettingAction extends CommonAction{
     //人事列表页
     public function kecheng(){
         $data = M('kecheng'); // 实例化对象
-        $list = $data->order('id asc')->select();
+        $list = $data->order('pauxu,asc,id asc')->select();
+        
         $this->assign('list',$list);// 赋值数据集
         $this->adminDisplay();
     }
@@ -370,14 +371,14 @@ class SettingAction extends CommonAction{
     //添加课程
     public function addKecheng(){
         if(empty($_GET['id'])) {
-            if($bid=M('renshi')->add($_POST)) {
+            if($bid=M('kecheng')->add($_POST)) {
                 $this->success('添加成功',U('kecheng'));
             } else {
                 $this->error('添加失败');
             }
         }else {
             $bid=$_GET['id'];
-            if(M('renshi')->where(array('id'=>$bid))->save($_POST)) {
+            if(M('kecheng')->where(array('id'=>$bid))->save($_POST)) {
                 $this->success('修改成功',U('kecheng'));
             } else {
                 $this->error('修改失败');
@@ -388,9 +389,8 @@ class SettingAction extends CommonAction{
     // 修改课程
     public function editKecheng() {
         $id = $_GET['id'];
-        $this->list=D('renshi')->where(array('id'=>$id))->find();
+        $this->list=D('kecheng')->where(array('id'=>$id))->find();
         $this->adminDisplay('kecheng_add');
-        // view未套数据
     }
 }
 ?>
