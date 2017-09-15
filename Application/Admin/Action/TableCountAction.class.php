@@ -124,6 +124,8 @@ class TableCountAction extends CommonAction{
 	    $data = new \Admin\Action\CountScyjAction();
 	    $list = $data->getScyjbData($qishu,$sid);//获得统计数据
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
+        $this->assign("kecheng",$kecheng);
         $this->assign("list",$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
