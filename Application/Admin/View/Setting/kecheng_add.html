@@ -1,12 +1,12 @@
-<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Setting/addSchool',array('id'=>$list['id']))}">
+<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Setting/addKecheng',array('id'=>$list['id']))}">
 	 <div class="panel one-box  active">
         <div class="panel-head">
-            <strong>添加校区</strong>
+            <strong>课程</strong>
         </div>
         <div class="panel-body">
 			<div class="form-group">
                 <div class="label">
-                    <label>校区名称</label>
+                    <label>课程名称</label>
                 </div>
                 <div class="field">
                     <input type="text" class="input" name="name" size="60" value="{$list.name}">
@@ -14,130 +14,21 @@
             </div>
 			<div class="form-group">
                 <div class="label">
-                    <label>是否启用</label>
+                    <label>新老生</label>
                 </div>
                 <div class="field">
-                    <div class="button-group radio">
-                        <if condition="$list.isuse == 1">
-                            <label class="button active">
-                                <input name="isuse" value="1" checked="checked" type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button">
-                                <input name="isuse" value="0" type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                        <else/>
-                            <label class="button ">
-                                <input name="isuse" value="1"type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button active">
-                                <input name="isuse" value="0" checked="checked"  type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                        </if>
-                    </div>
-                    <div class="input-note">是否启用校区</div>
+                    <input type="radio" class="input" name="type" size="60" value="1">新生<br/>
+                    <input type="radio" class="input" name="type" size="60" value="2">老生
                 </div>
             </div>
-            <div class="form-group">
+			<div class="form-group">
                 <div class="label">
-                    <label>校区面积</label>
+                    <label>提成点数</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="mianji" size="60" value="{$list.mianji}">
+                    <input type="text" class="input" name="ticheng" size="60" value="{$list.name}">
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="label">
-                    <label>课室数</label>
-                </div>
-                <div class="field">
-                    <input type="text" class="input" name="classnum" size="60" value="{$list.classnum}">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="label">
-                    <label>是否管理社保</label>
-                </div>
-                <div class="field">
-                    <div class="button-group radio">
-                        <if condition="$list.isshebao == 1">
-                            <label class="button active">
-                                <input name="isshebao" value="1" checked="checked" type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button">
-                                <input name="isshebao" value="0" type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                            <else/>
-                            <label class="button ">
-                                <input name="isshebao" value="1"type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button active">
-                                <input name="isshebao" value="0" checked="checked"  type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                        </if>
-                    </div>
-                    <div class="input-note">是否管理社保</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="label">
-                    <label>是否管理公积金</label>
-                </div>
-                <div class="field">
-                    <div class="button-group radio">
-                        <if condition="$list.isgongjijin == 1">
-                            <label class="button active">
-                                <input name="isgongjijin" value="1" checked="checked" type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button">
-                                <input name="isgongjijin" value="0" type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                            <else/>
-                            <label class="button ">
-                                <input name="isgongjijin" value="1"type="radio">
-                                <span class="icon icon-check"></span> 启用
-                            </label>
-                            <label class="button active">
-                                <input name="isgongjijin" value="0" checked="checked"  type="radio">
-                                <span class="icon icon-times"></span> 不启用
-                            </label>
-                        </if>
-                    </div>
-                    <div class="input-note">是否管理公积金</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="label">
-                    <label>月度警戒线</label>
-                </div>
-                <div class="field">
-                    <input type="text" class="input" name="ydjjx" size="60" value="{$list.ydjjx}">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="label">
-                    <label>月度超人头线</label>
-                </div>
-                <div class="field">
-                    <input type="text" class="input" name="ydcrtx" size="60" value="{$list.ydcrtx}">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="label">
-                    <label>月度超超人头线</label>
-                </div>
-                <div class="field">
-                    <input type="text" class="input" name="ydccrtx" size="60" value="{$list.ydccrtx}">
-                </div>
+                <p>例如：2%，填写0.02</p>
             </div>
         </div>
         <div class="panel-foot">
