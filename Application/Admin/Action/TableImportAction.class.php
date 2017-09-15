@@ -448,6 +448,11 @@ class TableImportAction extends CommonAction{
 
         // 从第2行开始,到最后一行
         for($j=2;$j<=$highestRow;$j++){
+            $col = $objPHPExcel->getActiveSheet()->getCell('C'.$j)->getValue();
+            // 上面得出$col的值如果是空就跳过
+            if(empty(trim($col))){
+                continue;
+            }
             for($i=0;$i<=$colsNum;$i++){
                 // 自动判断单元格是时间格式
                 $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
