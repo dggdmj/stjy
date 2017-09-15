@@ -52,7 +52,7 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/renshi_add'),
                 ),
                 array('name' => '添加课程',
-                    'url' => url('Setting/课程_add'),
+                    'url' => url('Setting/kecheng_add'),
                 ),
             ),
         );
