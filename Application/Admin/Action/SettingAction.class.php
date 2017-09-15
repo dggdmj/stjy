@@ -360,7 +360,14 @@ class SettingAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    //添加人士
+    //添加课程页面
+    public function kecheng_add(){
+        $list = M('kecheng')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //添加课程
     public function addKecheng(){
         if(empty($_GET['id'])) {
             if($bid=M('renshi')->add($_POST)) {
@@ -378,11 +385,11 @@ class SettingAction extends CommonAction{
         }
     }
 
-    // 修改人士
+    // 修改课程
     public function editKecheng() {
         $id = $_GET['id'];
         $this->list=D('renshi')->where(array('id'=>$id))->find();
-        $this->adminDisplay('renshi_add');
+        $this->adminDisplay('kecheng_add');
         // view未套数据
     }
 }
