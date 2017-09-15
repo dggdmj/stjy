@@ -400,8 +400,6 @@ class TableImportAction extends CommonAction{
             // dump($newTemp);
             for($i=0;$i<count($ziduan);$i++){
                 if(array_key_exists($ziduan[$i], $newTemp)){
-
-                    // 自动判断单元格是时间格式
                     $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
                     $value = $cell->getValue();
                     // dump(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
@@ -415,11 +413,22 @@ class TableImportAction extends CommonAction{
                     // 自动识别单元格为日期格式
                     if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
                         $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
+                        // dump($value);
+                        // dump($cellstyleformat);
                         $formatcode=$cellstyleformat->getFormatCode();
+                        // dump($formatcode);
                         if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
                             $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
                         }else{
-                            $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                            $value= \PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                            $val_arr = explode(',',$value);
+                            $val = '';
+                            if(count($val_arr)>=2){
+                                foreach($val_arr as $v){
+                                    $val.=$v;
+                                }
+                            }
+                            $value = (double)$val;
                         }
                     }
 
@@ -442,6 +451,7 @@ class TableImportAction extends CommonAction{
             // die;
             $list[] = $data;
         }
+        // dump($list);
         return $list;
     }
 
