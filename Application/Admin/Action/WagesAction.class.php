@@ -58,6 +58,9 @@ class WagesAction extends CommonAction{
     }
 
     public function scbgzb_xq(){
+        $qishu = $_GET['qishu']?$_GET['qishu']:'201707';
+        $sid = $_GET['sid']?$_GET['sid']:6;
+        $list = M("");
         $kecheng = M("kecheng")->order("paixu")->select();
         $this->assign("kecheng",$kecheng);
         $this->adminDisplay();
