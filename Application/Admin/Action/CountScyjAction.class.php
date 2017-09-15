@@ -62,23 +62,7 @@ class CountScyjAction extends CommonAction {
             }
             //计算合计营业额
             $arr[$v['yejigsr']]['total'] += round($extend['jsyj'],0);
-
-//            if($v['yejigsr'] == "张松煌" && $v['data']['xingming'] == '熊睿') {
-//                dump($extend);
-//
-//                dump($v['data']['xingming']);
-//            }
-//            if($v['yejigsr'] == "张松煌" && $extend['zzjslx'] == '买三送二'){
-//                dump($beizhu);
-//                dump($v['data']['xingming']);
-//                dump($extend);
-//            }
         }
-        // $i = 1;
-        // foreach ($arr as $k=>$v){
-        //     $arr[$k]['xuhao'] = $i;
-        //     $i++;
-        // }
         return $arr;
     }
 
@@ -271,16 +255,16 @@ class CountScyjAction extends CommonAction {
                 }
             }
         }
-
+        //提取结算类型
+        $arr['tqjslx'] = mb_substr($arr["zybz"],6);
         //最终结算类型,如果结算方式是学习卡，就是学习卡结算类型，如果是老结算，就是老结算类型
-        if($arr['jsfs'] == '学习卡'){
-            $arr['zzjslx'] = $arr['xxk_jslx'];
+        if($arr['jslx1'] == '老生'){
+            $arr['zzjslx'] = '老生续费';
         }else{
-            $arr['zzjslx'] = $arr['old_jslx'];
+            $arr['zzjslx'] = $arr['tqjslx'];
         }
-//
-//        dump($data['beizhu']);
-//        dump($arr);
+        dump($data["beizhu"]);
+        dump($arr);
         return $arr;
     }
 
@@ -361,6 +345,7 @@ class CountScyjAction extends CommonAction {
                 $arr[$a]['isshuang'] = 0;    //是否双人业绩。1，是；2，否；
                 $arr[$a]['xishu'] = 1;    //单人业绩的系数为0.5
                 $arr[$a]['data'] = $v;
+                $arr[$a]['data']['jfje'] = $arr[$a]['xishu']*$v['jiaofeije'];  //结算业绩乘以系数
                 $a++;
             }elseif(count($yjgsr_arr) == 2){
                 //获取系数信息
@@ -373,7 +358,7 @@ class CountScyjAction extends CommonAction {
                     $arr[$a]['isshuang'] = 1;    //是否双人业绩。1，是；2，否；
                     $arr[$a]['xishu'] = $xishu[$i];    //双人业绩的系数为0.5
                     $arr[$a]['data'] = $v;
-                    $arr[$a]['data']['jfje'] = $xishu[$i]*$v['jfje'];  //结算业绩乘以系数
+                    $arr[$a]['data']['jfje'] = $arr[$a]['xishu']*$v['jiaofeije'];  //结算业绩乘以系数
                     $a++;
                 }
             }elseif(count($yjgsr_arr) == 3){
@@ -387,6 +372,7 @@ class CountScyjAction extends CommonAction {
                     $arr[$a]['isshuang'] = 1;    //是否双人业绩。1，是；2，否；
                     $arr[$a]['xishu'] = $xishu[$i];    //三人业绩的系数
                     $arr[$a]['data'] = $v;
+                    $arr[$a]['data']['jfje'] = $arr[$a]['xishu']*$v['jiaofeije'];  //结算业绩乘以系数
                     $a++;
                 }
             }
