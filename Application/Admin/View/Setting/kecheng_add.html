@@ -17,8 +17,8 @@
                     <label>新老生</label>
                 </div>
                 <div class="field">
-                    <input type="radio" class="input" name="type" size="60" value="1">新生<br/>
-                    <input type="radio" class="input" name="type" size="60" value="2">老生
+                    <input type="radio"  name="type" size="60" value="1" <if condition="$list.type eq 1">checked</if> <empty name = "list.type"> checked</empty> > 新生<br/>
+                    <input type="radio"  name="type" size="60" value="2" <if condition="$list.type eq 2">checked</if> > 老生
                 </div>
             </div>
 			<div class="form-group">
@@ -27,8 +27,8 @@
                 </div>
                 <div class="field">
                     <input type="text" class="input" name="ticheng" size="60" value="{$list.name}">
+                    <div class="input-note">例如：2%，填写0.02</div>
                 </div>
-                <p>例如：2%，填写0.02</p>
             </div>
         </div>
         <div class="panel-foot">
