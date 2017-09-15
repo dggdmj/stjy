@@ -263,8 +263,8 @@ class CountScyjAction extends CommonAction {
         }else{
             $arr['zzjslx'] = $arr['tqjslx'];
         }
-        dump($data["beizhu"]);
-        dump($arr);
+        // dump($data["beizhu"]);
+        // dump($arr);
         return $arr;
     }
 
