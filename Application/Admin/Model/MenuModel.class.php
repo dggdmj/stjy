@@ -325,6 +325,12 @@ class MenuModel {
                         'url' => U('Setting/banjibianhao'),
                         'order' => 5
                     ),
+                    array(
+                        'name' => '课程管理',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/kecheng'),
+                        'order' => 5
+                    ),
 //                    array(
 //                        'name' => '表单管理',
 //                        'icon' => 'file-text-o',
