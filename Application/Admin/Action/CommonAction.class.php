@@ -1211,7 +1211,7 @@ class CommonAction extends Action {
         // 市场占有率数据写入数据库
         $res_sczyl = $this->SczylToDb($qishu,$sid);
         // 新增明细数据写入数据库
-        $res_xzmx = $this->XzmxToDb($qishu,$sid);
+        // $res_xzmx = $this->XzmxToDb($qishu,$sid);
         // 减少明细数据写入数据库
         // $res_jsmx = $this->jsmxToDb($qishu,$sid);
         // 经营数据写入数据库
@@ -1257,7 +1257,7 @@ class CommonAction extends Action {
         // 删除市场占有率数据
         $res_sczyl = $this->delScData($qishu,$sid,9);
         // 删除新增明细数据
-        $res_xzmx = $this->delScData($qishu,$sid,10);
+        // $res_xzmx = $this->delScData($qishu,$sid,10);
         // 删除减少明细数据
         // $res_jsmx = $this->delScData($qishu,$sid,11);
         // 删除经营数据数据

@@ -41,12 +41,15 @@ class CountXzmxAction extends CommonAction {
         }else{
             $new = $xueyuan;
         }
-        // dump($new);die;
-        $map['stjy_bjxyxxb.xuehao'] = array('in',$new);// 查询条件
-        // print_r($new);die;
 
-        $list = M('bjxyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_bjxyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb where stjy_sjjlb.yejigsr != "") as temp on stjy_bjxyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,temp.yejigsr,temp.zhaoshengly,stjy_xyxxb.shoujihm,stjy_xyfyyjb.shuliang,stjy_xyfyyjb.danwei,stjy_xyfyyjb.feiyong')->where($map)->select();
-        // dump($list);
+        // 去掉重复值
+        $new = array_flip(array_flip($new));
+
+        $map['stjy_xyxxb.xuehao'] = array('in',$new);// 查询条件
+        // print_r($new);die;
+        // dump(count($new));
+        // $list = M('bjxyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_bjxyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb where stjy_sjjlb.yejigsr != "") as temp on stjy_bjxyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,temp.yejigsr,temp.zhaoshengly,stjy_xyxxb.shoujihm,stjy_xyfyyjb.shuliang,stjy_xyfyyjb.danwei,stjy_xyfyyjb.feiyong')->where($map)->select();
+        $list = M('bjxyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_bjxyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb where stjy_sjjlb.yejigsr != "") as temp on stjy_bjxyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->where($map)->group('stjy_bjxyxxb.xuehao')->getField('stjy_bjxyxxb.xuehao,stjy_bjxyxxb.gonglixx,stjy_bjxyxxb.nianji,stjy_bjxyxxb.xingming,stjy_bjxyxxb.xiaoqu,stjy_bjxyxxb.banji,temp.yejigsr,temp.zhaoshengly,stjy_xyxxb.shoujihm,sum(stjy_xyfyyjb.shuliang) as zongshu,stjy_xyfyyjb.danwei,stjy_xyfyyjb.feiyong');
         $res = $this->doList($list,$qishu,$sid);
         // dump($res);
         return $res;
