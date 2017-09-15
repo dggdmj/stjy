@@ -257,14 +257,25 @@ class CountScyjAction extends CommonAction {
         }
         //提取结算类型
         $arr['tqjslx'] = mb_substr($arr["zybz"],6);
+        $kecheng = M("kecheng")->where("type = 3")->select();
+        $kc = array();
+        foreach ($kecheng as $ke){
+            if(strpos($arr["zybz"],$ke['name'])){
+                $arr['tqjslx'] = $ke['name'];
+                $kc[] = $ke['name'];
+            }
+        }
+        $ke_if = implode(" || ",$kc);
         //最终结算类型,如果结算方式是学习卡，就是学习卡结算类型，如果是老结算，就是老结算类型
-        if($arr['jslx1'] == '老生'){
+        if($ke_if){
+            $arr['zzjslx'] = $arr['tqjslx'];
+        }elseif($arr['jslx1'] == '老生'){
             $arr['zzjslx'] = '老生续费';
         }else{
             $arr['zzjslx'] = $arr['tqjslx'];
         }
-        // dump($data["beizhu"]);
-        // dump($arr);
+//         dump($data["beizhu"]);
+//         dump($arr);
         return $arr;
     }
 

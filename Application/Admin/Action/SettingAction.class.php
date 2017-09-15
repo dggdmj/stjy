@@ -355,8 +355,10 @@ class SettingAction extends CommonAction{
     //人事列表页
     public function kecheng(){
         $data = M('kecheng'); // 实例化对象
-        $list = $data->order('pauxu,asc,id asc')->select();
-        
+        $list = $data->order('paixu asc,id asc')->select();
+        foreach ($list as  $k=>$v){
+            $list[$k]['ticheng'] = (float)$v['ticheng']*100;
+        }
         $this->assign('list',$list);// 赋值数据集
         $this->adminDisplay();
     }
