@@ -33,6 +33,10 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/banjibianhao'),
                     'icon' => 'list',
                 ),
+                array('name' => '课程管理',
+                    'url' => url('Setting/kecheng'),
+                    'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -46,6 +50,9 @@ class SettingAction extends CommonAction{
                 ),
                 array('name' => '添加人事',
                     'url' => url('Setting/renshi_add'),
+                ),
+                array('name' => '添加课程',
+                    'url' => url('Setting/课程_add'),
                 ),
             ),
         );
@@ -342,6 +349,41 @@ class SettingAction extends CommonAction{
         }else {
             $this->error('删除失败');
         }
+    }
+
+
+    //人事列表页
+    public function kecheng(){
+        $data = M('kecheng'); // 实例化对象
+        $list = $data->order('id asc')->select();
+        $this->assign('list',$list);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //添加人士
+    public function addKecheng(){
+        if(empty($_GET['id'])) {
+            if($bid=M('renshi')->add($_POST)) {
+                $this->success('添加成功',U('kecheng'));
+            } else {
+                $this->error('添加失败');
+            }
+        }else {
+            $bid=$_GET['id'];
+            if(M('renshi')->where(array('id'=>$bid))->save($_POST)) {
+                $this->success('修改成功',U('kecheng'));
+            } else {
+                $this->error('修改失败');
+            }
+        }
+    }
+
+    // 修改人士
+    public function editKecheng() {
+        $id = $_GET['id'];
+        $this->list=D('renshi')->where(array('id'=>$id))->find();
+        $this->adminDisplay('renshi_add');
+        // view未套数据
     }
 }
 ?>

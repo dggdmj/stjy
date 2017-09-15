@@ -114,25 +114,6 @@ class MenuModel {
 //                    ),
 //                )
 //            ),
-//            'Shebao' => array(
-//                'name' => '社保公积金管理',
-//                'icon' => 'tree',
-//                'order' => 1,
-//                'menu' => array(
-//                    array(
-//                        'name' => '社保管理',
-//                        'icon' => 'sitemap',
-//                        'url' => U('/TableImport/tableList/tid/15'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '公积金管理',
-//                        'icon' => 'sitemap',
-//                        'url' => U('/TableImport/tableList/tid/16'),
-//                        'order' => 1
-//                    ),
-//                )
-//            ),
             'Order' => array(
                 'name' => '业绩表管理',
                 'icon' => 'file',
@@ -179,6 +160,43 @@ class MenuModel {
                         'icon' => 'file',
                         'url' => U('/TableCount/yejilist/tid/13'),
                         'order' => 6
+                    ),
+                )
+            ),
+            'gongzi' => array(
+                'name' => '工资表管理',
+                'icon' => 'tree',
+                'order' => 1,
+                'menu' => array(
+                    array(
+                        'name' => '工资总表',
+                        'icon' => 'sitemap',
+                        'url' => U('/wages/index'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '行政表工资表',
+                        'icon' => 'sitemap',
+                        'url' => U('/wages/xzbgzb'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '教学部工资表',
+                        'icon' => 'sitemap',
+                        'url' => U('/wages/jxbgzb'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '市场部工资表',
+                        'icon' => 'sitemap',
+                        'url' => U('/wages/scbgzb'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '总监工资表',
+                        'icon' => 'sitemap',
+                        'url' => U('/wages/zjgzb'),
+                        'order' => 1
                     ),
                 )
             ),
@@ -305,6 +323,12 @@ class MenuModel {
                         'name' => '班级编号管理',
                         'icon' => 'puzzle-piece',
                         'url' => U('Setting/banjibianhao'),
+                        'order' => 5
+                    ),
+                    array(
+                        'name' => '课程管理',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/kecheng'),
                         'order' => 5
                     ),
 //                    array(
