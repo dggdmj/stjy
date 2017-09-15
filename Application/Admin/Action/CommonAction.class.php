@@ -288,7 +288,24 @@ class CommonAction extends Action {
         }else{
             return false;
         }
+    }
 
+    public function getData($qishu,$sid,$tid=3){
+        $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
+        $where['tid'] = $tid;
+        $id = M('qishu_history')->where($where)->getField('id');
+        $tbnames = $this->getTabelnames();
+        if(!empty($id)){
+            $stu = M($tbnames[$tid])->where('suoshudd ='.$id)->field('xuehao')->select();
+            // dump($stu);
+            foreach($stu as $v){
+                $xueyuan[] = $v['xuehao'];
+            }
+            return $xueyuan;
+        }else{
+            return false;
+        }
     }
 
 
@@ -1196,7 +1213,7 @@ class CommonAction extends Action {
         // 新增明细数据写入数据库
         $res_xzmx = $this->XzmxToDb($qishu,$sid);
         // 减少明细数据写入数据库
-        $res_jsmx = $this->jsmxToDb($qishu,$sid);
+        // $res_jsmx = $this->jsmxToDb($qishu,$sid);
         // 经营数据写入数据库
         $res_jsmx = $this->jysjToDb($qishu,$sid);
         // 退费数据写入数据库
@@ -1242,7 +1259,7 @@ class CommonAction extends Action {
         // 删除新增明细数据
         $res_xzmx = $this->delScData($qishu,$sid,10);
         // 删除减少明细数据
-        $res_jsmx = $this->delScData($qishu,$sid,11);
+        // $res_jsmx = $this->delScData($qishu,$sid,11);
         // 删除经营数据数据
         $res_jysj = $this->delScData($qishu,$sid,12);
         // 删除退费数据

@@ -396,7 +396,8 @@ class TableImportAction extends CommonAction{
             if(empty(trim($col))){
                 continue;
             }
-
+            // dump($ziduan);
+            // dump($newTemp);
             for($i=0;$i<count($ziduan);$i++){
                 if(array_key_exists($ziduan[$i], $newTemp)){
 

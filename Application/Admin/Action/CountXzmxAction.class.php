@@ -26,9 +26,11 @@ class CountXzmxAction extends CommonAction {
         unset($where);
         if(!empty(array_diff($data_sjjlb,$data_bjxyxxb))){
             $xueyuan = array_merge($data_bjxyxxb,array_diff($data_sjjlb,$data_bjxyxxb));
+        }else{
+            $xueyuan = $data_bjxyxxb;
         }
 
-        dump(array_diff($data_sjjlb,$data_bjxyxxb));die;
+        // dump(array_diff($data_sjjlb,$data_bjxyxxb));die;
         $fmonth = $this->getMonth($qishu);
         $fm = $this->getStu($fmonth,$sid);
         // dump($fm);die;
@@ -43,7 +45,7 @@ class CountXzmxAction extends CommonAction {
         $map['stjy_bjxyxxb.xuehao'] = array('in',$new);// 查询条件
         // print_r($new);die;
 
-        $list = M('bjxyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_bjxyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb where stjy_sjjlb.yejigsr != "") as temp on stjy_bjxyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,temp.yejigsr,temp.zhaoshengly,stjy_xyxxb.shoujihm,stjy_xyfyyjb.shuliang,stjy_xyfyyjb.danwei,stjy_xyfyyjb.feiyong')->where($map)->group('stjy_bjxyxxb.xuehao')->select();
+        $list = M('bjxyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_bjxyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb where stjy_sjjlb.yejigsr != "") as temp on stjy_bjxyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_xyxxb on stjy_bjxyxxb.xuehao=stjy_xyxxb.xuehao')->field('stjy_bjxyxxb.*,temp.yejigsr,temp.zhaoshengly,stjy_xyxxb.shoujihm,stjy_xyfyyjb.shuliang,stjy_xyfyyjb.danwei,stjy_xyfyyjb.feiyong')->where($map)->select();
         // dump($list);
         $res = $this->doList($list,$qishu,$sid);
         // dump($res);
