@@ -38,7 +38,8 @@ class CountScyjAction extends CommonAction {
             $nlist[$k]["ruzhirq"] = M("renshi")->where("xingming = '".$k."'")->getField("ruzhirq"); //入职日期
 
         }
-//        dump($nlist);die;
+        // dump($nlist);
+        // die;
         return $nlist;
     }
 

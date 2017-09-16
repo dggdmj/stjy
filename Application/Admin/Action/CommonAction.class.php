@@ -918,8 +918,13 @@ class CommonAction extends Action {
         }
         $qishu_id = $this->insertQishuHistory(8,$qishu,$sid);
 
-        $comment = $this->getComment('scyjb');// 获取市场业绩表字段和备注对应的数组
-        $taocan = array('新生幼儿国际班1年','新生幼儿国际班3年','新生幼儿国际班5年','新生小学国际班1年','新生小学国际班2年','新生小学国际班5年','新生游学会员','国际领袖课程','1期秒杀','买三送二','老生创始游学会员','新生游学免费读','老生续费','新生国际班','1年追补国际班','新生平时晚班','1年追补平时晚班');
+        // 获取所有课程
+        $kecheng_data = M('kecheng')->field('name')->select();
+        foreach($kecheng_data as $v){
+            $kecheng[] = $v['name'];
+        }
+        // $comment = $this->getComment('scyjb');// 获取市场业绩表字段和备注对应的数组
+        
 
         // -----------------------------用于测试查看数据开始-----------------------------
         // $i = 0;
@@ -946,13 +951,35 @@ class CommonAction extends Action {
         // }
         // -----------------------------用于测试查看数据结束-----------------------------
 
+        // foreach($scyj_data as $k=>$v){
+        //     $scyj_temp['xingming'] = $k;
+        //     $scyj_temp['suoshudd'] = $qishu_id;
+        //     // $scyj_temp['daorusj'] = date('Y-m-d H:i:s');
+        //     foreach($v as $key=>$val){
+        //         if(in_array($key,$taocan)){
+        //             $scyj_temp[$comment[$key]] = $val;
+        //         }elseif($key == 'xxked'){
+        //             $scyj_temp['edu'] = $val;
+        //         }elseif($key == 'total'){
+        //             $scyj_temp['hejiyye'] = $val;
+        //         }elseif($key == 'rentou'){
+        //             $scyj_temp['rentoushu'] = $val;
+        //         }elseif($key == 'jrt'){
+        //             $scyj_temp['jingrentou'] = $val;
+        //         }else{
+        //             $scyj_temp[$key] = $val;
+        //         }
+        //     }
+        //     M('scyjb')->add($scyj_temp);
+        //     unset($scyj_temp);
+        // }
         foreach($scyj_data as $k=>$v){
             $scyj_temp['xingming'] = $k;
             $scyj_temp['suoshudd'] = $qishu_id;
             // $scyj_temp['daorusj'] = date('Y-m-d H:i:s');
             foreach($v as $key=>$val){
-                if(in_array($key,$taocan)){
-                    $scyj_temp[$comment[$key]] = $val;
+                if(in_array($key,$kecheng)){
+                    $scyj_temp['kechengyj'][$key] = $val;
                 }elseif($key == 'xxked'){
                     $scyj_temp['edu'] = $val;
                 }elseif($key == 'total'){
@@ -965,6 +992,8 @@ class CommonAction extends Action {
                     $scyj_temp[$key] = $val;
                 }
             }
+            $temp = json_encode($scyj_temp['kechengyj']);
+            $scyj_temp['kechengyj'] = $temp;
             M('scyjb')->add($scyj_temp);
             unset($scyj_temp);
         }
