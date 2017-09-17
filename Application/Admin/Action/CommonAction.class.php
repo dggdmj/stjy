@@ -1333,4 +1333,13 @@ class CommonAction extends Action {
     //    if(empty($str)) return '';
     //    return  iconv('gb2312', 'utf-8', $str);
     // }
+
+    //替换备注中出现的所有半角符号
+    public function filterBeizhu($beizhu){
+        $arr=array("("=>"（",")"=>"）",":"=>"：","/"=>"／");
+        foreach ($arr as $k => $v){
+            $beizhu = str_replace($k,$v,$beizhu);
+        }
+        return $beizhu;
+    }
 }
