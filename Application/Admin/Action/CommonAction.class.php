@@ -628,10 +628,86 @@ class CommonAction extends Action {
 
         // 市场业绩
         $objPHPExcel->setActiveSheetIndex(7);
-        $_GET['tid'] = 8;
-        $this->doData($objPHPExcel,$_GET,5);
-        $objPHPExcel->getActiveSheet()->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
+        // $_GET['tid'] = 8;
+        // $this->doData($objPHPExcel,$_GET,5);
+        // $objPHPExcel->getActiveSheet()->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
 
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        // dump($info);die;
+        $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
+        $res = M('kecheng')->field('name')->select();
+        foreach($res as $v){
+            $kecheng[]=$v['name'];
+        }
+        // dump($kecheng);
+        // die;
+
+        // 字段补充
+        $z = 7;
+        // dump(\PHPExcel_Cell::stringFromColumnIndex($z));
+        // die;
+        foreach($kecheng as $v){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2',$v);
+            $z++;
+        }
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','合计营业额');
+        $z++;
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','会员老带新营业额');
+        $z++;
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','签名');
+
+        $highestColumn = $objActSheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
+        $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+        // 获取所有字段
+        for($i=0;$i<$colsNum;$i++){// 从第2行获取所有字段
+            $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+
+            // 如果取出的obj,则转为string
+            if(is_object($cell_val)){
+                $cell_val= $cell_val->__toString();
+            }
+            // echo $cell_val.'<br>';
+            if(!empty(trim($cell_val))){// 如果有必要,其他获取字段也要加这个条件
+                $ziduan[] = trim($cell_val);
+            }
+            
+        }
+        // dump($ziduan);die;
+        $comment = array_flip($this->getComment('scyjb'));
+        // dump($comment);die;
+        $i = 3;// 行从3开始
+        $_GET['tid'] = 8;
+        $id = M('qishu_history')->where($_GET)->getField('id');
+        // dump($_GET);die;
+        $data = M('scyjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+        foreach($data as $k=>$v){
+            $data[$k][kechengyj] = (array)json_decode($v['kechengyj']);
+            foreach($data[$k][kechengyj] as $k2=>$v2){
+                $data[$k][$k2] = $v2;
+            }
+            unset($data[$k][kechengyj]);
+        }
+        foreach ($data as $row) {
+            $j = 0;// 列从0开始,即从A开始
+            foreach($row as $k=>$v){
+                // 写入数值
+                // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                // switch($k){
+                //     case 1:
+                //         if($v == '学号'){// 设置字段为学号的列如果值为空就跳过,其他跟这个原理一样
+                //             $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                //         }
+                //     break;
+                foreach($ziduan as $key=>$val){
+                    if($val == $k || $val == $comment[$k]){
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($key).$i,$v);
+                    }
+                }
+                $j++;
+            }
+            $i++;
+        }
         // 市场占有率
         $objPHPExcel->setActiveSheetIndex(8);
         $_GET['tid'] = 9;
