@@ -272,32 +272,31 @@ class CommonAction extends Action {
     }
 
     // 查询本期班级学员信息表所有学员的学号
-    public function getStu($qishu,$sid,$tid=3){
-        $where['qishu'] = $qishu;
-        $where['sid'] = $sid;
-        $where['tid'] = $tid;
-        $id = M('qishu_history')->where($where)->getField('id');
-        $tbnames = $this->getTabelnames();
-        if(!empty($id)){
-            $stu = M($tbnames[$tid])->where('suoshudd ='.$id)->field('xuehao')->select();
-            // dump($stu);
-            foreach($stu as $v){
-                $xueyuan[] = $v['xuehao'];
-            }
-            return $xueyuan;
-        }else{
-            return false;
-        }
-    }
+    // public function getStu($qishu,$sid,$tid=3){
+    //     $where['qishu'] = $qishu;
+    //     $where['sid'] = $sid;
+    //     $where['tid'] = $tid;
+    //     $id = M('qishu_history')->where($where)->getField('id');
+    //     $tbnames = $this->getTabelnames();
+    //     if(!empty($id)){
+    //         $stu = M($tbnames[$tid])->where('suoshudd ='.$id)->field('xuehao')->select();
+    //         // dump($stu);
+    //         foreach($stu as $v){
+    //             $xueyuan[] = $v['xuehao'];
+    //         }
+    //         return $xueyuan;
+    //     }else{
+    //         return false;
+    //     }
+    // }
 
-    public function getData($qishu,$sid,$tid=3){
+    public function getData($qishu,$sid){
         $where['qishu'] = $qishu;
         $where['sid'] = $sid;
-        $where['tid'] = $tid;
+        $where['tid'] = 1;
         $id = M('qishu_history')->where($where)->getField('id');
-        $tbnames = $this->getTabelnames();
         if(!empty($id)){
-            $stu = M($tbnames[$tid])->where('suoshudd ='.$id)->field('xuehao')->select();
+            $stu = M('xyxxb')->where('suoshudd ='.$id.' and zhuangtai ="在读"')->field('xuehao')->select();
             // dump($stu);
             foreach($stu as $v){
                 $xueyuan[] = $v['xuehao'];
@@ -569,7 +568,16 @@ class CommonAction extends Action {
         switch($tid){
             case 8:
                 $start_row = 5;
-                $data = M($tbnames[$tid])->field('xuhao,xingming,zhiwei,ruzhirq,edu,rentoushu,jingrentou,guojibanye1,guojibanye3,guojibanye5,guojibanxx1,guojibanxx2,guojibanxx5,xinshengyxhy,guojilxkc,yiqims,maisanse,laoshengcsyxhy,xinshengyxmfd,laoshengxf,xinshenggjb,yinianzbgjb,xinshengpswb,yinianzbpswb,hejiyye,huiyuanldxyye,qianming')->where('suoshudd ='.$id)->order('xuhao')->select();
+                $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+                
+                foreach($data as $k=>$v){
+                    $data[$k][kechengyj] = (array)json_decode($v['kechengyj']);
+                    foreach($data[$k][kechengyj] as $k2=>$v2){
+                        $data[$k][$k2] = $v2;
+                    }
+                    unset($data[$k][kechengyj]);
+                }
+                // dump($data);die;
             break;
             case 9:
                 $start_row = 6;
@@ -1240,9 +1248,9 @@ class CommonAction extends Action {
         // 市场占有率数据写入数据库
         $res_sczyl = $this->SczylToDb($qishu,$sid);
         // 新增明细数据写入数据库
-        // $res_xzmx = $this->XzmxToDb($qishu,$sid);
+        $res_xzmx = $this->XzmxToDb($qishu,$sid);
         // 减少明细数据写入数据库
-        // $res_jsmx = $this->jsmxToDb($qishu,$sid);
+        $res_jsmx = $this->jsmxToDb($qishu,$sid);
         // 经营数据写入数据库
         $res_jsmx = $this->jysjToDb($qishu,$sid);
         // 退费数据写入数据库
@@ -1286,9 +1294,9 @@ class CommonAction extends Action {
         // 删除市场占有率数据
         $res_sczyl = $this->delScData($qishu,$sid,9);
         // 删除新增明细数据
-        // $res_xzmx = $this->delScData($qishu,$sid,10);
+        $res_xzmx = $this->delScData($qishu,$sid,10);
         // 删除减少明细数据
-        // $res_jsmx = $this->delScData($qishu,$sid,11);
+        $res_jsmx = $this->delScData($qishu,$sid,11);
         // 删除经营数据数据
         $res_jysj = $this->delScData($qishu,$sid,12);
         // 删除退费数据

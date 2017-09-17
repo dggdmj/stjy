@@ -251,6 +251,12 @@ class TableImportAction extends CommonAction{
             }
             $qishu_id = M("qishu_history")->add($_POST);
 
+            if($_FILES['excel']['size']>307200){
+                ini_set('memory_limit', '256M');
+            }
+
+            
+
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
             $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
@@ -393,6 +399,11 @@ class TableImportAction extends CommonAction{
                 }
             }
 
+            // 如果$col是对象就转换成字符串
+            if(is_object($col)){
+                $col= $col->__toString();
+            }
+
             // 上面得出$col的值如果是空就跳过
             if(empty(trim($col))){
                 continue;
@@ -430,6 +441,7 @@ class TableImportAction extends CommonAction{
                                 }
                                 $value = (double)$val;
                             }
+                            // unset($var_arr);
 
                         }
                     }
@@ -442,9 +454,9 @@ class TableImportAction extends CommonAction{
                         $value = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
                     }
 
-                    $temp1 = $ziduan[$i];// 字段名称
-                    $temp2 = $newTemp[$temp1];// 数组newTemp里面字段名称对应的拼音,则数据库对应表的字段名称
-                    $data[$temp2] = $value;
+                    // $temp1 = $ziduan[$i];// 字段名称
+                    // $temp2 = $newTemp[$temp1];// 数组newTemp里面字段名称对应的拼音,则数据库对应表的字段名称
+                    $data[$newTemp[$ziduan[$i]]] = trim($value);
                 }
                 $data['suoshudd'] = $qishu_id;  //所属订单id
                 $data['daorusj'] = date('Y-m-d H:i:s');
@@ -452,6 +464,7 @@ class TableImportAction extends CommonAction{
             // dump($data);
             // die;
             $list[] = $data;
+            unset($data);
         }
         // dump($list);
         return $list;
@@ -461,7 +474,7 @@ class TableImportAction extends CommonAction{
 
         // 从第2行开始,到最后一行
         for($j=2;$j<=$highestRow;$j++){
-            $col = $objPHPExcel->getActiveSheet()->getCell('C'.$j)->getValue();
+            $col = trim($objPHPExcel->getActiveSheet()->getCell('C'.$j)->getValue());
             // 上面得出$col的值如果是空就跳过
             if(empty(trim($col))){
                 continue;
@@ -530,6 +543,7 @@ class TableImportAction extends CommonAction{
             }
 
             $list[] = $data;
+            unset($data);
 
         }
         // dump($list);die;
