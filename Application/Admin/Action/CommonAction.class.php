@@ -1430,10 +1430,21 @@ class CommonAction extends Action {
 
     //替换备注中出现的所有半角符号
     public function filterBeizhu($beizhu){
-        $arr=array("("=>"（",")"=>"）",":"=>"：","/"=>"／");
-        foreach ($arr as $k => $v){
-            $beizhu = str_replace($k,$v,$beizhu);
+        $count = count(explode("／", $beizhu));
+            //如果是计算业绩的备注，分隔后是8个值
+        if($count > 2 && $count != 8){
+            $arr['status'] = false;
+            $arr['info'] = "‘／’不等于8个，请检查备注格式！";
+        }else{
+            //过滤掉数组中的半角字符
+            $arr=array("("=>"（",")"=>"）",":"=>"：","/"=>"／");
+            foreach ($arr as $k => $v){
+                $beizhu = str_replace($k,$v,$beizhu);
+            }
+            $arr['status'] = true;
+            $arr['info'] = $beizhu;
+
         }
-        return $beizhu;
+        return $arr;
     }
 }
