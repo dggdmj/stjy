@@ -567,9 +567,8 @@ class CommonAction extends Action {
         // dump($info);
         switch($tid){
             case 8:
-                $start_row = 5;
+                // $start_row = 5;
                 $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
-                
                 foreach($data as $k=>$v){
                     $data[$k][kechengyj] = (array)json_decode($v['kechengyj']);
                     foreach($data[$k][kechengyj] as $k2=>$v2){
@@ -578,6 +577,9 @@ class CommonAction extends Action {
                     unset($data[$k][kechengyj]);
                 }
                 // dump($data);die;
+
+                $this->exportExcel3($objPHPExcel,$info,$filename,$data);
+                die;
             break;
             case 9:
                 $start_row = 6;
@@ -592,88 +594,7 @@ class CommonAction extends Action {
                 $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
             break;
             case 12:
-
-                vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
-                $template = __ROOT__.'Public/template/template_jysj.xlsx';          //使用模板
-
-                $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
-
-                $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
-
-                //接下来就是写数据到表格里面去
-                $objActSheet = $objPHPExcel->getActiveSheet();
-                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'教学部经营数据汇总表');          //使用模板
-                $school_data = M('school')->where('name ="'.$info['school'].'"')->find();
-                $objActSheet->setCellValue('C4',$school_data['mianji']);
-                $objActSheet->setCellValue('C5',$school_data['classnum']);
-                $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-                $i = 9;// 行从5开始
-
-                foreach ($data1 as $row) {
-                    $j = 1;// 行从0开始,即从A开始
-                    foreach($row as $v){
-                        // 写入数值
-                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                        $j++;
-                    }
-                    $i++;
-                }
-
-                $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-                $i = 26;// 行从26开始
-
-                foreach ($data2 as $row) {
-                    $j = 1;
-                    foreach($row as $v){
-                        // 写入数值
-                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                        $j++;
-                    }
-                    $i++;
-                }
-
-                $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-                $i = 52;// 行从52开始
-
-                foreach ($data3 as $row) {
-                    $j = 1;
-                    foreach($row as $v){
-                        // 写入数值
-                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                        $j++;
-                    }
-                    $i++;
-                }
-
-                $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-                $i = 61;// 行从62开始
-
-                foreach ($data4 as $row) {
-                    $j = 1;
-                    foreach($row as $v){
-                        // 写入数值
-                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                        $j++;
-                    }
-                    $i++;
-                }
-
-
-                // 2.接下来当然是下载这个表格了，在浏览器输出就好了
-                header("Pragma: public");
-                header("Expires: 0");
-                header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
-                header("Content-Type:application/force-download");
-                header("Content-Type:application/vnd.ms-execl");
-                header("Content-Type:application/octet-stream");
-                header("Content-Type:application/download");;
-                header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
-                header("Content-Transfer-Encoding:binary");
-                $objWriter->save('php://output');
+                $this->exportExcel2($objPHPExcel,$id,$info,$filename);
                 die;
             break;
         }
@@ -730,7 +651,7 @@ class CommonAction extends Action {
         // 经营数据
         $objPHPExcel->setActiveSheetIndex(11);
         $objActSheet = $objPHPExcel->getActiveSheet();
-        $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'教学部经营数据汇总表');          //使用模板
+        $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'教学部经营数据汇总表');
         $school_data = M('school')->where('name ="'.$info['school'].'"')->find();
         $objActSheet->setCellValue('C4',$school_data['mianji']);
         $objActSheet->setCellValue('C5',$school_data['classnum']);
@@ -840,9 +761,9 @@ class CommonAction extends Action {
 
         //$objPHPExcel = new PHPExcel();                        //初始化PHPExcel(),不使用模板
         switch($tid){
-            case 8:
-                $template = __ROOT__.'Public/template/template_scyj.xlsx';          //使用模板
-            break;
+            // case 8:
+            //     $template = __ROOT__.'Public/template/template_scyj.xlsx';          //使用模板
+            // break;
             case 9:
                 $template = __ROOT__.'Public/template/template_sczyl.xlsx';          //使用模板
             break;
@@ -862,9 +783,9 @@ class CommonAction extends Action {
         $objActSheet = $objPHPExcel->getActiveSheet();
 
         switch($tid){
-            case 8:
-                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');          //使用模板
-            break;
+            // case 8:
+            //     $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');          //使用模板
+            // break;
             case 9:
                 $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场占有率统计表');          //使用模板
             break;
@@ -905,6 +826,179 @@ class CommonAction extends Action {
         $objWriter->save('php://output');
     }
 
+    // 经营数据表的下载方法
+    public function exportExcel2($objPHPExcel,$id,$info,$filename){
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $template = __ROOT__.'Public/template/template_jysj.xlsx';          //使用模板
+
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'教学部经营数据汇总表');          //使用模板
+        $school_data = M('school')->where('name ="'.$info['school'].'"')->find();
+        $objActSheet->setCellValue('C4',$school_data['mianji']);
+        $objActSheet->setCellValue('C5',$school_data['classnum']);
+        $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+        $i = 9;// 行从5开始
+
+        foreach ($data1 as $row) {
+            $j = 1;// 行从0开始,即从A开始
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+        $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+        $i = 26;// 行从26开始
+
+        foreach ($data2 as $row) {
+            $j = 1;
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+        $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+        $i = 52;// 行从52开始
+
+        foreach ($data3 as $row) {
+            $j = 1;
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+        $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+
+        $i = 61;// 行从62开始
+
+        foreach ($data4 as $row) {
+            $j = 1;
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");;
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+    }
+
+    // 市场业绩表的下载方法
+    public function exportExcel3($objPHPExcel,$info,$filename,$data){
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $template = __ROOT__.'Public/template/template_scyj.xlsx';          //使用模板
+
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        // dump($info);die;
+        $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
+        $res = M('kecheng')->field('name')->select();
+        foreach($res as $v){
+            $kecheng[]=$v['name'];
+        }
+        // dump($kecheng);
+        // die;
+
+        // 字段补充
+        $z = 7;
+        // dump(\PHPExcel_Cell::stringFromColumnIndex($z));
+        // die;
+        foreach($kecheng as $v){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2',$v);
+            $z++;
+        }
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','合计营业额');
+        $z++;
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','会员老带新营业额');
+        $z++;
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','签名');
+
+        $highestColumn = $objActSheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
+        $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+        // 获取所有字段
+        for($i=0;$i<$colsNum;$i++){// 从第2行获取所有字段
+            $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+
+            // 如果取出的obj,则转为string
+            if(is_object($cell_val)){
+                $cell_val= $cell_val->__toString();
+            }
+            // echo $cell_val.'<br>';
+            if(!empty(trim($cell_val))){// 如果有必要,其他获取字段也要加这个条件
+                $ziduan[] = trim($cell_val);
+            }
+            
+        }
+        // dump($ziduan);die;
+        $comment = array_flip($this->getComment('scyjb'));
+        // dump($comment);die;
+        $i = 3;// 行从3开始
+
+        foreach ($data as $row) {
+            $j = 0;// 列从0开始,即从A开始
+            foreach($row as $k=>$v){
+                // 写入数值
+                // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                // switch($k){
+                //     case 1:
+                //         if($v == '学号'){// 设置字段为学号的列如果值为空就跳过,其他跟这个原理一样
+                //             $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                //         }
+                //     break;
+                foreach($ziduan as $key=>$val){
+                    if($val == $k || $val == $comment[$k]){
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($key).$i,$v);
+                    }
+                }
+                $j++;
+            }
+            $i++;
+        }
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");;
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+    }
     // -------------------总表操作结束-------------------
 
     // 市场业绩数据入库
