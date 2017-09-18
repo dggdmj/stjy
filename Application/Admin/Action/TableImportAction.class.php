@@ -252,7 +252,7 @@ class TableImportAction extends CommonAction{
             $qishu_id = M("qishu_history")->add($_POST);
 
             if($_FILES['excel']['size']>307200){
-                ini_set('memory_limit', '256M');
+                ini_set('memory_limit', '512M');
             }
 
             

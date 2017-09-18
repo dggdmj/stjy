@@ -551,7 +551,9 @@ class CommonAction extends Action {
         $sid = $_GET['sid'];
 
         $id = M('qishu_history')->where($_GET)->getField('id');
-
+        if(empty($id)){
+            $this->error('error');
+        }
         $tbnames = $this->getTabelnames(1,[2]);
         $tbnames_cn = $this->getTabelnames(2,[2]);
         // dump($tbnames);
@@ -736,61 +738,64 @@ class CommonAction extends Action {
         $where['sid'] = $_GET['sid'];
         $id = M('qishu_history')->where($where)->getField('id');
 
-        $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-        $i = 9;// 行从5开始
-
-        foreach ($data1 as $row) {
-            $j = 1;// 行从0开始,即从A开始
-            foreach($row as $v){
-                // 写入数值
-                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                $j++;
+        if(!empty($id)){
+            $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+            
+            $i = 9;// 行从5开始
+    
+            foreach ($data1 as $row) {
+                $j = 1;// 行从0开始,即从A开始
+                foreach($row as $v){
+                    // 写入数值
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $j++;
+                }
+                $i++;
             }
-            $i++;
-        }
-
-        $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-        $i = 26;// 行从26开始
-
-        foreach ($data2 as $row) {
-            $j = 1;
-            foreach($row as $v){
-                // 写入数值
-                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                $j++;
+    
+            $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+    
+            $i = 26;// 行从26开始
+    
+            foreach ($data2 as $row) {
+                $j = 1;
+                foreach($row as $v){
+                    // 写入数值
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $j++;
+                }
+                $i++;
             }
-            $i++;
-        }
-
-        $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-        $i = 52;// 行从52开始
-
-        foreach ($data3 as $row) {
-            $j = 1;
-            foreach($row as $v){
-                // 写入数值
-                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                $j++;
+    
+            $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+    
+            $i = 52;// 行从52开始
+    
+            foreach ($data3 as $row) {
+                $j = 1;
+                foreach($row as $v){
+                    // 写入数值
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $j++;
+                }
+                $i++;
             }
-            $i++;
-        }
-
-        $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-        $i = 61;// 行从62开始
-
-        foreach ($data4 as $row) {
-            $j = 1;
-            foreach($row as $v){
-                // 写入数值
-                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                $j++;
+    
+            $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+    
+            $i = 61;// 行从62开始
+    
+            foreach ($data4 as $row) {
+                $j = 1;
+                foreach($row as $v){
+                    // 写入数值
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $j++;
+                }
+                $i++;
             }
-            $i++;
         }
+        
 
         // 接下来当然是下载这个表格了，在浏览器输出就好了
         header("Pragma: public");
@@ -808,26 +813,27 @@ class CommonAction extends Action {
     public function doData($objPHPExcel,$where,$start_row){
         $tbnames = $this->getTabelnames(1,[1,2,3,4]);
         $id = M('qishu_history')->where($where)->getField('id');
-        if(in_array($where['tid'],[8,9,10,11])){
-            $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();
-        }else{
-            $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-        }
-
-        $i = $start_row;// 行从5开始
-
-        foreach ($data as $row) {
-            $j = 0;// 行从0开始,即从A开始
-            foreach($row as $v){
-                // 写入数值
-                $objPHPExcel->getActiveSheet()->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                // 水平垂直居中
-                // $objPHPExcel->getActiveSheet()->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
-                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN)->getColor()->setARGB('FFFF0000');
-                // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');// 设置单元格背景颜色为绿色
-                $j++;
+        if(!empty($id)){
+            if(in_array($where['tid'],[8,9,10,11])){
+                $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();
+            }else{
+                $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
             }
-            $i++;
+            $i = $start_row;// 行从5开始
+            
+            foreach ($data as $row) {
+                $j = 0;// 行从0开始,即从A开始
+                foreach($row as $v){
+                    // 写入数值
+                    $objPHPExcel->getActiveSheet()->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    // 水平垂直居中
+                    // $objPHPExcel->getActiveSheet()->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                    // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getBorders()->getTop()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN)->getColor()->setARGB('FFFF0000');
+                    // $objActSheet->getStyle(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');// 设置单元格背景颜色为绿色
+                    $j++;
+                }
+                $i++;
+            }
         }
     }
 
@@ -917,61 +923,64 @@ class CommonAction extends Action {
         $school_data = M('school')->where('name ="'.$info['school'].'"')->find();
         $objActSheet->setCellValue('C4',$school_data['mianji']);
         $objActSheet->setCellValue('C5',$school_data['classnum']);
-        $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-        $i = 9;// 行从5开始
-
-        foreach ($data1 as $row) {
-            $j = 1;// 行从0开始,即从A开始
-            foreach($row as $v){
-                // 写入数值
-                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                $j++;
+        if(!empty($id)){
+            $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+            
+            $i = 9;// 行从5开始
+    
+            foreach ($data1 as $row) {
+                $j = 1;// 行从0开始,即从A开始
+                foreach($row as $v){
+                    // 写入数值
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $j++;
+                }
+                $i++;
             }
-            $i++;
-        }
-
-        $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-        $i = 26;// 行从26开始
-
-        foreach ($data2 as $row) {
-            $j = 1;
-            foreach($row as $v){
-                // 写入数值
-                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                $j++;
+    
+            $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+    
+            $i = 26;// 行从26开始
+    
+            foreach ($data2 as $row) {
+                $j = 1;
+                foreach($row as $v){
+                    // 写入数值
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $j++;
+                }
+                $i++;
             }
-            $i++;
-        }
-
-        $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-        $i = 52;// 行从52开始
-
-        foreach ($data3 as $row) {
-            $j = 1;
-            foreach($row as $v){
-                // 写入数值
-                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                $j++;
+    
+            $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+    
+            $i = 52;// 行从52开始
+    
+            foreach ($data3 as $row) {
+                $j = 1;
+                foreach($row as $v){
+                    // 写入数值
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $j++;
+                }
+                $i++;
             }
-            $i++;
-        }
-
-        $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-
-        $i = 61;// 行从62开始
-
-        foreach ($data4 as $row) {
-            $j = 1;
-            foreach($row as $v){
-                // 写入数值
-                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                $j++;
+    
+            $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+    
+            $i = 61;// 行从62开始
+    
+            foreach ($data4 as $row) {
+                $j = 1;
+                foreach($row as $v){
+                    // 写入数值
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $j++;
+                }
+                $i++;
             }
-            $i++;
         }
+        
 
 
         // 2.接下来当然是下载这个表格了，在浏览器输出就好了
@@ -1434,26 +1443,28 @@ class CommonAction extends Action {
         $where['tid'] = $tid;
         $id = M('qishu_history')->where($where)->getField('id');// 取得suoshudd的值
         // dump($where);
-
-        if($tid == 12){
-            $res1 = M('fxkkb')->where('suoshudd ='.$id)->delete();
-            $res2 = M('bjzysjb')->where('suoshudd ='.$id)->delete();
-            $res3 = M('gbxzdrstjb')->where('suoshudd ='.$id)->delete();
-            $res4 = M('zcxsxqztb')->where('suoshudd ='.$id)->delete();
-            // if($res1 && $res2 && $res3 && $res4){
-                M('qishu_history')->where($where)->delete();
-            // }
-            return ;
-
-        }
-
-        $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
-
-        M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
-
-        // if ($res) {
+        if(!empty($id)){
+            if($tid == 12){
+                $res1 = M('fxkkb')->where('suoshudd ='.$id)->delete();
+                $res2 = M('bjzysjb')->where('suoshudd ='.$id)->delete();
+                $res3 = M('gbxzdrstjb')->where('suoshudd ='.$id)->delete();
+                $res4 = M('zcxsxqztb')->where('suoshudd ='.$id)->delete();
+                // if($res1 && $res2 && $res3 && $res4){
+                    M('qishu_history')->where($where)->delete();
+                // }
+                return true;
+    
+            }
+    
+            $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
+    
+            M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
+    
+            // if ($res) {
             M('qishu_history')->where($where)->delete();// 从qishu_history中删除
-        // }
+            // }
+        }
+        
 
     }
 

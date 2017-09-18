@@ -52,47 +52,69 @@ class CountJsmxAction extends CommonAction {
         $where['sid'] = $sid;
         $where['qishu'] = $fmonth;
         $id = M('qishu_history')->where($where)->getField('id');
-        $data = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id.' and zhuangtai="在读"')->select();
-        // dump($data);
-        foreach($data as $v){
-            $xuehaos[]=$v['xuehao'];
+        if(!empty($id)){
+            $data = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id.' and zhuangtai="在读"')->select();
+            // dump($data);
+            foreach($data as $v){
+                $xuehaos[]=$v['xuehao'];
+            }
+            // dump($xuehaos);
+            $all = array_merge($xuehao_xz,$xuehaos);
+            // 去重复
+            $all = array_flip(array_flip($all));
+            // 获取本月在读学员学号的一维数组
+            unset($where);
+            $where['tid'] = 1;
+            $where['sid'] = $sid;
+            $where['qishu'] = $qishu;
+            $id2 = M('qishu_history')->where($where)->getField('id');
+            if(!empty($id2)){
+                $data2 = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id2.' and zhuangtai="在读"')->select();
+                foreach($data2 as $v2){
+                    $xuehaos2[]=$v2['xuehao'];
+                }
+                // dump($xuehaos2);
+                // 减少明细学员学号的一维数组
+                $reduce = array_diff($all,$xuehaos2);
+                $map['qishu'] = array('in',[$qishu,$fmonth]);
+                $map['tid'] = 1;
+                $map['sid'] = $sid;
+                $res = M('qishu_history')->field('id')->where($map)->select();
+                if(!empty($res)){
+                    foreach($res as $v3){
+                        $ids[]=$v3['id'];
+                    }
+                    $map2['stjy_xyxxb.suoshudd'] = array('in',$ids);
+                    $map2['stjy_xyxxb.xuehao'] = array('in',$reduce);
+                    $list = M('xyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_xyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN stjy_bjxyxxb on stjy_xyxxb.xuehao=stjy_bjxyxxb.xuehao')->join('LEFT JOIN stjy_kbmxb on stjy_bjxyxxb.banji=stjy_kbmxb.banjimc')->field('stjy_xyxxb.xuehao,stjy_xyxxb.jiuduxx,stjy_xyxxb.nianji,stjy_xyxxb.xingming,stjy_xyxxb.xiaoqu,stjy_bjxyxxb.banji,stjy_xyxxb.zhaoshengly,stjy_xyxxb.shoujihm,sum(stjy_xyfyyjb.shuliang) as shuliang,stjy_xyfyyjb.danwei,sum(stjy_xyfyyjb.feiyong) as feiyong,stjy_kbmxb.kaibanrq,stjy_kbmxb.jiebanrq,stjy_kbmxb.jingjiangls,stjy_kbmxb.fanduls')->where($map2)->group('stjy_xyxxb.xuehao')->select();
+                    $res = $this->doList($list,$qishu,$sid,$all);
+                    return $res;
+                }else{
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }else{
+            return false;
         }
-        // dump($xuehaos);
-        $all = array_merge($xuehao_xz,$xuehaos);
-        // 去重复
-        $all = array_flip(array_flip($all));
+        
+        
+        
         // dump(count($all));
-        // 获取本月在读学员学号的一维数组
-        unset($where);
-        $where['tid'] = 1;
-        $where['sid'] = $sid;
-        $where['qishu'] = $qishu;
-        $id2 = M('qishu_history')->where($where)->getField('id');
-        $data2 = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id2.' and zhuangtai="在读"')->select();
-        foreach($data2 as $v2){
-            $xuehaos2[]=$v2['xuehao'];
-        }
-        // dump($xuehaos2);
-        // 减少明细学员学号的一维数组
-        $reduce = array_diff($all,$xuehaos2);
-        $map['qishu'] = array('in',[$qishu,$fmonth]);
-        $map['tid'] = 1;
-        $map['sid'] = $sid;
-        $res = M('qishu_history')->field('id')->where($map)->select();
+        
+        
+        
+        
         // dump($ids);
-        foreach($res as $v3){
-            $ids[]=$v3['id'];
-        }
-        $map2['stjy_xyxxb.suoshudd'] = array('in',$ids);
-        $map2['stjy_xyxxb.xuehao'] = array('in',$reduce);
-        $list = M('xyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_xyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN stjy_bjxyxxb on stjy_xyxxb.xuehao=stjy_bjxyxxb.xuehao')->join('LEFT JOIN stjy_kbmxb on stjy_bjxyxxb.banji=stjy_kbmxb.banjimc')->field('stjy_xyxxb.xuehao,stjy_xyxxb.jiuduxx,stjy_xyxxb.nianji,stjy_xyxxb.xingming,stjy_xyxxb.xiaoqu,stjy_bjxyxxb.banji,stjy_xyxxb.zhaoshengly,stjy_xyxxb.shoujihm,sum(stjy_xyfyyjb.shuliang) as shuliang,stjy_xyfyyjb.danwei,sum(stjy_xyfyyjb.feiyong) as feiyong,stjy_kbmxb.kaibanrq,stjy_kbmxb.jiebanrq,stjy_kbmxb.jingjiangls,stjy_kbmxb.fanduls')->where($map2)->group('stjy_xyxxb.xuehao')->select();
+        
         // sort($reduce);
         // dump($ids);
         // dump($reduce);
         // dump($list);
-        $res = $this->doList($list,$qishu,$sid,$all);
+        
         // dump($res);
-        return $res;
+        
 
     }
 
