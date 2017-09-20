@@ -101,7 +101,16 @@ class TableImportAction extends CommonAction{
         $this->assign('rid',$rid);// 赋值角色id
         $this->assign('arr',$arr);
         $this->adminDisplay();
-	}
+    }
+    
+    public function index_xq(){
+        // dump($_GET);
+        $data = M('sjzb')->field('id,sid,xyxxb,bjxxb,bjxyxxb,sjjlb,kxmxb,kbmxb,xyfyyjb,xxkedb,sbmxb,gjjmxb',true)->where($_GET)->find();
+        $data['school'] = M('school')->where('id ='.$_GET['sid'])->getField('name');
+        // dump($data);
+        $this->assign('data',$data);
+        $this->adminDisplay();
+    }
 
     // 列表页
     public function tableList(){
@@ -251,6 +260,7 @@ class TableImportAction extends CommonAction{
             }
             $qishu_id = M("qishu_history")->add($_POST);
 
+            // excel文档超大对应设置
             if($_FILES['excel']['size']>307200){
                 ini_set('memory_limit', '512M');
             }
@@ -298,7 +308,7 @@ class TableImportAction extends CommonAction{
                 $list_xyxxb_tuixue = $this->getXuehao($data_xyxxb_tuixue);
                 $list_bjxyxxb = $this->getXuehao($data_bjxyxxb);
                 $list_xyxxb_benxiaozaidu = $this->getXuehao($data_xyxxb_benxiaozaidu);
-                
+
                 $weijinban = array_diff($list_xyxxb_benxiaozaidu,$list_bjxyxxb);// 本校在读而未出现在本校班级学员信息表的,未进班
                 // dump($list_xyxxb_benxiaozaidu);
                 // dump($list_bjxyxxb);
@@ -338,6 +348,20 @@ class TableImportAction extends CommonAction{
                     $tbnames = array_flip(array_diff($this->getComment('xyxxb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
                     
                     $this->assign('tbnames',$tbnames);// 赋值数据集
+                    // unlink($file_name);// 删除excel文档
+                    // --------------删除操作执行开始--------------
+                    // $id_del = M('qishu_history')->where('qishu ='.$_POST['qishu'].' and sid='.$_POST['sid'].' and tid=3')->getField('id');
+                    // $res1 = M($tablename)->where("suoshudd = ".$id_del)->delete();// 从表明里删除所属id对应的数据
+                    // $res2 = M("qishu_history")->where("id = ".$id_del)->delete();// 从qishu_history删除记录
+                    // unlink($filename);// 删除存放的excel表
+            
+                    // // 对应数据总表的该字段状态改为1,就是未导入
+                    // if(isset($temp)){
+                    //     unset($temp);
+                    // }
+                    // $temp[$tablename] = 1;
+                    // M('sjzb')->where($where)->save($temp);
+                    // --------------删除操作执行结束--------------
                     $this->adminDisplay('table_xq_error');
                     return 'error';
                 }

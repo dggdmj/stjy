@@ -188,7 +188,7 @@ class CountJsmxAction extends CommonAction {
         $where['sid'] = $sid;
         $where['tid'] = 3;
         $id = M('qishu_history')->where($where)->getField('id');
-        $xiaoqu = M('bjxyxxb')->where('suoshudd ='.$id.' and xiaoqu !=""')->getField('xiaoqu');
+        $xiaoqu = $this->getInfo($qishu,$sid)['school'];
         // dump($xiaoqu);
         
         if(!empty($xiaoqu)){
@@ -197,7 +197,7 @@ class CountJsmxAction extends CommonAction {
             $where2['tid'] = 1;
             $id2 = M('qishu_history')->where($where2)->getField('id');
             $where3['suoshudd'] = $id2;
-            $where3['laiyuanfx'] != $xiaoqu;// 查询条件:不是本校区
+            $where3['xiaoqu'] != $xiaoqu;// 查询条件:不是本校区
             $data = M('xyxxb')->field('xuehao')->where($where3)->select();
             if(!empty($data)){
                 foreach($data as $v){
