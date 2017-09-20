@@ -18,7 +18,7 @@ class WagesAction extends CommonAction{
                     'icon' => 'list',
                 ),
                 array('name' => '行政部工资表',
-                    'url' => url('Wages/xzbgzb'),
+                    'url' => url('Wages/xzbgzb_xq'),
                     'icon' => 'list',
                 ),
                 array('name' => '教学部工资表',
@@ -26,7 +26,7 @@ class WagesAction extends CommonAction{
                     'icon' => 'list',
                 ),
                 array('name' => '市场部工资表',
-                    'url' => url('Wages/scbgzbx'),
+                    'url' => url('Wages/scbgzb_xq'),
                     'icon' => 'list',
                 ),
                 array('name' => '总监工资表',
@@ -49,12 +49,13 @@ class WagesAction extends CommonAction{
     }
 
     //行政部工资表
-    public function xzbgzb(){
-        echo "行政部工资表";
+    public function xzbgzb_xq(){
+        $this->adminDisplay();
     }
 
     public function jxbgzb(){
         echo "教学部工资表";
+        
     }
 
     public function scbgzb_xq(){

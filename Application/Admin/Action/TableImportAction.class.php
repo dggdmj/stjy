@@ -255,7 +255,7 @@ class TableImportAction extends CommonAction{
                 ini_set('memory_limit', '512M');
             }
 
-            
+
 
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -287,33 +287,56 @@ class TableImportAction extends CommonAction{
             // 位置不能移动,要等班级学员信息表执行完才有其$id_bjxyxxb
             if($_POST['tid'] == 3){
                 $id_xyxxb = $res_xyxxb['id'];
-                $data_xyxxb = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读"')->select();// 查询出学员信息表当月在读学员
+                $data_xyxxb_zaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读"')->select();// 查询出学员信息表当月在读学员
+                $data_xyxxb_tuixue = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="已退学"')->select();
+                $xiaoqu = $this->getInfo($_POST['qishu'],$_POST['sid'])['school'];// 查询出学员信息表当月已退学学员
+                $data_xyxxb_benxiaozaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读" and xiaoqu ="'.$xiaoqu.'"')->select();// 查询出学员信息表当月在读学员
                 $id_bjxyxxb = M('qishu_history')->where('qishu ='.$_POST['qishu'].' and sid ='.$_POST['sid'].' and tid=3')->getField('id');
                 $data_bjxyxxb = M('bjxyxxb')->field('xuehao')->where('suoshudd ='.$id_bjxyxxb)->select();// 查询出当月班级学员信息表在班学员
-                foreach($data_xyxxb as $v){
-                    if(empty($v['xuehao'])){
-                        continue;
-                    }
-                    $list_xyxxb[] = $v['xuehao'];
-                }
-                foreach($data_bjxyxxb as $v){
-                    if(empty($v['xuehao'])){
-                        continue;
-                    }
-                    $list_bjxyxxb[] = $v['xuehao'];
-                }
-                $yichang = array_diff($list_xyxxb,$list_bjxyxxb);// 产生异常清单
+                
+                $list_xyxxb_zaidu = $this->getXuehao($data_xyxxb_zaidu);
+                $list_xyxxb_tuixue = $this->getXuehao($data_xyxxb_tuixue);
+                $list_bjxyxxb = $this->getXuehao($data_bjxyxxb);
+                $list_xyxxb_benxiaozaidu = $this->getXuehao($data_xyxxb_benxiaozaidu);
+                
+                $weijinban = array_diff($list_xyxxb_benxiaozaidu,$list_bjxyxxb);// 本校在读而未出现在本校班级学员信息表的,未进班
+                // dump($list_xyxxb_benxiaozaidu);
+                // dump($list_bjxyxxb);
+                // die;
+                $zhuanchu = array_diff($list_xyxxb_zaidu,$list_xyxxb_benxiaozaidu);// 在读非本校的学员,即转出
+                // 转出和已退学的合并
+                $out = array_merge($list_tuixue,$zhuanchu);
+                $out = array_flip(array_flip($out));// 去除重复
+                $yichang = array_intersect($list_bjxyxxb,$out);// 既出现在本校班级学员信息表,又出现在转出和已退学里面的,异常
                 // dump($yichang);
-                if(!empty($yichang)){
+                // dump($weijinban);
+                // die;
+                // dump($yichang);
+                if(!empty($yichang) || !empty($weijinban)){
                     // foreach($yichang as $v){
                     //     $_yichang[] = '"'.$v.'"';
                     // }
                     // $yc = '['.implode(',',$_yichang).']';
-                    $map['xuehao'] = array('in',$yichang);
-                    $_list = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
+                    if(!empty($yichang)){
+                        if(isset($map)){
+                            unset($map);
+                        }
+                        $map['xuehao'] = array('in',$yichang);
+                        $list_yichang = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
+                        $this->assign('list_yichang',$list_yichang);// 赋值数据集
+                    }
+                    if(!empty($weijinban)){
+                        if(isset($map)){
+                            unset($map);
+                        }
+                        $map['xuehao'] = array('in',$weijinban);
+                        $list_weijinban = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
+                        $this->assign('list_weijinban',$list_weijinban);// 赋值数据集
+                    }
+                    
                     // dump($id);
                     $tbnames = array_flip(array_diff($this->getComment('xyxxb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
-                    $this->assign('list',$_list);// 赋值数据集
+                    
                     $this->assign('tbnames',$tbnames);// 赋值数据集
                     $this->adminDisplay('table_xq_error');
                     return 'error';

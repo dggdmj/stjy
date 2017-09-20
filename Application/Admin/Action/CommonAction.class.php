@@ -250,7 +250,7 @@ class CommonAction extends Action {
     }
 
     // phpexcel正确读取日期时间函数
-    function excelTime($date, $time = false) {
+    public function excelTime($date, $time = false) {
         if(function_exists('GregorianToJD')){
             if (is_numeric( $date )) {
                 $jd = GregorianToJD( 1, 1, 1970 );
@@ -269,6 +269,17 @@ class CommonAction extends Action {
             $date = date("Y-m-d",($date * 86400) - $ofs).($time ? " 00:00:00" : '');
         }
         return $date;
+    }
+
+    // 查询学号二维转一维
+    public function getXuehao($data){
+        foreach($data as $v){
+            if(empty($v['xuehao'])){
+                continue;
+            }
+            $list[] = $v['xuehao'];
+        }
+        return $list;
     }
 
     // 查询本期班级学员信息表所有学员的学号
@@ -924,7 +935,7 @@ class CommonAction extends Action {
         $objActSheet->setCellValue('C4',$school_data['mianji']);
         $objActSheet->setCellValue('C5',$school_data['classnum']);
         if(!empty($id)){
-            $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+            $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
             
             $i = 9;// 行从5开始
     
@@ -938,7 +949,7 @@ class CommonAction extends Action {
                 $i++;
             }
     
-            $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+            $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
     
             $i = 26;// 行从26开始
     
@@ -952,7 +963,7 @@ class CommonAction extends Action {
                 $i++;
             }
     
-            $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+            $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
     
             $i = 52;// 行从52开始
     
@@ -966,7 +977,7 @@ class CommonAction extends Action {
                 $i++;
             }
     
-            $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
+            $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
     
             $i = 61;// 行从62开始
     
@@ -1332,11 +1343,22 @@ class CommonAction extends Action {
 
         // 导入分校开课表数据
         foreach($list['kksd'] as $k=>$v){
-            $temp['kaikesjd'] = $k;
-            $temp['banjishu'] = $v;
-            $temp['suoshudd'] = $qishu_id;
-            M('fxkkb')->add($temp);
-            unset($temp);
+            if($k != '总计'){
+                $temp['kaikesjd'] = $k;
+                $temp['banjishu'] = $v;
+                $temp['suoshudd'] = $qishu_id;
+                M('fxkkb')->add($temp);
+                unset($temp);
+            }
+        }
+        foreach($list['kksd'] as $k=>$v){
+            if($k == '总计'){
+                $temp['kaikesjd'] = $k;
+                $temp['banjishu'] = $v;
+                $temp['suoshudd'] = $qishu_id;
+                M('fxkkb')->add($temp);
+                unset($temp);
+            }
         }
 
         // 导入在册学生学期状态表数据
