@@ -196,6 +196,14 @@ class CommonAction extends Action {
         return $uid;
     }
 
+    // 获取qishu_history的id
+    public function getQishuId($qishu,$sid,$tid){
+        $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
+        $where['tid'] = $tid;
+        $id = M('qishu_history')->where($where)->getField('id');// 获取学员信息表id
+        return $id;
+    }
     // 获取当前操作用户的角色id
     public function getRid(){
         $uid = $this->getUid();// 获取admin表的用户id
@@ -1258,6 +1266,7 @@ class CommonAction extends Action {
             $temp['xuhao'] = $k+1;
             $temp['yuefen'] = substr($qishu,4,2).'月';
             $temp['fenxiao'] = $v['xiaoqu'];
+            $temp['xinzenglx'] = $v['addtype'];
             $temp['xuhao'] = $k+1;
             // $temp['xinzenglx'] = ;
             $temp['xuehao'] = $v['xuehao'];
@@ -1303,6 +1312,7 @@ class CommonAction extends Action {
             $temp['xuhao'] = $k+1;
             $temp['yuefen'] = substr($qishu,4,2).'月';
             $temp['fenxiao'] = $v['xiaoqu'];
+            $temp['jianshaolx'] = $v['reducetype'];
             $temp['xuhao'] = $k+1;
             // $temp['jianshaolx'] = ;
             $temp['xuehao'] = $v['xuehao'];
@@ -1318,7 +1328,7 @@ class CommonAction extends Action {
             $temp['lianxidh'] = $v['shoujihm'];
             $temp['zhaoshenggw'] = $v['yejigsr'];
             $temp['zhaoshengly'] = $v['zhaoshengly'];
-            $temp['jiuduxx'] = $v['gonglixx'];
+            $temp['jiuduxx'] = $v['jiuduxx'];
             $temp['jiuduxxnj'] = $v['nianji'];
             $temp['suoshudd'] = $qishu_id;
             M('jsmxb')->add($temp);

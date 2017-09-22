@@ -15,14 +15,15 @@ class CountXzmxAction extends CommonAction {
         $data_bjxyxxb = $this->getData($qishu,$sid);
 
         // 收据记录表与班级学员信息表的重复学员信息进行合并
-        $where['qishu'] = $qishu;
-        $where['sid'] = $sid;
-        $where['tid'] = 4;
-        $id = M('qishu_history')->where($where)->getField('id');
-        $data_temp = M('sjjlb')->where('suoshudd ='.$id)->field('xuehao')->select();
+        $id = $this->getQishuId($qishu,$sid,4);
+        $where['suoshudd'] = $id;
+        $where['beizhu'] = array('notlike','%领袖课程%');
+        $where['xiaoqu'] = $this->getInfo($qishu,$sid)['school'];
+        $data_temp = M('sjjlb')->where($where)->field('xuehao')->select();
         foreach($data_temp as $v){
             $data_sjjlb[] = $v['xuehao'];
         }
+        dump($data_sjjlb);
         unset($where);
         if(!empty(array_diff($data_sjjlb,$data_bjxyxxb))){
             $xueyuan = array_merge($data_bjxyxxb,array_diff($data_sjjlb,$data_bjxyxxb));
