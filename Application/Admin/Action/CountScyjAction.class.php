@@ -27,6 +27,7 @@ class CountScyjAction extends CommonAction {
         $tablelist = $this->countList($newlist,$xxk_id);
 
         $i = 1;
+        $total = array();
         foreach ($tablelist as $k=>$v){
             // if($v["jrt"] == 0){
             //     continue;
@@ -36,10 +37,12 @@ class CountScyjAction extends CommonAction {
             $i++;
             $nlist[$k]["zhiwei"] = M("renshi")->where("xingming = '".$k."'")->getField("zhiwu");  //职位
             $nlist[$k]["ruzhirq"] = M("renshi")->where("xingming = '".$k."'")->getField("ruzhirq"); //入职日期
-
+            //统计各项合计
+            foreach ($v as $a=>$b){
+               $total[$a] += $b;
+            }
         }
-        // dump($nlist);
-        // die;
+        $nlist['合计'] = $total;
         return $nlist;
     }
 
