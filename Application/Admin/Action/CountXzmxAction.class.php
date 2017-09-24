@@ -57,6 +57,28 @@ class CountXzmxAction extends CommonAction {
         return $res;
     }
 
+    // 市场业绩表人头数
+    public function getRentoushu($qishu,$sid){
+        $list = $this->getXzmxbData($qishu,$sid);
+        $xueyuan_all_3m = $this->getAll($qishu);
+        // 获取前3个月内所有退学学员的学号
+        $xueyuan_tuixue_3m = $this->getTuixue($qishu);
+        // 获取上一期所有非本校的在读学员信息
+        $zhuanru = $this->getZhuanru($qishu,$sid);
+
+        foreach($list as $k=>$v){
+            if(in_array($v['xuehao'],$zhuanru)){
+                $arr1[] = $v['xuehao'];
+            }elseif(in_array($v['xuehao'],$xueyuan_tuixue_3m)){
+                $arr2[] = $v['xuehao'];
+            }elseif(!in_array($v['xuehao'],$xueyuan_all_3m)){
+                $arr3[] = $v['xuehao'];
+            }
+        }
+        $arr = array('zhuanru'=>$arr1,'liushihuilai'=>$arr2,'xinsheng'=>$arr3);
+        return $arr;
+    }
+
     // 处理$list数据
     public function doList($list,$qishu,$sid){
         $bjbm = $this->getBjbm();// 获取班级编码数据
