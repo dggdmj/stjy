@@ -16,6 +16,7 @@ class CountJysjAction extends CommonAction {
         $arr_kksd = $this->getkksd($qishu,$sid);   //获得开课时段和班级数统计
         $arr_bjbmsj = $this->getbjbmsj($qishu,$sid);   //获得班级部门数据
         $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
+        $arr_xsrsbd = $this->getxsrsbd($qishu,$sid);   //获得学生人数变动数据
 
         $arr['school_info'] = $school_info;
         $arr['kksd'] = $arr_kksd;
@@ -23,8 +24,57 @@ class CountJysjAction extends CommonAction {
         $arr['kecheng']  = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
         $arr['bjbmsj'] = $arr_bjbmsj;
         $arr['gbxzdrstj'] = $arr_gbxzdrstj;
+        $arr['xsrsbd'] = $arr_xsrsbd;
         return $arr;
 
+    }
+
+    //获得学生人数变动数据
+    public function getxsrsbd($qishu,$sid){
+        $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
+        $arr = array('本月新生人数'=>0,'其他学校转入'=>0,'流失回来学生'=>0,'本月流失学生人数'=>0,'本月退费学生'=>0,'转校学员'=>0,'本月新生人数'=>0,'本月底在册学生人数'=>0);
+        //本月初在册学生人数，如果初始化数据里又，就从初始化数据里取，否则从上一期里取
+        $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
+        if($chushirenshu_def != 0){
+            $arr['本月初在册学生人数'] = $chushirenshu_def; //
+        }else{
+            //这里取上一期的数据
+            $arr['本月初在册学生人数'] = 0;
+        }
+        $total = $arr['本月初在册学生人数'];
+        //判断新增明细
+        $xz = new \Admin\Action\CountXzmxAction();
+        $xzinfo = $xz->getXzmxbData($qishu,$sid);
+        $rentou_arr = array();
+        foreach ($xzinfo as $k => $v){
+            if($v['addtype'] == '新生'){
+                $arr['本月新生人数'] += 1;
+            }
+            if($v['addtype'] == '转入'){
+                $arr['其他学校转入'] += 1;
+            }
+            if($v['addtype'] == '流失回来'){
+                $arr['流失回来学生'] += 1;
+            }
+            $total += 1;
+        }
+        //判断减少明细
+        $js = new \Admin\Action\CountJsmxAction();
+        $jsinfo = $js->getJsmxbData($qishu,$sid);
+        foreach ($xzinfo as $k => $v){
+            if($v['reducetype'] == '流失'){
+                $arr['本月流失学生人数'] += 1;
+            }
+            if($v['reducetype'] == '退学'){
+                $arr['本月退费学生'] += 1;
+            }
+            if($v['reducetype'] == '转出'){
+                $arr['转校学员'] += 1;
+            }
+            $total -= 1;
+        }
+        $arr['本月底在册学生人数'] = $total;
+        return $arr;
     }
 
     //获得开课时段和班级数统计
