@@ -24,7 +24,20 @@ class CountScyjAction extends CommonAction {
         //1，遍历数组，如果业绩归属人是2个人的，增加两条记录，在重新拼接成新的数组
         $newlist = $this->getNewList($list);
         //2，遍历数组，按照业绩归属人的业绩归类统计
-        $tablelist = $this->countList($newlist,$xxk_id);
+
+        //获得人头数的数组
+        $rt = new \Admin\Action\CountXzmxAction();
+        $ar = $rt->getXzmxbData($qishu,$sid);
+        $rentou_arr = array();
+        foreach ($ar as $k => $v){
+            $filter_arr = array('(主签单人)','(副签单人)','（副签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
+            $gsr = $ar[$k]['gsr'] = $this->strFilter($v['yejigsr'],$filter_arr);
+            if($v['addtype'] == '新生' || $v['addtype'] == '流失回来'){
+                $rentou_arr[$gsr]['rentou'] += 1;
+            }
+        }
+
+        $tablelist = $this->countList($newlist,$xxk_id,$rentou_arr);
 
         $i = 1;
         $total = array();
@@ -47,7 +60,7 @@ class CountScyjAction extends CommonAction {
     }
 
     //遍历新数组，统计业绩归属人的业绩数据
-    public function countList($list,$xxk_id){
+    public function countList($list,$xxk_id,$rentouarr){
         $arr = array();     //用于存放业绩归属人的信息
         foreach ($list as $k=>$v){
             $beizhu = $v['data']['beizhu'];
@@ -57,11 +70,15 @@ class CountScyjAction extends CommonAction {
             $arr[$v['yejigsr']]['xxked'] = $xxked?$xxked:0;
             //查看数组的键名中是否有业绩归属人的名字
             //如果此业绩归属人在数组中，则累计此业绩归属人信息
-            $arr[$v['yejigsr']]['rentou'] += round($xishu*(double)$this->getRentou($v),2);  //获得人头数
+//            $arr[$v['yejigsr']]['rentou'] += round($xishu*(double)$this->getRentou($v),2);  //获得人头数
+            $arr[$v['yejigsr']]['rentou'] = $rentouarr[$v['yejigsr']]['rentou'];  //获得人头数
             $arr[$v['yejigsr']]['jrt'] += round($xishu*(double)$this->getJingrentou($beizhu),2);  //通过备注获得净人头
             //计算备注产生的扩展数据
             $extend = $this->explodeBeizhu($v['data'],$xxked,$xishu);
             if(!empty($extend)){
+//                dump($v);
+//                dump($v['data']['beizhu']);
+//                dump($extend);
                 $arr[$v['yejigsr']][$extend['zzjslx']] += round($extend['jsyj'],0);
             }
             //计算合计营业额
@@ -130,7 +147,7 @@ class CountScyjAction extends CommonAction {
         foreach ($pre_arr as $v){
             $v = str_replace("（",'',$v);
             $v = str_replace("）",'',$v);
-            $p_arr = explode("：",$v);
+            $p_arr = explode("：",$v[1]);
             if($p_arr[0] == '教材费'){
                 $arr['jiaocaifei'] = $p_arr[1];
             }
@@ -278,6 +295,15 @@ class CountScyjAction extends CommonAction {
         }else{
             $arr['zzjslx'] = $arr['tqjslx'];
         }
+        //老带新业绩
+        if($arr['zybz'] == ''){
+            $arr['shifouldx'] == '';
+        }else{
+            
+        }
+        if($arr['tqjslx'] == '预定游学优惠读' || $arr['tqjslx'] == '五年国际会员'){
+
+        }
 //         dump($data["beizhu"]);
 //         dump($arr);
         return $arr;
@@ -404,7 +430,7 @@ class CountScyjAction extends CommonAction {
             //[4] =>  "PRT跟进人：赵萍20%，张小明80%"
             $prt_arr = explode("：",$arr[4]);
             //[1] =>  "赵萍20%，张小明80%"
-            $x_arr = explode('，',$prt_arr);
+            $x_arr = explode('，',$prt_arr[1]);
             foreach ($x_arr as $k=>$v){
                 $xishu[$k] =  $this->filter_xishu($v,$n);
             }
