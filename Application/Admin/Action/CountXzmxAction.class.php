@@ -23,7 +23,7 @@ class CountXzmxAction extends CommonAction {
         foreach($data_temp as $v){
             $data_sjjlb[] = $v['xuehao'];
         }
-        dump($data_sjjlb);
+        // dump($data_sjjlb);
         unset($where);
         if(!empty(array_diff($data_sjjlb,$data_bjxyxxb))){
             $xueyuan = array_merge($data_bjxyxxb,array_diff($data_sjjlb,$data_bjxyxxb));
