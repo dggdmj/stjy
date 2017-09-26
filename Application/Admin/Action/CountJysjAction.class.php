@@ -101,7 +101,7 @@ class CountJysjAction extends CommonAction {
         //根据课程名称判断时间段
         $arr = array();
         foreach ($list as $k=>$v){
-            if(empty($v["shangkesj"])){
+            if($v["banjimc"] == '未进班' || $v["banjimc"] == '停读'){
                 continue;
             }
             //如果课程名称中含有字符"一"，返回一对一
@@ -339,7 +339,8 @@ class CountJysjAction extends CommonAction {
                 if($v["banji"] == '未进班'){
                     $bjxyxxb[$k]["zhuangtai"] = "未进班";
                 }else{
-                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
+//                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
+                    if($v["xuehao"] != ""){
                         $bjxyxxb[$k]["zhuangtai"] = "在读";
                     }else{
                         $bjxyxxb[$k]["zhuangtai"] = "";
@@ -388,9 +389,16 @@ class CountJysjAction extends CommonAction {
             foreach ($kecheng_arr as $k_key=>$kecheng){
                 foreach ($bumen_count as $key=>$c){
                     if($bjxyxxb[$k]["zhuangtai"] == "在读" && $kecheng == $bjxyxxb[$k]["banxing_xq"] && $bjxyxxb[$k]["bumen"] == $c["bumen"]){
+                        if($bjxyxxb[$k]["bumen"] == '幼儿部' && $bjxyxxb[$k]["banxing_xq"] == '小学周末白天班'){
+                            dump($bjxyxxb[$k]['banji']);
+                            dump($bjxyxxb[$k]['xuehao']);
+                        }
                         $bumen_count[$key][$k_key] += 1;
                     }
                 }
+            }
+            if($v['xuehao'] == 'S13462'){
+                dump($bjxyxxb[$k]);
             }
         }
         foreach ($bumen_count as $k=>$v){
@@ -405,6 +413,7 @@ class CountJysjAction extends CommonAction {
             $bumen_count[5]['heji'] += $bumen_count[$k]["heji"];
             $bumen_count[5]['bumen'] = '总计';
         }
+
 //        dump($bumen_count);
         return $bumen_count;
     }
