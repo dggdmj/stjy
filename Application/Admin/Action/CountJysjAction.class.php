@@ -43,40 +43,41 @@ class CountJysjAction extends CommonAction {
         }
         $total = $arr['本月初在册学生人数'];
 
-        //减少明细无误后开启
-
-
         //判断新增明细
-//        $xz = new \Admin\Action\CountXzmxAction();
-//        $xzinfo = $xz->getXzmxbData($qishu,$sid);
-//        $rentou_arr = array();
-//        foreach ($xzinfo as $k => $v){
-//            if($v['addtype'] == '新生'){
-//                $arr['本月新生人数'] += 1;
-//            }
-//            if($v['addtype'] == '转入'){
-//                $arr['其他学校转入'] += 1;
-//            }
-//            if($v['addtype'] == '流失回来'){
-//                $arr['流失回来学生'] += 1;
-//            }
-//            $total += 1;
-//        }
+        $xz = new \Admin\Action\CountXzmxAction();
+        $xzinfo = $xz->getXzmxbData($qishu,$sid);
+        $rentou_arr = array();
+        foreach ($xzinfo as $k => $v){
+            if($v['addtype'] == '新生'){
+                $arr['本月新生人数'] += 1;
+                $total += 1;
+            }
+            if($v['addtype'] == '转入'){
+                $arr['其他学校转入'] += 1;
+                $total += 1;
+            }
+            if($v['addtype'] == '流失回来'){
+                $arr['流失回来学生'] += 1;
+                $total += 1;
+            }
+        }
         //判断减少明细
-//        $js = new \Admin\Action\CountJsmxAction();
-//        $jsinfo = $js->getJsmxbData($qishu,$sid);
-//        foreach ($xzinfo as $k => $v){
-//            if($v['reducetype'] == '流失'){
-//                $arr['本月流失学生人数'] += 1;
-//            }
-//            if($v['reducetype'] == '退学'){
-//                $arr['本月退费学生'] += 1;
-//            }
-//            if($v['reducetype'] == '转出'){
-//                $arr['转校学员'] += 1;
-//            }
-//            $total -= 1;
-//        }
+        $js = new \Admin\Action\CountJsmxAction();
+        $jsinfo = $js->getJsmxbData($qishu,$sid);
+        foreach ($xzinfo as $k => $v){
+            if($v['reducetype'] == '流失'){
+                $arr['本月流失学生人数'] += 1;
+                $total -= 1;
+            }
+            if($v['reducetype'] == '退学'){
+                $arr['本月退费学生'] += 1;
+                $total -= 1;
+            }
+            if($v['reducetype'] == '转出'){
+                $arr['转校学员'] += 1;
+                $total -= 1;
+            }
+        }
         $arr['本月底在册学生人数'] = $total;
         return $arr;
     }
