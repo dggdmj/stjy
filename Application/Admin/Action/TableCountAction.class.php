@@ -176,7 +176,7 @@ class TableCountAction extends CommonAction{
         $data = new \Admin\Action\CountJysjAction();
         $list = $data->getJysjbData($qishu,$sid);//获得统计数据
         $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        // dump($list);
+        dump($list);
         $this->assign('list',$list);
         $this->assign('arr',$title);
         $this->adminDisplay();
@@ -188,6 +188,12 @@ class TableCountAction extends CommonAction{
         // dump($bjbm);
         // $tbnames = $this->getTabelnames(1,[2]);
         // dump($tbnames);
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+        $data = new \Admin\Action\CountTfAction();
+        $list = $data->getTfbData($qishu,$sid);//获得统计数据
+        // dump($list);
+        $this->assign('list',$list);
         $this->adminDisplay();
 	}
 

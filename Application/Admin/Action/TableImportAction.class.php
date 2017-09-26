@@ -365,6 +365,23 @@ class TableImportAction extends CommonAction{
                     $this->adminDisplay('table_xq_error');
                     return 'error';
                 }
+            }elseif($_POST['tid'] == 4){
+                $id_sjjlb = $this->getQishuId($_POST['qishu'],$_POST['sid'],4);
+                $res_sjjlb = M('sjjlb')->where('suoshudd ='.$id_sjjlb)->select();
+                foreach($res_sjjlb as $v){
+                    $beizhu = $this->filterBeizhu($v['beizhu']);
+                    if(!$beizhu['status']){
+                        $list_beizhu[] = $v;
+                    }
+                }
+                // dump($list_beizhu);die;
+                if(!empty($list_beizhu)){
+                    $this->assign('list_beizhu',$list_beizhu);
+                    $tbnames = array_flip(array_diff($this->getComment('sjjlb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
+                    $this->assign('tbnames',$tbnames);// 赋值数据集
+                    $this->adminDisplay('table_xq_sjjlb_error');
+                    return 'error';
+                }
             }
 
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
