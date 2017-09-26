@@ -43,7 +43,7 @@ class CountJysjAction extends CommonAction {
         }
         $total = $arr['本月初在册学生人数'];
 
-<<<<<<< HEAD
+
         //减少明细无误后开启
         // $fmonth = $this->getMonth($qishu);
         // $id_fmonth = $this->getQishuId($fmonth,$sid,1);
@@ -56,8 +56,7 @@ class CountJysjAction extends CommonAction {
         // }
 
         // $total = $arr['本月初在册学生人数'];
-=======
->>>>>>> 89955346da8d17e8dca5b9bdb1516ccac8fff788
+
         //判断新增明细
         $xz = new \Admin\Action\CountXzmxAction();
         $xzinfo = $xz->getXzmxbData($qishu,$sid);
