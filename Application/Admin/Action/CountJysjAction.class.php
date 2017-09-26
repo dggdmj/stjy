@@ -288,7 +288,7 @@ class CountJysjAction extends CommonAction {
             if(strpos($v['kechengmc'],"一")){
                 $list[$k]["bumen"] = "一对一";
             }else{
-                $list[$k]["bumen"] = M("banjibianhao")->where("jingdujb = '".$bjxx_list[$k]["jibie"]."'")->getField("banxing2");
+                $list[$k]["bumen"] = M("banjibianhao")->where("jingdujb = '".$bjxx_list[$k]["jibie"]."'")->getField("banxing");
             }
             //统计各部门的班级人数等数据，并且状态是未结业
             foreach ($bumen_count as $k2=>$b2){

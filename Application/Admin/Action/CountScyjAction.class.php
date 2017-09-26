@@ -24,7 +24,20 @@ class CountScyjAction extends CommonAction {
         //1，遍历数组，如果业绩归属人是2个人的，增加两条记录，在重新拼接成新的数组
         $newlist = $this->getNewList($list);
         //2，遍历数组，按照业绩归属人的业绩归类统计
-        $tablelist = $this->countList($newlist,$xxk_id,$rentou_arr);
+
+        //获得人头数的数组
+        $rt = new \Admin\Action\CountXzmxAction();
+        $ar = $rt->getXzmxbData($qishu,$sid);
+        $rentouarr = array();
+        foreach ($ar as $k => $v){
+            $filter_arr = array('(主签单人)','(副签单人)','（副签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
+            $gsr = $ar[$k]['gsr'] = $this->strFilter($v['yejigsr'],$filter_arr);
+            if($v['addtype'] == '新生' || $v['addtype'] == '流失回来'){
+                $rentouarr[$gsr]['rentou'] += 1;
+            }
+        }
+
+        $tablelist = $this->countList($newlist,$xxk_id,$rentouarr);
 
         $i = 1;
         $total = array();
