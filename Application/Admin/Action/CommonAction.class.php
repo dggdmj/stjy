@@ -613,6 +613,7 @@ class CommonAction extends Action {
             case 11:
                 $start_row = 2;
                 $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                // dump($data);die;
             break;
             case 12:
                 $this->exportExcel2($objPHPExcel,$id,$info,$filename);
@@ -1275,8 +1276,8 @@ class CommonAction extends Action {
             $temp['banjibh'] = $v['banji'];
             $temp['jingduls'] = $v['jingduls'];
             $temp['fanduls'] = $v['fanduls'];
-            // $temp['kaibanrq'] = $v['kaibanrq'];
-            // $temp['jiebanrq'] = $v['jiebanrq'];
+            $temp['kaibanrq'] = $v['kaibanrq'];
+            $temp['jiebanrq'] = $v['jiebanrq'];
             // $temp['liushitfyy'] = $v['liushitfyy'];
             // $temp['tingduxqjkc'] = $v['tingduxqjkc'];
             $temp['shengyukc'] = $v['shuliang'];
@@ -1321,8 +1322,8 @@ class CommonAction extends Action {
             $temp['banjibh'] = $v['banji'];
             $temp['jingduls'] = $v['jingduls'];
             $temp['fanduls'] = $v['fanduls'];
-            // $temp['kaibanrq'] = $v['kaibanrq'];
-            // $temp['jiebanrq'] = $v['jiebanrq'];
+            $temp['kaibanrq'] = $v['kaibanrq'];
+            $temp['jiebanrq'] = $v['jiebanrq'];
             $temp['shengyukc'] = $v['shuliang'];
             $temp['yucunxfje'] = $v['feiyong'];
             $temp['lianxidh'] = $v['shoujihm'];
@@ -1549,21 +1550,25 @@ class CommonAction extends Action {
 
     //替换备注中出现的所有半角符号
     public function filterBeizhu($beizhu){
-        $count = count(explode("／", $beizhu));
-            //如果是计算业绩的备注，分隔后是8个值
-        if($count > 2 && $count != 8){
-            $arr['status'] = false;
-            $arr['info'] = "‘／’不等于8个，请检查备注格式！";
-        }else{
-            //过滤掉数组中的半角字符
-            $arr=array("("=>"（",")"=>"）",":"=>"：","/"=>"／");
-            foreach ($arr as $k => $v){
-                $beizhu = str_replace($k,$v,$beizhu);
-            }
-            $arr['status'] = true;
-            $arr['info'] = $beizhu;
-
+        $arr=array("("=>"（",")"=>"）",":"=>"：","/"=>"／");//过滤掉数组中的半角字符
+        foreach ($arr as $k => $v){
+            $beizhu = str_replace($k,$v,$beizhu);
         }
-        return $arr;
+        $count = count(explode("／", $beizhu));
+        //如果是计算业绩的备注，分隔后是8个值
+        if($count>=2){
+            $data['count'] = $count;
+            if($count != 9){
+                $data['status'] = false;
+                $data['info'] = "‘／’不等于8个，请检查备注格式！";
+            }else{
+                $data['status'] = true;
+                $data['info'] = $beizhu;
+            }
+        }else{
+            $data['status'] = true;
+            $data['info'] = $beizhu;
+        }
+        return $data;
     }
 }
