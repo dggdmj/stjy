@@ -160,7 +160,8 @@ class CountJysjAction extends CommonAction {
                 if($v["banji"] == '未进班'){
                     $list[$k]["zhuangtai"] = "未进班";
                 }else{
-                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
+//                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
+                    if($v["xuehao"] != ""){
                         $list[$k]["zhuangtai"] = "在读";
                     }else{
                         $list[$k]["zhuangtai"] = "";
@@ -180,7 +181,7 @@ class CountJysjAction extends CommonAction {
                 $data[$v2] = $arr[$v2];
             }
         }
-//        dump($data);
+//        dump($arr);
         return $data;
     }
 

@@ -568,7 +568,6 @@ class CommonAction extends Action {
         $tid = $_GET['tid'];
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
-
         $id = M('qishu_history')->where($_GET)->getField('id');
         if(empty($id)){
             $this->error('error');
@@ -585,7 +584,7 @@ class CommonAction extends Action {
         // dump($ziduan);
         $filename = $tbnames_cn[$tid];
         $info = $this->getInfo($qishu,$sid);
-        // dump($info);
+//         dump($info);
         switch($tid){
             case 8:
                 // $start_row = 5;
@@ -860,7 +859,6 @@ class CommonAction extends Action {
     // $list,$filename,$indexKey=array()
     public function exportExcel($tid,$start_row,$list,$filename,$info=array()){
         vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
-
         //$objPHPExcel = new PHPExcel();                        //初始化PHPExcel(),不使用模板
         switch($tid){
             // case 8:
@@ -910,10 +908,19 @@ class CommonAction extends Action {
             $i++;
         }
 
-
-
         // 1.保存至本地Excel表格
-        //$objWriter->save($filename.'.xls');
+//        $file_path = "./Public/Download/";
+//        $file_url = $file_path.$filename.'.xlsx';
+//        $objWriter->save($file_path.$filename.'.xlsx');
+//        $file=fopen($file_url,'r'); //打开文件
+//        //输入文件标签
+//        header("Content-type: application/octet-stream");
+//        header("Accept-Ranges: bytes");
+//        header("Accept-Length: ".filesize($file_url));
+//        header("Content-Disposition: attachment; filename=".$filename.'.xlsx');
+//        //输出文件内容
+//        echo fread($file,filesize($file_url));
+//        fclose($file);
 
         // 2.接下来当然是下载这个表格了，在浏览器输出就好了
         header("Pragma: public");
@@ -922,10 +929,11 @@ class CommonAction extends Action {
         header("Content-Type:application/force-download");
         header("Content-Type:application/vnd.ms-execl");
         header("Content-Type:application/octet-stream");
-        header("Content-Type:application/download");;
+        header("Content-Type:application/download");
         header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
         header("Content-Transfer-Encoding:binary");
         $objWriter->save('php://output');
+
     }
 
     // 经营数据表的下载方法

@@ -25,6 +25,7 @@ class IndexAction extends CommonAction {
         $menuList = $Menu->getMenu();
         $this->assign('menuList',json_encode($menuList));
         // 进入首页
+//        echo phpinfo();die;
         $this->display();
     }
 
