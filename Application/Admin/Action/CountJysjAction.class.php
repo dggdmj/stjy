@@ -31,30 +31,30 @@ class CountJysjAction extends CommonAction {
 
     //获得学生人数变动数据
     public function getxsrsbd($qishu,$sid){
-        // $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
-        // $arr = array('本月初在册学生人数'=>0,'本月新生人数'=>0,'其他学校转入'=>0,'流失回来学生'=>0,'本月流失学生人数'=>0,'本月退费学生'=>0,'转校学员'=>0,'本月新生人数'=>0,'本月底在册学生人数'=>0);
-        // //本月初在册学生人数，如果初始化数据里又，就从初始化数据里取，否则从上一期里取
-        // $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
-        // if($chushirenshu_def != 0){
-        //     $arr['本月初在册学生人数'] = $chushirenshu_def; //
-        // }else{
-        //     //这里取上一期的数据
-        //     $arr['本月初在册学生人数'] = 0;
-        // }
-        // $total = $arr['本月初在册学生人数'];
-
-        //减少明细无误后开启
-        $fmonth = $this->getMonth($qishu);
-        $id_fmonth = $this->getQishuId($fmonth,$sid,1);
-        $id = $this->getQishuId($fmonth,$sid,1);
-        if(!empty($id_fmonth)){
-            $res = M('xyxxb')->where('suoshudd ='.$id.' and zhuangtai="在读"')->select();
-            $arr['本月初在册学生人数'] = count($res);
+        $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
+        $arr = array('本月初在册学生人数'=>0,'本月新生人数'=>0,'其他学校转入'=>0,'流失回来学生'=>0,'本月流失学生人数'=>0,'本月退费学生'=>0,'转校学员'=>0,'本月新生人数'=>0,'本月底在册学生人数'=>0);
+        //本月初在册学生人数，如果初始化数据里又，就从初始化数据里取，否则从上一期里取
+        $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
+        if($chushirenshu_def != 0){
+            $arr['本月初在册学生人数'] = $chushirenshu_def; //
         }else{
+            //这里取上一期的数据
             $arr['本月初在册学生人数'] = 0;
         }
-
         $total = $arr['本月初在册学生人数'];
+
+        //减少明细无误后开启
+        // $fmonth = $this->getMonth($qishu);
+        // $id_fmonth = $this->getQishuId($fmonth,$sid,1);
+        // $id = $this->getQishuId($fmonth,$sid,1);
+        // if(!empty($id_fmonth)){
+        //     $res = M('xyxxb')->where('suoshudd ='.$id.' and zhuangtai="在读"')->select();
+        //     $arr['本月初在册学生人数'] = count($res);
+        // }else{
+        //     $arr['本月初在册学生人数'] = 0;
+        // }
+
+        // $total = $arr['本月初在册学生人数'];
         //判断新增明细
        $xz = new \Admin\Action\CountXzmxAction();
        $xzinfo = $xz->getXzmxbData($qishu,$sid);
