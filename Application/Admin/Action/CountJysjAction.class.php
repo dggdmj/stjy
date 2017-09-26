@@ -389,17 +389,17 @@ class CountJysjAction extends CommonAction {
             foreach ($kecheng_arr as $k_key=>$kecheng){
                 foreach ($bumen_count as $key=>$c){
                     if($bjxyxxb[$k]["zhuangtai"] == "在读" && $kecheng == $bjxyxxb[$k]["banxing_xq"] && $bjxyxxb[$k]["bumen"] == $c["bumen"]){
-                        if($bjxyxxb[$k]["bumen"] == '幼儿部' && $bjxyxxb[$k]["banxing_xq"] == '小学周末白天班'){
-                            dump($bjxyxxb[$k]['banji']);
-                            dump($bjxyxxb[$k]['xuehao']);
-                        }
+//                        if($bjxyxxb[$k]["bumen"] == '幼儿部' && $bjxyxxb[$k]["banxing_xq"] == '小学周末白天班'){
+//                            dump($bjxyxxb[$k]['banji']);
+//                            dump($bjxyxxb[$k]['xuehao']);
+//                        }
                         $bumen_count[$key][$k_key] += 1;
                     }
                 }
             }
-            if($v['xuehao'] == 'S13462'){
-                dump($bjxyxxb[$k]);
-            }
+//            if($v['xuehao'] == 'S13462'){
+//                dump($bjxyxxb[$k]);
+//            }
         }
         foreach ($bumen_count as $k=>$v){
             foreach ($v as $key=>$vo){
