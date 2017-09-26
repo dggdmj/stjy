@@ -43,6 +43,7 @@ class CountJysjAction extends CommonAction {
         }
         $total = $arr['本月初在册学生人数'];
 
+<<<<<<< HEAD
         //减少明细无误后开启
         // $fmonth = $this->getMonth($qishu);
         // $id_fmonth = $this->getQishuId($fmonth,$sid,1);
@@ -55,37 +56,43 @@ class CountJysjAction extends CommonAction {
         // }
 
         // $total = $arr['本月初在册学生人数'];
+=======
+>>>>>>> 89955346da8d17e8dca5b9bdb1516ccac8fff788
         //判断新增明细
-       $xz = new \Admin\Action\CountXzmxAction();
-       $xzinfo = $xz->getXzmxbData($qishu,$sid);
-       $rentou_arr = array();
-       foreach ($xzinfo as $k => $v){
-           if($v['addtype'] == '新生'){
-               $arr['本月新生人数'] += 1;
-           }
-           if($v['addtype'] == '转入'){
-               $arr['其他学校转入'] += 1;
-           }
-           if($v['addtype'] == '流失回来'){
-               $arr['流失回来学生'] += 1;
-           }
-           $total += 1;
-       }
+        $xz = new \Admin\Action\CountXzmxAction();
+        $xzinfo = $xz->getXzmxbData($qishu,$sid);
+        $rentou_arr = array();
+        foreach ($xzinfo as $k => $v){
+            if($v['addtype'] == '新生'){
+                $arr['本月新生人数'] += 1;
+                $total += 1;
+            }
+            if($v['addtype'] == '转入'){
+                $arr['其他学校转入'] += 1;
+                $total += 1;
+            }
+            if($v['addtype'] == '流失回来'){
+                $arr['流失回来学生'] += 1;
+                $total += 1;
+            }
+        }
         //判断减少明细
-       $js = new \Admin\Action\CountJsmxAction();
-       $jsinfo = $js->getJsmxbData($qishu,$sid);
-       foreach ($jsinfo as $k => $v){
-           if($v['reducetype'] == '流失'){
-               $arr['本月流失学生人数'] += 1;
-           }
-           if($v['reducetype'] == '退学'){
-               $arr['本月退费学生'] += 1;
-           }
-           if($v['reducetype'] == '转出'){
-               $arr['转校学员'] += 1;
-           }
-           $total -= 1;
-       }
+        $js = new \Admin\Action\CountJsmxAction();
+        $jsinfo = $js->getJsmxbData($qishu,$sid);
+        foreach ($xzinfo as $k => $v){
+            if($v['reducetype'] == '流失'){
+                $arr['本月流失学生人数'] += 1;
+                $total -= 1;
+            }
+            if($v['reducetype'] == '退学'){
+                $arr['本月退费学生'] += 1;
+                $total -= 1;
+            }
+            if($v['reducetype'] == '转出'){
+                $arr['转校学员'] += 1;
+                $total -= 1;
+            }
+        }
         $arr['本月底在册学生人数'] = $total;
         return $arr;
     }
@@ -97,7 +104,7 @@ class CountJysjAction extends CommonAction {
         //根据课程名称判断时间段
         $arr = array();
         foreach ($list as $k=>$v){
-            if(empty($v["shangkesj"])){
+            if($v["banjimc"] == '未进班' || $v["banjimc"] == '停读'){
                 continue;
             }
             //如果课程名称中含有字符"一"，返回一对一
@@ -156,7 +163,8 @@ class CountJysjAction extends CommonAction {
                 if($v["banji"] == '未进班'){
                     $list[$k]["zhuangtai"] = "未进班";
                 }else{
-                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
+//                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
+                    if($v["xuehao"] != ""){
                         $list[$k]["zhuangtai"] = "在读";
                     }else{
                         $list[$k]["zhuangtai"] = "";
@@ -176,7 +184,7 @@ class CountJysjAction extends CommonAction {
                 $data[$v2] = $arr[$v2];
             }
         }
-//        dump($data);
+//        dump($arr);
         return $data;
     }
 
@@ -284,7 +292,7 @@ class CountJysjAction extends CommonAction {
             if(strpos($v['kechengmc'],"一")){
                 $list[$k]["bumen"] = "一对一";
             }else{
-                $list[$k]["bumen"] = M("banjibianhao")->where("jingdujb = '".$bjxx_list[$k]["jibie"]."'")->getField("banxing2");
+                $list[$k]["bumen"] = M("banjibianhao")->where("jingdujb = '".$bjxx_list[$k]["jibie"]."'")->getField("banxing");
             }
             //统计各部门的班级人数等数据，并且状态是未结业
             foreach ($bumen_count as $k2=>$b2){
@@ -335,7 +343,8 @@ class CountJysjAction extends CommonAction {
                 if($v["banji"] == '未进班'){
                     $bjxyxxb[$k]["zhuangtai"] = "未进班";
                 }else{
-                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
+//                    if($v['beizhu'] == '' && $v["xuehao"] != ""){
+                    if($v["xuehao"] != ""){
                         $bjxyxxb[$k]["zhuangtai"] = "在读";
                     }else{
                         $bjxyxxb[$k]["zhuangtai"] = "";
@@ -384,10 +393,17 @@ class CountJysjAction extends CommonAction {
             foreach ($kecheng_arr as $k_key=>$kecheng){
                 foreach ($bumen_count as $key=>$c){
                     if($bjxyxxb[$k]["zhuangtai"] == "在读" && $kecheng == $bjxyxxb[$k]["banxing_xq"] && $bjxyxxb[$k]["bumen"] == $c["bumen"]){
+//                        if($bjxyxxb[$k]["bumen"] == '幼儿部' && $bjxyxxb[$k]["banxing_xq"] == '小学周末白天班'){
+//                            dump($bjxyxxb[$k]['banji']);
+//                            dump($bjxyxxb[$k]['xuehao']);
+//                        }
                         $bumen_count[$key][$k_key] += 1;
                     }
                 }
             }
+//            if($v['xuehao'] == 'S13462'){
+//                dump($bjxyxxb[$k]);
+//            }
         }
         foreach ($bumen_count as $k=>$v){
             foreach ($v as $key=>$vo){
@@ -401,6 +417,7 @@ class CountJysjAction extends CommonAction {
             $bumen_count[5]['heji'] += $bumen_count[$k]["heji"];
             $bumen_count[5]['bumen'] = '总计';
         }
+
 //        dump($bumen_count);
         return $bumen_count;
     }
