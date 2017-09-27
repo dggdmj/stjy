@@ -75,6 +75,7 @@ class CountJysjAction extends CommonAction {
         //判断新增明细
         $xz = new \Admin\Action\CountXzmxAction();
         $xzinfo = $xz->getXzmxbData($qishu,$sid);
+//        dump($xzinfo);
         $rentou_arr = array();
         foreach ($xzinfo as $k => $v){
             if($v['addtype'] == '新生'){
@@ -333,8 +334,8 @@ class CountJysjAction extends CommonAction {
             $bumen_count[$k]["baoguanglv"] = round((float)$v["rszj"]/(float)$v["dybjs"],2);
         }
         //班级饱和率统计
-        $bumen_count["baoguanglv_total"] = round((float)$bumen_count["rszj_total"]/(float)$bumen_count["dybjs_total"],2);
-//        dump($bumen_count);
+        $bumen_count["baoguanglv_total"] = round(((float)$bumen_count["rszj_total"] - (float)$bumen_count[4]["rszj"])/((float)$bumen_count["dybjs_total"] - (float)$bumen_count[4]["dybjs"]),2);
+       // dump($bumen_count);
         return $bumen_count;
     }
 
