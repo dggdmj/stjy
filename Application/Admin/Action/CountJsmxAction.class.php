@@ -49,18 +49,18 @@ class CountJsmxAction extends CommonAction {
         $fmonth = $this->getMonth($qishu);
         // dump($fmonth);
         // 将上一月本校在读学员学号数组查出来
-        $where['tid'] = 1;
+        $where['tid'] = 3;
         $where['sid'] = $sid;
         $where['qishu'] = $fmonth;
         $id = M('qishu_history')->where($where)->getField('id');
         // dump($id);
-        $school = $this->getInfo($qishu,$sid)['school'];
+        // $school = $this->getInfo($qishu,$sid)['school'];
         // dump($school);
+        unset($where);
+        $where = 'suoshudd ='.$id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
         if(!empty($id)){
-            $data = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id.' and zhuangtai="在读" and xiaoqu="'.$school.'"')->select();
-            if(empty($data)){
-                $this->error('请到学校设置把学校名称修改正确');
-            }
+            $data = M('bjxyxxb')->field('xuehao')->where($where)->select();
+            // dump($data);
             // dump(count($data));
             // dump('suoshudd ='.$id.' and zhuangtai="在读" and xiaoqu="'.$school.'"');
             // dump($data);
@@ -80,12 +80,14 @@ class CountJsmxAction extends CommonAction {
             // dump($xuehaos);
             // 获取本月在读学员学号的一维数组
             unset($where);
-            $where['tid'] = 1;
+            $where['tid'] = 3;
             $where['sid'] = $sid;
             $where['qishu'] = $qishu;
             $id2 = M('qishu_history')->where($where)->getField('id');
+            unset($where);
+            $where = 'suoshudd ='.$id2.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
             if(!empty($id2)){
-                $data2 = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id2.' and zhuangtai="在读" and xiaoqu="'.$school.'"')->select();// 本月本校区在读人员
+                $data2 = M('bjxyxxb')->field('xuehao')->where($where)->select();// 本月本校区在读人员
                 // $data2 = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id2)->select();
                 // dump($data2);die;
                 // $data3 = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id2.' and zhuangtai="在读" and xiaoqu="'.$school.'"')->select();// 转出的部分
@@ -156,7 +158,7 @@ class CountJsmxAction extends CommonAction {
             if(in_array($v['xuehao'],$zhuanchu)){
                 $list[$k]['reducetype'] = '转出';
             }elseif(in_array($v['xuehao'],$tuixue['tuixue']) && in_array($v['xuehao'],$tuixue['sjjlb'])){
-                $list[$k]['reducetype'] = '退学';
+                $list[$k]['reducetype'] = '退费';
             }else{
                 $list[$k]['reducetype'] = '流失';
             }

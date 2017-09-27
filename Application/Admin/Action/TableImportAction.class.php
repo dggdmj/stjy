@@ -390,6 +390,76 @@ class TableImportAction extends CommonAction{
         }
     }
 
+    // public function checkBjxyxxb($res_xyxxb,$postData){
+    //     $id_xyxxb = $res_xyxxb['id'];
+    //     $data_xyxxb_zaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读"')->select();// 查询出学员信息表当月在读学员
+    //     $data_xyxxb_tuixue = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="已退学"')->select();
+    //     $xiaoqu = $this->getInfo($postData['qishu'],$postData['sid'])['school'];// 查询出学员信息表当月已退学学员
+    //     $data_xyxxb_benxiaozaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读" and xiaoqu ="'.$xiaoqu.'"')->select();// 查询出学员信息表当月在读学员
+    //     $id_bjxyxxb = M('qishu_history')->where('qishu ='.$postData['qishu'].' and sid ='.$postData['sid'].' and tid=3')->getField('id');
+    //     $data_bjxyxxb = M('bjxyxxb')->field('xuehao')->where('suoshudd ='.$id_bjxyxxb)->select();// 查询出当月班级学员信息表在班学员
+        
+    //     $list_xyxxb_zaidu = $this->getXuehao($data_xyxxb_zaidu);
+    //     $list_xyxxb_tuixue = $this->getXuehao($data_xyxxb_tuixue);
+    //     $list_bjxyxxb = $this->getXuehao($data_bjxyxxb);
+    //     $list_xyxxb_benxiaozaidu = $this->getXuehao($data_xyxxb_benxiaozaidu);
+
+    //     $weijinban = array_diff($list_xyxxb_benxiaozaidu,$list_bjxyxxb);// 本校在读而未出现在本校班级学员信息表的,未进班
+    //     // dump($list_xyxxb_benxiaozaidu);
+    //     // dump($list_bjxyxxb);
+    //     // die;
+    //     $zhuanchu = array_diff($list_xyxxb_zaidu,$list_xyxxb_benxiaozaidu);// 在读非本校的学员,即转出
+    //     // 转出和已退学的合并
+    //     $out = array_merge($list_tuixue,$zhuanchu);
+    //     $out = array_flip(array_flip($out));// 去除重复
+    //     $yichang = array_intersect($list_bjxyxxb,$out);// 既出现在本校班级学员信息表,又出现在转出和已退学里面的,异常
+    //     // dump($yichang);
+    //     // dump($weijinban);
+    //     // die;
+    //     // dump($yichang);
+    //     if(!empty($yichang) || !empty($weijinban)){
+    //         // foreach($yichang as $v){
+    //         //     $_yichang[] = '"'.$v.'"';
+    //         // }
+    //         // $yc = '['.implode(',',$_yichang).']';
+    //         if(!empty($yichang)){
+    //             if(isset($map)){
+    //                 unset($map);
+    //             }
+    //             $map['xuehao'] = array('in',$yichang);
+    //             $list_yichang = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
+    //             $this->assign('list_yichang',$list_yichang);// 赋值数据集
+    //         }
+    //         if(!empty($weijinban)){
+    //             if(isset($map)){
+    //                 unset($map);
+    //             }
+    //             $map['xuehao'] = array('in',$weijinban);
+    //             $list_weijinban = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
+    //             $this->assign('list_weijinban',$list_weijinban);// 赋值数据集
+    //         }
+            
+    //         // dump($id);
+    //         $tbnames = array_flip(array_diff($this->getComment('xyxxb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
+            
+    //         $this->assign('tbnames',$tbnames);// 赋值数据集
+    //         // unlink($file_name);// 删除excel文档
+    //         // --------------删除操作执行开始--------------
+    //         // $id_del = M('qishu_history')->where('qishu ='.$postData['qishu'].' and sid='.$postData['sid'].' and tid=3')->getField('id');
+    //         // $res1 = M($tablename)->where("suoshudd = ".$id_del)->delete();// 从表明里删除所属id对应的数据
+    //         // $res2 = M("qishu_history")->where("id = ".$id_del)->delete();// 从qishu_history删除记录
+    //         // unlink($filename);// 删除存放的excel表
+    
+    //         // // 对应数据总表的该字段状态改为1,就是未导入
+    //         // if(isset($temp)){
+    //         //     unset($temp);
+    //         // }
+    //         // $temp[$tablename] = 1;
+    //         // M('sjzb')->where($where)->save($temp);
+    //         // --------------删除操作执行结束--------------
+    //         $this->adminDisplay('table_xq_error');
+    //     }
+    // }
 
     /* $objPHPExcel:phpexcel对象;$colsNum:获取总列数(数字);*/
     public function getExcelZiduan($objPHPExcel,$colsNum){
