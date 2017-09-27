@@ -99,7 +99,7 @@ class CountJysjAction extends CommonAction {
                 $arr['本月流失学生人数'] += 1;
                 $total -= 1;
             }
-            if($v['reducetype'] == '退学'){
+            if($v['reducetype'] == '退费'){
                 $arr['本月退费学生'] += 1;
                 $total -= 1;
             }
