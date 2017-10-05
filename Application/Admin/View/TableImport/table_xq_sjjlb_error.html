@@ -1,25 +1,75 @@
 <form method="post" id="form" action="#">
     <div class="panel one-box">
-        <div class="table-responsive">
-            <div style="color:red;font-size:40px;">以下是异常名单,请到校管家进行纠正处理</div>
-            <table id="table" class="table table-hover table-bordered table-condensed">
-                <tbody>
-                <tr>
-                    <foreach name='tbnames' item='name'>
-                        <th width="80">{$name}</th>
-                    </foreach>
-                </tr>
-                <foreach name='list_beizhu' item='v'>
-                    <tr>
-                        <foreach name='tbnames' key="key" item='name'>
-                            <td title="编号:{$v.id};字段名:{$name}">{$v[$key]}</td>
+        <if condition="$list_beizhu neq ''">
+            <div class="table-responsive">
+                <div style="color:red;font-size:40px;">以下是备注[/]异常名单,请到校管家进行纠正处理</div>
+                <div><a class="button bg-blue button-small" type="submit" href="__MODULE__/Common/downloadYcb/tid/{$postData['tid']}/qishu/{$postData['qishu']}/sid/{$postData['sid']}/type/sjjlb_beizhu" style="margin:10px 5px;">点击下载</a></div>
+
+                <table id="table" class="table table-hover table-bordered table-condensed">
+                    <tbody>
+                        <tr>
+                            <foreach name='tbnames' item='name'>
+                                <th width="80">{$name}</th>
+                            </foreach>
+                        </tr>
+                        <foreach name='list_beizhu' item='v'>
+                            <tr>
+                                <foreach name='tbnames' key="key" item='name'>
+                                    <td title="编号:{$v.id};字段名:{$name}" width="80">{$v[$key]}</td>
+                                </foreach>
+                            </tr>
                         </foreach>
-                    </tr>
-                </foreach>
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        </if>
+        <if condition="$list_beizhu2 neq ''">
+            <div class="table-responsive">
+                <div style="color:red;font-size:40px;">以下是备注课程异常名单,请到校管家进行纠正处理</div>
+                <div><a class="button bg-blue button-small" type="submit" href="__MODULE__/Common/downloadYcb/tid/{$postData['tid']}/qishu/{$postData['qishu']}/sid/{$postData['sid']}/type/sjjlb_beizhu2" style="margin:10px 5px;">点击下载</a></div>
+
+                <table id="table" class="table table-hover table-bordered table-condensed">
+                    <tbody>
+                        <tr>
+                            <foreach name='tbnames' item='name'>
+                                <th width="80">{$name}</th>
+                            </foreach>
+                        </tr>
+                        <foreach name='list_beizhu2' item='v'>
+                            <tr>
+                                <foreach name='tbnames' key="key" item='name'>
+                                    <td title="编号:{$v.id};字段名:{$name}" width="80">{$v[$key]}</td>
+                                </foreach>
+                            </tr>
+                        </foreach>
+                    </tbody>
+                </table>
+            </div>
+        </if>
+        <if condition="$list_guishuren neq ''">
+            <div class="table-responsive">
+                <div style="color:red;font-size:40px;">以下是业绩归属人为空的名单,请到校管家进行纠正处理</div>
+                <div><a class="button bg-blue button-small" type="submit" href="__MODULE__/Common/downloadYcb/tid/{$postData['tid']}/qishu/{$postData['qishu']}/sid/{$postData['sid']}/type/sjjlb_yejigsr" style="margin:10px 5px;">点击下载</a></div>
+                <table id="table" class="table table-hover table-bordered table-condensed">
+                    <tbody>
+                        <tr>
+                            <foreach name='tbnames' item='name'>
+                                <th width="80">{$name}</th>
+                            </foreach>
+                        </tr>
+                        <foreach name='list_guishuren' item='v'>
+                            <tr>
+                                <foreach name='tbnames' key="key" item='name'>
+                                    <td title="编号:{$v.id};字段名:{$name}" width="80">{$v[$key]}</td>
+                                </foreach>
+                            </tr>
+                        </foreach>
+                    </tbody>
+                </table>
+            </div>
+        </if>
     </div>
+
 </form>
 <style>
     body {

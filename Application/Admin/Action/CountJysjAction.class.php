@@ -58,17 +58,18 @@ class CountJysjAction extends CommonAction {
         $fmonth = $this->getMonth($qishu);
         $id_fmonth = $this->getQishuId($fmonth,$sid,3);
         $id = $this->getQishuId($qishu,$sid,3);
+        $where = 'suoshudd ='.$id_fmonth.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';        
         if(!empty($id_fmonth)){
-            $res = M('bjxyxxb')->where('suoshudd ='.$id)->select();
+            $res = M('bjxyxxb')->where($where)->select();
             $arr['本月初在册学生人数'] = count($res);
         }else{
             $arr['本月初在册学生人数'] = 0;
         }
 
-        // $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
-        // if($chushirenshu_def != 0){
-        //     $arr['本月初在册学生人数'] = $chushirenshu_def;
-        // }
+        $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
+        if($chushirenshu_def != 0){
+            $arr['本月初在册学生人数'] = $chushirenshu_def;
+        }
 
         $total = $arr['本月初在册学生人数'];
 

@@ -584,7 +584,7 @@ class CommonAction extends Action {
         // dump($ziduan);
         $filename = $tbnames_cn[$tid];
         $info = $this->getInfo($qishu,$sid);
-//         dump($info);
+        // dump($info);
         switch($tid){
             case 8:
                 // $start_row = 5;
@@ -829,6 +829,84 @@ class CommonAction extends Action {
         $objWriter->save('php://output');
     }
 
+    // 下载异常表
+    public function downloadYcb(){
+        $type = $_GET['type'];
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+        $tid = $_GET['tid'];
+        $tbnames = $this->getTabelnames();
+        $temp = $this->getComment($tbnames[$tid]);
+        $ziduan = array_flip($temp);
+        $tbnames_cn = $this->getTabelnames(2);
+        $start_row = 2;
+        $info = $this->getInfo($qishu,$sid);
+        $obj = new \Admin\Action\TableImportAction();
+        switch($type){
+            case 'sjjlb_beizhu':
+                $data = $obj->getSjjlbYc($_GET)['beizhu'];// 取数据
+                // dump($data);die;
+                $filename = $tbnames_cn[$tid].'_备注斜杆异常';
+            break;
+            case 'sjjlb_beizhu2':
+            $data = $obj->getSjjlbYc($_GET)['beizhu2'];// 取数据
+            // dump($data);die;
+            $filename = $tbnames_cn[$tid].'_备注课程异常';
+        break;
+            case 'sjjlb_yejigsr':
+                $data = $obj->getSjjlbYc($_GET)['guishuren'];// 取数据
+                // dump($data);die;
+                $filename = $tbnames_cn[$tid].'_业绩归属人异常';
+            break;
+            case 'bjxyxxb_weijinban':
+                $obj = new \Admin\Action\TableImportAction();
+                $data = $obj->getBjxyxxbYc($_GET)['weijinban'];// 取数据
+                // $data = array_flip(array_flip($data));
+                $map['xuehao'] = array('in',$data);
+                $id = $this->getQishuId($qishu,$sid,1);
+                $map['suoshudd'] = $id;
+                $data = M('xyxxb')->field('id,suoshudd,daorusj',true)->where($map)->select();
+                
+                $temp = $this->getComment($tbnames[1]);
+                $ziduan = array_flip($temp);
+                
+                $filename = $tbnames_cn[1].'_未进班';
+            break;
+            case 'bjxyxxb_yichang':
+                $data = $obj->getBjxyxxbYc($_GET)['yichang'];// 取数据
+                
+                $map['xuehao'] = array('in',$data);
+                $id = $this->getQishuId($qishu,$sid,1);
+                $map['suoshudd'] = $id;
+                $data = M('xyxxb')->field('id,suoshudd,daorusj',true)->where($map)->select();
+                
+                $temp = $this->getComment($tbnames[1]);
+                $ziduan = array_flip($temp);
+                
+                $filename = $tbnames_cn[1].'_异常';
+            break;
+            case 'bjxxb_banjimc':
+                $data = $obj->getBjxxbYc($_GET)['banjimc'];// 取数据
+                $filename = $tbnames_cn[$tid].'_班级名称异常';
+            break;
+            case 'xyxxb_error':
+                $data = $obj->getXyxxbYc($_GET)['error'];// 取数据
+                $filename = $tbnames_cn[$tid].'_状态或年级异常';
+            break;
+
+        }
+        // 取字段
+        foreach($data as $v){
+            foreach($v as $key=>$val){
+                $keys[] = $ziduan[$key]; 
+            }
+            break;
+        }
+        // dump($keys);die;
+        $this->exportExcel4($tid,$start_row,$keys,$data,$filename,$info);
+
+    }
+
     public function doData($objPHPExcel,$where,$start_row){
         $tbnames = $this->getTabelnames(1,[1,2,3,4]);
         $id = M('qishu_history')->where($where)->getField('id');
@@ -909,18 +987,18 @@ class CommonAction extends Action {
         }
 
         // 1.保存至本地Excel表格
-//        $file_path = "./Public/Download/";
-//        $file_url = $file_path.$filename.'.xlsx';
-//        $objWriter->save($file_path.$filename.'.xlsx');
-//        $file=fopen($file_url,'r'); //打开文件
-//        //输入文件标签
-//        header("Content-type: application/octet-stream");
-//        header("Accept-Ranges: bytes");
-//        header("Accept-Length: ".filesize($file_url));
-//        header("Content-Disposition: attachment; filename=".$filename.'.xlsx');
-//        //输出文件内容
-//        echo fread($file,filesize($file_url));
-//        fclose($file);
+        // $file_path = "./Public/Download/";
+        // $file_url = $file_path.$filename.'.xlsx';
+        // $objWriter->save($file_path.$filename.'.xlsx');
+        // $file=fopen($file_url,'r'); //打开文件
+        // //输入文件标签
+        // header("Content-type: application/octet-stream");
+        // header("Accept-Ranges: bytes");
+        // header("Accept-Length: ".filesize($file_url));
+        // header("Content-Disposition: attachment; filename=".$filename.'.xlsx');
+        // //输出文件内容
+        // echo fread($file,filesize($file_url));
+        // fclose($file);
 
         // 2.接下来当然是下载这个表格了，在浏览器输出就好了
         header("Pragma: public");
@@ -1108,6 +1186,48 @@ class CommonAction extends Action {
         header("Content-Type:application/vnd.ms-execl");
         header("Content-Type:application/octet-stream");
         header("Content-Type:application/download");;
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+    }
+
+    public function exportExcel4($tid,$start_row,$ziduan,$list,$filename,$info=array()){
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $objPHPExcel = new \PHPExcel();
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+
+        // $objActSheet->setCellValue('坐标','值');
+        $i = 0;
+        foreach($ziduan as $v){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($i).'1',$v);
+            $i++;
+        }
+
+        $i = $start_row;// 行从2开始
+
+        // dump($list);die;
+        foreach ($list as $row) {
+            $j = 0;// 行从0开始,即从A开始
+            foreach($row as $v){
+                // 写入数值
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                $j++;
+            }
+            $i++;
+        }
+
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
         header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
         header("Content-Transfer-Encoding:binary");
         $objWriter->save('php://output');
@@ -1562,20 +1682,39 @@ class CommonAction extends Action {
         foreach ($arr as $k => $v){
             $beizhu = str_replace($k,$v,$beizhu);
         }
-        $count = count(explode("／", $beizhu));
+        $beizhu_arr = explode("／", $beizhu);
+        $count = count($beizhu_arr);
+        $first = mb_substr($beizhu_arr[0],6);
+        $res = M('kecheng')->field('name')->select();
+        // dump($res);die;
+        foreach($res as $v){
+            $kecheng[] = $v['name'];
+        }
+        // dump($kecheng);die;
         //如果是计算业绩的备注，分隔后是8个值
         if($count>=2){
             $data['count'] = $count;
             if($count != 9){
                 $data['status'] = false;
                 $data['info'] = "‘／’不等于8个，请检查备注格式！";
+                $data['error'] = 2;
             }else{
-                $data['status'] = true;
-                $data['info'] = $beizhu;
+                if(!in_array($first,$kecheng)){
+                    // dump($first);
+                    $data['status'] = false;
+                    $data['info'] = "课程名称不对";
+                    $data['error'] = 3;
+                }else{
+                    $data['status'] = true;
+                    $data['info'] = $beizhu;
+                    $data['error'] = 1;
+                }
+                
             }
         }else{
             $data['status'] = true;
             $data['info'] = $beizhu;
+            $data['error'] = 1;
         }
         return $data;
     }

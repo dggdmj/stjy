@@ -1,0 +1,33 @@
+<form method="post" id="form" action="#">
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <if condition="$list_banjimc neq ''">
+                <div style="color:red;font-size:40px;">以下是班级名称异常名单,请到校管家进行纠正处理</div>
+                <div><a class="button bg-blue button-small" type="submit" href="__MODULE__/Common/downloadYcb/tid/{$postData['tid']}/qishu/{$postData['qishu']}/sid/{$postData['sid']}/type/bjxxb_banjimc" style="margin:10px 5px;">点击下载</a></div>
+                <table id="table" class="table table-hover table-bordered table-condensed">
+                    <tbody>
+                    <tr>
+                        <foreach name='tbnames' item='name'>
+                            <th width="80">{$name}</th>
+                        </foreach>
+                    </tr>
+                    <foreach name='list_banjimc' item='v'>
+                        <tr>
+                            <foreach name='tbnames' key="key" item='name'>
+                                <td title="编号:{$v.id};字段名:{$name}">{$v[$key]}</td>
+                            </foreach>
+                        </tr>
+                    </foreach>
+                    </tbody>
+                </table>
+            </if>
+        </div>
+    </div>
+</form>
+<style>
+    body {
+        overflow-x: scroll;
+        background-color: #fff;
+        width: 3000px;
+    }
+</style>

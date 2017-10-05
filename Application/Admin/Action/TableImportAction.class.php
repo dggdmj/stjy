@@ -295,93 +295,32 @@ class TableImportAction extends CommonAction{
             }
 
             // 位置不能移动,要等班级学员信息表执行完才有其$id_bjxyxxb
-            if($_POST['tid'] == 3){
-                $id_xyxxb = $res_xyxxb['id'];
-                $data_xyxxb_zaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读"')->select();// 查询出学员信息表当月在读学员
-                $data_xyxxb_tuixue = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="已退学"')->select();
-                $xiaoqu = $this->getInfo($_POST['qishu'],$_POST['sid'])['school'];// 查询出学员信息表当月已退学学员
-                $data_xyxxb_benxiaozaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读" and xiaoqu ="'.$xiaoqu.'"')->select();// 查询出学员信息表当月在读学员
-                $id_bjxyxxb = M('qishu_history')->where('qishu ='.$_POST['qishu'].' and sid ='.$_POST['sid'].' and tid=3')->getField('id');
-                $data_bjxyxxb = M('bjxyxxb')->field('xuehao')->where('suoshudd ='.$id_bjxyxxb)->select();// 查询出当月班级学员信息表在班学员
+            switch ($_POST['tid']) {
+                case 1:
+                    $res = $this->checkXyxxb($_POST);
+                    if($res == 'error'){
+                        return 'error';
+                    }
+                break;
+                case 2:
+                    $res = $this->checkBjxxb($_POST);
+                    if($res == 'error'){
+                        return 'error';
+                    }
+                break;
+                case 3:
+                    $res = $this->checkBjxyxxb($_POST);
+                    if($res == 'error'){
+                        return 'error';
+                    }
+                break;
+                case 4:
+                    $res = $this->checkSjjlb($_POST);
+                    if($res == 'error'){
+                        return 'error';
+                    }
+                break;
                 
-                $list_xyxxb_zaidu = $this->getXuehao($data_xyxxb_zaidu);
-                $list_xyxxb_tuixue = $this->getXuehao($data_xyxxb_tuixue);
-                $list_bjxyxxb = $this->getXuehao($data_bjxyxxb);
-                $list_xyxxb_benxiaozaidu = $this->getXuehao($data_xyxxb_benxiaozaidu);
-
-                $weijinban = array_diff($list_xyxxb_benxiaozaidu,$list_bjxyxxb);// 本校在读而未出现在本校班级学员信息表的,未进班
-                // dump($list_xyxxb_benxiaozaidu);
-                // dump($list_bjxyxxb);
-                // die;
-                $zhuanchu = array_diff($list_xyxxb_zaidu,$list_xyxxb_benxiaozaidu);// 在读非本校的学员,即转出
-                // 转出和已退学的合并
-                $out = array_merge($list_tuixue,$zhuanchu);
-                $out = array_flip(array_flip($out));// 去除重复
-                $yichang = array_intersect($list_bjxyxxb,$out);// 既出现在本校班级学员信息表,又出现在转出和已退学里面的,异常
-                // dump($yichang);
-                // dump($weijinban);
-                // die;
-                // dump($yichang);
-                if(!empty($yichang) || !empty($weijinban)){
-                    // foreach($yichang as $v){
-                    //     $_yichang[] = '"'.$v.'"';
-                    // }
-                    // $yc = '['.implode(',',$_yichang).']';
-                    if(!empty($yichang)){
-                        if(isset($map)){
-                            unset($map);
-                        }
-                        $map['xuehao'] = array('in',$yichang);
-                        $list_yichang = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
-                        $this->assign('list_yichang',$list_yichang);// 赋值数据集
-                    }
-                    if(!empty($weijinban)){
-                        if(isset($map)){
-                            unset($map);
-                        }
-                        $map['xuehao'] = array('in',$weijinban);
-                        $list_weijinban = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
-                        $this->assign('list_weijinban',$list_weijinban);// 赋值数据集
-                    }
-                    
-                    // dump($id);
-                    $tbnames = array_flip(array_diff($this->getComment('xyxxb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
-                    
-                    $this->assign('tbnames',$tbnames);// 赋值数据集
-                    // unlink($file_name);// 删除excel文档
-                    // --------------删除操作执行开始--------------
-                    // $id_del = M('qishu_history')->where('qishu ='.$_POST['qishu'].' and sid='.$_POST['sid'].' and tid=3')->getField('id');
-                    // $res1 = M($tablename)->where("suoshudd = ".$id_del)->delete();// 从表明里删除所属id对应的数据
-                    // $res2 = M("qishu_history")->where("id = ".$id_del)->delete();// 从qishu_history删除记录
-                    // unlink($filename);// 删除存放的excel表
-            
-                    // // 对应数据总表的该字段状态改为1,就是未导入
-                    // if(isset($temp)){
-                    //     unset($temp);
-                    // }
-                    // $temp[$tablename] = 1;
-                    // M('sjzb')->where($where)->save($temp);
-                    // --------------删除操作执行结束--------------
-                    $this->adminDisplay('table_xq_error');
-                    return 'error';
-                }
-            }elseif($_POST['tid'] == 4){
-                $id_sjjlb = $this->getQishuId($_POST['qishu'],$_POST['sid'],4);
-                $res_sjjlb = M('sjjlb')->where('suoshudd ='.$id_sjjlb)->select();
-                foreach($res_sjjlb as $v){
-                    $beizhu = $this->filterBeizhu($v['beizhu']);
-                    if(!$beizhu['status']){
-                        $list_beizhu[] = $v;
-                    }
-                }
-                // dump($list_beizhu);die;
-                if(!empty($list_beizhu)){
-                    $this->assign('list_beizhu',$list_beizhu);
-                    $tbnames = array_flip(array_diff($this->getComment('sjjlb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
-                    $this->assign('tbnames',$tbnames);// 赋值数据集
-                    $this->adminDisplay('table_xq_sjjlb_error');
-                    return 'error';
-                }
             }
 
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
@@ -390,76 +329,263 @@ class TableImportAction extends CommonAction{
         }
     }
 
-    // public function checkBjxyxxb($res_xyxxb,$postData){
-    //     $id_xyxxb = $res_xyxxb['id'];
-    //     $data_xyxxb_zaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读"')->select();// 查询出学员信息表当月在读学员
-    //     $data_xyxxb_tuixue = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="已退学"')->select();
-    //     $xiaoqu = $this->getInfo($postData['qishu'],$postData['sid'])['school'];// 查询出学员信息表当月已退学学员
-    //     $data_xyxxb_benxiaozaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读" and xiaoqu ="'.$xiaoqu.'"')->select();// 查询出学员信息表当月在读学员
-    //     $id_bjxyxxb = M('qishu_history')->where('qishu ='.$postData['qishu'].' and sid ='.$postData['sid'].' and tid=3')->getField('id');
-    //     $data_bjxyxxb = M('bjxyxxb')->field('xuehao')->where('suoshudd ='.$id_bjxyxxb)->select();// 查询出当月班级学员信息表在班学员
-        
-    //     $list_xyxxb_zaidu = $this->getXuehao($data_xyxxb_zaidu);
-    //     $list_xyxxb_tuixue = $this->getXuehao($data_xyxxb_tuixue);
-    //     $list_bjxyxxb = $this->getXuehao($data_bjxyxxb);
-    //     $list_xyxxb_benxiaozaidu = $this->getXuehao($data_xyxxb_benxiaozaidu);
+    // 判断学员信息表中的（校区）列为本校区，然后（状态）列为除去空白的，最后（就读学校）列和（年纪）列不能为空的
+    public function getXyxxbYc($postData){
+        $postData['tid'] = 1;
+        $id_xyxxb = $this->getQishuId($postData['qishu'],$postData['sid'],1);
+        $map['suoshudd'] = $id_xyxxb;
+        $map['xiaoqu'] = $this->getInfo($postData['qishu'],$postData['sid'])['school'];
+        $map['zhuangtai'] = '';
+        $res_xyxxb = M('xyxxb')->field('id,suoshudd,daorusj',true)->where($map)->select();
+        // dump($res_xyxxb);
+        foreach($res_xyxxb as $v){
+            if(empty($v['jiuduxx']) || empty($v['nianji'])){
+                $list_error[] = $v;
+            }
+        }
+        // dump($list_error);die;
+        $arr['error'] = $list_error;
+        $arr['postData'] = $postData;
+        return $arr;
+    }
 
-    //     $weijinban = array_diff($list_xyxxb_benxiaozaidu,$list_bjxyxxb);// 本校在读而未出现在本校班级学员信息表的,未进班
-    //     // dump($list_xyxxb_benxiaozaidu);
-    //     // dump($list_bjxyxxb);
-    //     // die;
-    //     $zhuanchu = array_diff($list_xyxxb_zaidu,$list_xyxxb_benxiaozaidu);// 在读非本校的学员,即转出
-    //     // 转出和已退学的合并
-    //     $out = array_merge($list_tuixue,$zhuanchu);
-    //     $out = array_flip(array_flip($out));// 去除重复
-    //     $yichang = array_intersect($list_bjxyxxb,$out);// 既出现在本校班级学员信息表,又出现在转出和已退学里面的,异常
-    //     // dump($yichang);
-    //     // dump($weijinban);
-    //     // die;
-    //     // dump($yichang);
-    //     if(!empty($yichang) || !empty($weijinban)){
-    //         // foreach($yichang as $v){
-    //         //     $_yichang[] = '"'.$v.'"';
-    //         // }
-    //         // $yc = '['.implode(',',$_yichang).']';
-    //         if(!empty($yichang)){
-    //             if(isset($map)){
-    //                 unset($map);
-    //             }
-    //             $map['xuehao'] = array('in',$yichang);
-    //             $list_yichang = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
-    //             $this->assign('list_yichang',$list_yichang);// 赋值数据集
-    //         }
-    //         if(!empty($weijinban)){
-    //             if(isset($map)){
-    //                 unset($map);
-    //             }
-    //             $map['xuehao'] = array('in',$weijinban);
-    //             $list_weijinban = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
-    //             $this->assign('list_weijinban',$list_weijinban);// 赋值数据集
-    //         }
+    public function checkXyxxb($postData){
+        $arr = $this->getXyxxbYc($postData);
+        // dump($arr);die;
+        
+        if(!empty($arr['error'])){
+            $this->assign('list_error',$arr['error']);
+            $tbnames = array_flip(array_diff($this->getComment('xyxxb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
+            // dump($arr['error']);die;
+            $this->assign('tbnames',$tbnames);// 赋值数据集
+            $this->assign('postData',$arr['postData']);
+            $this->adminDisplay('table_xq_xyxxb_error');
+            return 'error';
+        }
+    }
+
+    // （班级信息表）的班级编码要进行判断，1：根据我们的班级编码结构进行判断，然后错误需要提示并生成excel表格下载，没有修改拒绝上传
+    public function getBjxxbYc($postData){
+        $jingdujb = [];
+        $fandujb1 = [];
+        $fandujb2 = [];
+        $fandujb3 = [];
+        $shifoutsb = [];
+        $xueshengnj = [];
+        // 获取编码表数据
+        $data_bmb = M('banjibianhao')->field('id',true)->select();
+        foreach($data_bmb as $v){
+            if(!empty($v['jingdujb'])){
+                $jingdujb[] = $v['jingdujb'];
+            }
+            if(!empty($v['fandujb1'])){
+                $fandujb1[] = $v['fandujb1'];
+            }
+            if(!empty($v['fandujb2'])){
+                $fandujb2[] = $v['fandujb2'];
+            }
+            if(!empty($v['fandujb3'])){
+                $fandujb3[] = $v['fandujb3'];
+            }
+            if(!empty($v['shifoutsb'])){
+                $shifoutsb[] = $v['shifoutsb'];
+            }
+            if(!empty($v['xueshengnj'])){
+                $xueshengnj[] = $v['xueshengnj'];
+            }
+        }
+        $shifoutsb = array_flip(array_flip($shifoutsb));
+        $xueshengnj = array_flip(array_flip($xueshengnj));
+        $fandujb = array_merge($fandujb1,$fandujb2,$fandujb3);
+
+        $postData['tid'] = 2;
+        $id_bjxxb = $this->getQishuId($postData['qishu'],$postData['sid'],2);
+        $res_bjxxb = M('bjxxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id_bjxxb)->select();
+        // dump($res_bjxxb);die;
+        $list_banjimc = [];
+        foreach($res_bjxxb as $v){
+            $bjbm = $v['banjimc'];
+            if(substr($bjbm,0,3) != mb_substr($bjbm,0,3)){
+                continue;
+            }
+            $jingdu = substr($bjbm,0,3);
+            $fandu = substr($bjbm,3,3);
+            $tsb = substr($bjbm,6,1);
+            $nianji = substr($bjbm,7,2);
+            if(!in_array($jingdu,$jingdujb) || !in_array($fandu,$fandujb) || !in_array($tsb,$shifoutsb) || !in_array($nianji,$xueshengnj)){
+                $list_banjimc[] = $v;
+            }
+        }
+        
+        $arr['banjimc'] = $list_banjimc;
+        $arr['postData'] = $postData;
+        return $arr;
+    }
+
+    public function checkBjxxb($postData){
+        $arr = $this->getBjxxbYc($postData);
+        // dump($arr['banjimc']);
+        
+        if(!empty($arr['banjimc'])){
+            $this->assign('list_banjimc',$arr['banjimc']);
+            $tbnames = array_flip(array_diff($this->getComment('bjxxb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
+            $this->assign('tbnames',$tbnames);// 赋值数据集
+            $this->assign('postData',$arr['postData']);
+            $this->adminDisplay('table_xq_bjxxb_error');
+            return 'error';
+        }
+    }
+
+    // 获取班级学员信息表异常数据
+    public function getBjxyxxbYc($postData){
+        $postData['tid'] = 1;
+        $id_xyxxb = $this->getQishuId($postData['qishu'],$postData['sid'],1);
+        $data_xyxxb_zaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读"')->select();// 查询出学员信息表当月在读学员
+        $data_xyxxb_tuixue = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="已退学"')->select();
+        $xiaoqu = $this->getInfo($postData['qishu'],$postData['sid'])['school'];// 查询出学员信息表当月已退学学员
+        $data_xyxxb_benxiaozaidu = M('xyxxb')->field('xuehao')->where('suoshudd ='.$id_xyxxb.' and zhuangtai="在读" and xiaoqu ="'.$xiaoqu.'"')->select();// 查询出学员信息表当月在读学员
+        $id_bjxyxxb = M('qishu_history')->where('qishu ='.$postData['qishu'].' and sid ='.$postData['sid'].' and tid=3')->getField('id');
+        $data_bjxyxxb = M('bjxyxxb')->field('xuehao')->where('suoshudd ='.$id_bjxyxxb)->select();// 查询出当月班级学员信息表在班学员
+        
+        $list_xyxxb_zaidu = $this->getXuehao($data_xyxxb_zaidu);
+        $list_xyxxb_tuixue = $this->getXuehao($data_xyxxb_tuixue);
+        $list_bjxyxxb = $this->getXuehao($data_bjxyxxb);
+        $list_xyxxb_benxiaozaidu = $this->getXuehao($data_xyxxb_benxiaozaidu);
+
+        $weijinban = array_diff($list_xyxxb_benxiaozaidu,$list_bjxyxxb);// 本校在读而未出现在本校班级学员信息表的,未进班
+        // dump($list_xyxxb_benxiaozaidu);
+        // dump($list_bjxyxxb);
+        // die;
+        $zhuanchu = array_diff($list_xyxxb_zaidu,$list_xyxxb_benxiaozaidu);// 在读非本校的学员,即转出
+        // 转出和已退学的合并
+        $out = array_merge($list_tuixue,$zhuanchu);
+        $out = array_flip(array_flip($out));// 去除重复
+        $yichang = array_intersect($list_bjxyxxb,$out);// 既出现在本校班级学员信息表,又出现在转出和已退学里面的,异常
+        if(empty($weijinban)){
+            $weijinban = [];
+        }
+        if(empty($yichang)){
+            $yichang = [];
+        }
+        $arr['yichang'] = $yichang;
+        $arr['weijinban'] = $weijinban;
+        $arr['postData'] = $postData;
+        return $arr;
+    }
+
+    public function checkBjxyxxb($postData){
+        $arr = $this->getBjxyxxbYc($postData);
+        $id_xyxxb = $this->getQishuId($postData['qishu'],$postData['sid'],1);
+        $yichang = $arr['yichang'];
+        $weijinban = $arr['weijinban'];
+        // dump($yichang);
+        // dump($weijinban);
+        // die;
+        // dump($yichang);
+        if(!empty($yichang) || !empty($weijinban)){
+            // foreach($yichang as $v){
+            //     $_yichang[] = '"'.$v.'"';
+            // }
+            // $yc = '['.implode(',',$_yichang).']';
+            if(!empty($yichang)){
+                if(isset($map)){
+                    unset($map);
+                }
+                $map['xuehao'] = array('in',$yichang);
+                $list_yichang = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
+                $this->assign('list_yichang',$list_yichang);// 赋值数据集
+            }
+            if(!empty($weijinban)){
+                if(isset($map)){
+                    unset($map);
+                }
+                $map['xuehao'] = array('in',$weijinban);
+                $list_weijinban = M('xyxxb')->field('id',true)->where($map)->where("suoshudd = ".$id_xyxxb)->select();
+                $this->assign('list_weijinban',$list_weijinban);// 赋值数据集
+            }
             
-    //         // dump($id);
-    //         $tbnames = array_flip(array_diff($this->getComment('xyxxb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
+            // dump($id);
+            $tbnames = array_flip(array_diff($this->getComment('xyxxb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
             
-    //         $this->assign('tbnames',$tbnames);// 赋值数据集
-    //         // unlink($file_name);// 删除excel文档
-    //         // --------------删除操作执行开始--------------
-    //         // $id_del = M('qishu_history')->where('qishu ='.$postData['qishu'].' and sid='.$postData['sid'].' and tid=3')->getField('id');
-    //         // $res1 = M($tablename)->where("suoshudd = ".$id_del)->delete();// 从表明里删除所属id对应的数据
-    //         // $res2 = M("qishu_history")->where("id = ".$id_del)->delete();// 从qishu_history删除记录
-    //         // unlink($filename);// 删除存放的excel表
+            $this->assign('tbnames',$tbnames);// 赋值数据集
+            $this->assign('postData',$postData);
+            // unlink($file_name);// 删除excel文档
+            // --------------删除操作执行开始--------------
+            // $id_del = M('qishu_history')->where('qishu ='.$postData['qishu'].' and sid='.$postData['sid'].' and tid=3')->getField('id');
+            // $res1 = M($tablename)->where("suoshudd = ".$id_del)->delete();// 从表明里删除所属id对应的数据
+            // $res2 = M("qishu_history")->where("id = ".$id_del)->delete();// 从qishu_history删除记录
+            // unlink($filename);// 删除存放的excel表
     
-    //         // // 对应数据总表的该字段状态改为1,就是未导入
-    //         // if(isset($temp)){
-    //         //     unset($temp);
-    //         // }
-    //         // $temp[$tablename] = 1;
-    //         // M('sjzb')->where($where)->save($temp);
-    //         // --------------删除操作执行结束--------------
-    //         $this->adminDisplay('table_xq_error');
-    //     }
-    // }
+            // // 对应数据总表的该字段状态改为1,就是未导入
+            // if(isset($temp)){
+            //     unset($temp);
+            // }
+            // $temp[$tablename] = 1;
+            // M('sjzb')->where($where)->save($temp);
+            // --------------删除操作执行结束--------------
+            $this->adminDisplay('table_xq_error');
+            return 'error';
+        }
+    }
+
+    // 获取收据记录表异常数据
+    public function getSjjlbYc($postData){
+        $postData['tid'] = 4;
+        $id_sjjlb = $this->getQishuId($postData['qishu'],$postData['sid'],4);
+        $res_sjjlb = M('sjjlb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id_sjjlb)->select();
+        // dump($res_sjjlb);die;
+        foreach($res_sjjlb as $v){
+            $beizhu = $this->filterBeizhu($v['beizhu']);
+            if(!$beizhu['status']){
+                if($beizhu['error'] == 2){
+                    $list_beizhu[] = $v;
+                }elseif($beizhu['error'] == 3){
+                    $list_beizhu2[] = $v;
+                }
+                
+            }
+            if($v['yejigsr'] == ''){
+                $list_guishuren[] = $v;
+            }
+        }
+        if(empty($list_beizhu)){
+            $list_beizhu = [];
+        }
+        if(empty($list_beizhu2)){
+            $list_beizhu2 = [];
+        }
+        if(empty($list_guishuren)){
+            $list_guishuren = [];
+        }
+        $arr['beizhu'] = $list_beizhu;
+        $arr['beizhu2'] = $list_beizhu2;
+        $arr['guishuren'] = $list_guishuren;
+        $arr['postData'] = $postData;
+        return $arr;
+    }
+
+    // 渲染数据记录表异常页面
+    public function checkSjjlb($postData){
+        $arr = $this->getSjjlbYc($postData);
+        // dump($list_beizhu);die;
+        if(!empty($arr['beizhu']) || !empty($arr['beizhu2']) || !empty($arr['guishuren'])){
+            if(!empty($arr['beizhu'])){
+                $this->assign('list_beizhu',$arr['beizhu']);
+            }
+            if(!empty($arr['beizhu2'])){
+                $this->assign('list_beizhu2',$arr['beizhu2']);
+            }
+            if(!empty($arr['guishuren'])){
+                $this->assign('list_guishuren',$arr['guishuren']);
+            }
+            
+            $tbnames = array_flip(array_diff($this->getComment('sjjlb'),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
+            $this->assign('tbnames',$tbnames);// 赋值数据集
+            $this->assign('postData',$arr['postData']);
+            $this->adminDisplay('table_xq_sjjlb_error');
+            return 'error';
+        }
+    }
 
     /* $objPHPExcel:phpexcel对象;$colsNum:获取总列数(数字);*/
     public function getExcelZiduan($objPHPExcel,$colsNum){
