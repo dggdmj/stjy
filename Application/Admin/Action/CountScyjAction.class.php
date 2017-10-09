@@ -62,6 +62,11 @@ class CountScyjAction extends CommonAction {
     //遍历新数组，统计业绩归属人的业绩数据
     public function countList($list,$xxk_id,$rentouarr){
         $arr = array();     //用于存放业绩归属人的信息
+        $kecheng_list = M("kecheng")->select();
+        $kecheng_arr = array();
+        foreach ($kecheng_list as $k=>$v){
+            $kecheng_arr[$v['name']] = $v["ticheng"];
+        }
         foreach ($list as $k=>$v){
             $beizhu = $v['data']['beizhu'];
             $xishu = $v['xishu'];
@@ -82,7 +87,10 @@ class CountScyjAction extends CommonAction {
                 $arr[$v['yejigsr']][$extend['zzjslx']] += round($extend['jsyj'],0);
                 //老带新
                 if(!empty($extend['shifouldx'])){
-                    $arr[$v['yejigsr']]['laodaixin'] += round($extend['jsyj'],0);
+                    //改课程的提成大于等于12%的才统计进入老带新业绩
+                    if($kecheng_arr[$extend['zzjslx']] >= 0.12){
+                        $arr[$v['yejigsr']]['laodaixin'] += round($extend['jsyj'],0);
+                    }
                 }
             }
             //计算合计营业额

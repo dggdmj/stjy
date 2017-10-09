@@ -60,8 +60,7 @@ class LoginAction extends Action {
 		}
 		//读取用户权限
 		RBAC::saveAccessList();
-		dump(RBAC::saveAccessList());
-		
+
     	$this->redirect('/Index/index');
     }
 

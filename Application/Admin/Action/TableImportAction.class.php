@@ -184,7 +184,7 @@ class TableImportAction extends CommonAction{
     //数据导入
     public function dataUpload() {
         if (!empty($_FILES)) {
-            // dump($_FILES);die;
+//             dump($_FILES);die;
             $name = explode('.',$_FILES['excel']['name'])[0];// 获取上传excel文档的文档名
 
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
@@ -210,7 +210,7 @@ class TableImportAction extends CommonAction{
             );
 
             $upload = new \Think\Upload($config);
-
+            $upload->autoSub = false;
             if (!$info = $upload->upload()) {
                 $this->error($upload->getError());
             }
