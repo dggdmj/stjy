@@ -210,7 +210,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountJysjAction();
         $list = $data->getJysjbData($qishu,$sid);//获得统计数据
-        // dump($list);
+        dump($list);
         $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign('list',$list);
         $this->assign('arr',$title);

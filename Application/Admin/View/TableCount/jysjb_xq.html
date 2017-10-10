@@ -1,1 +1,228 @@
-<form method="post" id="form" action="#">    <div class="panel one-box">        <div class="table-responsive">            <h1 align="center" style="margin: 10px">{$arr['year']}年{$arr['month']}月{$arr['school']}经营数据汇总表</h1>            <table class="table table-hover table-bordered table-condensed"  style="width: 400px">                <caption align="top">分校情况</caption>                <thead>                <tr>                    <th width="100">分校面积</th>                    <th width="100">课室数</th>                </tr>                </thead>                <tbody>                    <tr>                        <td rowspan="10">{$list.school_info.mianji}</td>                        <td rowspan="10">{$list.school_info.classnum}</td>                    </tr>                </tbody>            </table>            <table class="table table-hover table-bordered table-condensed"  style="width: 400px">                <caption align="top">分校开课表</caption>                <thead>                <tr>                    <th width="100">开课时间段</th>                    <th width="100">班级数</th>                </tr>                </thead>                <tbody>                <foreach name="list.kksd" key="key" item="vo">                    <if condition="$key neq '总计'">                    <tr>                        <td>{$key}</td>                        <td>{$vo}</td>                    </tr>                    </if>                </foreach>                    <tr>                        <td>总计</td>                        <td>{$list['kksd']['总计']}</td>                    </tr>                </tbody>            </table>            <table class="table table-hover table-bordered table-condensed"  style="width: 400px">                <caption align="top">学生人数变动</caption>                <thead>                <tr>                    <th width="100">项目</th>                    <th width="100">人数</th>                </tr>                </thead>                <tbody>                <foreach name="list.xsrsbd" key="key" item="vo">                    <if condition="$key neq '总计'">                        <tr>                            <td>{$key}</td>                            <td>{$vo}</td>                        </tr>                    </if>                </foreach>                </tbody>            </table>            <table class="table table-hover table-bordered table-condensed">                <caption align="top">在册学生学期状态表(国际班课程)</caption>                <thead>                <tr>                    <th>年级</th>                    <th>总人数</th>                    <th>未进班</th>                    <th>预报名</th>                    <th>停读(预计可复学)</th>                    <th>停读(预计不可复学已结算续费)</th>                    <th>实际在班人数</th>                    <volist name="list.kecheng" id="kc">                    <th>{$kc}</th>                    </volist>                </tr>                </thead>                <tbody>                <foreach name="list.zaice" item="v" key="k">                    <tr>                        <td>{$k}</td>                        <td>{$v["zrs"]}</td>                        <td>{$v["weijinban"]}</td>                        <td></td>                        <td>{$v["tingdu"]}</td>                        <td></td>                        <td>{$v["sjzbrs"]}</td>                        <volist name="list.kecheng" id="kc">                            <td><?php echo $v[$kc];?></td>                        </volist>                    </tr>                </foreach>                </tbody>            </table>            <table class="table table-hover table-bordered table-condensed" style="width: 600px">                <caption align="top">班级重要数据</caption>                <thead>                <tr>                    <th rowspan="3">部门</th>                    <th colspan="4">当月数据</th>                </tr>                <tr>                    <th>当月班级数</th>                    <th>人数总计</th>                    <th>班级饱和率</th>                </tr>                </thead>                <tbody>                        <foreach name="list.bjbmsj" item="vo">                            <notempty name="vo.bumen">                            <tr>                                <td>{$vo.bumen}</td>                                <td>{$vo.dybjs}</td>                                <td>{$vo.rszj}</td>                                <td>{$vo.baoguanglv}</td>                            </tr>                            </notempty>                        </foreach>                        <tr>                            <td>总计</td>                            <td>{$list.bjbmsj.dybjs_total}</td>                            <td>{$list.bjbmsj.rszj_total}</td>                            <td>{$list.bjbmsj.baoguanglv_total}</td>                        </tr>                </tbody>            </table>            <table class="table table-hover table-bordered table-condensed" style="width: 1500px">                <caption align="top">各班型在读人数统计</caption>                <thead>                <tr>                    <th>各班型在读人数统计</th>                    <th>幼儿班</th>                    <th>小学周末白天班</th>                    <th>中学班</th>                    <th>小学平时1.5小时班</th>                    <th>小学平时2小时班</th>                    <th>小学平时2.5小时班</th>                    <th>小学平时3小时班</th>                    <th>周日晚上</th>                    <th>周五晚上</th>                    <th>周六晚上</th>                    <th>一对一</th>                    <th>合计</th>                </tr>                </thead>                <tbody>                        <foreach name="list.gbxzdrstj" item="g" key="key">                        <tr>                            <td><empty name="g.bumen">总计<else/>{$g.bumen}</empty></td>                            <td>{$g['yeb']}</td>                            <td>{$g['xxzmb']}</td>                            <td>{$g['zxb']}</td>                            <td>{$g['xxps15ban']}</td>                            <td>{$g['xxps20ban']}</td>                            <td>{$g['xxps25ban']}</td>                            <td>{$g['xxps30ban']}</td>                            <td>{$g['zsws']}</td>                            <td>{$g['zwws']}</td>                            <td>{$g['zlws']}</td>                            <td>{$g['ydy']}</td>                            <td><empty name="g.bumen">{$g['heji_t']}<else/>{$g['heji']}</empty></td>                        </tr>                        </foreach>                </tbody>            </table>        </div>    </div></form><style>    body {        overflow-x: scroll;        background-color: #fff;        width: 3000px;    }</style>
+<form method="post" id="form" action="#">
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <h1 align="center" style="margin: 10px">{$arr['year']}年{$arr['month']}月{$arr['school']}经营数据汇总表</h1>
+            <table class="table table-hover table-bordered table-condensed"  style="width: 400px">
+                <caption align="top">分校情况</caption>
+                <thead>
+                <tr>
+                    <th width="100">分校面积</th>
+                    <th width="100">课室数</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="10">{$list.school_info.mianji}</td>
+                        <td rowspan="10">{$list.school_info.classnum}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-hover table-bordered table-condensed"  style="width: 400px">
+                <caption align="top">分校开课表</caption>
+                <thead>
+                <tr>
+                    <th width="100">开课时间段</th>
+                    <th width="100">班级数</th>
+                </tr>
+                </thead>
+                <tbody>
+                <foreach name="list.kksd" key="key" item="vo">
+                    <if condition="$key neq '总计'">
+                    <tr>
+                        <td>{$key}</td>
+                        <td>{$vo}</td>
+                    </tr>
+                    </if>
+                </foreach>
+                    <tr>
+                        <td>总计</td>
+                        <td>{$list['kksd']['总计']}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-hover table-bordered table-condensed"  style="width: 400px">
+                <caption align="top">数据比对</caption>
+                <tbody>
+                    <tr>
+                        <td>当月班级数总计(C57)</td>
+                        <td>当月开班班级数总计(C21)</td>
+                        <td colspan="2">是否相等</td>
+                    </tr>
+                    <tr>
+                        <td>{$list['bjbmsj']['dybjs_total']}</td>
+                        <td>{$list['kksd']['总计']}</td>
+                        <if condition="$list['bjbmsj']['dybjs_total'] eq $list['kksd']['总计']">
+                        <td style="color:red;" colspan="2">是</td>
+                        <else />
+                        <td style="color:red;" colspan="2">否</td>
+                        </if>
+                    </tr>
+                    <tr>
+                        <td>在册学生总人数合计(C36)</td>
+                        <td>本月底在册学生人数(D46)</td>
+                        <td colspan="2">是否相等</td>
+                    </tr>
+                    <tr>
+                        <td>{$list['zaice']['合计']['zrs']}</td>
+                        <td>{$list['xsrsbd']['本月底在册学生人数']}</td>
+                        <if condition="$list['zaice']['合计']['zrs'] eq $list['xsrsbd']['本月底在册学生人数']">
+                        <td style="color:red;" colspan="2">是</td>
+                        <else />
+                        <td style="color:red;" colspan="2">否</td>
+                        </if>
+                    </tr>
+                    <tr>
+                        <td>在册学生实际在班人数总计(H36)</td>
+                        <td>班级重要数据人数总计的总计(D57)</td>
+                        <td>各班型在读人数统计合计的总计(N66)</td>
+                        <td>是否相等</td>
+                    </tr>
+                    <tr>
+                        <td>{$list['zaice']['合计']['sjzbrs']}</td>
+                        <td>{$list['bjbmsj']['rszj_total']}</td>
+                        <td>{$list['gbxzdrstj'][5]['heji']}</td>
+                        <if condition="($list['zaice']['合计']['sjzbrs'] eq $list['bjbmsj']['rszj_total']) AND ($list['bjbmsj']['rszj_total'] eq $list['gbxzdrstj'][5]['heji'])">
+                        <td style="color:red;">是</td>
+                        <else />
+                        <td style="color:red;">否</td>
+                        </if>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-hover table-bordered table-condensed"  style="width: 400px">
+                <caption align="top">学生人数变动</caption>
+                <thead>
+                <tr>
+                    <th width="100">项目</th>
+                    <th width="100">人数</th>
+                </tr>
+                </thead>
+                <tbody>
+                <foreach name="list.xsrsbd" key="key" item="vo">
+                    <if condition="$key neq '总计'">
+                        <tr>
+                            <td>{$key}</td>
+                            <td>{$vo}</td>
+                        </tr>
+                    </if>
+                </foreach>
+                </tbody>
+            </table>
+
+            <table class="table table-hover table-bordered table-condensed">
+                <caption align="top">在册学生学期状态表(国际班课程)</caption>
+                <thead>
+                <tr>
+                    <th>年级</th>
+                    <th>总人数</th>
+                    <th>未进班</th>
+                    <th>预报名</th>
+                    <th>停读(预计可复学)</th>
+                    <th>停读(预计不可复学已结算续费)</th>
+                    <th>实际在班人数</th>
+                    <volist name="list.kecheng" id="kc">
+                    <th>{$kc}</th>
+                    </volist>
+                </tr>
+                </thead>
+                <tbody>
+                <foreach name="list.zaice" item="v" key="k">
+                    <tr>
+                        <td>{$k}</td>
+                        <td>{$v["zrs"]}</td>
+                        <td>{$v["weijinban"]}</td>
+                        <td></td>
+                        <td>{$v["tingdu"]}</td>
+                        <td></td>
+                        <td>{$v["sjzbrs"]}</td>
+                        <volist name="list.kecheng" id="kc">
+                            <td><?php echo $v[$kc];?></td>
+                        </volist>
+                    </tr>
+                </foreach>
+                </tbody>
+            </table>
+            <table class="table table-hover table-bordered table-condensed" style="width: 600px">
+                <caption align="top">班级重要数据</caption>
+                <thead>
+                <tr>
+                    <th rowspan="3">部门</th>
+                    <th colspan="4">当月数据</th>
+                </tr>
+                <tr>
+                    <th>当月班级数</th>
+                    <th>人数总计</th>
+                    <th>班级饱和率</th>
+                </tr>
+                </thead>
+                <tbody>
+                        <foreach name="list.bjbmsj" item="vo">
+                            <notempty name="vo.bumen">
+                            <tr>
+                                <td>{$vo.bumen}</td>
+                                <td>{$vo.dybjs}</td>
+                                <td>{$vo.rszj}</td>
+                                <td>{$vo.baoguanglv}</td>
+                            </tr>
+                            </notempty>
+                        </foreach>
+                        <tr>
+                            <td>总计</td>
+                            <td>{$list.bjbmsj.dybjs_total}</td>
+                            <td>{$list.bjbmsj.rszj_total}</td>
+                            <td>{$list.bjbmsj.baoguanglv_total}</td>
+                        </tr>
+                </tbody>
+            </table>
+            <table class="table table-hover table-bordered table-condensed" style="width: 1500px">
+                <caption align="top">各班型在读人数统计</caption>
+                <thead>
+                <tr>
+                    <th>各班型在读人数统计</th>
+                    <th>幼儿班</th>
+                    <th>小学周末白天班</th>
+                    <th>中学班</th>
+                    <th>小学平时1.5小时班</th>
+                    <th>小学平时2小时班</th>
+                    <th>小学平时2.5小时班</th>
+                    <th>小学平时3小时班</th>
+                    <th>周日晚上</th>
+                    <th>周五晚上</th>
+                    <th>周六晚上</th>
+                    <th>一对一</th>
+                    <th>合计</th>
+                </tr>
+                </thead>
+                <tbody>
+                        <foreach name="list.gbxzdrstj" item="g" key="key">
+                        <tr>
+                            <td><empty name="g.bumen">总计<else/>{$g.bumen}</empty></td>
+                            <td>{$g['yeb']}</td>
+                            <td>{$g['xxzmb']}</td>
+                            <td>{$g['zxb']}</td>
+                            <td>{$g['xxps15ban']}</td>
+                            <td>{$g['xxps20ban']}</td>
+                            <td>{$g['xxps25ban']}</td>
+                            <td>{$g['xxps30ban']}</td>
+                            <td>{$g['zsws']}</td>
+                            <td>{$g['zwws']}</td>
+                            <td>{$g['zlws']}</td>
+                            <td>{$g['ydy']}</td>
+                            <td><empty name="g.bumen">{$g['heji_t']}<else/>{$g['heji']}</empty></td>
+                        </tr>
+                        </foreach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<style>
+    body {
+        overflow-x: scroll;
+        background-color: #fff;
+        width: 3000px;
+    }
+</style>
