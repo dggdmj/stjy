@@ -1033,15 +1033,21 @@ class CommonAction extends Action {
         $objActSheet->setCellValue('C5',$school_data['classnum']);
         if(!empty($id)){
             $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
-            
+            // dump($data1);die;
             $i = 9;// 行从5开始
     
             foreach ($data1 as $row) {
                 $j = 1;// 行从0开始,即从A开始
                 foreach($row as $v){
                     // 写入数值
-                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
-                    $j++;
+                    if($row['kaikesjd'] != '总计'){
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                        $j++;
+                    }else{
+                        $objActSheet->setCellValue('C21',$v);
+                    }
+                    
+                    
                 }
                 $i++;
             }
@@ -1059,7 +1065,7 @@ class CommonAction extends Action {
                 }
                 $i++;
             }
-    
+
             $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
     
             $i = 52;// 行从52开始
@@ -1085,6 +1091,18 @@ class CommonAction extends Action {
                     $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
                     $j++;
                 }
+                $i++;
+            }
+
+            $obj = new \Admin\Action\CountJysjAction();
+            $res5 = M('qishu_history')->where('id='.$id)->find();
+            // dump($res5);die;
+            $qishu = $res5['qishu'];
+            $sid= $res5['sid'];
+            $data5 = $obj->getxsrsbd($qishu,$sid);//获得统计数据
+            $i=39;
+            foreach($data5 as $v){
+                $objActSheet->setCellValue('D'.$i,$v);
                 $i++;
             }
         }
