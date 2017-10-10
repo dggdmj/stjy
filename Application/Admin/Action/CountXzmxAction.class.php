@@ -46,7 +46,7 @@ class CountXzmxAction extends CommonAction {
 
         // 去掉重复值
         $new = array_flip(array_flip($new));
-        // dump($new);
+        // dump($new);die;
         // 学号在新增的学号里面,且是本校学校学员,期数是本期的
         $map['stjy_xyxxb.xuehao'] = array('in',$new);
         $map['stjy_xyxxb.suoshudd'] = M('qishu_history')->where('qishu='.$qishu.' and sid='.$sid.' and tid=1')->getField('id');

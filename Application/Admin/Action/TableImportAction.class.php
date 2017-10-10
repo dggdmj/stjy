@@ -282,7 +282,26 @@ class TableImportAction extends CommonAction{
             }else{
                 // 获取excel里面的所有字段
                 $ziduan = $this->getExcelZiduan($objPHPExcel,$colsNum);
+                // 检测必须列
+                $cha = $this->checkBixu($tablename,$ziduan);
+                
+                if(!empty($cha)){
+                    $notice = implode(',',$cha);
 
+                    // 删除数据总表和期数的记录
+                    // --------------删除操作执行开始--------------
+                    M("qishu_history")->where("id = ".$qishu_id)->delete();// 从qishu_history删除记录
+                    unset($where);
+                    $where['qishu'] = $_POST['qishu'];// 期数
+                    $where['sid'] = $_POST['sid'];// 学校id
+                    // 对应数据总表的该字段状态改为1,就是未导入
+                    $temp[$tablename] = 1;
+                    M('sjzb')->where($where)->save($temp);
+                    unlink($file_name);// 删除存放的excel表
+                    // --------------删除操作执行结束--------------
+                    $this->error('缺少必须列'.$notice);
+                }
+                // dump($cha);die;
                 // 获取excel里面除字段以外的数据
                 $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$qishu_id,$ziduan,$newTemp);
             }
@@ -295,6 +314,8 @@ class TableImportAction extends CommonAction{
             }
 
             // 位置不能移动,要等班级学员信息表执行完才有其$id_bjxyxxb
+            // 校验导入表格
+            // *****完成之后要加删除原导入数据
             switch ($_POST['tid']) {
                 case 1:
                     $res = $this->checkXyxxb($_POST);
@@ -326,6 +347,17 @@ class TableImportAction extends CommonAction{
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
         }else{
             $this->error("请选择上传的文件");
+        }
+    }
+
+    public function checkBixu($tablename,$ziduan){
+        $bixu = $this->getComment($tablename);
+        $bixu = array_flip(array_diff($bixu,['id','suoshudd','daorusj']));
+        $cha = array_diff($bixu,$ziduan);
+        if(!empty($cha)){
+            return $cha;
+        }else{
+            return false;
         }
     }
 

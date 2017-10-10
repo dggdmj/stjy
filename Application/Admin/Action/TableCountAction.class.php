@@ -94,12 +94,28 @@ class TableCountAction extends CommonAction{
 	}
 
     public function yejilist(){
-        $data = M('sjzb')->field('qishu,sid')->where('status_xz = 2')->select();
-        $count = M('sjzb')->where('status_xz = 2')->count();// 查询满足要求的总记录数
+        // 获取当前用户的角色
+        $username = $_SESSION['username'];// 从session获取用户名
+        $temp = M('admin')->where('username ="'.$username.'"')->find();// 获取admin表的数据
+        $uid = $temp['id'];// 获取用户id
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
+        $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        if($rid == 3 || $rid == 2 || $rid == 1){
+            $map['stjy_sjzb.status_xzjl'] = array('neq',3);// 查询条件
+        }elseif($rid == 4){
+            $map['stjy_sjzb.status_cw'] = array('neq',3);// 查询条件
+        }elseif($rid == 5){
+            $map['stjy_sjzb.status_fzr'] = array('eq',1);// 查询条件
+        }
+
+        $map['stjy_sjzb.sid'] = array('in',$school_id);// 查询条件
+
+        // $data = M('sjzb')->field('qishu,sid')->where($map)->where('status_xz = 2')->select();
+        $count = M('sjzb')->where($map)->where('status_xz = 2')->count();// 查询满足要求的总记录数
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = M('sjzb')->join('LEFT JOIN stjy_school ON stjy_sjzb.sid = stjy_school.id')->field('stjy_sjzb.*,stjy_school.name as school_name')->where('stjy_sjzb.status_xz = 2')->order('stjy_sjzb.id desc')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $list = M('sjzb')->join('LEFT JOIN stjy_school ON stjy_sjzb.sid = stjy_school.id')->field('stjy_sjzb.*,stjy_school.name as school_name')->where($map)->where('stjy_sjzb.status_xz = 2')->order('stjy_sjzb.id desc')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         foreach($list as $k=>$v){
             $list[$k]['tid'] = $_GET['tid'];
             $where['tid'] = $_GET['tid'];

@@ -23,6 +23,7 @@ class CountScyjAction extends CommonAction {
         $xxk_id =  M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid =14")->getField('id');
         //1，遍历数组，如果业绩归属人是2个人的，增加两条记录，在重新拼接成新的数组
         $newlist = $this->getNewList($list);
+        // dump($newlist);die;
         //2，遍历数组，按照业绩归属人的业绩归类统计
 
         //获得人头数的数组
@@ -41,6 +42,8 @@ class CountScyjAction extends CommonAction {
 
         $i = 1;
         $total = array();
+
+        // 附加格外信息
         foreach ($tablelist as $k=>$v){
             // if($v["jrt"] == 0){
             //     continue;

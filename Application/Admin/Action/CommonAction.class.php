@@ -596,6 +596,8 @@ class CommonAction extends Action {
                     }
                     unset($data[$k][kechengyj]);
                 }
+                array_push($data,$data[0]);
+                array_shift($data);
                 // dump($data);die;
 
                 $this->exportExcel3($objPHPExcel,$info,$filename,$data);
@@ -1115,9 +1117,9 @@ class CommonAction extends Action {
         $objActSheet = $objPHPExcel->getActiveSheet();
         // dump($info);die;
         $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
-        $res = M('kecheng')->field('name')->select();
+        $res = M('kecheng')->field('name,ticheng')->select();
         foreach($res as $v){
-            $kecheng[]=$v['name'];
+            $kecheng[]=$v['name'].'('.($v['ticheng']*100).'%)';
         }
         // dump($kecheng);
         // die;
