@@ -180,6 +180,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
      */
     public function save($pFilename = null)
     {
+
         if ($this->spreadSheet !== null) {
             // garbage collect
             $this->spreadSheet->garbageCollect();

@@ -76,7 +76,7 @@ class SettingAction extends CommonAction{
     public function addSchool(){
         if(empty($_GET['id'])) {
             if($bid=M('school')->add($_POST)) {
-                $this->success('添加成功',U('School'));
+                $this->success('添加成功',U('Setting/school'));
             } else {
                 $this->error('添加失败');
             }
@@ -84,7 +84,7 @@ class SettingAction extends CommonAction{
         else {
             $bid=$_GET['id'];
             if(M('school')->where(array('id'=>$bid))->save($_POST)) {
-                $this->success('修改成功',U('School'));
+                $this->success('修改成功',U('Setting/school'));
             } else {
                 $this->error('修改失败');
             }

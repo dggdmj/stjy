@@ -25,7 +25,6 @@ class IndexAction extends CommonAction {
         $menuList = $Menu->getMenu();
         $this->assign('menuList',json_encode($menuList));
         // 进入首页
-//        echo phpinfo();die;
         $this->display();
     }
 
@@ -38,6 +37,7 @@ class IndexAction extends CommonAction {
      */
 	public function home(){
         //访问量
+        echo phpinfo();die;
         $todayTime= mktime(0,0,0,date("m"),date("d"),date("Y"));
         $yesterdayTime= $todayTime - 86400;
         $map['time']  = array('between',$yesterdayTime.','.$todayTime);
