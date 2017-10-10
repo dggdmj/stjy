@@ -399,36 +399,36 @@ class TableImportAction extends CommonAction{
     // （班级信息表）的班级编码要进行判断，1：根据我们的班级编码结构进行判断，然后错误需要提示并生成excel表格下载，没有修改拒绝上传
     public function getBjxxbYc($postData){
         $jingdujb = [];
-        $fandujb1 = [];
-        $fandujb2 = [];
-        $fandujb3 = [];
-        $shifoutsb = [];
-        $xueshengnj = [];
+        // $fandujb1 = [];
+        // $fandujb2 = [];
+        // $fandujb3 = [];
+        // $shifoutsb = [];
+        // $xueshengnj = [];
         // 获取编码表数据
         $data_bmb = M('banjibianhao')->field('id',true)->select();
         foreach($data_bmb as $v){
             if(!empty($v['jingdujb'])){
                 $jingdujb[] = $v['jingdujb'];
             }
-            if(!empty($v['fandujb1'])){
-                $fandujb1[] = $v['fandujb1'];
-            }
-            if(!empty($v['fandujb2'])){
-                $fandujb2[] = $v['fandujb2'];
-            }
-            if(!empty($v['fandujb3'])){
-                $fandujb3[] = $v['fandujb3'];
-            }
-            if(!empty($v['shifoutsb'])){
-                $shifoutsb[] = $v['shifoutsb'];
-            }
-            if(!empty($v['xueshengnj'])){
-                $xueshengnj[] = $v['xueshengnj'];
-            }
+            // if(!empty($v['fandujb1'])){
+            //     $fandujb1[] = $v['fandujb1'];
+            // }
+            // if(!empty($v['fandujb2'])){
+            //     $fandujb2[] = $v['fandujb2'];
+            // }
+            // if(!empty($v['fandujb3'])){
+            //     $fandujb3[] = $v['fandujb3'];
+            // }
+            // if(!empty($v['shifoutsb'])){
+            //     $shifoutsb[] = $v['shifoutsb'];
+            // }
+            // if(!empty($v['xueshengnj'])){
+            //     $xueshengnj[] = $v['xueshengnj'];
+            // }
         }
-        $shifoutsb = array_flip(array_flip($shifoutsb));
-        $xueshengnj = array_flip(array_flip($xueshengnj));
-        $fandujb = array_merge($fandujb1,$fandujb2,$fandujb3);
+        // $shifoutsb = array_flip(array_flip($shifoutsb));
+        // $xueshengnj = array_flip(array_flip($xueshengnj));
+        // $fandujb = array_merge($fandujb1,$fandujb2,$fandujb3);
 
         $postData['tid'] = 2;
         $id_bjxxb = $this->getQishuId($postData['qishu'],$postData['sid'],2);
@@ -441,10 +441,13 @@ class TableImportAction extends CommonAction{
                 continue;
             }
             $jingdu = substr($bjbm,0,3);
-            $fandu = substr($bjbm,3,3);
-            $tsb = substr($bjbm,6,1);
-            $nianji = substr($bjbm,7,2);
-            if(!in_array($jingdu,$jingdujb) || !in_array($fandu,$fandujb) || !in_array($tsb,$shifoutsb) || !in_array($nianji,$xueshengnj)){
+            // $fandu = substr($bjbm,3,3);
+            // $tsb = substr($bjbm,6,1);
+            // $nianji = substr($bjbm,7,2);
+            // if(!in_array($jingdu,$jingdujb) || !in_array($fandu,$fandujb) || !in_array($tsb,$shifoutsb) || !in_array($nianji,$xueshengnj)){
+            //     $list_banjimc[] = $v;
+            // }
+            if(!in_array($jingdu,$jingdujb)){
                 $list_banjimc[] = $v;
             }
         }
