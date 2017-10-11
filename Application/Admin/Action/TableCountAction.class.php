@@ -210,7 +210,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountJysjAction();
         $list = $data->getJysjbData($qishu,$sid);//获得统计数据
-        dump($list);
+//        dump($list);
         $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign('list',$list);
         $this->assign('arr',$title);
@@ -232,6 +232,24 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
+	public function savebeizhu(){
+	    $data[$_POST['name']] = $_POST['value'];
+        $data['sid'] = $where['sid'] = $_POST['sid'];
+        $data['qishu'] = $where['qishu'] = $_POST['qishu'];
+	    $res = M("jysjb_beizhu")->where($where)->find();
+	    if(!$res){
+            $ret = M("jysjb_beizhu")->add($data);
+        }else{
+            $ret = M("jysjb_beizhu")->where($where)->save($data);
+        }
+        $arr = array();
+        if($ret){
+	        $arr['status'] = true;
+        }else{
+            $arr['status'] = false;
+        }
+        return $arr;
+    }
 
 
 }

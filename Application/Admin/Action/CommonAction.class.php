@@ -362,6 +362,7 @@ class CommonAction extends Action {
                 //     $heji['sannianji'] = $v['count'];
                 // break;
                 // case '四年级':
+                // case '四年级':
                 //     $heji['sinianji'] = $v['count'];
                 // break;
                 // case '五年级':
