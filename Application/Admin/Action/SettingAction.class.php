@@ -25,10 +25,6 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/qishu'),
                     'icon' => 'list',
                 ),
-                array('name' => '人事列表',
-                    'url' => url('Setting/renshi'),
-                    'icon' => 'list',
-                ),
                 array('name' => '班级编码',
                     'url' => url('Setting/banjibianhao'),
                     'icon' => 'list',
@@ -47,9 +43,6 @@ class SettingAction extends CommonAction{
                 ),
                 array('name' => '添加期数',
                     'url' => url('Setting/qishu_add'),
-                ),
-                array('name' => '添加人事',
-                    'url' => url('Setting/renshi_add'),
                 ),
                 array('name' => '添加课程',
                     'url' => url('Setting/kecheng_add'),
@@ -176,58 +169,6 @@ class SettingAction extends CommonAction{
         $this->adminDisplay('qishu_add');
     }
 
-    //人事列表页
-    public function renshi(){
-        $data = M('renshi'); // 实例化对象
-        $list = $data->order('id desc')->select();
-        $this->assign('list',$list);// 赋值数据集
-        $this->adminDisplay();
-    }
-
-    //添加人士页面
-    public function renshi_add(){
-        $school = M('school')->where('isuse = 1')->select();
-        $this->assign('school',$school);
-        $this->adminDisplay();
-    }
-
-    //添加人士
-    public function addRenshi(){
-        // $bitian = array('xingming'=>'姓名','zhiwu'=>'职务','leixing'=>'类型','xiaoqu'=>'校区','bumen'=>'部门','chushengrq'=>'出生日期','diyixl'=>'第一学历','diyixlyx'=>'第一学历院校','zuigaoxl'=>'最高学历','zuigaoxlyx'=>'最高学历院校','ruzhirq'=>'入职日期','hetongkssj'=>'合同开始时间','hetongdqsj'=>'合同到期时间');// 所有必填项目
-        // foreach($bitian as $k=>$v){
-        //     if(empty($_POST[$k])){
-        //         $err[] = $v;
-        //     }
-        // }
-        // if(!empty($err)){
-        //     $notice = implode(',',$err);
-        //     $this->error($notice.'没有填写');
-        // }
-
-        if(empty($_GET['id'])) {
-            if($bid=M('renshi')->add($_POST)) {
-                $this->success('添加成功',U('renshi'));
-            } else {
-                $this->error('添加失败');
-            }
-        }else {
-            $bid=$_GET['id'];
-            if(M('renshi')->where(array('id'=>$bid))->save($_POST)) {
-                $this->success('修改成功',U('renshi'));
-            } else {
-                $this->error('修改失败');
-            }
-        }
-    }
-
-    // 修改人士
-    public function editRenshi() {
-        $id = $_GET['id'];
-        $this->list=D('renshi')->where(array('id'=>$id))->find();
-        $this->adminDisplay('renshi_add');
-        // view未套数据
-    }
-
     //彻底删除
     public function delete() {
         $id=(int)$_GET['id'];
@@ -296,7 +237,7 @@ class SettingAction extends CommonAction{
                 // echo $cell_val.'<br>';
                 $ziduan[] = $cell_val;
             }
-            dump($ziduan);
+//            dump($ziduan);
             // 从第2行开始,到最后一行
             for($j=2;$j<=$highestRow;$j++){
                 for($i=0;$i<count($ziduan);$i++){
@@ -352,7 +293,7 @@ class SettingAction extends CommonAction{
     }
 
 
-    //人事列表页
+    //课程列表页
     public function kecheng(){
         $data = M('kecheng'); // 实例化对象
         $list = $data->order('paixu asc,id asc')->select();
