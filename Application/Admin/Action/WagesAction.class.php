@@ -105,6 +105,18 @@ class WagesAction extends CommonAction{
                 $list[$sk]['kechengyj'] = $this->object2array(json_decode($sc['kechengyj']));
                 $list[$sk]['hejiyye']['value'] = 0+$sc["hejiyye"];  //合计营业额
                 $list[$sk]['huiyuanldxyye']['value'] = 0+$sc["huiyuanldxyye"];  //会员老带新营业额
+                $list[$sk]['canzhaobdx']['value'] = "<input class='input do_enter' type='text' name='canzhaobdx' value=''>";  //参考保底线
+                $list[$sk]['xuexikajs']['value'] = '待开发';  //学习卡结算
+                $list[$sk]['jixiaojj']['value'] = '待开发';  //绩效奖金
+                $list[$sk]['xiaozhangtdtc']['value'] = 0;  //校长团队提成
+                $list[$sk]['tuanduiwd']['value'] = "<input class='input do_enter' type='text' name='tuanduiwd' value=''>";  //团队稳定
+                $list[$sk]['dituijrtjx']['value'] = "<input class='input do_enter' type='text' name='dituijrtjx' value=''>";  //地推净人头绩效
+                $list[$sk]['weixinjx']['value'] = "<input class='input do_enter' type='text' name='weixinjx' value=''>";;  //微信绩效
+                $list[$sk]['jiazhanghuixcbjl']['value'] = "<input class='input do_enter' type='text' name='jiazhanghuixcbjl' value=''>";;  //家长会报名现场奖励
+                $list[$sk]['liushijtfjxjs']['value'] = "<input class='input do_enter' type='text' name='liushijtfjxjs' value=''>";;  //流失及退费绩效结算
+                $list[$sk]['shangkeksjx']['value'] = "<input class='input do_enter' type='text' name='shangkeksjx' value=''>";;  //上课课时绩效
+                $list[$sk]['jidizskjx']['value'] = "<input class='input do_enter' type='text' name='jidizskjx' value=''>";;  //基地招生课绩效
+
 
             }
         }

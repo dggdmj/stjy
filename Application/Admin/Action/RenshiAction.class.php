@@ -35,7 +35,7 @@ class RenshiAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    //添加人士页面
+    //添加人事页面
     public function renshi_add(){
         $school = M('school')->where('isuse = 1')->select();
         $this->assign('school',$school);
