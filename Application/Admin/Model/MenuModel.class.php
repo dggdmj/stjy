@@ -289,7 +289,19 @@ class MenuModel {
 //                )
 //            ),
 //
-//
+            'Renshi' => array(
+                'name' => '人事管理',
+                'icon' => 'user',
+                'order' => 10,
+                'menu' => array(
+                    array(
+                        'name' => '人事管理',
+                        'icon' => 'user',
+                        'url' => U('Renshi/renshi'),
+                        'order' => 4
+                    ),
+                ),
+            ),
             'Function' => array(
                 'name' => '功能设置',
                 'icon' => 'wrench',
@@ -312,12 +324,6 @@ class MenuModel {
                         'icon' => 'crosshairs',
                         'url' => U('Setting/qishu'),
                         'order' => 3
-                    ),
-                    array(
-                        'name' => '人事管理',
-                        'icon' => 'user',
-                        'url' => U('Setting/renshi'),
-                        'order' => 4
                     ),
                     array(
                         'name' => '班级编号管理',

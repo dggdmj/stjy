@@ -17,6 +17,7 @@ class CountJysjAction extends CommonAction {
         $arr_bjbmsj = $this->getbjbmsj($qishu,$sid);   //获得班级部门数据
         $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
         $arr_xsrsbd = $this->getxsrsbd($qishu,$sid);   //获得学生人数变动数据
+        $arr_beizhu = $this->getbeizhu($qishu,$sid);   //获得备注信息
 
         $arr['school_info'] = $school_info;
         $arr['kksd'] = $arr_kksd;
@@ -25,8 +26,17 @@ class CountJysjAction extends CommonAction {
         $arr['bjbmsj'] = $arr_bjbmsj;
         $arr['gbxzdrstj'] = $arr_gbxzdrstj;
         $arr['xsrsbd'] = $arr_xsrsbd;
+        $arr['beizhu'] = $arr_beizhu;
+        $arr['qishu'] = $qishu;
+        $arr['sid'] = $sid;
         return $arr;
 
+    }
+
+    //获得备注信息
+    public function getbeizhu($qishu,$sid){
+        $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();
+        return $beizhu;
     }
 
     //获得学生人数变动数据
