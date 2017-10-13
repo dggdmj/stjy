@@ -87,9 +87,10 @@ class TableImportAction extends CommonAction{
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
         // if($rid == 2 or $rid == 3 or $_SESSION['superadmin'] == true){
-        $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name,stjy_school.isshebao,stjy_school.isgongjijin')->where($map)->order('stjy_sjzb.qishu desc')->select();
+        $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name,stjy_school.isshebao,stjy_school.isgongjijin')->where($map)->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         // }
         // dump($list);
+        // dump($Page->firstRow.','.$Page->listRows);
 
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames();

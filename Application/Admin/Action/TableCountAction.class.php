@@ -77,11 +77,11 @@ class TableCountAction extends CommonAction{
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
         if($rid == 3 || $rid == 2 || $rid == 1){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->order('stjy_sjzb.qishu desc')->select();
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         }else if($rid == 4){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->order('stjy_sjzb.qishu desc')->select();
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         }else if($rid == 5){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_fzr is not null')->order('stjy_sjzb.qishu desc')->select();
+            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_fzr is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         }
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames(1,[2]);
@@ -210,7 +210,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
         $data = new \Admin\Action\CountJysjAction();
         $list = $data->getJysjbData($qishu,$sid);//获得统计数据
-        dump($list);
+        // dump($list);
         $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign('list',$list);
         $this->assign('arr',$title);

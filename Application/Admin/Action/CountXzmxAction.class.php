@@ -46,12 +46,13 @@ class CountXzmxAction extends CommonAction {
 
         // 去掉重复值
         $new = array_flip(array_flip($new));
-        // dump($new);die;
+        // dump($new);
+        // die;
         // 学号在新增的学号里面,且是本校学校学员,期数是本期的
         $map['stjy_xyxxb.xuehao'] = array('in',$new);
         $map['stjy_xyxxb.suoshudd'] = M('qishu_history')->where('qishu='.$qishu.' and sid='.$sid.' and tid=1')->getField('id');
         $list = M('xyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_xyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb where stjy_sjjlb.yejigsr != "") as temp on stjy_xyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_bjxyxxb on stjy_xyxxb.xuehao=stjy_bjxyxxb.xuehao')->join('LEFT JOIN stjy_kbmxb on stjy_bjxyxxb.banji=stjy_kbmxb.banjimc')->field('stjy_xyxxb.xuehao,stjy_bjxyxxb.gonglixx,stjy_xyxxb.nianji,stjy_xyxxb.xingming,stjy_xyxxb.xiaoqu,stjy_bjxyxxb.banji,temp.yejigsr,stjy_xyxxb.zhaoshengly,stjy_xyxxb.shoujihm,sum(stjy_xyfyyjb.shuliang) as shuliang,stjy_xyfyyjb.danwei,sum(stjy_xyfyyjb.feiyong) as feiyong,stjy_kbmxb.kaibanrq,stjy_kbmxb.jiebanrq,stjy_kbmxb.jingjiangls,stjy_kbmxb.fanduls')->where($map)->group('stjy_xyxxb.xuehao')->select();
-        // dump($list);
+        // dump($list);die;
         $res = $this->doList($list,$qishu,$sid);
         // dump($res);
         return $res;
