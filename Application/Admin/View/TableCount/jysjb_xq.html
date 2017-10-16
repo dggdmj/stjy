@@ -242,7 +242,7 @@
         var sid = $("input[name='sid']").val();
         $.ajax({
             type: "POST", //用POST方式传输
-            url: "/admin.php/TableCount/savebeizhu", //目标地址
+            url: "/index.php/TableCount/savebeizhu", //目标地址
             data: {name:name,value:value,qishu:qishu,sid:sid},
             dataType:'json',
             success: function (data){

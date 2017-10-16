@@ -224,10 +224,14 @@ class TableCountAction extends CommonAction{
         // dump($tbnames);
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
-        $data = new \Admin\Action\CountTfAction();
-        $list = $data->getTfbData($qishu,$sid);//获得统计数据
-        // dump($list);
-        $this->assign('list',$list);
+        // $data = new \Admin\Action\CountTfAction();
+        // $list = $data->getTfbData($qishu,$sid);//获得统计数据
+        $id = $this->getQishuId($qishu,$sid,13);
+        $data = M('tfb')->where('suoshudd ='.$id)->order('xuhao')->select();
+        $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        // dump($data);die;
+        $this->assign('list',$data);
+        $this->assign('title',$title);
         $this->adminDisplay();
 	}
 

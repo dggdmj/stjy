@@ -187,14 +187,14 @@ class TableImportAction extends CommonAction{
         if (!empty($_FILES)) {
 //             dump($_FILES);die;
             $name = explode('.',$_FILES['excel']['name'])[0];// 获取上传excel文档的文档名
-
+            
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
             // dump($tablename);die;
             // 获取对应数据库里面注释(与excel字段相同)和字段名拼接的数组
             $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
             // dump($newTemp);die;
             $tablenames = $this->getTabelnames(2,[1,3,4]);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
-
+            
             $tid = $_POST["tid"];  //表名对应的序号
 
             $num = count(explode(explode('表',$tablenames[$tid])[0],$name));// 判断上传表格是否正确的条件,如果上传表名含有需要上传表格名的关键字段,即num>=2,若<2就是非正确的上传表名
@@ -218,6 +218,7 @@ class TableImportAction extends CommonAction{
 
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
 
+            // dump($num);
             // 判断上传的表格是否正确
             if($num < 2){
                 unlink($file_name);// 删除excel文档
@@ -346,6 +347,100 @@ class TableImportAction extends CommonAction{
             }
 
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
+        }else{
+            $this->error("请选择上传的文件");
+        }
+    }
+
+    // 退费表专用上传方法
+    public function dataUpload2() {
+        if (!empty($_FILES)) {
+            
+            $name = explode('.',$_FILES['excel']['name'])[0];// 获取上传excel文档的文档名
+            
+            $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
+            // dump($tablename);die;
+            // 获取对应数据库里面注释(与excel字段相同)和字段名拼接的数组
+            $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
+            // dump($newTemp);die;
+            $tablenames = $this->getTabelnames(2,[2]);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
+            
+            $tid = $_POST["tid"];  //表名对应的序号
+
+            $num = count(explode(explode('表',$tablenames[$tid])[0],$name));// 判断上传表格是否正确的条件,如果上传表名含有需要上传表格名的关键字段,即num>=2,若<2就是非正确的上传表名
+
+            // $_POST['suoshufx'] = M('school')->where('id ='.$_POST['suoshufx'])->getField('name');//所属校区
+            $_POST['uid'] = M('admin')->where('nicename ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
+
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+            $upload->autoSub = false;
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            // dump($num);
+            // 判断上传的表格是否正确
+            if($num < 2){
+                unlink($file_name);// 删除excel文档
+                $this->error('上传失败,请检查上传的文档是否正确');
+            }
+
+            $qishu_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],13);
+            
+
+            // excel文档超大对应设置
+            if($_FILES['excel']['size']>307200){
+                ini_set('memory_limit', '512M');
+            }
+
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestRow = $sheet->getHighestRow(); // 取得最高行数,则总行数
+            $highestColumn = $sheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+
+            
+            
+            
+            
+            $excel_data = $this->getTuifeiExcelData($objPHPExcel,$highestRow,$colsNum,$qishu_id);
+            // dump($excel_data);
+            // die;
+
+            // 将获取数组插入到数据库相应的表里面
+            
+            foreach($excel_data as $v){
+                $where['xuehao'] = $v['xuehao'];
+                $where['xuhao'] = $v['xuhao'];
+                $where['suoshudd'] = $qishu_id;
+                $res = M("tfb")->where($where)->find();
+                $v['suoshudd'] = $qishu_id;
+                if(!empty($res)){
+                    M("tfb")->where($where)->save($v);
+                }else{
+                    M("tfb")->add($v);
+                }
+                
+            }
+
+            // 删除上传的文件
+            unlink($file_name);
+
+            $this->success('导入成功！',__MODULE__.'/TableCount/index');//获得成功跳转的链接
         }else{
             $this->error("请选择上传的文件");
         }
@@ -768,6 +863,299 @@ class TableImportAction extends CommonAction{
 
     public function getExcelData2($objPHPExcel,$highestRow,$colsNum,$qishu_id){
 
+        // 从第2行开始,到最后一行
+        for($j=2;$j<=$highestRow;$j++){
+            $col = trim($objPHPExcel->getActiveSheet()->getCell('C'.$j)->getValue());
+            // 上面得出$col的值如果是空就跳过
+            if(empty(trim($col))){
+                continue;
+            }
+            for($i=0;$i<=$colsNum;$i++){
+                // 自动判断单元格是时间格式
+                $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
+                $value = $cell->getValue();
+
+                if(is_object($value)){
+                    $value= $value->__toString();
+                }
+
+                // $cell->getCoordinate()当前单元格,如A1
+
+                // 自动识别单元格为日期格式
+                if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
+                    $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
+                    $formatcode=$cellstyleformat->getFormatCode();
+                    if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
+                        $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
+                    }else{
+                        $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                    }
+                }
+
+
+
+                // $data[$j] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+
+
+                // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
+                if(substr($value,0,1) == '='){
+                    $value = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                }
+
+                switch($i){
+                    case 0:
+                        $data['bumen'] = $value;
+                    break;
+                    case 1:
+                        $data['xingming'] = $value;
+                    break;
+                    case 2:
+                        $data['shenfenzhm'] = $value;
+                    break;
+                    case 3:
+                        $data['danweihj'] = $value;
+                    break;
+                    case 4:
+                        $data['gerenhj'] = $value;
+                    break;
+                    case 5:
+                        $data['yingjiaoje'] = $value;
+                    break;
+                    case 6:
+                        $data['nashuirmc'] = $value;
+                    break;
+                    case 7:
+                        $data['shuifeisssq'] = $value;
+                    break;
+                }
+
+                $data['suoshudd'] = $qishu_id;  //所属订单id
+                $data['daorusj'] = date('Y-m-d H:i:s');
+            }
+
+            $list[] = $data;
+            unset($data);
+
+        }
+        // dump($list);die;
+        return $list;
+    }
+
+    public function getTuifeiExcelData($objPHPExcel,$highestRow,$colsNum,$qishu_id){
+
+        // 从第3行开始,到最后一行
+        for($j=3;$j<=$highestRow;$j++){
+            $col = trim($objPHPExcel->getActiveSheet()->getCell('E'.$j)->getValue());
+            // 上面得出$col的值如果是空就跳过
+            if(empty(trim($col))){
+                continue;
+            }
+            for($i=0;$i<=$colsNum;$i++){
+                // 自动判断单元格是时间格式
+                $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
+                $value = $cell->getValue();
+
+                if(is_object($value)){
+                    $value= $value->__toString();
+                }
+
+                // $cell->getCoordinate()当前单元格,如A1
+
+                // 自动识别单元格为日期格式
+                if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
+                    $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
+                    $formatcode=$cellstyleformat->getFormatCode();
+                    if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
+                        $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
+                    }else{
+                        $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                    }
+                }
+
+
+
+                // $data[$j] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+
+
+                // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
+                if(substr($value,0,1) == '='){
+                    $value = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                }
+
+                switch($i){
+                    case 0:
+                        $data['xuhao'] = $value;
+                    break;
+                    case 1:
+                        $data['yuefen'] = $value;
+                    break;
+                    case 2:
+                        $data['fenxiao'] = $value;
+                    break;
+                    case 3:
+                        $data['tuifeilx'] = $value;
+                    break;
+                    case 4:
+                        $data['xuehao'] = $value;
+                    break;
+                    case 5:
+                        $data['xingming'] = $value;
+                    break;
+                    case 6:
+                        $data['sicikqh'] = $value;
+                    break;
+                    case 7:
+                        $data['jiesuanlx'] = $value;
+                    break;
+                    case 8:
+                        $data['banjibh'] = $value;
+                    break;
+                    case 9:
+                        $data['bencitfkcdjfsj'] = $value;
+                    break;
+                    case 10:
+                        $data['shenqingtfsj'] = $value;
+                    break;
+                    case 11:
+                        $data['tuifeikc'] = $value;
+                    break;
+                    case 12:
+                        $data['dingjin'] = $value;
+                    break;
+                    case 13:
+                        $data['tuixuefje'] = $value;
+                    break;
+                    case 14:
+                        $data['jiaocaifei'] = $value;
+                    break;
+                    case 15:
+                        $data['xiaoji'] = $value;
+                    break;
+                    case 16:
+                        $data['beizhu'] = $value;
+                    break;
+                    case 17:
+                        $data['jiazhangxm'] = $value;
+                    break;
+                    case 18:
+                        $data['lianxidh'] = $value;
+                    break;
+                    case 19:
+                        $data['kaihuhang'] = $value;
+                    break;
+                    case 20:
+                        $data['yinhangzh'] = $value;
+                    break;
+                    case 21:
+                        $data['tuifeiyy'] = $value;
+                    break;
+                    case 22:
+                        $data['dianhuaqr'] = $value;
+                    break;
+                    case 23:
+                        $data['jingdulsxm'] = $value;
+                    break;
+                    case 24:
+                        $data['jingdulsykje'] = $value;
+                    break;
+                    case 25:
+                        $data['jingdulsqr'] = $value;
+                    break;
+                    case 26:
+                        $data['fandulsxm'] = $value;
+                    break;
+                    case 27:
+                        $data['fandulsykje'] = $value;
+                    break;
+                    case 28:
+                        $data['fandulsqr'] = $value;
+                    break;
+                    case 29:
+                        $data['jiaoxuezzxm'] = $value;
+                    break;
+                    case 30:
+                        $data['jiaoxuezzykje'] = $value;
+                    break;
+                    case 31:
+                        $data['jiaoxuezzqr'] = $value;
+                    break;
+                    case 32:
+                        $data['jiaowuzrxm'] = $value;
+                    break;
+                    case 33:
+                        $data['jiaowuzrqkje'] = $value;
+                    break;
+                    case 34:
+                        $data['jiaowuzrqr'] = $value;
+                    break;
+                    case 35:
+                        $data['jiaoxuefxzxm'] = $value;
+                    break;
+                    case 36:
+                        $data['jiaoxuefxzqkje'] = $value;
+                    break;
+                    case 37:
+                        $data['jiaoxuefxzqr'] = $value;
+                    break;
+                    case 38:
+                        $data['zhaoshengzrxm'] = $value;
+                    break;
+                    case 39:
+                        $data['zhiwei'] = $value;
+                    break;
+                    case 40:
+                        $data['zhaoshengzrykje'] = $value;
+                    break;
+                    case 41:
+                        $data['zhaoshengzrqr'] = $value;
+                    break;
+                    case 42:
+                        $data['zhaoshengfxzxm'] = $value;
+                    break;
+                    case 43:
+                        $data['zhaoshengfxzykje'] = $value;
+                    break;
+                    case 44:
+                        $data['zhaoshengfxzqr'] = $value;
+                    break;
+                    case 45:
+                        $data['dianzhangzjxm'] = $value;
+                    break;
+                    case 46:
+                        $data['dianzhangzjykje'] = $value;
+                    break;
+                    case 47:
+                        $data['dianzhangzjqr'] = $value;
+                    break;
+                    case 48:
+                        $data['quyuzjxm'] = $value;
+                    break;
+                    case 49:
+                        $data['quyuzjykje'] = $value;
+                    break;
+                    case 50:
+                        $data['quyuzjqr'] = $value;
+                    break;
+                    case 51:
+                        $data['koukuanhj'] = $value;
+                    break;
+                    
+                }
+
+                $data['suoshudd'] = $qishu_id;  //所属订单id
+                $data['daorusj'] = date('Y-m-d H:i:s');
+            }
+
+            $list[] = $data;
+            unset($data);
+
+        }
+        // dump($list);die;
+        return $list;
+    }
+
+    public function getExcelData3($objPHPExcel,$highestRow,$colsNum,$qishu_id){
+        
         // 从第2行开始,到最后一行
         for($j=2;$j<=$highestRow;$j++){
             $col = trim($objPHPExcel->getActiveSheet()->getCell('C'.$j)->getValue());

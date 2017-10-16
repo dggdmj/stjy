@@ -14,7 +14,7 @@ class CountTfAction extends CommonAction {
         $data = $js->getJsmxbData($qishu,$sid);
         // dump($data);
         foreach($data as $v){
-            if($v['reducetype'] == "退学"){
+            if($v['reducetype'] == "退费"){
                 $list[]=$v;
             }
         }

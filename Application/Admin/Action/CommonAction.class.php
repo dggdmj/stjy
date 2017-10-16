@@ -570,6 +570,7 @@ class CommonAction extends Action {
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
         $id = M('qishu_history')->where($_GET)->getField('id');
+        $info = $this->getInfo($qishu,$sid);
         if(empty($id)){
             $this->error('error');
         }
@@ -583,8 +584,7 @@ class CommonAction extends Action {
 
         // dump($data);
         // dump($ziduan);
-        $filename = $tbnames_cn[$tid];
-        $info = $this->getInfo($qishu,$sid);
+        $filename = $qishu.'-'.$info['school'].'-'.$tbnames_cn[$tid];
         // dump($info);
         switch($tid){
             case 8:
@@ -620,6 +620,11 @@ class CommonAction extends Action {
             case 12:
                 $this->exportExcel2($objPHPExcel,$id,$info,$filename);
                 die;
+            break;
+            case 13:
+                $start_row = 3;
+                $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+                // dump($data);die;
             break;
         }
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
@@ -953,6 +958,9 @@ class CommonAction extends Action {
             break;
             case 11:
                 $template = __ROOT__.'Public/template/template_jsmx.xlsx';          //使用模板
+            break;
+            case 13:
+                $template = __ROOT__.'Public/template/template_tf.xlsx';          //使用模板
             break;
         }
 
@@ -1602,20 +1610,46 @@ class CommonAction extends Action {
 
     }
 
+    public function tfToDb($qishu,$sid){
+        $data = new \Admin\Action\CountTfAction();
+        $list = $data->getTfbData($qishu,$sid);//获得退费数据
+        $res = $this->isInQishuHistory(13,$qishu,$sid);
+        if($res){
+            return false;
+        }
+
+        // 插入qishu_history
+        $qishu_id = $this->insertQishuHistory(13,$qishu,$sid);
+        // 插入xzmxb
+        $school = $this->getInfo($qishu,$sid)['school'];
+        foreach($list as $k=>$v){
+            $temp['xuhao'] = $k+1;
+            $temp['yuefen'] = substr($qishu,4,2).'月';
+            $temp['fenxiao'] = $school;
+            $temp['xuehao'] = $v['xuehao'];
+            $temp['xingming'] = $v['xingming'];
+            $temp['suoshudd'] = $qishu_id;
+            M('tfb')->add($temp);
+            unset($temp);
+        }
+
+        return true;
+    }
+
     public function AlltoDb($qishu,$sid){
         // -----------------------生成数据入库开始-----------------------
-        // 市场业绩数据写入数据库
-        $res_scyj = $this->ScyjToDb($qishu,$sid);
-        // 市场占有率数据写入数据库
-        $res_sczyl = $this->SczylToDb($qishu,$sid);
-        // 新增明细数据写入数据库
-        $res_xzmx = $this->XzmxToDb($qishu,$sid);
-        // 减少明细数据写入数据库
-        $res_jsmx = $this->jsmxToDb($qishu,$sid);
-        // 经营数据写入数据库
-        $res_jsmx = $this->jysjToDb($qishu,$sid);
+        // // 市场业绩数据写入数据库
+        // $res_scyj = $this->ScyjToDb($qishu,$sid);
+        // // 市场占有率数据写入数据库
+        // $res_sczyl = $this->SczylToDb($qishu,$sid);
+        // // 新增明细数据写入数据库
+        // $res_xzmx = $this->XzmxToDb($qishu,$sid);
+        // // 减少明细数据写入数据库
+        // $res_jsmx = $this->jsmxToDb($qishu,$sid);
+        // // 经营数据写入数据库
+        // $res_jsmx = $this->jysjToDb($qishu,$sid);
         // 退费数据写入数据库
-        //
+        $res_tf = $this->tfToDb($qishu,$sid);
         // -----------------------生成数据入库结束-----------------------
     }
 
@@ -1652,18 +1686,18 @@ class CommonAction extends Action {
 
     public function delAllScData($qishu,$sid){
         // -----------------------生成数据从库删除开始-----------------------
-        // 删除市场业绩数据
-        $res_scyj = $this->delScData($qishu,$sid,8);
-        // 删除市场占有率数据
-        $res_sczyl = $this->delScData($qishu,$sid,9);
-        // 删除新增明细数据
-        $res_xzmx = $this->delScData($qishu,$sid,10);
-        // 删除减少明细数据
-        $res_jsmx = $this->delScData($qishu,$sid,11);
-        // 删除经营数据数据
-        $res_jysj = $this->delScData($qishu,$sid,12);
+        // // 删除市场业绩数据
+        // $res_scyj = $this->delScData($qishu,$sid,8);
+        // // 删除市场占有率数据
+        // $res_sczyl = $this->delScData($qishu,$sid,9);
+        // // 删除新增明细数据
+        // $res_xzmx = $this->delScData($qishu,$sid,10);
+        // // 删除减少明细数据
+        // $res_jsmx = $this->delScData($qishu,$sid,11);
+        // // 删除经营数据数据
+        // $res_jysj = $this->delScData($qishu,$sid,12);
         // 删除退费数据
-        //
+        $res_tf = $this->delScData($qishu,$sid,13);
         // -----------------------生成数据从库删除结束-----------------------
     }
 
