@@ -9,8 +9,8 @@ class WagesScbAction extends CommonAction{
     public function _infoModule()
     {
         $this->class = M('class')->order('id desc')->select();
-        $data = array('info' => array('name' => '工资表总表',
-            'description' => ' 查看数据总表',
+        $data = array('info' => array('name' => '市场部工资表详情',
+            'description' => ' 查看市场部工资表',
         ),
             'menu' => array(
                 array('name' => '工资表总表',
@@ -60,8 +60,11 @@ class WagesScbAction extends CommonAction{
             //取当期的市场业绩表信息
             $suoshudingdan = M("qishu_history")->where("tid = 8 and sid = $sid")->getField("id");
             $scyj = M("scyjb")->where("suoshudd = $suoshudingdan")->select();
+            //查找本校区市场部中没有业绩的人员
+            $meiyeji_arr = $this->getScbrenyuan($sid,$scyj);
+            $new_arr = array_merge($scyj,$meiyeji_arr);
             $list = array();
-            foreach ($scyj as $sk=>$sc){
+            foreach ($new_arr as $sk=>$sc){
                 if($sc['xingming'] == "合计"){
                     continue;
                 }
@@ -78,7 +81,7 @@ class WagesScbAction extends CommonAction{
                 $list[$sk]['zaizhizt']['value'] = $user["leixing"];  //在职状态
                 $list[$sk]['gongzuonx']['value'] = empty($user["ruzhirq"])?'0':floor((time()-strtotime($user['ruzhirq']))/(365*86400))."年";  //工作年限
                 $list[$sk]['ruzhisj']['value'] = $user["ruzhirq"];  //入职日期
-                $list[$sk]['yingchuqingts']['value'] = date('t', strtotime($qishu."01"));;  //应出勤天数:返回当期月份的天数
+                $list[$sk]['yingchuqingts']['value'] = date('t', strtotime($qishu."01")); //应出勤天数:返回当期月份的天数
                 $list[$sk]['shijichuqints']['value'] = "<input class='input do_enter' type='text' name='shijichuqingts' value=''>";  //应出勤天数
                 $list[$sk]['yuedujingjx']['value'] = $school["ydjjx"];  //月度警戒线
                 $list[$sk]['yueduchaorts']['value'] = $school["ydcrtx"];  //月度超人头数
@@ -96,12 +99,13 @@ class WagesScbAction extends CommonAction{
                 $list[$sk]['xiaozhangtdtc']['value'] = 0;  //校长团队提成
                 $list[$sk]['tuanduiwd']['value'] = "<input class='input do_enter' type='text' name='tuanduiwd' value=''>";  //团队稳定
                 $list[$sk]['dituijrtjx']['value'] = "<input class='input do_enter' type='text' name='dituijrtjx' value=''>";  //地推净人头绩效
-                $list[$sk]['weixinjx']['value'] = "<input class='input do_enter' type='text' name='weixinjx' value=''>";;  //微信绩效
-                $list[$sk]['jiazhanghuixcbjl']['value'] = "<input class='input do_enter' type='text' name='jiazhanghuixcbjl' value=''>";;  //家长会报名现场奖励
-                $list[$sk]['liushijtfjxjs']['value'] = "<input class='input do_enter' type='text' name='liushijtfjxjs' value=''>";;  //流失及退费绩效结算
-                $list[$sk]['shangkeksjx']['value'] = "<input class='input do_enter' type='text' name='shangkeksjx' value=''>";;  //上课课时绩效
-                $list[$sk]['jidizskjx']['value'] = "<input class='input do_enter' type='text' name='jidizskjx' value=''>";;  //基地招生课绩效
-
+                $list[$sk]['weixinjx']['value'] = "<input class='input do_enter' type='text' name='weixinjx' value=''>";  //微信绩效
+                $list[$sk]['jiazhanghuixcbjl']['value'] = "<input class='input do_enter' type='text' name='jiazhanghuixcbjl' value=''>";  //家长会报名现场奖励
+                $list[$sk]['liushijtfjxjs']['value'] = "<input class='input do_enter' type='text' name='liushijtfjxjs' value=''>";  //流失及退费绩效结算
+                $list[$sk]['shangkeksjx']['value'] = "<input class='input do_enter' type='text' name='shangkeksjx' value=''>";  //上课课时绩效
+                $list[$sk]['jidizskjx']['value'] = "<input class='input do_enter' type='text' name='jidizskjx' value=''>";  //基地招生课绩效
+                $list[$sk]['gongjijin']['value'] = "待开发";  //公积金
+                $list[$sk]['gerensb']['value'] = "待开发";  //个人社保
 
             }
         }
@@ -122,6 +126,25 @@ class WagesScbAction extends CommonAction{
             $array = $object;
         }
         return $array;
+    }
+
+    //查找本校区市场部中没有业绩的人员
+    function getScbrenyuan($sid,$scyj){
+        $scbry_list = M("renshi")->field("xingming")->where("sid = ".$sid)->select();
+        $suoyou = array();
+        foreach ($scbry_list as $k=>$v){
+            $suoyou[] = $v["xingming"];
+        }
+        $youyeji = array();
+        foreach ($scyj as $k=>$v){
+            $youyeji[] = $v['xingming'];
+        }
+        $arr = array_diff($suoyou,$youyeji);
+        $meiyeji = array();
+        foreach ($arr as $k=>$v){
+            $meiyeji[]["xingming"] = $v;
+        }
+        return $meiyeji;
     }
 }
 
