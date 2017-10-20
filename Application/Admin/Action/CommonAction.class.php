@@ -330,11 +330,13 @@ class CommonAction extends Action {
 
     // 从学员信息表取数
     public function getData($qishu,$sid){
-        $id = $this->getQishuId($qishu,$sid,1);
+        $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
+        $where['tid'] = 1;
+        $id = M('qishu_history')->where($where)->getField('id');
         $school = $this->getInfo($qishu,$sid)['school'];
         if(!empty($id)){
-            $where = 'suoshudd ='.$id.' and zhuangtai ="在读" and xiaoqu="'.$school.'"';
-            $stu = M('xyxxb')->where($where)->field('xuehao')->select();
+            $stu = M('xyxxb')->where('suoshudd ='.$id.' and zhuangtai ="在读" and xiaoqu ="'.$school.'"')->field('xuehao')->select();
             // dump($stu);
             foreach($stu as $v){
                 $xueyuan[] = $v['xuehao'];
