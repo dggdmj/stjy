@@ -104,8 +104,10 @@ class WagesScbAction extends CommonAction{
                 $list[$sk]['liushijtfjxjs']['value'] = "<input class='input do_enter' type='text' name='liushijtfjxjs' value=''>";  //流失及退费绩效结算
                 $list[$sk]['shangkeksjx']['value'] = "<input class='input do_enter' type='text' name='shangkeksjx' value=''>";  //上课课时绩效
                 $list[$sk]['jidizskjx']['value'] = "<input class='input do_enter' type='text' name='jidizskjx' value=''>";  //基地招生课绩效
-                $list[$sk]['gongjijin']['value'] = "待开发";  //公积金
-                $list[$sk]['gerensb']['value'] = "待开发";  //个人社保
+                $gerejce = M("gjjmxb")->where("qishu = '".$qishu."' and zhengjianhao = '".$user['shenfenzhm']."'")->getField("gerenjce");
+                $list[$sk]['gongjijin']['value'] = $gerejce?$gerejce:0;  //公积金
+                $geresbe = M("sbmxb")->where("qishu = '".$qishu."' and shenfenzhm = '".$user['shenfenzhm']."'")->getField("gerenhj");
+                $list[$sk]['gerensb']['value'] = $geresbe?$geresbe:0;  //个人社保
 
             }
         }
