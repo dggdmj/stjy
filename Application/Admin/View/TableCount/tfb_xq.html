@@ -30,6 +30,7 @@
                     <th rowspan="2">电话确认</th>
                     <th colspan="3">精读老师</th>
                     <th colspan="3">泛读老师</th>
+                    <th colspan="3">教学组长(精读)</th>
                     <th colspan="3">教务主任</th>
                     <th colspan="3">教学副校长</th>
                     <th colspan="4">课程顾问/招生主任</th>
@@ -39,6 +40,9 @@
                     <th rowspan="2">扣款合计</th>
                 </tr>
                 <tr>
+                    <th>姓名</th>
+                    <th>应扣金额</th>
+                    <th>确认</th>
                     <th>姓名</th>
                     <th>应扣金额</th>
                     <th>确认</th>
@@ -72,9 +76,10 @@
                             <td>{$v['xuhao']}</td>
                             <td>{$v['yuefen']}</td>
                             <td>{$v['fenxiao']}</td>
+                            <td>{$v['tuifeilx']}</td>
                             <td>{$v['xuehao']}</td>
                             <td>{$v['xingming']}</td>
-                            <td>{$v['siciqh']}</td>
+                            <td>{$v['sicikqh']}</td>
                             <td>{$v['jiesuanlx']}</td>
                             <td>{$v['banjibh']}</td>
                             <td>{$v['bencitfkcdjfsj']}</td>
@@ -85,7 +90,7 @@
                             <td>{$v['jiaocaifei']}</td>
                             <td>{$v['xiaoji']}</td>
                             <td>{$v['beizhu']}</td>
-                            <td>{$v['jiaozhangxm']}</td>
+                            <td>{$v['jiazhangxm']}</td>
                             <td>{$v['lianxidh']}</td>
                             <td>{$v['kaihuhang']}</td>
                             <td>{$v['yinhangzh']}</td>
@@ -106,7 +111,7 @@
                             <td>{$v['jiaoxuefxzxm']}</td>
                             <td>{$v['jiaoxuefxzykje']}</td>
                             <td>{$v['jiaoxuefxzqr']}</td>
-                            <td>{$v['zhaoshengzrmx']}</td>
+                            <td>{$v['zhaoshengzrxm']}</td>
                             <td>{$v['zhiwei']}</td>
                             <td>{$v['zhaoshengzrykje']}</td>
                             <td>{$v['zhaoshengzrqr']}</td>
@@ -119,7 +124,7 @@
                             <td>{$v['quyuzjxm']}</td>
                             <td>{$v['quyuzjykje']}</td>
                             <td>{$v['quyuzjqr']}</td>
-                            <td>{$v['koukuanghj']}</td>
+                            <td>{$v['koukuanhj']}</td>
                         </tr>
                     </foreach>
                 </tbody>

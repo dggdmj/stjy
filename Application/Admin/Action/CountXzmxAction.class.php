@@ -13,6 +13,7 @@ class CountXzmxAction extends CommonAction {
         // 查询本期班级学员信息表里的所有学员
         unset($where);
         $data_bjxyxxb = $this->getData($qishu,$sid);
+        // dump($data_bjxyxxb);die;
 
         // 收据记录表与班级学员信息表的重复学员信息进行合并
         $id = $this->getQishuId($qishu,$sid,4);
@@ -25,9 +26,14 @@ class CountXzmxAction extends CommonAction {
         // $data_temp = M('sjjlb')->join('LEFT JOIN (select * from stjy_xyxxb where stjy_xyxxb.suoshudd ='.$id_xyxxb.') as temp on stjy_sjjlb.xuehao=temp.xuehao')->where($where)->where()->field('stjy_sjjlb.xuehao,stjy_sjjlb.xiaoqu as xiaoqu2,temp.xiaoqu')->select();
         $data_temp = M('sjjlb')->where($where)->field('stjy_sjjlb.xuehao')->select();
         // dump($data_temp);die;
-        foreach($data_temp as $v){
-            $data_sjjlb[] = $v['xuehao'];
+        if(!empty($data_temp)){
+            foreach($data_temp as $v){
+                $data_sjjlb[] = $v['xuehao'];
+            }
+        }else{
+            $data_sjjlb = [];
         }
+        
         // dump($data_sjjlb);die;
         unset($where);
         if(!empty(array_diff($data_sjjlb,$data_bjxyxxb))){

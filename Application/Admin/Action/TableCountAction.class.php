@@ -137,8 +137,33 @@ class TableCountAction extends CommonAction{
 	public function scyjb_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
-	    $data = new \Admin\Action\CountScyjAction();
-        $list = $data->getScyjbData($qishu,$sid);//获得统计数据
+
+        /* 实时计算开始 */
+	    // $data = new \Admin\Action\CountScyjAction();
+        // $list = $data->getScyjbData($qishu,$sid);//获得统计数据
+        /* 实时计算结束 */
+
+        /* 查库开始 */
+        $id = $this->getQishuId($qishu,$sid,8);
+        $data = M('scyjb')->where('suoshudd ='.$id)->order('xuhao')->select();
+        $list = array();
+        foreach($data as $v){
+            if(!empty($v['kechengyj'])){
+                $v['kechengyj'] = json_decode($v['kechengyj']);
+                foreach($v['kechengyj'] as $key=>$val){
+                    $v[$key] = $val;
+                }
+            }
+            unset($v['kechengyj']);
+            if($v['xingming'] == '合计'){
+                $heji = $v;
+            }else{
+                $list[] = $v;
+            }
+        }
+        array_push($list,$heji);
+        // dump($list);
+        /* 查库结束 */
         // dump($list);
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
@@ -147,31 +172,20 @@ class TableCountAction extends CommonAction{
         $this->assign('arr',$arr);
         $this->adminDisplay();
     }
-    // public function scyjb_xq(){
-    //     $qishu = $_GET['qishu'];
-    //     $sid = $_GET['sid'];
-    //     $id = $this->getQishuId($qishu,$sid,8);
-    //     $list = M('scyjb')->where('suoshudd ='.$id)->select();
-    //     foreach($list as $k=>$v){
-    //         if(!empty($list[$k]['kechengyj'])){
-    //             $list[$k]['kechengyj'] = json_decode($list[$k]['kechengyj']);
-    //         }
-    //     }
-    //     dump($list);
-    //     $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-    //     $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
-    //     $this->assign("kecheng",$kecheng);
-    //     $this->assign("list",$list);
-    //     $this->assign('arr',$arr);
-    //     $this->adminDisplay();
-	// }
 
 	//市场占有率表详情
 	public function sczylb_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
+
+        /* 实时计算开始 */
         $data = new \Admin\Action\CountSczylAction();
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
+        /* 实时计算结束 */
+
+        /* 查库开始 */
+        
+        /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign("data",$list['data']);
         $this->assign("heji",$list['heji']);

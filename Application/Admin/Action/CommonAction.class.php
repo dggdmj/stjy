@@ -452,10 +452,12 @@ class CommonAction extends Action {
             $sid = $_GET['sid'];
 
             // 生成数据入库
+            // $res = $this->AlltoDb($qishu,$sid);
             $this->AlltoDb($qishu,$sid);
 
             $arr['status'] = true;
             $arr['info'] = '操作成功';
+            // $arr['info'] = $res;
             $this->ajaxReturn($arr);
         }else{
             // $this->error('请导入所有表格后再通知财务');
@@ -1660,17 +1662,25 @@ class CommonAction extends Action {
     public function AlltoDb($qishu,$sid){
         // -----------------------生成数据入库开始-----------------------
         // 市场业绩数据写入数据库
+        // $t1 = microtime(true);
         $res_scyj = $this->ScyjToDb($qishu,$sid);
         // 市场占有率数据写入数据库
+        // $t2 = microtime(true);
         $res_sczyl = $this->SczylToDb($qishu,$sid);
         // 新增明细数据写入数据库
+        // $t3 = microtime(true);
         $res_xzmx = $this->XzmxToDb($qishu,$sid);
         // 减少明细数据写入数据库
+        // $t4 = microtime(true);
         $res_jsmx = $this->jsmxToDb($qishu,$sid);
         // 经营数据写入数据库
+        // $t5 = microtime(true);
         $res_jsmx = $this->jysjToDb($qishu,$sid);
         // 退费数据写入数据库
+        // $t6 = microtime(true);
         $res_tf = $this->tfToDb($qishu,$sid);
+        // $t7 = microtime(true);
+        // return (($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
         // -----------------------生成数据入库结束-----------------------
     }
 
