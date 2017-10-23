@@ -93,12 +93,6 @@ class MenuModel {
                         'url' => U('/TableImport/tableList/tid/16'),
                         'order' => 1
                     ),
-//                    array(
-//                        'name' => '市场业绩表',
-//                        'icon' => 'sitemap',
-//                        'url' => U('/TableImport/tableList/tid/8'),
-//                        'order' => 1
-//                    ),
                 )
             ),
 //            'User' => array(
@@ -177,7 +171,7 @@ class MenuModel {
                     array(
                         'name' => '行政表工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wages/xzbgzb_xq'),
+                        'url' => U('/wages/xzbgzb'),
                         'order' => 1
                     ),
                     array(
@@ -189,7 +183,7 @@ class MenuModel {
                     array(
                         'name' => '市场部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wages/scbgzb_xq'),
+                        'url' => U('/wagesScb/index'),
                         'order' => 1
                     ),
                     array(
@@ -200,43 +194,6 @@ class MenuModel {
                     ),
                 )
             ),
-//            'Apponit' => array(
-//                'name' => '预约管理',
-//                'icon' => 'anchor',
-//                'order' => 1,
-//                'menu' => array(
-//                    array(
-//                        'name' => '预约订单管理',
-//                        'icon' => 'file',
-//                        'url' => U('/Appoint/index'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '摄影时段管理',
-//                        'icon' => 'file',
-//                        'url' => U('/Appoint/history_etsy'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '催乳时段管理',
-//                        'icon' => 'file',
-//                        'url' => U('/Appoint/index'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '早教时段管理',
-//                        'icon' => 'file',
-//                        'url' => U('/Appoint/index'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '游泳时段管理',
-//                        'icon' => 'file',
-//                        'url' => U('/Appoint/index'),
-//                        'order' => 1
-//                    ),
-//                )
-//            ),
 //            'Article' => array(
 //                'name' => '文章',
 //                'icon' => 'tasks',
@@ -337,18 +294,6 @@ class MenuModel {
                         'url' => U('Setting/kecheng'),
                         'order' => 5
                     ),
-//                    array(
-//                        'name' => '表单管理',
-//                        'icon' => 'file-text-o',
-//                        'url' => U('/Form/index'),
-//                        'order' => 4
-//                    ),
-//                    array(
-//                        'name' => 'TAG管理',
-//                        'icon' => 'tags',
-//                        'url' => U('/Tags/index'),
-//                        'order' => 5
-//                    ),
                 )
             ),
             'Member' => array(

@@ -2,7 +2,7 @@
 namespace Admin\Action;
 use Think\Action;
 use Admin\Model;
-class WagesAction extends CommonAction{
+class WagesXzbAction extends CommonAction{
 	/**
      * 当前模块参数
      */
@@ -34,37 +34,24 @@ class WagesAction extends CommonAction{
                     'icon' => 'list',
                 ),
             ),
-           // 'add' => array(
-           //     array('name' => '添加文章',
-           //         'url' => url('Article/article'),
-           //     ),
-           // )
         );
         return $data;
     }
 
-    //工资表总表
     public function index(){
-        echo "这是总表";
+        $this->adminDisplay();
     }
 
-    //行政部工资表
-    public function xzbgzb(){
-        echo "行政部工资表列表";
-    }
-
-    //市场部工资表
-    public function scbgzb(){
-        echo "市场部工资表列表";
-    }
-
-    public function jxbgzb(){
-        echo "教学部工资表列表";
-    }
-
-    //总监工资表
-    public function zjgzb(){
-        echo "总监工资表列表";
+    function object2array($object) {
+        if (is_object($object)) {
+            foreach ($object as $key => $value) {
+                $array[$key] = $value;
+            }
+        }
+        else {
+            $array = $object;
+        }
+        return $array;
     }
 }
 
