@@ -309,13 +309,34 @@ class CommonAction extends Action {
     //     }
     // }
 
+    // 从班级学员信息表取数
+    // public function getData($qishu,$sid){
+    //     $where['qishu'] = $qishu;
+    //     $where['sid'] = $sid;
+    //     $where['tid'] = 3;
+    //     $id = M('qishu_history')->where($where)->getField('id');
+    //     if(!empty($id)){
+    //         $where = 'suoshudd ='.$id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
+    //         $stu = M('bjxyxxb')->where($where)->field('xuehao')->select();
+    //         // dump($stu);
+    //         foreach($stu as $v){
+    //             $xueyuan[] = $v['xuehao'];
+    //         }
+    //         return $xueyuan;
+    //     }else{
+    //         return false;
+    //     }
+    // }
+
+    // 从学员信息表取数
     public function getData($qishu,$sid){
         $where['qishu'] = $qishu;
         $where['sid'] = $sid;
         $where['tid'] = 1;
         $id = M('qishu_history')->where($where)->getField('id');
+        $school = $this->getInfo($qishu,$sid)['school'];
         if(!empty($id)){
-            $stu = M('xyxxb')->where('suoshudd ='.$id.' and zhuangtai ="在读"')->field('xuehao')->select();
+            $stu = M('xyxxb')->where('suoshudd ='.$id.' and zhuangtai ="在读" and xiaoqu ="'.$school.'"')->field('xuehao')->select();
             // dump($stu);
             foreach($stu as $v){
                 $xueyuan[] = $v['xuehao'];
@@ -475,10 +496,12 @@ class CommonAction extends Action {
             $sid = $_GET['sid'];
 
             // 生成数据入库
+            // $res = $this->AlltoDb($qishu,$sid);
             $this->AlltoDb($qishu,$sid);
 
             $arr['status'] = true;
             $arr['info'] = '操作成功';
+            // $arr['info'] = $res;
             $this->ajaxReturn($arr);
         }else{
             // $this->error('请导入所有表格后再通知财务');
@@ -1652,6 +1675,26 @@ class CommonAction extends Action {
             unset($temp);
         }
 
+        // 导入学生人数变动数据
+        $i = 1;
+        foreach($list['xsrsbd'] as $k4=>$v4){
+            $temp['xuhao'] = $i;
+            $i++;
+            $temp['xiangmu'] = $k4;
+            $temp['renshu'] = $v4;
+            $temp['suoshudd'] = $qishu_id;
+            M('xsrsbdb')->add($temp);
+            unset($temp);
+        }
+        // for($i=1;$<=count($list['xsrsbd']);$i++){
+        //     $temp['xuhao'] = $i;
+        //     $temp['xiangmu'] = $k4;
+        //     $temp['renshu'] = $v4;
+        //     $temp['suoshudd'] = $qishu_id;
+        //     M('xsrsbdb')->add($temp);
+        //     unset($temp);
+        // }
+
     }
 
     public function tfToDb($qishu,$sid){
@@ -1682,18 +1725,26 @@ class CommonAction extends Action {
 
     public function AlltoDb($qishu,$sid){
         // -----------------------生成数据入库开始-----------------------
-        // // 市场业绩数据写入数据库
-        // $res_scyj = $this->ScyjToDb($qishu,$sid);
-        // // 市场占有率数据写入数据库
-        // $res_sczyl = $this->SczylToDb($qishu,$sid);
-        // // 新增明细数据写入数据库
-        // $res_xzmx = $this->XzmxToDb($qishu,$sid);
-        // // 减少明细数据写入数据库
-        // $res_jsmx = $this->jsmxToDb($qishu,$sid);
-        // // 经营数据写入数据库
-        // $res_jsmx = $this->jysjToDb($qishu,$sid);
+        // 市场业绩数据写入数据库
+        // $t1 = microtime(true);
+        $res_scyj = $this->ScyjToDb($qishu,$sid);
+        // 市场占有率数据写入数据库
+        // $t2 = microtime(true);
+        $res_sczyl = $this->SczylToDb($qishu,$sid);
+        // 新增明细数据写入数据库
+        // $t3 = microtime(true);
+        $res_xzmx = $this->XzmxToDb($qishu,$sid);
+        // 减少明细数据写入数据库
+        // $t4 = microtime(true);
+        $res_jsmx = $this->jsmxToDb($qishu,$sid);
+        // 经营数据写入数据库
+        // $t5 = microtime(true);
+        $res_jsmx = $this->jysjToDb($qishu,$sid);
         // 退费数据写入数据库
+        // $t6 = microtime(true);
         $res_tf = $this->tfToDb($qishu,$sid);
+        // $t7 = microtime(true);
+        // return (($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
         // -----------------------生成数据入库结束-----------------------
     }
 
@@ -1709,6 +1760,7 @@ class CommonAction extends Action {
                 $res2 = M('bjzysjb')->where('suoshudd ='.$id)->delete();
                 $res3 = M('gbxzdrstjb')->where('suoshudd ='.$id)->delete();
                 $res4 = M('zcxsxqztb')->where('suoshudd ='.$id)->delete();
+                $res5 = M('xsrsbdb')->where('suoshudd ='.$id)->delete();
                 // if($res1 && $res2 && $res3 && $res4){
                     M('qishu_history')->where($where)->delete();
                 // }
@@ -1730,16 +1782,16 @@ class CommonAction extends Action {
 
     public function delAllScData($qishu,$sid){
         // -----------------------生成数据从库删除开始-----------------------
-        // // 删除市场业绩数据
-        // $res_scyj = $this->delScData($qishu,$sid,8);
-        // // 删除市场占有率数据
-        // $res_sczyl = $this->delScData($qishu,$sid,9);
-        // // 删除新增明细数据
-        // $res_xzmx = $this->delScData($qishu,$sid,10);
-        // // 删除减少明细数据
-        // $res_jsmx = $this->delScData($qishu,$sid,11);
-        // // 删除经营数据数据
-        // $res_jysj = $this->delScData($qishu,$sid,12);
+        // 删除市场业绩数据
+        $res_scyj = $this->delScData($qishu,$sid,8);
+        // 删除市场占有率数据
+        $res_sczyl = $this->delScData($qishu,$sid,9);
+        // 删除新增明细数据
+        $res_xzmx = $this->delScData($qishu,$sid,10);
+        // 删除减少明细数据
+        $res_jsmx = $this->delScData($qishu,$sid,11);
+        // 删除经营数据数据
+        $res_jysj = $this->delScData($qishu,$sid,12);
         // 删除退费数据
         $res_tf = $this->delScData($qishu,$sid,13);
         // -----------------------生成数据从库删除结束-----------------------

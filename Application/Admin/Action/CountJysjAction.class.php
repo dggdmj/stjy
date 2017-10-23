@@ -11,13 +11,23 @@ class CountJysjAction extends CommonAction {
      */
     public function getJysjbData($qishu,$sid){
         //获得经营数据汇总表各数据
+        // $t1 = microtime(true);
         $school_info = M("school")->where("id = ".$sid)->find();
+        // $t2 = microtime(true);
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
+        // $t3 = microtime(true);
         $arr_kksd = $this->getkksd($qishu,$sid);   //获得开课时段和班级数统计
+        // $t4 = microtime(true);
         $arr_bjbmsj = $this->getbjbmsj($qishu,$sid);   //获得班级部门数据
+        // $t5 = microtime(true);
         $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
+        // $t6 = microtime(true);
         $arr_xsrsbd = $this->getxsrsbd($qishu,$sid);   //获得学生人数变动数据
+        // $t7 = microtime(true);
         $arr_beizhu = $this->getbeizhu($qishu,$sid);   //获得备注信息
+        // $t8 = microtime(true);
+        // $tt = (($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms--'.(($t8-$t7)*1000).'ms';
+        // dump($tt);
 
         $arr['school_info'] = $school_info;
         $arr['kksd'] = $arr_kksd;

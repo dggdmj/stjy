@@ -395,6 +395,15 @@ class TableImportAction extends CommonAction{
                 $this->error('上传失败,请检查上传的文档是否正确');
             }
 
+            // 判断该是否已锁定
+            $map['qishu'] = $_POST['qishu'];
+            $map['sid'] = $_POST['sid'];
+            $status_xzjl = M('sjzb')->where($map)->getField('status_xzjl');
+            if($status_xzjl == 2){
+                unlink($file_name);// 删除excel文档
+                $this->error('上传功能已锁定,请解锁后继续');
+            }
+
             $qishu_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],13);
             
 
@@ -420,6 +429,8 @@ class TableImportAction extends CommonAction{
             $excel_data = $this->getTuifeiExcelData($objPHPExcel,$highestRow,$colsNum,$qishu_id);
             // dump($excel_data);
             // die;
+
+            /* 可能要加个校验的方法 */
 
             // 将获取数组插入到数据库相应的表里面
             
@@ -888,7 +899,15 @@ class TableImportAction extends CommonAction{
                     if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
                         $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
                     }else{
-                        $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                        $value= \PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                        $val_arr = explode(',',$value);
+                        $val = '';
+                        if(count($val_arr)>=2){
+                            foreach($val_arr as $v){
+                                $val.=$v;
+                            }
+                            $value = (double)$val;
+                        }
                     }
                 }
 
@@ -968,7 +987,15 @@ class TableImportAction extends CommonAction{
                     if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
                         $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
                     }else{
-                        $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                        $value= \PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                        $val_arr = explode(',',$value);
+                        $val = '';
+                        if(count($val_arr)>=2){
+                            foreach($val_arr as $v){
+                                $val.=$v;
+                            }
+                            $value = (double)$val;
+                        }
                     }
                 }
 
@@ -1083,7 +1110,7 @@ class TableImportAction extends CommonAction{
                         $data['jiaowuzrxm'] = $value;
                     break;
                     case 33:
-                        $data['jiaowuzrqkje'] = $value;
+                        $data['jiaowuzrykje'] = $value;
                     break;
                     case 34:
                         $data['jiaowuzrqr'] = $value;
@@ -1092,7 +1119,7 @@ class TableImportAction extends CommonAction{
                         $data['jiaoxuefxzxm'] = $value;
                     break;
                     case 36:
-                        $data['jiaoxuefxzqkje'] = $value;
+                        $data['jiaoxuefxzykje'] = $value;
                     break;
                     case 37:
                         $data['jiaoxuefxzqr'] = $value;
@@ -1181,7 +1208,15 @@ class TableImportAction extends CommonAction{
                     if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
                         $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
                     }else{
-                        $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                        $value= \PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                        $val_arr = explode(',',$value);
+                        $val = '';
+                        if(count($val_arr)>=2){
+                            foreach($val_arr as $v){
+                                $val.=$v;
+                            }
+                            $value = (double)$val;
+                        }
                     }
                 }
 
