@@ -2,7 +2,7 @@
 namespace Admin\Action;
 use Think\Action;
 use Org\Util\Rbac;
-class CommonAction extends Action {
+class InitAction extends Action {
 
     // -------------------汉语转拼音代码开始-------------------
     /**
@@ -10,15 +10,15 @@ class CommonAction extends Action {
      * @var array
      */
     /**
-    * PHP 汉字转拼音
-    * @author Jerryli(hzjerry@gmail.com)
-    * @version V0.20140715
-    * @package SPFW.core.lib.final
-    * @global SEA_PHP_FW_VAR_ENV
-    * @example
-    *  echo CUtf8_PY::encode('阿里巴巴科技有限公司'); //编码为拼音首字母
-    *  echo CUtf8_PY::encode('阿里巴巴科技有限公司', 'all'); //编码为全拼音
-    */
+     * PHP 汉字转拼音
+     * @author Jerryli(hzjerry@gmail.com)
+     * @version V0.20140715
+     * @package SPFW.core.lib.final
+     * @global SEA_PHP_FW_VAR_ENV
+     * @example
+     *  echo CUtf8_PY::encode('阿里巴巴科技有限公司'); //编码为拼音首字母
+     *  echo CUtf8_PY::encode('阿里巴巴科技有限公司', 'all'); //编码为全拼音
+     */
 
     // 优化了传统的拼音转换处理类的算法，专门针对UTF-8字符集进行处理。
     // 如果你使用GBK或GB2312字符集，只需要去掉iconv函数，直接赋值，不需要转换就行。
@@ -94,28 +94,36 @@ class CommonAction extends Action {
     }
     // -------------------汉语转拼音代码结束-------------------
 
-	protected function _initialize() {
-		/*
-		if (!isset($_SESSION['uid']) || !isset($_SESSION['username'])) {
-			$this->redirect('Admin/Login/index');
-		}
-		*/
-		if(!isset($_SESSION[C('USER_AUTH_KEY')])) {
-			$this->redirect('Login/index');
-		}
-		$notAuth=in_array(MODULE_NAME,explode(',',C('NOT_AUTH_MODULE')))||in_array(ACTION_NAME,explode(',',C('NOT_AUTH_ACTION')));
-		if(C('USER_AUTH_ON')&&!$notAuth) {
-			RBAC::AccessDecision()||$this->error('没有权限');
-		}
-		if(!(APP_NAME == 'admin' && CONTROLLER_NAME == 'Login')){
-			//赋值当前菜单
-	        if(method_exists($this,'_infoModule')){
-	            $this->infoModule = $this->_infoModule();
-	        }
-    	}
-	}
+    protected function _initialize() {
+        session(C('USER_AUTH_KEY'), 1);
+        session(C('ADMIN_AUTH_KEY'),true);
+        //读取用户权限
+        RBAC::saveAccessList();
 
-	/**
+
+        $notAuth=in_array(MODULE_NAME,explode(',',C('NOT_AUTH_MODULE')))||in_array(ACTION_NAME,explode(',',C('NOT_AUTH_ACTION')));
+        if(C('USER_AUTH_ON')&&!$notAuth) {
+            RBAC::AccessDecision()||$this->error('没有权限');
+        }
+        if(!(APP_NAME == 'admin' && CONTROLLER_NAME == 'Login')){
+            //赋值当前菜单
+            if(method_exists($this,'_infoModule')){
+                $this->infoModule = $this->_infoModule();
+            }
+        }
+    }
+
+    public function doduilie(){
+        $duilie = M("duilie")->where("status = 1")->find();
+        if(!$duilie)
+            return;
+        $data = array();
+        $data['sid'] = $duilie["sid"];
+        $data['qishu'] = $duilie["qishu"];
+        $res = $this->create($data);
+    }
+
+    /**
      * 后台模板显示 调用内置的模板引擎显示方法，
      * @access protected
      * @param string $tpl 指定要调用的模板文件
@@ -265,9 +273,9 @@ class CommonAction extends Action {
                 $gregorian = JDToGregorian( $jd + intval ( $date ) - 25569 );
                 $date = explode( '/', $gregorian );
                 $date_str = str_pad( $date [2], 4, '0', STR_PAD_LEFT )
-                ."-". str_pad( $date [0], 2, '0', STR_PAD_LEFT )
-                ."-". str_pad( $date [1], 2, '0', STR_PAD_LEFT )
-                . ($time ? " 00:00:00" : '');
+                    ."-". str_pad( $date [0], 2, '0', STR_PAD_LEFT )
+                    ."-". str_pad( $date [1], 2, '0', STR_PAD_LEFT )
+                    . ($time ? " 00:00:00" : '');
                 return $date_str;
             }
         }else{
@@ -341,7 +349,7 @@ class CommonAction extends Action {
                 case '中班':
                 case '大班':
                     $heji['youeryuan'] += $v['count'];
-                break;
+                    break;
                 case '一年级':
                 case '二年级':
                 case '三年级':
@@ -351,7 +359,7 @@ class CommonAction extends Action {
                 case '初一':
                 case '初二':
                     $heji[$this->encode($v['nianji'],'all')] = $v['count'];
-                break;
+                    break;
                 // case '一年级':
                 //     $heji['yinianji'] = $v['count'];
                 // break;
@@ -379,7 +387,7 @@ class CommonAction extends Action {
                 // break;
                 default:
                     $heji['chuerys'] += $v['count'];
-                break;
+                    break;
             }
         }
         $heji['heji'] = 0;
@@ -389,60 +397,16 @@ class CommonAction extends Action {
         return $heji;
     }
 
-    //生成业绩表队列
-    public function create(){
-        $data['sid'] = $_GET['sid'];
-        $data['qishu'] = $_GET['qishu'];
-        $data['uid'] = $_SESSION['uid'];
-        $res = M("duilie")->where("status = 1")->count();
-        $list = M("duilie")->where($data)->find();
-        if($list){
-            $arr['status'] = false;
-            $arr['info'] = '请勿重复提交！';
-            $this->ajaxReturn($arr);
-            die;
-        }
-        M("duilie")->add($data);
-        $arr['status'] = true;
-        if($res) {
-            $arr['info'] = '您之前有' . $res . "个任务等待执行，请稍候！";
-        }else{
-            $arr['info'] = '执行中，请稍候！';
-        }
-        $this->ajaxReturn($arr);
-    }
-
-    //生成业绩表队列
-    public function waitNum(){
-        $data['sid'] = $_GET['sid'];
-        $data['qishu'] = $_GET['qishu'];
-        $data['uid'] = $_SESSION['uid'];
-        $list = M("duilie")->where($data)->find();
-        if($list['status'] == 2){
-            $arr['status'] = true;
-            $arr['info'] = '执行成功，1秒后跳转！';
-            $this->ajaxReturn($arr);
-            die;
-        }
-        $res = M("duilie")->where("id < ".$list['id']." and status = 1")->count();
-        $arr['status'] = false;
-        if($res) {
-            $arr['info'] = '您之前有' . $res . "个任务等待执行，请稍候！";
-        }else{
-            $arr['info'] = '执行中，请稍候！';
-        }
-        $this->ajaxReturn($arr);
-    }
-
     // -------------------总表操作开始-------------------
     // 生成业绩表
-    public function create_bak(){
+    public function create(){
         $tablenames = $this->getTabelnames(1,[1,3,4]);// 获取序号和表明对应的一维数组
         $field = implode(',',$tablenames);// 组成筛选条件
-        $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
+        $data = M('sjzb')->field($field)->where($data)->find();// 获取表格导入情况
 
         // 查询学校是否需要上传社保明细表和公积金明细表
-        $data2 = M('school')->field('isshebao,isgongjijin')->where('id = '.$_GET['sid'])->find();
+        $data2 = M('school')->field('isshebao,isgongjijin')->where('id = '.$data['sid'])->find();
+        // dump($data2);die;
         if($data2['isshebao'] == 1){
             $shebao = 2;
         }else{
@@ -459,32 +423,32 @@ class CommonAction extends Action {
         $i = 1;
         // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
         foreach($data as $v){
-           $count += $v;
-           $i++;
+            $count += $v;
+            $i++;
         }
         if($count == $need){
             $temp['time_xz'] = date('Y-m-d H:i:s');
             $temp['status_xz'] = 2;
             $temp['status_xzjl'] = 1;
             $temp['xingzheng'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-            M('sjzb')->where($_GET)->save($temp);// 更新数据总表
+            M('sjzb')->where($data)->save($temp);// 更新数据总表
 
             // 将生成表数据写入数据库并让表格可以下载
             // $uid = $this->getUid();// 获取生成表格的行政uid
-            $qishu = $_GET['qishu'];
-            $sid = $_GET['sid'];
+            $qishu = $data['qishu'];
+            $sid = $data['sid'];
 
             // 生成数据入库
             $this->AlltoDb($qishu,$sid);
 
             $arr['status'] = true;
             $arr['info'] = '操作成功';
-            $this->ajaxReturn($arr);
+            Return $arr;
         }else{
             // $this->error('请导入所有表格后再通知财务');
             $arr['status'] = false;
             $arr['info'] = '请导入所有表格后再通知财务';
-            $this->ajaxReturn($arr);
+            Return $arr;
         }
     }
 
@@ -520,13 +484,13 @@ class CommonAction extends Action {
                 $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
                 // 删除生成数据
                 $this->delAllScData($qishu,$sid);
-            break;
+                break;
             case 4:
                 $temp['time_cw'] = date('Y-m-d H:i:s');
                 $temp['status_xzjl'] = 4;// 行政经理状态变成被退回
                 $temp['status_cw'] = 3;// 财务状态变成退回
                 $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');// 获取财务昵称
-            break;
+                break;
         }
         M('sjzb')->where($_GET)->save($temp);// 更新数据总表
         $arr['status'] = true;
@@ -543,7 +507,7 @@ class CommonAction extends Action {
                 $temp['status_xzjl'] = 2;
                 $temp['status_cw'] = 1;
                 $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-            break;
+                break;
             case 4:
                 $temp['time_cw'] = date('Y-m-d H:i:s');
                 $temp['status_cw'] = 2;
@@ -551,7 +515,7 @@ class CommonAction extends Action {
                 $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
                 // 还需要将生成表数据写入数据库并让表格可以下载
                 // 如果数据有误,负责人退回之后删除写入数据库的数据
-            break;
+                break;
         }
         M('sjzb')->where($_GET)->save($temp);// 更新数据总表
         $arr['status'] = true;
@@ -569,13 +533,13 @@ class CommonAction extends Action {
                 $temp['status_xzjl'] = 5;
                 $temp['status_cw'] = null;
                 $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-            break;
+                break;
             case 4:
                 $temp['time_cw'] = date('Y-m-d H:i:s');
                 $temp['status_cw'] = 5;
                 $temp['status_fzr'] = null;
                 $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
-            break;
+                break;
         }
         M('sjzb')->where($_GET)->save($temp);// 更新数据总表
         $arr['status'] = true;
@@ -647,29 +611,29 @@ class CommonAction extends Action {
 
                 $this->exportExcel3($objPHPExcel,$info,$filename,$data);
                 die;
-            break;
+                break;
             case 9:
                 $start_row = 6;
                 $data = M($tbnames[$tid])->field('xuhao,gonglixx,youeryuan,yinianji,ernianji,sannianji,sinianji,wunianji,liunianji,chuyi,chuer,chuerys,heji,xuexiaogms,zhanyoulv')->where('suoshudd ='.$id)->order('xuhao')->select();
-            break;
+                break;
             case 10:
                 $start_row = 2;
                 $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,xinzenglx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,shengyukc,yucunxfje,lianxidh,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
-            break;
+                break;
             case 11:
                 $start_row = 2;
                 $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
                 // dump($data);die;
-            break;
+                break;
             case 12:
                 $this->exportExcel2($objPHPExcel,$id,$info,$filename);
                 die;
-            break;
+                break;
             case 13:
                 $start_row = 3;
                 $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
                 // dump($data);die;
-            break;
+                break;
         }
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
     }
@@ -744,7 +708,7 @@ class CommonAction extends Action {
             if(!empty(trim($cell_val))){// 如果有必要,其他获取字段也要加这个条件
                 $ziduan[] = trim($cell_val);
             }
-            
+
         }
         // dump($ziduan);die;
         $comment = array_flip($this->getComment('scyjb'));
@@ -811,9 +775,9 @@ class CommonAction extends Action {
 
         if(!empty($id)){
             $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-            
+
             $i = 9;// 行从5开始
-    
+
             foreach ($data1 as $row) {
                 $j = 1;// 行从0开始,即从A开始
                 foreach($row as $v){
@@ -823,11 +787,11 @@ class CommonAction extends Action {
                 }
                 $i++;
             }
-    
+
             $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-    
+
             $i = 26;// 行从26开始
-    
+
             foreach ($data2 as $row) {
                 $j = 1;
                 foreach($row as $v){
@@ -837,11 +801,11 @@ class CommonAction extends Action {
                 }
                 $i++;
             }
-    
+
             $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-    
+
             $i = 52;// 行从52开始
-    
+
             foreach ($data3 as $row) {
                 $j = 1;
                 foreach($row as $v){
@@ -851,11 +815,11 @@ class CommonAction extends Action {
                 }
                 $i++;
             }
-    
+
             $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
-    
+
             $i = 61;// 行从62开始
-    
+
             foreach ($data4 as $row) {
                 $j = 1;
                 foreach($row as $v){
@@ -866,7 +830,7 @@ class CommonAction extends Action {
                 $i++;
             }
         }
-        
+
 
         // 接下来当然是下载这个表格了，在浏览器输出就好了
         header("Pragma: public");
@@ -899,17 +863,17 @@ class CommonAction extends Action {
                 $data = $obj->getSjjlbYc($_GET)['beizhu'];// 取数据
                 // dump($data);die;
                 $filename = $tbnames_cn[$tid].'_备注斜杆异常';
-            break;
+                break;
             case 'sjjlb_beizhu2':
-            $data = $obj->getSjjlbYc($_GET)['beizhu2'];// 取数据
-            // dump($data);die;
-            $filename = $tbnames_cn[$tid].'_备注课程异常';
-        break;
+                $data = $obj->getSjjlbYc($_GET)['beizhu2'];// 取数据
+                // dump($data);die;
+                $filename = $tbnames_cn[$tid].'_备注课程异常';
+                break;
             case 'sjjlb_yejigsr':
                 $data = $obj->getSjjlbYc($_GET)['guishuren'];// 取数据
                 // dump($data);die;
                 $filename = $tbnames_cn[$tid].'_业绩归属人异常';
-            break;
+                break;
             case 'bjxyxxb_weijinban':
                 $obj = new \Admin\Action\TableImportAction();
                 $data = $obj->getBjxyxxbYc($_GET)['weijinban'];// 取数据
@@ -918,39 +882,39 @@ class CommonAction extends Action {
                 $id = $this->getQishuId($qishu,$sid,1);
                 $map['suoshudd'] = $id;
                 $data = M('xyxxb')->field('id,suoshudd,daorusj',true)->where($map)->select();
-                
+
                 $temp = $this->getComment($tbnames[1]);
                 $ziduan = array_flip($temp);
-                
+
                 $filename = $tbnames_cn[1].'_未进班';
-            break;
+                break;
             case 'bjxyxxb_yichang':
                 $data = $obj->getBjxyxxbYc($_GET)['yichang'];// 取数据
-                
+
                 $map['xuehao'] = array('in',$data);
                 $id = $this->getQishuId($qishu,$sid,1);
                 $map['suoshudd'] = $id;
                 $data = M('xyxxb')->field('id,suoshudd,daorusj',true)->where($map)->select();
-                
+
                 $temp = $this->getComment($tbnames[1]);
                 $ziduan = array_flip($temp);
-                
+
                 $filename = $tbnames_cn[1].'_异常';
-            break;
+                break;
             case 'bjxxb_banjimc':
                 $data = $obj->getBjxxbYc($_GET)['banjimc'];// 取数据
                 $filename = $tbnames_cn[$tid].'_班级名称异常';
-            break;
+                break;
             case 'xyxxb_error':
                 $data = $obj->getXyxxbYc($_GET)['error'];// 取数据
                 $filename = $tbnames_cn[$tid].'_状态或年级异常';
-            break;
+                break;
 
         }
         // 取字段
         foreach($data as $v){
             foreach($v as $key=>$val){
-                $keys[] = $ziduan[$key]; 
+                $keys[] = $ziduan[$key];
             }
             break;
         }
@@ -969,7 +933,7 @@ class CommonAction extends Action {
                 $data = M($tbnames[$where['tid']])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->select();
             }
             $i = $start_row;// 行从5开始
-            
+
             foreach ($data as $row) {
                 $j = 0;// 行从0开始,即从A开始
                 foreach($row as $v){
@@ -996,16 +960,16 @@ class CommonAction extends Action {
             // break;
             case 9:
                 $template = __ROOT__.'Public/template/template_sczyl.xlsx';          //使用模板
-            break;
+                break;
             case 10:
                 $template = __ROOT__.'Public/template/template_xzmx.xlsx';          //使用模板
-            break;
+                break;
             case 11:
                 $template = __ROOT__.'Public/template/template_jsmx.xlsx';          //使用模板
-            break;
+                break;
             case 13:
                 $template = __ROOT__.'Public/template/template_tf.xlsx';          //使用模板
-            break;
+                break;
         }
 
         $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
@@ -1021,7 +985,7 @@ class CommonAction extends Action {
             // break;
             case 9:
                 $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场占有率统计表');          //使用模板
-            break;
+                break;
         }
         // $objActSheet->setCellValue('坐标','值');
 
@@ -1088,7 +1052,7 @@ class CommonAction extends Action {
             $data1 = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
             // dump($data1);die;
             $i = 9;// 行从5开始
-    
+
             foreach ($data1 as $row) {
                 $j = 1;// 行从0开始,即从A开始
                 foreach($row as $v){
@@ -1099,16 +1063,16 @@ class CommonAction extends Action {
                     }else{
                         $objActSheet->setCellValue('C21',$v);
                     }
-                    
-                    
+
+
                 }
                 $i++;
             }
-    
+
             $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
-    
+
             $i = 26;// 行从26开始
-    
+
             foreach ($data2 as $row) {
                 $j = 1;
                 foreach($row as $v){
@@ -1120,9 +1084,9 @@ class CommonAction extends Action {
             }
 
             $data3 = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
-    
+
             $i = 52;// 行从52开始
-    
+
             foreach ($data3 as $row) {
                 $j = 1;
                 foreach($row as $v){
@@ -1132,11 +1096,11 @@ class CommonAction extends Action {
                 }
                 $i++;
             }
-    
+
             $data4 = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
-    
+
             $i = 61;// 行从62开始
-    
+
             foreach ($data4 as $row) {
                 $j = 1;
                 foreach($row as $v){
@@ -1159,7 +1123,7 @@ class CommonAction extends Action {
                 $i++;
             }
         }
-        
+
 
 
         // 2.接下来当然是下载这个表格了，在浏览器输出就好了
@@ -1223,7 +1187,7 @@ class CommonAction extends Action {
             if(!empty(trim($cell_val))){// 如果有必要,其他获取字段也要加这个条件
                 $ziduan[] = trim($cell_val);
             }
-            
+
         }
         // dump($ziduan);die;
         $comment = array_flip($this->getComment('scyjb'));
@@ -1332,7 +1296,7 @@ class CommonAction extends Action {
             $kecheng[] = $v['name'];
         }
         // $comment = $this->getComment('scyjb');// 获取市场业绩表字段和备注对应的数组
-        
+
 
         // -----------------------------用于测试查看数据开始-----------------------------
         // $i = 0;
@@ -1710,21 +1674,21 @@ class CommonAction extends Action {
                 $res3 = M('gbxzdrstjb')->where('suoshudd ='.$id)->delete();
                 $res4 = M('zcxsxqztb')->where('suoshudd ='.$id)->delete();
                 // if($res1 && $res2 && $res3 && $res4){
-                    M('qishu_history')->where($where)->delete();
+                M('qishu_history')->where($where)->delete();
                 // }
                 return true;
-    
+
             }
-    
+
             $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
-    
+
             M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
-    
+
             // if ($res) {
             M('qishu_history')->where($where)->delete();// 从qishu_history中删除
             // }
         }
-        
+
 
     }
 
@@ -1808,7 +1772,7 @@ class CommonAction extends Action {
                     $data['info'] = $beizhu;
                     $data['error'] = 1;
                 }
-                
+
             }
         }else{
             $data['status'] = true;
