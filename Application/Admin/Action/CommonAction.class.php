@@ -1631,6 +1631,26 @@ class CommonAction extends Action {
             unset($temp);
         }
 
+        // 导入学生人数变动数据
+        $i = 1;
+        foreach($list['xsrsbd'] as $k4=>$v4){
+            $temp['xuhao'] = $i;
+            $i++;
+            $temp['xiangmu'] = $k4;
+            $temp['renshu'] = $v4;
+            $temp['suoshudd'] = $qishu_id;
+            M('xsrsbdb')->add($temp);
+            unset($temp);
+        }
+        // for($i=1;$<=count($list['xsrsbd']);$i++){
+        //     $temp['xuhao'] = $i;
+        //     $temp['xiangmu'] = $k4;
+        //     $temp['renshu'] = $v4;
+        //     $temp['suoshudd'] = $qishu_id;
+        //     M('xsrsbdb')->add($temp);
+        //     unset($temp);
+        // }
+
     }
 
     public function tfToDb($qishu,$sid){
@@ -1696,6 +1716,7 @@ class CommonAction extends Action {
                 $res2 = M('bjzysjb')->where('suoshudd ='.$id)->delete();
                 $res3 = M('gbxzdrstjb')->where('suoshudd ='.$id)->delete();
                 $res4 = M('zcxsxqztb')->where('suoshudd ='.$id)->delete();
+                $res5 = M('xsrsbdb')->where('suoshudd ='.$id)->delete();
                 // if($res1 && $res2 && $res3 && $res4){
                     M('qishu_history')->where($where)->delete();
                 // }

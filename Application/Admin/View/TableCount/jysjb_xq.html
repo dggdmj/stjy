@@ -12,8 +12,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td rowspan="10">{$list.school_info.mianji}</td>
-                        <td rowspan="10">{$list.school_info.classnum}</td>
+                        <td rowspan="10">{$school['mianji']}</td>
+                        <td rowspan="10">{$school['classnum']}</td>
                     </tr>
                 </tbody>
             </table>
@@ -21,24 +21,20 @@
             <table class="table table-hover table-bordered table-condensed"  style="width: 400px">
                 <caption align="top">分校开课表</caption>
                 <thead>
-                <tr>
-                    <th width="100">开课时间段</th>
-                    <th width="100">班级数</th>
-                </tr>
+                    <tr>
+                        <th width="100">开课时间段</th>
+                        <th width="100">班级数</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <foreach name="list.kksd" key="key" item="vo">
-                    <if condition="$key neq '总计'">
-                    <tr>
-                        <td>{$key}</td>
-                        <td>{$vo}</td>
-                    </tr>
-                    </if>
-                </foreach>
-                    <tr>
-                        <td>总计</td>
-                        <td>{$list['kksd']['总计']}</td>
-                    </tr>
+                    <foreach name="data1" key="key" item="v">
+                        <if condition="$key neq '总计'">
+                            <tr>
+                                <td>{$v['kaikesjd']}</td>
+                                <td>{$v['banjishu']}</td>
+                            </tr>
+                        </if>
+                    </foreach>
                 </tbody>
             </table>
 
@@ -52,14 +48,14 @@
                         <td style="width: 400px">备注</td>
                     </tr>
                     <tr>
-                        <td>{$list['bjbmsj']['dybjs_total']}</td>
-                        <td>{$list['kksd']['总计']}</td>
-                        <if condition="$list['bjbmsj']['dybjs_total'] eq $list['kksd']['总计']">
+                        <td>{$sjbd['c57']}</td>
+                        <td>{$sjbd['c21']}</td>
+                        <if condition="$sjbd['c57'] eq $sjbd['c21']">
                         <td style="color:red;" colspan="2">是</td>
                         <else />
                         <td style="color:red;" colspan="2">否</td>
                         </if>
-                        <td><input type="text" class="input update_even" name="beizhu1" value="{$list['beizhu']['beizhu1']}"></td>
+                        <td><input type="text" class="input update_even" name="beizhu1" value="{$beizhu['beizhu1']}"></td>
                     </tr>
                     <tr>
                         <td>在册学生总人数合计(C36)</td>
@@ -68,14 +64,14 @@
                         <td>备注</td>
                     </tr>
                     <tr>
-                        <td>{$list['zaice']['合计']['zrs']}</td>
-                        <td>{$list['xsrsbd']['本月底在册学生人数']}</td>
-                        <if condition="$list['zaice']['合计']['zrs'] eq $list['xsrsbd']['本月底在册学生人数']">
+                        <td>{$sjbd['c36']}</td>
+                        <td>{$sjbd['d46']}</td>
+                        <if condition="$sjbd['c36'] eq $sjbd['d46']">
                         <td style="color:red;" colspan="2">是</td>
                         <else />
                         <td style="color:red;" colspan="2">否</td>
                         </if>
-                        <td><input type="text" class="input update_even" name="beizhu2" value="{$list['beizhu']['beizhu2']}"></td>
+                        <td><input type="text" class="input update_even" name="beizhu2" value="{$beizhu['beizhu2']}"></td>
                     </tr>
                     <tr>
                         <td>在册学生实际在班人数总计(H36)</td>
@@ -85,15 +81,15 @@
                         <td>备注</td>
                     </tr>
                     <tr>
-                        <td>{$list['zaice']['合计']['sjzbrs']}</td>
-                        <td>{$list['bjbmsj']['rszj_total']}</td>
-                        <td>{$list['gbxzdrstj'][5]['heji']}</td>
-                        <if condition="($list['zaice']['合计']['sjzbrs'] eq $list['bjbmsj']['rszj_total']) AND ($list['bjbmsj']['rszj_total'] eq $list['gbxzdrstj'][5]['heji'])">
+                        <td>{$sjbd['h36']}</td>
+                        <td>{$sjbd['d57']}</td>
+                        <td>{$sjbd['n66']}</td>
+                        <if condition="($sjbd['h36'] eq $sjbd['d57']) AND ($sjbd['d57'] eq $sjbd['n66'])">
                         <td style="color:red;">是</td>
                         <else />
                         <td style="color:red;">否</td>
                         </if>
-                        <td><input type="text" class="input update_even" name="beizhu3" value="{$list['beizhu']['beizhu3']}"></td>
+                        <td><input type="text" class="input update_even" name="beizhu3" value="{$beizhu['beizhu3']}"></td>
                     </tr>
                 </tbody>
             </table>
@@ -107,13 +103,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <foreach name="list.xsrsbd" key="key" item="vo">
-                    <if condition="$key neq '总计'">
-                        <tr>
-                            <td>{$key}</td>
-                            <td>{$vo}</td>
-                        </tr>
-                    </if>
+                <foreach name="data5" item="vo">
+                    <tr>
+                        <td>{$vo['xiangmu']}</td>
+                        <td>{$vo['renshu']}</td>
+                    </tr>
                 </foreach>
                 </tbody>
             </table>
@@ -129,23 +123,23 @@
                     <th>停读(预计可复学)</th>
                     <th>停读(预计不可复学已结算续费)</th>
                     <th>实际在班人数</th>
-                    <volist name="list.kecheng" id="kc">
+                    <volist name="kecheng" id="kc">
                     <th>{$kc}</th>
                     </volist>
                 </tr>
                 </thead>
                 <tbody>
-                <foreach name="list.zaice" item="v" key="k">
+                <foreach name="data2" item="v" key="k">
                     <tr>
-                        <td>{$k}</td>
-                        <td>{$v["zrs"]}</td>
+                        <td>{$v['nianji']}</td>
+                        <td>{$v["zongrenshu"]}</td>
                         <td>{$v["weijinban"]}</td>
-                        <td></td>
-                        <td>{$v["tingdu"]}</td>
-                        <td></td>
-                        <td>{$v["sjzbrs"]}</td>
-                        <volist name="list.kecheng" id="kc">
-                            <td><?php echo $v[$kc];?></td>
+                        <td>{$v['yubaoming']}</td>
+                        <td>{$v["tingduyjkfx"]}</td>
+                        <td>{$v["tingduyjbkfx"]}</td>
+                        <td>{$v["shijizbrs"]}</td>
+                        <volist name="kecheng" id="kc">
+                            <td><?php echo $v[strtolower($kc)];?></td>
                         </volist>
                     </tr>
                 </foreach>
@@ -165,22 +159,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                        <foreach name="list.bjbmsj" item="vo">
-                            <notempty name="vo.bumen">
+                        <foreach name="data3" item="v">
+                            <!-- <notempty name="v.bumen"> -->
                             <tr>
-                                <td>{$vo.bumen}</td>
-                                <td>{$vo.dybjs}</td>
-                                <td>{$vo.rszj}</td>
-                                <td>{$vo.baoguanglv}</td>
+                                <td>{$v.bumen}</td>
+                                <td>{$v.dangyuebjs}</td>
+                                <td>{$v.renshuzj}</td>
+                                <td>{$v.banjibhl}</td>
                             </tr>
-                            </notempty>
+                            <!-- </notempty> -->
                         </foreach>
-                        <tr>
-                            <td>总计</td>
-                            <td>{$list.bjbmsj.dybjs_total}</td>
-                            <td>{$list.bjbmsj.rszj_total}</td>
-                            <td>{$list.bjbmsj.baoguanglv_total}</td>
-                        </tr>
+
                 </tbody>
             </table>
             <table class="table table-hover table-bordered table-condensed" style="width: 1500px">
@@ -203,21 +192,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                        <foreach name="list.gbxzdrstj" item="g" key="key">
+                        <foreach name="data4" item="g" key="key">
                         <tr>
-                            <td><empty name="g.bumen">总计<else/>{$g.bumen}</empty></td>
-                            <td>{$g['yeb']}</td>
-                            <td>{$g['xxzmb']}</td>
-                            <td>{$g['zxb']}</td>
-                            <td>{$g['xxps15ban']}</td>
-                            <td>{$g['xxps20ban']}</td>
-                            <td>{$g['xxps25ban']}</td>
-                            <td>{$g['xxps30ban']}</td>
-                            <td>{$g['zsws']}</td>
-                            <td>{$g['zwws']}</td>
-                            <td>{$g['zlws']}</td>
-                            <td>{$g['ydy']}</td>
-                            <td><empty name="g.bumen">{$g['heji_t']}<else/>{$g['heji']}</empty></td>
+                            <!-- <td><empty name="g['bumen']">总计<else/>{$g['bumen']}</empty></td> -->
+                            <td>{$g['bumen']}</td>
+                            <td>{$g['youerban']}</td>
+                            <td>{$g['xiaoxuezmbtb']}</td>
+                            <td>{$g['zhongxueban']}</td>
+                            <td>{$g['xiaoxueps1d5']}</td>
+                            <td>{$g['xiaoxueps2']}</td>
+                            <td>{$g['xiaoxueps2d5']}</td>
+                            <td>{$g['xiaoxueps3']}</td>
+                            <td>{$g['zhouriws']}</td>
+                            <td>{$g['zhouwuws']}</td>
+                            <td>{$g['zhouliuws']}</td>
+                            <td>{$g['yiduiyi']}</td>
+                            <!-- <td><empty name="g.bumen">{$g['heji_t']}<else/>{$g['heji']}</empty></td> -->
+                            <td>{$g['heji']}</td>
                         </tr>
                         </foreach>
                 </tbody>
@@ -232,8 +223,8 @@
         width: 3000px;
     }
 </style>
-<input type="hidden" name="qishu" value="{$list.qishu}">
-<input type="hidden" name="sid" value="{$list.sid}">
+<input type="hidden" name="qishu" value="{$qishu}">
+<input type="hidden" name="sid" value="{$sid}">
 <script>
     $(".update_even").blur(function () {
         var name = $(this).attr("name");

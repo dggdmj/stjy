@@ -449,7 +449,7 @@ class CountScyjAction extends CommonAction {
     //获得系数
     //备注示例------->新生连报幼儿1期秒杀／980X1（净人头：0.1）+0X0（教材费：0）-0（剩余学费：0）-0（已交定金）-0（优惠：0）-0（预减：0）-0（老带新：无）=980元／会员有效期：无／拼单对象：无／PRT跟进人：赵萍20%，张小明80%／首次缴费日期：2017-07-26／老带新：无／1期秒杀／其他说明：
     public function getXishu($beizhu,$n){
-        dump($beizhu);
+        // dump($beizhu);
         $xishu = array();
         $arr = explode("／",$beizhu);
         if(count($arr) > 1){
@@ -458,12 +458,12 @@ class CountScyjAction extends CommonAction {
             $prt_arr = explode("：",$arr[4]);
             //[1] =>  "赵萍20%，张小明80%"
             $x_arr = explode('，',$prt_arr[1]);
-            dump($prt_arr);
-            dump($x_arr);
+            // dump($prt_arr);
+            // dump($x_arr);
             foreach ($x_arr as $k=>$v){
                 $xishu[$k] =  $this->filter_xishu($v,$n);
             }
-            dump($xishu);
+            // dump($xishu);
             return $xishu;
         }else{
             return 0;

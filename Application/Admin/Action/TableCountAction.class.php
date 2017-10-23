@@ -222,11 +222,69 @@ class TableCountAction extends CommonAction{
 	public function jysjb_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
-        $data = new \Admin\Action\CountJysjAction();
-        $list = $data->getJysjbData($qishu,$sid);//获得统计数据
+
+        /* 实时计算开始 */
+        // $data = new \Admin\Action\CountJysjAction();
+        // $list = $data->getJysjbData($qishu,$sid);//获得统计数据
+        // dump($list);die;
+        /* 实时计算结束 */
+
+        /* 查库开始 */
+        $info = $this->getInfo($qishu,$sid);
+        $kecheng_arr = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
+        $school_data = M('school')->where('name ="'.$info['school'].'"')->find();
+        $id = $this->getQishuId($qishu,$sid,12);
+        $data_fxkkb = M('fxkkb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
+        $data_zcxsxqztb = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
+        $data_bjzysjb = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
+        $data_gbxzdrstjb = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
+        $data_xsrsbd = M('xsrsbdb')->field('id,suoshudd,daorusj,xuhao',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();
+        $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();
+        // dump($data_gbxzdrstjb);
+        $sjbd = [];
+        foreach($data_bjzysjb as $v){
+            if($v['bumen'] == '总计'){
+                $sjbd['c57'] = $v['dangyuebjs'];
+                $sjbd['d57'] = $v['renshuzj'];
+            }
+        }
+        foreach($data_zcxsxqztb as $v){
+            if($v['nianji'] == '合计'){
+                $sjbd['c36'] = $v['zongrenshu'];
+                $sjbd['h36'] = $v['shijizbrs'];
+            }
+        }
+        foreach($data_xsrsbd as $v){
+            if($v['xiangmu'] == '本月底在册学生人数'){
+                $sjbd['d46'] = $v['renshu'];
+            }
+        }
+        foreach($data_fxkkb as $v){
+            if($v['kaikesjd'] == '总计'){
+                $sjbd['c21'] = $v['banjishu'];
+            }
+        }
+        foreach($data_gbxzdrstjb as $v){
+            if($v['bumen'] == '总计'){
+                $sjbd['n66'] = $v['heji'];
+            }
+        }
+        // dump($sjbd);
+        /* 查库结束 */
         $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        $this->assign('list',$list);
+        // $this->assign('list',$list);
+        $this->assign('kecheng',$kecheng_arr);
+        $this->assign('school',$school_data);
+        $this->assign('data1',$data_fxkkb);// 分校开课表
+        $this->assign('data2',$data_zcxsxqztb);// 在册学生学期状态表(国际班课程)
+        $this->assign('data3',$data_bjzysjb);// 班级重要数据
+        $this->assign('data4',$data_gbxzdrstjb);// 各班型在读人数统计
+        $this->assign('data5',$data_xsrsbd);// 学生人数变动
+        $this->assign('sjbd',$sjbd);// 数据比对
+        $this->assign('beizhu',$beizhu);// 备注
         $this->assign('arr',$title);
+        $this->assign('qishu',$qishu);
+        $this->assign('sid',$sid);
         $this->adminDisplay();
 	}
 
