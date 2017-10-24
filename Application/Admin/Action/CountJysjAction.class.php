@@ -11,22 +11,22 @@ class CountJysjAction extends CommonAction {
      */
     public function getJysjbData($qishu,$sid){
         //获得经营数据汇总表各数据
-        // $t1 = microtime(true);
+         $t1 = microtime(true);
         $school_info = M("school")->where("id = ".$sid)->find();
-        // $t2 = microtime(true);
+         $t2 = microtime(true);
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
-        // $t3 = microtime(true);
+         $t3 = microtime(true);
         $arr_kksd = $this->getkksd($qishu,$sid);   //获得开课时段和班级数统计
-        // $t4 = microtime(true);
+         $t4 = microtime(true);
         $arr_bjbmsj = $this->getbjbmsj($qishu,$sid);   //获得班级部门数据
-        // $t5 = microtime(true);
+         $t5 = microtime(true);
         $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
-        // $t6 = microtime(true);
+         $t6 = microtime(true);
         $arr_xsrsbd = $this->getxsrsbd($qishu,$sid);   //获得学生人数变动数据
-        // $t7 = microtime(true);
+         $t7 = microtime(true);
         $arr_beizhu = $this->getbeizhu($qishu,$sid);   //获得备注信息
-        // $t8 = microtime(true);
-        // $tt = (($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms--'.(($t8-$t7)*1000).'ms';
+         $t8 = microtime(true);
+         echo "经营数据表个步骤计算时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms--'.(($t8-$t7)*1000).'ms';
         // dump($tt);
 
         $arr['school_info'] = $school_info;
@@ -94,37 +94,44 @@ class CountJysjAction extends CommonAction {
         $total = $arr['本月初在册学生人数'];
 
         //判断新增明细
-        $xz = new \Admin\Action\CountXzmxAction();
-        $xzinfo = $xz->getXzmxbData($qishu,$sid);
-//        dump($xzinfo);
+//        $xz = new \Admin\Action\CountXzmxAction();
+//        $xzinfo = $xz->getXzmxbData($qishu,$sid);
+        $xz_ssid = M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid = 10")->getField('id');   //获得新增明细的所属id
+        $xzinfo = M("xzmxb")->where("suoshudd = ".$xz_ssid)->select();
+
         $rentou_arr = array();
         foreach ($xzinfo as $k => $v){
-            if($v['addtype'] == '新生'){
+            if($v['xinzenglx'] == '新生'){
                 $arr['本月新生人数'] += 1;
                 $total += 1;
             }
-            if($v['addtype'] == '转入'){
+            if($v['xinzenglx'] == '转入'){
                 $arr['其他学校转入'] += 1;
                 $total += 1;
             }
-            if($v['addtype'] == '流失回来'){
+            if($v['xinzenglx'] == '流失回来'){
                 $arr['流失回来学生'] += 1;
                 $total += 1;
             }
         }
+
         //判断减少明细
-        $js = new \Admin\Action\CountJsmxAction();
-        $jsinfo = $js->getJsmxbData($qishu,$sid);
+//        $js = new \Admin\Action\CountJsmxAction();
+//        $jsinfo = $js->getJsmxbData($qishu,$sid);
+
+        $js_ssid = M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid = 11")->getField('id');   //获得减少明细的所属id
+        $jsinfo = M("jsmxb")->where("suoshudd = ".$js_ssid)->select();
+
         foreach ($jsinfo as $k => $v){
-            if($v['reducetype'] == '流失'){
+            if($v['jianshaolx'] == '流失'){
                 $arr['本月流失学生人数'] += 1;
                 $total -= 1;
             }
-            if($v['reducetype'] == '退费'){
+            if($v['jianshaolx'] == '退费'){
                 $arr['本月退费学生'] += 1;
                 $total -= 1;
             }
-            if($v['reducetype'] == '转出'){
+            if($v['jianshaolx'] == '转出'){
                 $arr['转校学员'] += 1;
                 $total -= 1;
             }
