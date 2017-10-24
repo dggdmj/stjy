@@ -410,6 +410,51 @@ class CommonAction extends Action {
         return $heji;
     }
 
+    //生成业绩表队列
+    public function tocreate(){
+        $data['sid'] = $_GET['sid'];
+        $data['qishu'] = $_GET['qishu'];
+        $data['uid'] = $_SESSION['uid'];
+        $res = M("duilie")->where("status = 1")->count();
+        $list = M("duilie")->where($data)->find();
+        if($list){
+            $arr['status'] = false;
+            $arr['info'] = '请勿重复提交！';
+            $this->ajaxReturn($arr);
+            die;
+        }
+        M("duilie")->add($data);
+        $arr['status'] = true;
+        if($res) {
+            $arr['info'] = '您之前有' . $res . "个任务等待执行，请稍候！";
+        }else{
+            $arr['info'] = '执行中，请稍候！';
+        }
+        $this->ajaxReturn($arr);
+    }
+
+    //生成业绩表队列
+    public function waitNum(){
+        $data['sid'] = $_GET['sid'];
+        $data['qishu'] = $_GET['qishu'];
+        $data['uid'] = $_SESSION['uid'];
+        $list = M("duilie")->where($data)->find();
+        if($list['status'] == 2){
+            $arr['status'] = true;
+            $arr['info'] = '执行成功，1秒后跳转！';
+            $this->ajaxReturn($arr);
+            die;
+        }
+        $res = M("duilie")->where("id < ".$list['id']." and status = 1")->count();
+        $arr['status'] = false;
+        if($res) {
+            $arr['info'] = '您之前有' . $res . "个任务等待执行，请稍候！";
+        }else{
+            $arr['info'] = '执行中，请稍候！';
+        }
+        $this->ajaxReturn($arr);
+    }
+
     // -------------------总表操作开始-------------------
     // 生成业绩表
     public function create(){
@@ -419,7 +464,6 @@ class CommonAction extends Action {
 
         // 查询学校是否需要上传社保明细表和公积金明细表
         $data2 = M('school')->field('isshebao,isgongjijin')->where('id = '.$_GET['sid'])->find();
-        // dump($data2);die;
         if($data2['isshebao'] == 1){
             $shebao = 2;
         }else{
@@ -453,7 +497,11 @@ class CommonAction extends Action {
 
             // 生成数据入库
             // $res = $this->AlltoDb($qishu,$sid);
+            $t5 = microtime(true);
             $this->AlltoDb($qishu,$sid);
+
+            $t6 = microtime(true);
+            echo "总入库时间：".(($t6-$t5)*1000);
 
             $arr['status'] = true;
             $arr['info'] = '操作成功';
@@ -1288,9 +1336,13 @@ class CommonAction extends Action {
 
     // 市场业绩数据入库
     public function ScyjToDb($qishu,$sid){
+        $t1 = microtime(true);
         // ======================获取市场业绩数据开始======================
         $scyj = new \Admin\Action\CountScyjAction();
         $scyj_data = $scyj->getScyjbData($qishu,$sid);//获得统计数据
+
+        $t2= microtime(true);
+
         // $scyj_temp['tid'] = 8;
         // $scyj_temp['uid'] = $this->getUid();// 获取生成表格的行政uid
         // $scyj_temp['qishu'] = $qishu;
@@ -1300,16 +1352,21 @@ class CommonAction extends Action {
 
         // unset($scyj_temp);
         $res = $this->isInQishuHistory(8,$qishu,$sid);
+
+        $t3= microtime(true);
         if($res){
             return false;
         }
         $qishu_id = $this->insertQishuHistory(8,$qishu,$sid);
+
+        $t4= microtime(true);
 
         // 获取所有课程
         $kecheng_data = M('kecheng')->field('name')->select();
         foreach($kecheng_data as $v){
             $kecheng[] = $v['name'];
         }
+        $t5= microtime(true);
         // $comment = $this->getComment('scyjb');// 获取市场业绩表字段和备注对应的数组
         
 
@@ -1384,6 +1441,10 @@ class CommonAction extends Action {
             M('scyjb')->add($scyj_temp);
             unset($scyj_temp);
         }
+        $t6= microtime(true);
+
+        echo  "写入市场业绩数据表各步骤时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--';
+
         return true;
         // ======================获取市场业绩数据结束======================
     }
@@ -1521,8 +1582,12 @@ class CommonAction extends Action {
 
     // 经营数据入库
     public function JysjToDb($qishu,$sid){
+         $t1 = microtime(true);
+
         $data = new \Admin\Action\CountJysjAction();
         $list = $data->getJysjbData($qishu,$sid);//获得统计数据
+
+        $t2 = microtime(true);
 
         $res = $this->isInQishuHistory(12,$qishu,$sid);
         if($res){
@@ -1531,6 +1596,8 @@ class CommonAction extends Action {
 
         // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(12,$qishu,$sid);
+
+        $t3 = microtime(true);
 
         // 导入分校开课表数据
         foreach($list['kksd'] as $k=>$v){
@@ -1542,6 +1609,9 @@ class CommonAction extends Action {
                 unset($temp);
             }
         }
+
+        $t4 = microtime(true);
+
         foreach($list['kksd'] as $k=>$v){
             if($k == '总计'){
                 $temp['kaikesjd'] = $k;
@@ -1551,6 +1621,8 @@ class CommonAction extends Action {
                 unset($temp);
             }
         }
+
+        $t5 = microtime(true);
 
         // 导入在册学生学期状态表数据
         foreach($list['zaice'] as $k1=>$v1){
@@ -1595,6 +1667,8 @@ class CommonAction extends Action {
             unset($temp);
         }
 
+        $t6 = microtime(true);
+
         // 导入班级重要数据
         $list['bjbmsj'][] = array('bumen'=>'总计','dybjs'=>$list['bjbmsj']['dybjs_total'],'rszj'=>$list['bjbmsj']['rszj_total'],'baoguanglv'=>$list['bjbmsj']['baoguanglv_total']);
 
@@ -1610,6 +1684,8 @@ class CommonAction extends Action {
             M('bjzysjb')->add($temp);
             unset($temp);
         }
+
+        $t7 = microtime(true);
 
         // 导入各班型在读人数统计数据
         foreach($list['gbxzdrstj'] as $v3){
@@ -1631,6 +1707,8 @@ class CommonAction extends Action {
             unset($temp);
         }
 
+        $t8 = microtime(true);
+
         // 导入学生人数变动数据
         $i = 1;
         foreach($list['xsrsbd'] as $k4=>$v4){
@@ -1642,6 +1720,8 @@ class CommonAction extends Action {
             M('xsrsbdb')->add($temp);
             unset($temp);
         }
+
+        $t9 = microtime(true);
         // for($i=1;$<=count($list['xsrsbd']);$i++){
         //     $temp['xuhao'] = $i;
         //     $temp['xiangmu'] = $k4;
@@ -1650,7 +1730,7 @@ class CommonAction extends Action {
         //     M('xsrsbdb')->add($temp);
         //     unset($temp);
         // }
-
+        echo  "经营数据表各步骤时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms--'.(($t8-$t7)*1000).'ms--'.(($t9-$t8)*1000).'ms';
     }
 
     public function tfToDb($qishu,$sid){
@@ -1681,26 +1761,27 @@ class CommonAction extends Action {
 
     public function AlltoDb($qishu,$sid){
         // -----------------------生成数据入库开始-----------------------
-        // 市场业绩数据写入数据库
-        // $t1 = microtime(true);
-        $res_scyj = $this->ScyjToDb($qishu,$sid);
+
         // 市场占有率数据写入数据库
-        // $t2 = microtime(true);
+        $t1 = microtime(true);
         $res_sczyl = $this->SczylToDb($qishu,$sid);
+        $t2 = microtime(true);
         // 新增明细数据写入数据库
-        // $t3 = microtime(true);
         $res_xzmx = $this->XzmxToDb($qishu,$sid);
+        $t3 = microtime(true);
         // 减少明细数据写入数据库
-        // $t4 = microtime(true);
         $res_jsmx = $this->jsmxToDb($qishu,$sid);
+        $t4 = microtime(true);
+        // 市场业绩数据写入数据库
+        $res_scyj = $this->ScyjToDb($qishu,$sid);
         // 经营数据写入数据库
-        // $t5 = microtime(true);
+         $t5 = microtime(true);
         $res_jsmx = $this->jysjToDb($qishu,$sid);
         // 退费数据写入数据库
-        // $t6 = microtime(true);
+         $t6 = microtime(true);
         $res_tf = $this->tfToDb($qishu,$sid);
-        // $t7 = microtime(true);
-        // return (($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
+         $t7 = microtime(true);
+         echo "各表入库时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
         // -----------------------生成数据入库结束-----------------------
     }
 
