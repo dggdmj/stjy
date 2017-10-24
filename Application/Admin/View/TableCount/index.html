@@ -178,6 +178,7 @@
 				$.post(subUrl,$("form").serialize(),function(data){
 	                layer.msg(data.info, {icon: 1});
 	                setTimeout("window.location.reload()",1000); // 让提示框停留一会
+
 	            });
 			});
         });
