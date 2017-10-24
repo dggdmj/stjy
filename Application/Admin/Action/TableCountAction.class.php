@@ -179,16 +179,20 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 
         /* 实时计算开始 */
-        $data = new \Admin\Action\CountSczylAction();
-        $list = $data->getSczylbData($qishu,$sid);//获得统计数据
+        // $data = new \Admin\Action\CountSczylAction();
+        // $list = $data->getSczylbData($qishu,$sid);//获得统计数据
         /* 实时计算结束 */
 
         /* 查库开始 */
-        
+        $id = $this->getQishuId($qishu,$sid,9);
+        $data = M('sczylb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+        $data[0]['xuhao'] = '';
+        // dump($data);
         /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        $this->assign("data",$list['data']);
-        $this->assign("heji",$list['heji']);
+        // $this->assign("data",$list['data']);
+        // $this->assign("heji",$list['heji']);
+        $this->assign("list",$data);
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
@@ -197,10 +201,19 @@ class TableCountAction extends CommonAction{
 	public function xzmxb_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
-        $data = new \Admin\Action\CountXzmxAction();
-        $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+
+        /* 实时计算开始 */
+        // $data = new \Admin\Action\CountXzmxAction();
+        // $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+        /* 实时计算结束 */
+
+        /* 查库开始 */
+        $id = $this->getQishuId($qishu,$sid,10);
+        $data = M('xzmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+        // dump($data);
+        /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        $this->assign('list',$list);
+        $this->assign('list',$data);
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
@@ -209,11 +222,19 @@ class TableCountAction extends CommonAction{
 	public function jsmxb_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
-        $data = new \Admin\Action\CountJsmxAction();
-        $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
-        // dump($list);
+
+        /* 实时计算开始 */
+        // $data = new \Admin\Action\CountJsmxAction();
+        // $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
+        /* 实时计算结束 */
+
+        /* 查库开始 */
+        $id = $this->getQishuId($qishu,$sid,11);
+        $data = M('jsmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+        // dump($data);
+        /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        $this->assign('list',$list);
+        $this->assign('list',$data);
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
