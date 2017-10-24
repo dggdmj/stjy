@@ -10,6 +10,7 @@ class CountScyjAction extends CommonAction {
      * @return array
      */
     public function getScyjbData($qishu,$sid){
+        $t1= microtime(true);
         //按照期数和分校查询出结果，并以表名为键拼接成一个数组
         $Model = M();
         $tablelist = array();  //初始化要返回的数据
@@ -19,6 +20,9 @@ class CountScyjAction extends CommonAction {
         $suoshuid = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id
         //查询出所有数据
         $list = $Model->query("select * from stjy_sjjlb where suoshudd = $suoshuid and `yejigsr` != '' order by `xuehao` ");
+
+        $t2= microtime(true);
+
         //学习卡额度数据
         $xxk_id =  M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid =14")->getField('id');
         //1，遍历数组，如果业绩归属人是2个人的，增加两条记录，在重新拼接成新的数组
@@ -26,19 +30,28 @@ class CountScyjAction extends CommonAction {
         // dump($newlist);die;
         //2，遍历数组，按照业绩归属人的业绩归类统计
 
+        $t3= microtime(true);
+
         //获得人头数的数组
-        $rt = new \Admin\Action\CountXzmxAction();
-        $ar = $rt->getXzmxbData($qishu,$sid);
+//        $rt = new \Admin\Action\CountXzmxAction();
+//        $ar = $rt->getXzmxbData($qishu,$sid);
+
+        $rt_ssid = M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid = 10")->getField('id');   //获得新增明细的所属id
+        $ar = M("xzmxb")->where("suoshudd = ".$rt_ssid)->select();
+        $t4= microtime(true);
+
         $rentouarr = array();
         foreach ($ar as $k => $v){
             $filter_arr = array('(主签单人)','(副签单人)','（副签单人)','(03-客户接待员)','（金牌）','（会员学员）','金牌','金牌学员',' ');
-            $gsr = $ar[$k]['gsr'] = $this->strFilter($v['yejigsr'],$filter_arr);
-            if($v['addtype'] == '新生' || $v['addtype'] == '流失回来'){
+            $gsr = $ar[$k]['gsr'] = $this->strFilter($v['zhaoshenggw'],$filter_arr);
+            if($v['xinzenglx'] == '新生' || $v['xinzenglx'] == '流失回来'){
                 $rentouarr[$gsr]['rentou'] += 1;
             }
         }
 
         $tablelist = $this->countList($newlist,$xxk_id,$rentouarr);
+
+        $t5= microtime(true);
 
         $i = 1;
         $total = array();
@@ -58,6 +71,10 @@ class CountScyjAction extends CommonAction {
                $total[$a] += $b;
             }
         }
+
+        $t6= microtime(true);
+        echo  "市场业绩数据表各步骤计算时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--';
+
         $nlist['合计'] = $total;
         return $nlist;
     }

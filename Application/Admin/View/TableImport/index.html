@@ -92,7 +92,7 @@
                             <if condition="$rid eq 2 or $rid eq 3">
                                 <if condition="$v.status_xz neq 2">
                                     <td>
-                                        <a class="button bg-green button-small js-sub2" title="通知行政经理" alt="通知行政经理" target2="__MODULE__/Common/create/qishu/{$v.qishu}/sid/{$v.sid}" target3="__MODULE__/Common/waitNum/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">通知行政经理</a>
+                                        <a class="button bg-green button-small js-sub" title="通知行政经理" alt="通知行政经理" target2="__MODULE__/Common/create/qishu/{$v.qishu}/sid/{$v.sid}" target3="__MODULE__/Common/waitNum/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">通知行政经理</a>
                                     </td>
                                 <elseif condition="$v.status_xz eq 2" />
                                     <if condition="$v.status_xzjl eq 2 or $v.status_cw eq 2">
@@ -204,16 +204,16 @@
                 btn: ['确定','取消'] //按钮
             }, function(){
                 //loading层
-                var index = layer.load(1, {
-                    shade: [0.8,'#fff'] //0.1透明度的白色背景
-                });
+//                var index = layer.load(1, {
+//                    shade: [0.8,'#fff'] //0.1透明度的白色背景
+//                });
                 $.post(subUrl,$("form").serialize(),function(data){
                     if(data.status){
                         layer.msg(data.info, {icon: 1});
                     }else{
                         layer.msg(data.info, {icon: 2});
                     }
-                    setTimeout("window.location.reload()",1000); // 让提示框停留一会
+//                    setTimeout("window.location.reload()",1000); // 让提示框停留一会
                 });
             });
         });
