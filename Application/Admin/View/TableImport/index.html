@@ -204,16 +204,16 @@
                 btn: ['确定','取消'] //按钮
             }, function(){
                 //loading层
-//                var index = layer.load(1, {
-//                    shade: [0.8,'#fff'] //0.1透明度的白色背景
-//                });
+                var index = layer.load(1, {
+                    shade: [0.8,'#fff'] //0.1透明度的白色背景
+                });
                 $.post(subUrl,$("form").serialize(),function(data){
                     if(data.status){
                         layer.msg(data.info, {icon: 1});
                     }else{
                         layer.msg(data.info, {icon: 2});
                     }
-//                    setTimeout("window.location.reload()",1000); // 让提示框停留一会
+                    setTimeout("window.location.reload()",1000); // 让提示框停留一会
                 });
             });
         });

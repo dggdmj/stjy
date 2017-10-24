@@ -11,23 +11,13 @@ class CountJysjAction extends CommonAction {
      */
     public function getJysjbData($qishu,$sid){
         //获得经营数据汇总表各数据
-         $t1 = microtime(true);
         $school_info = M("school")->where("id = ".$sid)->find();
-         $t2 = microtime(true);
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
-         $t3 = microtime(true);
         $arr_kksd = $this->getkksd($qishu,$sid);   //获得开课时段和班级数统计
-         $t4 = microtime(true);
         $arr_bjbmsj = $this->getbjbmsj($qishu,$sid);   //获得班级部门数据
-         $t5 = microtime(true);
         $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
-         $t6 = microtime(true);
         $arr_xsrsbd = $this->getxsrsbd($qishu,$sid);   //获得学生人数变动数据
-         $t7 = microtime(true);
         $arr_beizhu = $this->getbeizhu($qishu,$sid);   //获得备注信息
-         $t8 = microtime(true);
-         echo "经营数据表个步骤计算时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms--'.(($t8-$t7)*1000).'ms';
-        // dump($tt);
 
         $arr['school_info'] = $school_info;
         $arr['kksd'] = $arr_kksd;
@@ -378,6 +368,17 @@ class CountJysjAction extends CommonAction {
         foreach ($bumen_arr as $key =>$b){
             $bumen_count[$key]['bumen'] = $b;
         }
+
+        $banjibianhao =  M("banjibianhao")->select();
+        $banjibianhao_arr = array();
+
+        $bjxxb_suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid = 2")->getField("id");
+        $bjxxb = M("bjxxb")->where("suoshudd = ".$bjxxb_suoshudd)->select();
+
+        foreach ($banjibianhao as $k=>$v){
+            $banjibianhao_arr[$v["jingdujb"]] = $v['banxing'];
+        }
+
         foreach ($bjxyxxb as $k=>$v){
             //判断是否在读状态
             if($v["banji"] == '停读'){
@@ -401,7 +402,8 @@ class CountJysjAction extends CommonAction {
                     $bjxyxxb[$k]["bumen"] = "一对一";
                 }else{
                     $bjxyxxb[$k]["jibie"] = mb_substr($v['banji'],0,3,"utf-8");
-                    $bjxyxxb[$k]["bumen"] = M("banjibianhao")->where("jingdujb = '".$bjxyxxb[$k]["jibie"]."'")->getField("banxing");
+//                    $bjxyxxb[$k]["bumen"] = M("banjibianhao")->where("jingdujb = '".$bjxyxxb[$k]["jibie"]."'")->getField("banxing");
+                    $bjxyxxb[$k]["bumen"] = $banjibianhao_arr[$bjxyxxb[$k]["jibie"]];
                 }
             }else{
                 $bjxyxxb[$k]["bumen"] = "停读";
@@ -416,9 +418,9 @@ class CountJysjAction extends CommonAction {
             //判断时间段
             $bjxyxxb[$k]["shijianduan"] == "一对一";
             //获得开课时段
-            $bjxyxxb[$k]["shijianduan"] = $this->getkksd2($qishu,$sid,$v['banji']);
+            $bjxyxxb[$k]["shijianduan"] = $this->getkksd2($bjxxb,$v['banji']);
             //获得开课时长
-            $bjxyxxb[$k]["shijianchang"] = $this->getshichang($qishu,$sid,$v['banji']);
+            $bjxyxxb[$k]["shijianchang"] = $this->getshichang($bjxxb,$v['banji']);
             //判断班型详情
             if($bjxyxxb[$k]["banxing"] == "幼儿班" || $bjxyxxb[$k]["banxing"] == "中学班" || $bjxyxxb[$k]["banxing"] == "一对一"){
                 $bjxyxxb[$k]["banxing_xq"] = $bjxyxxb[$k]["banxing"];
@@ -461,22 +463,28 @@ class CountJysjAction extends CommonAction {
             $bumen_count[5]['bumen'] = '总计';
         }
 
-//        dump($bumen_count);
         return $bumen_count;
     }
 
     //期数，学校Id,班级名称
-    public function getshichang($qishu,$sid,$bjmc){
-        $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
-        $field = M("bjxxb")->where("banjimc = '".$bjmc."'and suoshudd = ".$suoshudd)->getField("nianji");
+    public function getshichang($bjxxb,$bjmc){
+//        $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
+//        $field = M("bjxxb")->where("banjimc = '".$bjmc."'and suoshudd = ".$suoshudd)->getField("nianji");
+        foreach ($bjxxb as $k=>$v){
+            if($v['banjimc'] == $bjmc){
+                $field = $v['nianji'];
+                break;
+            }
+        }
         $field = $field?$field:0;
         return $field;
     }
 
     //期数，学校Id,班级名称
-    public function getkksd2($qishu,$sid,$bjmc){
-        $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
-        $list = M("bjxxb")->where("suoshudd = ".$suoshudd)->select();
+    public function getkksd2($bjxxb,$bjmc){
+//        $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
+//        $list = M("bjxxb")->where("suoshudd = ".$suoshudd)->select();
+        $list = $bjxxb;
         //根据课程名称判断时间段
         $arr = array();
         foreach ($list as $k=>$v){
