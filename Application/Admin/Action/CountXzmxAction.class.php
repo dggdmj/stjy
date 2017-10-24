@@ -11,7 +11,6 @@ class CountXzmxAction extends CommonAction {
      */
     public function getXzmxbData($qishu,$sid){
         // 查询本期班级学员信息表里的所有学员
-        unset($where);
         $data_bjxyxxb = $this->getData($qishu,$sid);
         // dump($data_bjxyxxb);die;
 
@@ -33,7 +32,7 @@ class CountXzmxAction extends CommonAction {
         }else{
             $data_sjjlb = [];
         }
-        
+
         // dump($data_sjjlb);die;
         unset($where);
         if(!empty(array_diff($data_sjjlb,$data_bjxyxxb))){
@@ -181,7 +180,7 @@ class CountXzmxAction extends CommonAction {
         $map['tid'] = 1;
         $map['qishu'] = array('in',[$fmonth,$fmonth2,$fmonth3]);
         $res = M('qishu_history')->field('id')->where($map)->select();
-        
+
         if(!empty($res)){
             foreach($res as $v){
                 $ids[] = $v['id'];
@@ -214,7 +213,7 @@ class CountXzmxAction extends CommonAction {
         $map['tid'] = 1;
         $map['qishu'] = array('in',[$fmonth,$fmonth2,$fmonth3]);
         $res = M('qishu_history')->field('id')->where($map)->select();
-        
+
         if(!empty($res)){
             foreach($res as $v){
                 $ids[] = $v['id'];
