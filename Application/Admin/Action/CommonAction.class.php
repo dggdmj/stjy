@@ -1500,6 +1500,7 @@ class CommonAction extends Action {
 
     // 新增明细数据入库
     public function XzmxToDb($qishu,$sid){
+        
         $data = new \Admin\Action\CountXzmxAction();
         $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
 

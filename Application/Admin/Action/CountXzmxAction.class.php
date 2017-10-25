@@ -11,6 +11,7 @@ class CountXzmxAction extends CommonAction {
      */
     public function getXzmxbData($qishu,$sid){
         // 查询本期班级学员信息表里的所有学员
+        $t1 = microtime(true);
         $data_bjxyxxb = $this->getData($qishu,$sid);
         // dump($data_bjxyxxb);die;
 
@@ -18,12 +19,14 @@ class CountXzmxAction extends CommonAction {
         $id = $this->getQishuId($qishu,$sid,4);
         $id_xyxxb = $this->getQishuId($qishu,$sid,1);
         $school = $this->getInfo($qishu,$sid)['school'];
+        $t2 = microtime(true);
         $where['stjy_sjjlb.suoshudd'] = $id;
         $where['stjy_sjjlb.beizhu'] = array('notlike','%领袖课程%');
         $where['stjy_sjjlb.xiaoqu'] = $school;
         // $where['temp.laiyuanfx'] = array('in',[$school,'']);
         // $data_temp = M('sjjlb')->join('LEFT JOIN (select * from stjy_xyxxb where stjy_xyxxb.suoshudd ='.$id_xyxxb.') as temp on stjy_sjjlb.xuehao=temp.xuehao')->where($where)->where()->field('stjy_sjjlb.xuehao,stjy_sjjlb.xiaoqu as xiaoqu2,temp.xiaoqu')->select();
         $data_temp = M('sjjlb')->where($where)->field('stjy_sjjlb.xuehao')->select();
+        $t3 = microtime(true);
         // dump($data_temp);die;
         if(!empty($data_temp)){
             foreach($data_temp as $v){
@@ -32,7 +35,7 @@ class CountXzmxAction extends CommonAction {
         }else{
             $data_sjjlb = [];
         }
-
+        
         // dump($data_sjjlb);die;
         unset($where);
         if(!empty(array_diff($data_sjjlb,$data_bjxyxxb))){
@@ -43,6 +46,7 @@ class CountXzmxAction extends CommonAction {
 
         // dump(array_diff($data_sjjlb,$data_bjxyxxb));die;
         // 取得上个月的班级学员信息表学员信息
+        $t4 = microtime(true);
         $fmonth = $this->getMonth($qishu);
         $fm = $this->getData($fmonth,$sid);
         // dump($xueyuan);
@@ -60,12 +64,16 @@ class CountXzmxAction extends CommonAction {
         // dump($new);
         // die;
         // 学号在新增的学号里面,且是本校学校学员,期数是本期的
+        $t5 = microtime(true);
         $map['stjy_xyxxb.xuehao'] = array('in',$new);
         $map['stjy_xyxxb.suoshudd'] = M('qishu_history')->where('qishu='.$qishu.' and sid='.$sid.' and tid=1')->getField('id');
         $map['stjy_bjxyxxb.banji'] = array('neq','');
         $list = M('xyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_xyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb where stjy_sjjlb.yejigsr != "") as temp on stjy_xyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_bjxyxxb on stjy_xyxxb.xuehao=stjy_bjxyxxb.xuehao')->join('LEFT JOIN stjy_kbmxb on stjy_bjxyxxb.banji=stjy_kbmxb.banjimc')->field('stjy_xyxxb.xuehao,stjy_bjxyxxb.gonglixx,stjy_xyxxb.nianji,stjy_xyxxb.xingming,stjy_xyxxb.xiaoqu,stjy_bjxyxxb.banji,temp.yejigsr,stjy_xyxxb.zhaoshengly,stjy_xyxxb.shoujihm,sum(stjy_xyfyyjb.shuliang) as shuliang,stjy_xyfyyjb.danwei,sum(stjy_xyfyyjb.feiyong) as feiyong,stjy_kbmxb.kaibanrq,stjy_kbmxb.jiebanrq,stjy_kbmxb.jingjiangls,stjy_kbmxb.fanduls')->where($map)->group('stjy_xyxxb.xuehao')->select();
         // dump($list);die;
+        $t6 = microtime(true);
         $res = $this->doList($list,$qishu,$sid);
+        $t7 = microtime(true);
+        echo "新增明细表个步骤计算时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
         // dump($res);
         return $res;
     }
@@ -180,7 +188,7 @@ class CountXzmxAction extends CommonAction {
         $map['tid'] = 1;
         $map['qishu'] = array('in',[$fmonth,$fmonth2,$fmonth3]);
         $res = M('qishu_history')->field('id')->where($map)->select();
-
+        
         if(!empty($res)){
             foreach($res as $v){
                 $ids[] = $v['id'];
@@ -213,7 +221,7 @@ class CountXzmxAction extends CommonAction {
         $map['tid'] = 1;
         $map['qishu'] = array('in',[$fmonth,$fmonth2,$fmonth3]);
         $res = M('qishu_history')->field('id')->where($map)->select();
-
+        
         if(!empty($res)){
             foreach($res as $v){
                 $ids[] = $v['id'];
