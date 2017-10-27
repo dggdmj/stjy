@@ -217,7 +217,7 @@ class CountJysjAction extends CommonAction {
                 $data[$v2] = $arr[$v2];
             }
         }
-//        dump($arr);
+//        dump($data);die;
         return $data;
     }
 
