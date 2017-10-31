@@ -53,6 +53,10 @@ class WagesScbAction extends CommonAction{
         $table = M("scbgzb")->query("select column_name as fieldname,column_comment as beizhu from Information_schema.columns WHERE table_Name='stjy_scbgzb'");
         //查询出课程列表
         $kecheng = M("kecheng")->order("paixu")->select();
+        $kecheng_arr = array();
+        foreach ($kecheng as $k => $v){
+            $kecheng_arr[$v['name']] = $v['ticheng']*100;
+        }
         //如果业绩表已经提交了，就从业绩表里取数，否则实时运算
         if(!empty($scb_list)){
             $list = $scb_list;
@@ -86,16 +90,20 @@ class WagesScbAction extends CommonAction{
                 $list[$sk]['yuedujingjx']['value'] = $school["ydjjx"];  //月度警戒线
                 $list[$sk]['yueduchaorts']['value'] = $school["ydcrtx"];  //月度超人头数
                 $list[$sk]['yueduchaocrts']['value'] = $school["ydccrtx"];  //月度超超人头数
-                $list[$sk]['edu']['value'] = 0+M("xxkedb")->where("suoshudd = ".$suoshudingdan." and xingming = '".$sc['xingming']."'")->getField("edu");  //查询出当前期数，此人的学习卡额度信息
+                $edu = $list[$sk]['edu']['value'] = 0+M("xxkedb")->where("suoshudd = ".$suoshudingdan." and xingming = '".$sc['xingming']."'")->getField("edu");  //查询出当前期数，此人的学习卡额度信息
                 $list[$sk]['rentoushu']['value'] = 0+$sc["rentoushu"];  //人头数
-                $list[$sk]['jingrentou']['value'] = 0+$sc["jingrentou"];  //净人头数
+                $jrt = $list[$sk]['jingrentou']['value'] = 0+$sc["jingrentou"];  //净人头数
                 //按照课程拼接业绩
                 $list[$sk]['kechengyj'] = $this->object2array(json_decode($sc['kechengyj']));
                 $list[$sk]['hejiyye']['value'] = 0+$sc["hejiyye"];  //合计营业额
                 $list[$sk]['huiyuanldxyye']['value'] = 0+$sc["huiyuanldxyye"];  //会员老带新营业额
                 $list[$sk]['canzhaobdx']['value'] = "<input class='input do_enter' type='text' name='canzhaobdx' value=''>";  //参考保底线
-                $list[$sk]['xuexikajs']['value'] = '待开发';  //学习卡结算
-                $list[$sk]['jixiaojj']['value'] = '待开发';  //绩效奖金
+                if(empty($sc['kechengyj'])){
+                    $list[$sk]['xuexikajs']['value'] = 0;  //学习卡结算
+                }else{
+                    $list[$sk]['xuexikajs']['value'] = 0+$this->getXxkjs($sc['kechengyj'],$jrt,$edu,$kecheng_arr);  //学习卡结算
+                }
+                $list[$sk]['jixiaojj']['value'] = 0+$this->getJxjj($sc['kechengyj'],$kecheng_arr);  //绩效奖金
                 $list[$sk]['xiaozhangtdtc']['value'] = 0;  //校长团队提成
                 $list[$sk]['tuanduiwd']['value'] = "<input class='input do_enter' type='text' name='tuanduiwd' value=''>";  //团队稳定
                 $list[$sk]['dituijrtjx']['value'] = "<input class='input do_enter' type='text' name='dituijrtjx' value=''>";  //地推净人头绩效
@@ -111,11 +119,149 @@ class WagesScbAction extends CommonAction{
 
             }
         }
-//        var_dump($kecheng);
         $this->assign("kecheng",$kecheng);
         $this->assign("table",$table);
         $this->assign("list",$list);
         $this->adminDisplay();
+    }
+
+    //计算绩效奖金
+    public function getJxjj($data,$kecheng_arr){
+        //去掉大于等于5%的
+        $data = json_decode($data);
+        if(empty($data)){
+            return 0;
+        }
+        $total = 0;
+        //提取比例
+        $ticheng_arr = array();
+        foreach ($kecheng_arr as $k => $v){
+            //去掉5%以下的点位
+            if($v >= 5){
+                continue;
+            }
+            if(!in_array($v,$ticheng_arr)){
+                $ticheng_arr[] = $v;
+            }
+        }
+        rsort($ticheng_arr);    //按提成额度降序排列
+        $new_ticheng_arr = array();
+        foreach ($ticheng_arr as $k => $v){
+            $new_ticheng_arr[$k]['dianwei'] = $v;
+            $new_ticheng_arr[$k]['value'] = 0;
+        }
+        $total = 0;
+        //找出各个提成比例的业绩累计
+        foreach ($data as $k => $v){
+            if(!empty($v)){
+                $dianwei = $kecheng_arr[$k];
+                foreach ($new_ticheng_arr as $m => $n){
+                    if($n['dianwei'] == $dianwei){
+                        $new_ticheng_arr[$m]['value'] += $v;
+                    }
+                }
+            }
+        }
+        foreach ($new_ticheng_arr as $k=>$v){
+            $total += $v['dianwei']*$v['value']/100;
+        }
+//        dump($total);
+        return $total;
+    }
+
+    //计算学习卡结算
+    public function getXxkjs($data,$jrt,$edu,$kecheng_arr){
+        //合并相同比例的业绩，大于等于5%的
+        $data = json_decode($data);
+        if(empty($data)){
+            return 0;
+        }
+        $ticheng_arr = array();
+        //提取比例
+        foreach ($kecheng_arr as $k => $v){
+            //去掉5%以下的点位
+            if($v < 5){
+                continue;
+            }
+            if(!in_array($v,$ticheng_arr)){
+                $ticheng_arr[] = $v;
+            }
+        }
+        rsort($ticheng_arr);    //按提成额度降序排列
+        $new_ticheng_arr = array();
+        $new_ticheng_arr_add = array();
+        foreach ($ticheng_arr as $k => $v){
+            $new_ticheng_arr[$k]['dianwei'] = $v;
+            $new_ticheng_arr[$k]['value'] = 0;
+            $new_ticheng_arr_add[$k]['dianwei'] = $v;
+            $new_ticheng_arr_add[$k]['value'] = 0;
+        }
+        //找出各个提成比例的业绩累计
+        foreach ($data as $k => $v){
+            if(!empty($v)){
+                $dianwei = $kecheng_arr[$k];
+                foreach ($new_ticheng_arr as $m => $n){
+                    if($n['dianwei'] == $dianwei){
+                        $new_ticheng_arr[$m]['value'] += $v;
+                    }
+                }
+            }
+        }
+        //计算各阶段比例的和值
+        foreach ($new_ticheng_arr_add as $k=>$v){
+            foreach ($new_ticheng_arr as $m => $n){
+                if($v['dianwei'] <= $n['dianwei']){
+                    $new_ticheng_arr_add[$k]['value'] += $n['value'];
+                }
+            }
+        }
+        $total = 0;
+        $count = count($new_ticheng_arr_add);
+            //计算所在的级数
+        $jishu = -1;
+        for($i = $count-1;$i>=0;$i--){
+            if($edu > $new_ticheng_arr_add[$i]['value']){
+                $jishu = $i;
+                break;
+            }
+        }
+        //计算各自的业绩额度
+        if($jishu == -1){
+            //如果小于最底额度累计
+            foreach ($new_ticheng_arr as $m=>$n){
+                if($m == 0){
+                    $total += $edu*$new_ticheng_arr[0]['dianwei'];
+                    $total += ($n['value'] - $edu)*$n['dianwei']*0.6;
+                }
+                $total += $n['value']*$n['dianwei']*0.6;
+            }
+        }elseif($jishu == ($count-1)){
+            //如果大于最高额度累计
+            foreach ($new_ticheng_arr as $m=>$n){
+                $total += $n['value']*$n['dianwei'];
+            }
+        }else{
+            //根据所在的位置判断算法
+            foreach ($new_ticheng_arr as $m=>$n){
+                if($m <= $jishu){
+                    $total += $n['value']*$n['dianwei'];
+                }
+                if($m == $jishu+1){
+                    $total += ($edu - $new_ticheng_arr_add[$jishu]['value'])*$n['dianwei'];
+                    $total += ($new_ticheng_arr_add[($jishu+1)]['value'] - $edu)*$n['dianwei']*0.6;
+                }
+                if($m >= $jishu+2){
+                    $total += $n['value']*$n['dianwei']*0.6;
+                }
+            }
+        }
+        $total = $total/100;
+        //根据净人头数返回不同的比例
+        if($jrt < 2){
+            $total = $total*0.85;
+        }
+//        dump($total);
+        return $total;
     }
 
     function object2array($object) {
