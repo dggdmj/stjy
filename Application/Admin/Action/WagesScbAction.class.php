@@ -101,7 +101,7 @@ class WagesScbAction extends CommonAction{
                 if(empty($sc['kechengyj'])){
                     $list[$sk]['xuexikajs']['value'] = 0;  //学习卡结算
                 }else{
-                    $list[$sk]['xuexikajs']['value'] = 0+$this->getXxkjs($sc['kechengyj'],$jrt,$edu,$kecheng_arr);  //学习卡结算
+                    $list[$sk]['xuexikajs']['value'] = 0+$this->getXxkjs($sc['kechengyj'],$jrt,$edu,$kecheng_arr,$sc['huiyuanldxyye']);  //学习卡结算
                 }
                 $list[$sk]['jixiaojj']['value'] = 0+$this->getJxjj($sc['kechengyj'],$kecheng_arr);  //绩效奖金
                 $list[$sk]['xiaozhangtdtc']['value'] = 0;  //校长团队提成
@@ -170,7 +170,7 @@ class WagesScbAction extends CommonAction{
     }
 
     //计算学习卡结算
-    public function getXxkjs($data,$jrt,$edu,$kecheng_arr){
+    public function getXxkjs($data,$jrt,$edu,$kecheng_arr,$huiyuanldxyye){
         //合并相同比例的业绩，大于等于5%的
         $data = json_decode($data);
         if(empty($data)){
@@ -256,6 +256,8 @@ class WagesScbAction extends CommonAction{
             }
         }
         $total = $total/100;
+        //扣减老带新业绩
+        $total = $total - $huiyuanldxyye*0.02;
         //根据净人头数返回不同的比例
         if($jrt < 2){
             $total = $total*0.85;
