@@ -579,6 +579,11 @@ class CommonAction extends Action {
                 $temp['status_cw'] = 2;
                 $temp['status_fzr'] = 1;
                 $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+
+                // 清空初始化
+                $arr['xueshengnum'] = 0;
+                $where['id'] = $_GET['sid'];
+                M('school')->where($where)->save($arr);
                 // 还需要将生成表数据写入数据库并让表格可以下载
                 // 如果数据有误,负责人退回之后删除写入数据库的数据
             break;
@@ -1608,13 +1613,14 @@ class CommonAction extends Action {
             }
         }
 
+        // dump($list['zaice']);die;
         // 导入在册学生学期状态表数据
         foreach($list['zaice'] as $k1=>$v1){
             $temp['nianji'] = $k1;
             $temp['zongrenshu'] = $v1['zrs'];
             $temp['weijinban'] = $v1['weijinban'];
             // $temp['yubaoming'] = $v1['yubaoming'];
-            // $temp['tingdukfx'] = $v1['ztingdukfxrs'];
+            $temp['tingduyjkfx'] = $v1['tingdu'];
             // $temp['tingdubkfx'] = $v1['ztingdubkfxrs'];
             $temp['shijizbrs'] = $v1['sjzbrs'];
             $temp['k01'] = $v1['K01'];
@@ -1738,25 +1744,26 @@ class CommonAction extends Action {
         // -----------------------生成数据入库开始-----------------------
 
         // 市场占有率数据写入数据库
-//        $t1 = microtime(true);
+        // $t1 = microtime(true);
         $res_sczyl = $this->SczylToDb($qishu,$sid);
-//        $t2 = microtime(true);
+        // $t2 = microtime(true);
         // 新增明细数据写入数据库
         $res_xzmx = $this->XzmxToDb($qishu,$sid);
-//        $t3 = microtime(true);
+        // $t3 = microtime(true);
         // 减少明细数据写入数据库
         $res_jsmx = $this->jsmxToDb($qishu,$sid);
-//        $t4 = microtime(true);
+        // $t4 = microtime(true);
         // 市场业绩数据写入数据库
         $res_scyj = $this->ScyjToDb($qishu,$sid);
         // 经营数据写入数据库
-//         $t5 = microtime(true);
+        // $t5 = microtime(true);
         $res_jsmx = $this->jysjToDb($qishu,$sid);
         // 退费数据写入数据库
-//         $t6 = microtime(true);
+        // $t6 = microtime(true);
         $res_tf = $this->tfToDb($qishu,$sid);
-//         $t7 = microtime(true);
-//         echo "各表入库时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
+        // $t7 = microtime(true);
+        // echo "各表入库时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
+        // echo '总入库时间:'.(($t7-$t1)*1000).'ms';
         // -----------------------生成数据入库结束-----------------------
     }
 

@@ -33,6 +33,10 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/kecheng'),
                     'icon' => 'list',
                 ),
+                array('name' => '区域管理',
+                'url' => url('Setting/quyu'),
+                'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -46,6 +50,9 @@ class SettingAction extends CommonAction{
                 ),
                 array('name' => '添加课程',
                     'url' => url('Setting/kecheng_add'),
+                ),
+                array('name' => '添加区域',
+                'url' => url('Setting/quyu_add'),
                 ),
             ),
         );
@@ -334,6 +341,253 @@ class SettingAction extends CommonAction{
         $id = $_GET['id'];
         $this->list=D('kecheng')->where(array('id'=>$id))->find();
         $this->adminDisplay('kecheng_add');
+    }
+
+    // 导入大学名单
+    public function ulist_import(){
+        if (!empty($_FILES)) {
+            M('ulist')->where("1 = 1")->delete();// 清空班级编码表的数据
+            
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+
+            
+            for($j=1;$j<=$highestRow;$j++){
+                $col = trim($objPHPExcel->getActiveSheet()->getCell('A'.$j)->getValue());
+                // 上面得出$col的值如果是空就跳过
+                if(empty(trim($col))){
+                    continue;
+                }
+                for($i=0;$i<=$colsNum;$i++){
+                    // 自动判断单元格是时间格式
+                    $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
+                    $value = $cell->getValue();
+    
+                    if(is_object($value)){
+                        $value= $value->__toString();
+                    }
+    
+                    // $cell->getCoordinate()当前单元格,如A1
+    
+                    // 自动识别单元格为日期格式
+                    if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
+                        $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
+                        $formatcode=$cellstyleformat->getFormatCode();
+                        if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
+                            $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
+                        }else{
+                            $value= \PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                            $val_arr = explode(',',$value);
+                            $val = '';
+                            if(count($val_arr)>=2){
+                                foreach($val_arr as $v){
+                                    $val.=$v;
+                                }
+                                $value = (double)$val;
+                            }
+                        }
+                    }
+    
+    
+    
+                    // $data[$j] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+    
+    
+                    // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
+                    if(substr($value,0,1) == '='){
+                        $value = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                    }
+    
+                    switch($i){
+                        case 0:
+                            $data['name'] = $value;
+                        break;
+                    }
+                }
+    
+                M('ulist')->add($data);
+                unset($data);
+    
+            }
+            $this->success('导入成功！');//获得成功跳转的链接
+
+            // dump($newTemp);die;
+        }else{
+            $this->error('请先上传文件');
+        }
+    }
+
+    // 导入国别代码表
+    public function guobie_import(){
+        if (!empty($_FILES)) {
+            M('gbdmb')->where("1 = 1")->delete();// 清空班级编码表的数据
+            
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+
+            
+            for($j=2;$j<=$highestRow;$j++){
+                $col = trim($objPHPExcel->getActiveSheet()->getCell('B'.$j)->getValue());
+                // 上面得出$col的值如果是空就跳过
+                if(empty(trim($col))){
+                    continue;
+                }
+                for($i=0;$i<=$colsNum;$i++){
+                    // 自动判断单元格是时间格式
+                    $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
+                    $value = $cell->getValue();
+    
+                    if(is_object($value)){
+                        $value= $value->__toString();
+                    }
+    
+                    // $cell->getCoordinate()当前单元格,如A1
+    
+                    // 自动识别单元格为日期格式
+                    if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
+                        $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
+                        $formatcode=$cellstyleformat->getFormatCode();
+                        if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
+                            $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
+                        }else{
+                            $value= \PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                            $val_arr = explode(',',$value);
+                            $val = '';
+                            if(count($val_arr)>=2){
+                                foreach($val_arr as $v){
+                                    $val.=$v;
+                                }
+                                $value = (double)$val;
+                            }
+                        }
+                    }
+    
+    
+    
+                    // $data[$j] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+    
+    
+                    // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
+                    if(substr($value,0,1) == '='){
+                        $value = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                    }
+    
+                    switch($i){
+                        case 0:
+                            $data['guobiedm'] = $value;
+                        break;
+                        case 1:
+                            $data['name_cn'] = $value;
+                        break;
+                        case 2:
+                            $data['name_en'] = $value;
+                        break;
+                    }
+                }
+    
+                M('gbdmb')->add($data);
+                unset($data);
+    
+            }
+            $this->success('导入成功！');//获得成功跳转的链接
+
+            // dump($newTemp);die;
+        }else{
+            $this->error('请先上传文件');
+        }
+    }
+
+    // 区域页面
+    public function quyu(){
+        $list = M('quyu')->order('id desc')->select();
+        $this->assign('list',$list);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    // 添加区域
+    public function quyu_add(){
+        // $school = M('school')->where('isuse = 1')->select();
+        // $this->assign('school',$school);
+        $this->adminDisplay();
+    }
+
+    //添加区域
+    public function addQuyu(){
+        // $bitian = array('xingming'=>'姓名','zhiwu'=>'职务','leixing'=>'类型','xiaoqu'=>'校区','bumen'=>'部门','chushengrq'=>'出生日期','diyixl'=>'第一学历','diyixlyx'=>'第一学历院校','zuigaoxl'=>'最高学历','zuigaoxlyx'=>'最高学历院校','ruzhirq'=>'入职日期','hetongkssj'=>'合同开始时间','hetongdqsj'=>'合同到期时间');// 所有必填项目
+        // foreach($bitian as $k=>$v){
+        //     if(empty($_POST[$k])){
+        //         $err[] = $v;
+        //     }
+        // }
+        // if(!empty($err)){
+        //     $notice = implode(',',$err);
+        //     $this->error($notice.'没有填写');
+        // }
+        // dump($_GET['id']);
+        // dump($_POST);
+        // die;
+        if(empty($_GET['id'])) {
+            if($bid=M('quyu')->add($_POST)) {
+                $this->success('添加成功',U('quyu'));
+            } else {
+                $this->error('添加失败');
+            }
+        }else {
+            $bid=$_GET['id'];
+            if(M('quyu')->where(array('id'=>$bid))->save($_POST)) {
+                $this->success('修改成功',U('quyu'));
+            } else {
+                $this->error('修改失败');
+            }
+        }
     }
 }
 ?>

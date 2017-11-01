@@ -194,11 +194,11 @@
   };
 
   Distpicker.DEFAULTS = {
-    autoSelect: true,
+    autoSelect: false,
     placeholder: true,
-    province: '—— 省 ——',
-    city: '—— 市 ——',
-    district: '—— 区 ——'
+    province: '---- 选择省 ----',
+    city: '---- 选择市 ----',
+    district: '---- 选择区 ----'
   };
 
   Distpicker.setDefaults = function (options) {

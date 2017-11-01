@@ -1,0 +1,64 @@
+<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Setting/addQuyu',array('id'=>$list['id']))}">
+	 <div class="panel one-box  active">
+        <div class="panel-head">
+            <strong>添加校区所属区域</strong>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="label">
+                    <label>所属区域</label>
+                </div>
+                <div class="field">
+                    <div data-toggle="distpicker">
+                        <select data-province="---- 选择省 ----" name="sheng" style="height:32px;border-radius: 4px;"></select>
+                        <select data-city="---- 选择市 ----" name="shi" style="height:32px;border-radius: 4px;"></select>
+                        <select data-district="---- 选择区 ----" name="qu" style="height:32px;border-radius: 4px;"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-foot">
+            <div class="form-button">
+                <div id="tips"></div>
+				<button class="button bg-main" id="ajaxForm" type='submit'>保存</button>
+				<if condition='ACTION_NAME eq "article"'>
+                <button class="button bg" type="reset">重置</button>
+				</if>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- 日期选择插件载入开始 -->
+<!-- <link rel="stylesheet" type="text/css" href="__PUBLIC__/time/bootstrap-datetimepicker.css"/ > -->
+<!-- <script src="__PUBLIC__/time/bootstrap-datetimepicker.js"></script> -->
+<!-- 日期选择插件载入结束 -->
+
+<!-- 日期选择插件初始化开始 -->
+<script>
+    // $('#datetimepicker').datetimepicker();
+</script>
+<!-- 日期选择插件初始化结束 -->
+
+<!-- 地址联动插件载入开始 -->
+<script src="__PUBLIC__/address/distpicker.data.js"></script>
+<script src="__PUBLIC__/address/distpicker.js"></script>
+<script src="__PUBLIC__/address/main.js"></script>
+<!-- 地址联动插件载入结束 -->
+
+<script>
+    KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="content"]', {
+            cssPath : '__PUBLIC__/keditor/plugins/code/prettify.css',
+            uploadJson : '__PUBLIC__/keditor/php/upload_json.php',
+            fileManagerJson : '__PUBLIC__/keditor/php/file_manager_json.php',
+            allowFileManager : true
+        });
+        prettyPrint();
+    });
+</script>
+
+<script type="text/javascript" src="__PUBLIC__/webuploader/FileUpload.js"></script>
+
+

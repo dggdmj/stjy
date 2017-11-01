@@ -255,9 +255,40 @@ class MenuModel {
                         'name' => '人事管理',
                         'icon' => 'user',
                         'url' => U('Renshi/renshi'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '职务管理',
+                        'icon' => 'user',
+                        'url' => U('Renshi/zhiwu'),
+                        'order' => 2
+                    ),
+                    array(
+                        'name' => '类型管理',
+                        'icon' => 'user',
+                        'url' => U('Renshi/leixing'),
+                        'order' => 3
+                    ),
+                    array(
+                        'name' => '关联公司管理',
+                        'icon' => 'user',
+                        'url' => U('Renshi/company'),
                         'order' => 4
                     ),
+                    array(
+                        'name' => '关联银行管理',
+                        'icon' => 'user',
+                        'url' => U('Renshi/bank'),
+                        'order' => 5
+                    ),
+                    array(
+                        'name' => '签证类型管理',
+                        'icon' => 'user',
+                        'url' => U('Renshi/qianzhenglx'),
+                        'order' => 6
+                    ),
                 ),
+
             ),
             'Function' => array(
                 'name' => '功能设置',
@@ -286,12 +317,18 @@ class MenuModel {
                         'name' => '班级编号管理',
                         'icon' => 'puzzle-piece',
                         'url' => U('Setting/banjibianhao'),
-                        'order' => 5
+                        'order' => 4
                     ),
                     array(
                         'name' => '课程管理',
                         'icon' => 'puzzle-piece',
                         'url' => U('Setting/kecheng'),
+                        'order' => 5
+                    ),
+                    array(
+                        'name' => '区域管理',
+                        'icon' => 'user',
+                        'url' => U('Setting/quyu'),
                         'order' => 5
                     ),
                 )
