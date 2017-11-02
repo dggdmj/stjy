@@ -12,10 +12,6 @@
                         <th width="120">减少明细表</th>
                         <th width="120">经营数据表</th>
                         <th width="160">退费表</th>
-                        <th width="120">占位</th>
-                        <th width="120">占位</th>
-                        <th width="120">占位</th>
-                        <th width="120">占位</th>
                         <th width="80">汇总表</th>
                         <if condition="$rid eq 3 or $rid eq 4 or $rid eq 5">
                         <th width="200">操作</th>
@@ -26,10 +22,10 @@
                     </tr>
                     <foreach name='list' item='v' key='k'>
                         <tr>
-                            <td>{$v.qishu}</td>
-                            <td>{$v.name}</td>
+                            <td title="期数">{$v.qishu}</td>
+                            <td title="校区">{$v.name}</td>
                             <foreach name='arr' item='v1' key='k1'>
-                            <td>
+                            <td title="">
                                 <a class="button bg-green button-small icon-eye" title="查看表格" alt="查看表格" href="__CONTROLLER__/{$v1}_xq/sid/{$v.sid}/qishu/{$v.qishu}"></a>
                                 <a class="button bg-blue button-small icon-download" title="下载表格" alt="下载表格" href="__MODULE__/Common/downloadScb/tid/{$k1}/qishu/{$v.qishu}/sid/{$v.sid}"></a>
                                 <if condition="$k1 eq 13">

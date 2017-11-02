@@ -1,3 +1,11 @@
+<style>
+    .school-name{
+        padding: 5px 9px;
+        font-size: 14px;
+        margin: 6px;
+        cursor: pointer;
+    }
+</style>
 <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Renshi/addRenshi',array('id'=>$list['id']))}">
 	 <div class="panel one-box  active">
         <div class="panel-head">
@@ -176,6 +184,12 @@
                 </div>
                 <div class="field">
                     <input type="text" class="input" name="diyixlyx" size="60" value="{$list.diyixlyx}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                </div>
+                <div class="tags" style="position: relative; z-index: 1000; width: 567px;left: 150px;top: 38px;  display: none;border: 1px solid #ddd;border-radius: 10px;background: #fff" id="moreTagLayer">
+                    <div class="close_even" style="position: relative;top: -26px;left: 526px;cursor: pointer">关闭</div>
+                    <div class="wraptags" style="position:relative; zoom: 1;margin-left: 30px">
+                        <h2 style="text-align: center">搜索中。。</h2>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -635,7 +649,6 @@
         </div>
     </div>
 </form>
-
 <!-- 日期选择插件载入开始 -->
 <!-- <link rel="stylesheet" type="text/css" href="__PUBLIC__/time/jquery.datetimepicker.css"/ > -->
 <!-- <script src="__PUBLIC__/time/jquery.datetimepicker.js"></script> -->
@@ -669,8 +682,50 @@
         });
         prettyPrint();
     });
+    $(function () {
+        var v = $("input[name='diyixlyx']");
+        v.keyup(function () {
+            var search_name = v.val();
+            if(search_name == '')
+                return;
+            $.ajax({
+                type: "POST", //用POST方式传输
+                url: 'searchSchool', //目标地址
+                data: {name:search_name},
+                dataType:'json',
+                error: function (XMLHttpRequest, textStatus, errorThrown) { },
+                success: function (data){
+                    if(data.status){
+                        $(".wraptags").empty();
+                        var str = '';
+                        $.each(data.data,function (i,e) {
+                            str += "<span class=\"badge bg-main school-name\">"+e.name+"</span>";
+                        })
+                        $(".wraptags").append(str);
+//                        console.log(data);
+                    }else {
+//                        console.log(data);
+                    }
+                }
+            });
+        })
+        
+        $("input[name='diyixlyx']").focus(function () {
+            $("#moreTagLayer").css("display","block");
+        })
+        $(".close_even").click(function () {
+            $("#moreTagLayer").css("display","none");
+        })
+        $(document).on('click','.school-name',function () {
+            var name = $(this).text();
+            $("input[name='diyixlyx']").val(name);
+            $("#moreTagLayer").css("display","none");
+        })
+
+    })
 </script>
 
 <script type="text/javascript" src="__PUBLIC__/webuploader/FileUpload.js"></script>
+
 
 

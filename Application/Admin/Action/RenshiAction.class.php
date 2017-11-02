@@ -356,5 +356,20 @@ class RenshiAction extends CommonAction{
         $this->list=D('qianzhenglx')->where(array('id'=>$id))->find();
         $this->adminDisplay('qianzhenglx_add');
     }
+
+    // 查找学校
+    public function searchSchool() {
+        $name = $_POST['name'];
+        $schools = M("ulist")->where("`name` like '%".$name."%'")->select();
+        if($schools){
+            $arr['status'] = true;
+            $arr['data'] = $schools;
+            $this->ajaxReturn($arr);
+        }else{
+            $arr['status'] = false;
+            $arr['data'] = $schools;
+            $this->ajaxReturn($arr);
+        }
+    }
 }
 ?>
