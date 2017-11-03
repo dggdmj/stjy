@@ -1,0 +1,125 @@
+<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/Setting/addKoukuan',array('id'=>$list['id']))}">
+	 <div class="panel one-box  active">
+        <div class="panel-head">
+            <strong>添加扣款</strong>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="label">
+                    <label>校区</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="sid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择校区</option>
+                        <foreach name='school' item='v'>
+                            <option value="{$v.id}">{$v.name}</option>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>精读老师(前)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jdls1" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>精读老师(后)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jdls2" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>泛读老师(前)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="fdls1" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>泛读老师(后)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="fdls2" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>教学组长(前)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jxzz1" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>教学组长(后)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jxzz2" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>教务主任(前)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jwzr1" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>教务主任(后)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jwzr2" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>教学副校长(前)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jxfxz1" value="{$list.mianji}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>教学副校长(后)</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="jxfxz2" value="{$list.mianji}">
+                </div>
+            </div>
+        </div>
+        <div class="panel-foot">
+            <div class="form-button">
+                <div id="tips"></div>
+				<button class="button bg-main" id="ajaxForm" type='submit'>保存</button>
+				<if condition='ACTION_NAME eq "article"'>
+                <button class="button bg" type="reset">重置</button>
+				</if>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="content"]', {
+            cssPath : '__PUBLIC__/keditor/plugins/code/prettify.css',
+            uploadJson : '__PUBLIC__/keditor/php/upload_json.php',
+            fileManagerJson : '__PUBLIC__/keditor/php/file_manager_json.php',
+            allowFileManager : true
+        });
+        prettyPrint();
+    });
+</script>
+
+<script type="text/javascript" src="__PUBLIC__/webuploader/FileUpload.js"></script>

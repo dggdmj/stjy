@@ -28,12 +28,10 @@
                 </thead>
                 <tbody>
                     <foreach name="data1" key="key" item="v">
-                        <if condition="$key neq '总计'">
-                            <tr>
-                                <td>{$v['kaikesjd']}</td>
-                                <td>{$v['banjishu']}</td>
-                            </tr>
-                        </if>
+                        <tr>
+                            <td>{$v['kaikesjd']}</td>
+                            <td>{$v['banjishu']}</td>
+                        </tr>
                     </foreach>
                 </tbody>
             </table>

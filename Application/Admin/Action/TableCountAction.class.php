@@ -260,6 +260,7 @@ class TableCountAction extends CommonAction{
         $data_bjzysjb = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
         $data_gbxzdrstjb = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
         $data_xsrsbd = M('xsrsbdb')->field('id,suoshudd,daorusj,xuhao',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();
+        
         $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();
         // dump($data_gbxzdrstjb);
         $sjbd = [];

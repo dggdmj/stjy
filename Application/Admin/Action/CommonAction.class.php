@@ -1260,7 +1260,7 @@ class CommonAction extends Action {
             }
 
         }
-        // dump($ziduan);die;
+        
         $comment = array_flip($this->getComment('scyjb'));
         // dump($comment);die;
         $i = 3;// 行从3开始
@@ -1277,7 +1277,7 @@ class CommonAction extends Action {
                 //         }
                 //     break;
                 foreach($ziduan as $key=>$val){
-                    if($val == $k || $val == $comment[$k]){
+                    if(explode('(',$val)[0] == $k || explode('(',$val)[0] == $comment[$k]){
                         $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($key).$i,$v);
                     }
                 }

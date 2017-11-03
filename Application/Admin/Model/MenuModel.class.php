@@ -331,6 +331,12 @@ class MenuModel {
                         'url' => U('Setting/quyu'),
                         'order' => 5
                     ),
+                    array(
+                        'name' => '扣款管理',
+                        'icon' => 'user',
+                        'url' => U('Setting/koukuan'),
+                        'order' => 6
+                    ),
                 )
             ),
             'Member' => array(

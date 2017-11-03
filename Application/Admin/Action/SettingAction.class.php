@@ -37,6 +37,10 @@ class SettingAction extends CommonAction{
                 'url' => url('Setting/quyu'),
                 'icon' => 'list',
                 ),
+                array('name' => '扣款管理',
+                'url' => url('Setting/koukuan'),
+                'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -53,6 +57,9 @@ class SettingAction extends CommonAction{
                 ),
                 array('name' => '添加区域',
                 'url' => url('Setting/quyu_add'),
+                ),
+                array('name' => '添加扣款',
+                'url' => url('Setting/koukuan_add'),
                 ),
             ),
         );
@@ -588,6 +595,50 @@ class SettingAction extends CommonAction{
                 $this->error('修改失败');
             }
         }
+    }
+
+    //扣款列表页
+	public function koukuan(){
+		$data = M('koukuan'); // 实例化对象
+		$list = $data->order('id desc')->select();
+		$this->assign('list',$list);// 赋值数据集
+		$this->adminDisplay();
+	}
+
+	//添加扣款页面
+	public function koukuan_add(){
+        $school = M('school')->field('id,name')->select();
+        // dump($school);
+        $this->assign('school',$school);// 赋值数据集
+		$this->adminDisplay();
+	}
+
+    //添加校区
+    public function addKoukuan(){
+        dump($_POST);
+        die;
+        if(empty($_GET['id'])) {
+            if($bid=M('school')->add($_POST)) {
+                $this->success('添加成功',U('Setting/school'));
+            } else {
+                $this->error('添加失败');
+            }
+        }
+        else {
+            $bid=$_GET['id'];
+            if(M('school')->where(array('id'=>$bid))->save($_POST)) {
+                $this->success('修改成功',U('Setting/school'));
+            } else {
+                $this->error('修改失败');
+            }
+        }
+    }
+
+    // 修改校区
+    public function editKoukuan() {
+        $id = $_GET['id'];
+        $this->list=D('School')->where(array('id'=>$id))->find();
+        $this->adminDisplay('school_add');
     }
 }
 ?>
