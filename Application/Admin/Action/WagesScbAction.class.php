@@ -62,7 +62,7 @@ class WagesScbAction extends CommonAction{
             $list = $scb_list;
         }else{
             //取当期的市场业绩表信息
-            $suoshudingdan = M("qishu_history")->where("tid = 8 and sid = $sid")->getField("id");
+            $suoshudingdan = M("qishu_history")->where("tid = 8 and sid = $sid and qishu = $qishu")->getField("id");
             $scyj = M("scyjb")->where("suoshudd = $suoshudingdan")->select();
             //查找本校区市场部中没有业绩的人员
             $meiyeji_arr = $this->getScbrenyuan($sid,$scyj);
@@ -97,7 +97,10 @@ class WagesScbAction extends CommonAction{
                 $list[$sk]['kechengyj'] = $this->object2array(json_decode($sc['kechengyj']));
                 $list[$sk]['hejiyye']['value'] = 0+$sc["hejiyye"];  //合计营业额
                 $list[$sk]['huiyuanldxyye']['value'] = 0+$sc["huiyuanldxyye"];  //会员老带新营业额
+                $list[$sk]['xinguwenbdrt']['value'] = "<input class='input do_enter' type='text' name='xinguwenbdrt' value=''>";  //新顾问保底人头
                 $list[$sk]['canzhaobdx']['value'] = "<input class='input do_enter' type='text' name='canzhaobdx' value=''>";  //参考保底线
+                $list[$sk]['gongzuoliang']['value'] = "<input class='input do_enter' type='text' name='gongzuoliang' value=''>";  //工作量
+                $list[$sk]['gudinghj']['value'] = "<input class='input do_enter' type='text' name='gudinghj' value=''>";  //固定合计
                 if(empty($sc['kechengyj'])){
                     $list[$sk]['xuexikajs']['value'] = 0;  //学习卡结算
                 }else{
@@ -109,13 +112,16 @@ class WagesScbAction extends CommonAction{
                 $list[$sk]['dituijrtjx']['value'] = "<input class='input do_enter' type='text' name='dituijrtjx' value=''>";  //地推净人头绩效
                 $list[$sk]['weixinjx']['value'] = "<input class='input do_enter' type='text' name='weixinjx' value=''>";  //微信绩效
                 $list[$sk]['jiazhanghuixcbjl']['value'] = "<input class='input do_enter' type='text' name='jiazhanghuixcbjl' value=''>";  //家长会报名现场奖励
-                $list[$sk]['liushijtfjxjs']['value'] = "<input class='input do_enter' type='text' name='liushijtfjxjs' value=''>";  //流失及退费绩效结算
+                $list[$sk]['liushijtfjxjs']['value'] = $this->getTuifei($qishu,$sid,13,$sc['xingming']);  //流失及退费绩效结算
                 $list[$sk]['shangkeksjx']['value'] = "<input class='input do_enter' type='text' name='shangkeksjx' value=''>";  //上课课时绩效
                 $list[$sk]['jidizskjx']['value'] = "<input class='input do_enter' type='text' name='jidizskjx' value=''>";  //基地招生课绩效
                 $gerejce = M("gjjmxb")->where("qishu = '".$qishu."' and zhengjianhao = '".$user['shenfenzhm']."'")->getField("gerenjce");
                 $list[$sk]['gongjijin']['value'] = $gerejce?$gerejce:0;  //公积金
                 $geresbe = M("sbmxb")->where("qishu = '".$qishu."' and shenfenzhm = '".$user['shenfenzhm']."'")->getField("gerenhj");
                 $list[$sk]['gerensb']['value'] = $geresbe?$geresbe:0;  //个人社保
+                $list[$sk]['yuedusfjbgz']['value'] = 1895;  //月度实发基本工资
+                $list[$sk]['yuedusfjx']['value'] = "<input class='input do_enter' type='text' name='yuedusfjx' value=''>";  //月度实发绩效
+                $list[$sk]['beizhu']['value'] = "<input class='input do_enter' type='text' name='	beizhu' value=''>";  //备注
 
             }
         }
@@ -295,6 +301,11 @@ class WagesScbAction extends CommonAction{
             $meiyeji[]["xingming"] = $v;
         }
         return $meiyeji;
+    }
+
+    //获得退费金额
+    function getTuifei($qishu,$sid,$tid = 13,$name){
+
     }
 }
 
