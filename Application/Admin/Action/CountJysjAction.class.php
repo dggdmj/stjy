@@ -71,6 +71,8 @@ class CountJysjAction extends CommonAction {
         $where = 'suoshudd ='.$id_fmonth.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';        
         if(!empty($id_fmonth)){
             $res = M('bjxyxxb')->where($where)->select();
+            $res = $this->getXuehao($res);
+            $res = array_flip(array_flip($res));// 去重复学号,解决一学生多报班的情况
             $arr['本月初在册学生人数'] = count($res);
         }else{
             $arr['本月初在册学生人数'] = 0;
@@ -217,7 +219,7 @@ class CountJysjAction extends CommonAction {
                 $data[$v2] = $arr[$v2];
             }
         }
-//        dump($data);die;
+        // dump($data);die;
         return $data;
     }
 
@@ -531,7 +533,7 @@ class CountJysjAction extends CommonAction {
             "zsws"=>"周日晚上",
             "zwws"=>"周五晚上",
             "zlws"=>"周六晚上",
-            "ydy"=>"一对一",
+            "yiduiyi"=>"一对一",
             );
         return $arr;
     }

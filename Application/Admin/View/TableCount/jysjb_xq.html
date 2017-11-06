@@ -137,7 +137,11 @@
                         <td>{$v["tingduyjbkfx"]}</td>
                         <td>{$v["shijizbrs"]}</td>
                         <volist name="kecheng" id="kc">
+                        <if condition="$kc eq '一对一'">
+                            <td><?php echo $v['yiduiyi'];?></td>
+                        <else />
                             <td><?php echo $v[strtolower($kc)];?></td>
+                        </if>
                         </volist>
                     </tr>
                 </foreach>

@@ -1650,7 +1650,7 @@ class CommonAction extends Action {
             $temp['j2b'] = $v1['J2B'];
             $temp['j3a'] = $v1['J3A'];
             $temp['j3b'] = $v1['J3B'];
-            $temp['yiduiyi'] = $v1['yiduiyi'];
+            $temp['yiduiyi'] = $v1['一对一'];
             $temp['ns1'] = $v1['ns1'];
             $temp['suoshudd'] = $qishu_id;
             M('zcxsxqztb')->add($temp);

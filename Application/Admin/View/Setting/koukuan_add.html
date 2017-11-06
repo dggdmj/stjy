@@ -9,10 +9,14 @@
                     <label>校区</label>
                 </div>
                 <div class="field">
-                    <select class="select" name="sid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                    <select class="select" name="school" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
                         <option value="">请选择校区</option>
                         <foreach name='school' item='v'>
-                            <option value="{$v.id}">{$v.name}</option>
+                            <if condition="$v.id eq $list['sid']">
+                                <option value="{$v.id}-{$v.name}" selected>{$v.name}</option>
+                            <else />
+                                <option value="{$v.id}-{$v.name}">{$v.name}</option>
+                            </if>
                         </foreach>
                     </select>
                 </div>
@@ -22,7 +26,7 @@
                     <label>精读老师(前)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jdls1" value="{$list.mianji}">
+                    <input type="text" class="input" name="jingduls1" value="{$list.jingduls1}">
                 </div>
             </div>
             <div class="form-group">
@@ -30,7 +34,7 @@
                     <label>精读老师(后)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jdls2" value="{$list.mianji}">
+                    <input type="text" class="input" name="jingduls2" value="{$list.jingduls2}">
                 </div>
             </div>
             <div class="form-group">
@@ -38,7 +42,7 @@
                     <label>泛读老师(前)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="fdls1" value="{$list.mianji}">
+                    <input type="text" class="input" name="fanduls1" value="{$list.fanduls1}">
                 </div>
             </div>
             <div class="form-group">
@@ -46,7 +50,7 @@
                     <label>泛读老师(后)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="fdls2" value="{$list.mianji}">
+                    <input type="text" class="input" name="fanduls2" value="{$list.fanduls2}">
                 </div>
             </div>
             <div class="form-group">
@@ -54,7 +58,7 @@
                     <label>教学组长(前)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jxzz1" value="{$list.mianji}">
+                    <input type="text" class="input" name="jiaoxuezz1" value="{$list.jiaoxuezz1}">
                 </div>
             </div>
             <div class="form-group">
@@ -62,7 +66,7 @@
                     <label>教学组长(后)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jxzz2" value="{$list.mianji}">
+                    <input type="text" class="input" name="jiaoxuezz2" value="{$list.jiaoxuezz2}">
                 </div>
             </div>
             <div class="form-group">
@@ -70,7 +74,7 @@
                     <label>教务主任(前)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jwzr1" value="{$list.mianji}">
+                    <input type="text" class="input" name="jiaowuzr1" value="{$list.jiaowuzr1}">
                 </div>
             </div>
             <div class="form-group">
@@ -78,7 +82,7 @@
                     <label>教务主任(后)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jwzr2" value="{$list.mianji}">
+                    <input type="text" class="input" name="jiaowuzr2" value="{$list.jiaowuzr2}">
                 </div>
             </div>
             <div class="form-group">
@@ -86,7 +90,7 @@
                     <label>教学副校长(前)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jxfxz1" value="{$list.mianji}">
+                    <input type="text" class="input" name="jiaoxuefxz1" value="{$list.jiaoxuefxz1}">
                 </div>
             </div>
             <div class="form-group">
@@ -94,7 +98,7 @@
                     <label>教学副校长(后)</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="jxfxz2" value="{$list.mianji}">
+                    <input type="text" class="input" name="jiaoxuefxz2" value="{$list.jiaoxuefxz2}">
                 </div>
             </div>
         </div>

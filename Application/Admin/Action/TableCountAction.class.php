@@ -262,7 +262,7 @@ class TableCountAction extends CommonAction{
         $data_xsrsbd = M('xsrsbdb')->field('id,suoshudd,daorusj,xuhao',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();
         
         $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();
-        // dump($data_gbxzdrstjb);
+        // dump($data_zcxsxqztb);
         $sjbd = [];
         foreach($data_bjzysjb as $v){
             if($v['bumen'] == '总计'){

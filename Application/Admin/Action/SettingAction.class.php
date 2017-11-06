@@ -600,7 +600,7 @@ class SettingAction extends CommonAction{
     //扣款列表页
 	public function koukuan(){
 		$data = M('koukuan'); // 实例化对象
-		$list = $data->order('id desc')->select();
+        $list = $data->order('id desc')->select();
 		$this->assign('list',$list);// 赋值数据集
 		$this->adminDisplay();
 	}
@@ -615,19 +615,26 @@ class SettingAction extends CommonAction{
 
     //添加校区
     public function addKoukuan(){
-        dump($_POST);
-        die;
+        // dump($_POST);
+        // die;
+        // $sid = $_POST['sid'];
+        $school = explode('-',$_POST['school']);
+        $_POST['sid'] = $school[0];
+        $_POST['school'] = $school[1];
+        
+
+        
         if(empty($_GET['id'])) {
-            if($bid=M('school')->add($_POST)) {
-                $this->success('添加成功',U('Setting/school'));
+            if($bid=M('koukuan')->add($_POST)) {
+                $this->success('添加成功',U('Setting/koukuan'));
             } else {
                 $this->error('添加失败');
             }
         }
         else {
             $bid=$_GET['id'];
-            if(M('school')->where(array('id'=>$bid))->save($_POST)) {
-                $this->success('修改成功',U('Setting/school'));
+            if(M('koukuan')->where(array('id'=>$bid))->save($_POST)) {
+                $this->success('修改成功',U('Setting/koukuan'));
             } else {
                 $this->error('修改失败');
             }
@@ -637,8 +644,13 @@ class SettingAction extends CommonAction{
     // 修改校区
     public function editKoukuan() {
         $id = $_GET['id'];
-        $this->list=D('School')->where(array('id'=>$id))->find();
-        $this->adminDisplay('school_add');
+        $this->list=D('koukuan')->where(array('id'=>$id))->find();
+        // $list = M('koukuan')->where(array('id'=>$id))->find();
+        // dump($list);
+        $school = M('school')->field('id,name')->select();
+        // $this->assign('list',$list);// 赋值数据集
+        $this->assign('school',$school);// 赋值数据集
+        $this->adminDisplay('koukuan_add');
     }
 }
 ?>
