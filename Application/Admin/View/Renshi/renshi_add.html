@@ -690,7 +690,7 @@
                 return;
             $.ajax({
                 type: "POST", //用POST方式传输
-                url: 'searchSchool', //目标地址
+                url: '/index.php/Renshi/searchSchool', //目标地址
                 data: {name:search_name},
                 dataType:'json',
                 error: function (XMLHttpRequest, textStatus, errorThrown) { },
