@@ -597,6 +597,13 @@ class SettingAction extends CommonAction{
         }
     }
 
+    // 修改区域
+    public function editQuyu() {
+        $id = $_GET['id'];
+        $this->list=D('quyu')->where(array('id'=>$id))->find();
+        $this->adminDisplay('quyu_add');
+    }
+
     //扣款列表页
 	public function koukuan(){
 		$data = M('koukuan'); // 实例化对象

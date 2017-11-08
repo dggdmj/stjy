@@ -45,7 +45,8 @@ class WagesAction extends CommonAction{
 
     //工资表总表
     public function index(){
-        echo "这是总表";
+        
+        $this->adminDisplay();
     }
 
     //行政部工资表
