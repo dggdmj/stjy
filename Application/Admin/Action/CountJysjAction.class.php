@@ -400,7 +400,7 @@ class CountJysjAction extends CommonAction {
             //判断部门信息
             if($bjxyxxb[$k]["zhuangtai"] == "在读"){
                 //如果课程名称中包含"一"，级别为"一对一"，否则取班级名称的前三位
-                if(strpos($v['banji'],"一")){
+                if(strstr($v['banji'],"一")){
                     $bjxyxxb[$k]["bumen"] = "一对一";
                 }else{
                     $bjxyxxb[$k]["jibie"] = mb_substr($v['banji'],0,3,"utf-8");
@@ -440,15 +440,14 @@ class CountJysjAction extends CommonAction {
             foreach ($kecheng_arr as $k_key=>$kecheng){
                 foreach ($bumen_count as $key=>$c){
                     if($bjxyxxb[$k]["zhuangtai"] == "在读" && $kecheng == $bjxyxxb[$k]["banxing_xq"] && $bjxyxxb[$k]["bumen"] == $c["bumen"]){
-//                        if($bjxyxxb[$k]["bumen"] == '幼儿部' && $bjxyxxb[$k]["banxing_xq"] == '小学周末白天班'){
-//                            dump($bjxyxxb[$k]['banji']);
-//                            dump($bjxyxxb[$k]['xuehao']);
+//                        if($bjxyxxb[$k]["bumen"] == '小初部' ){
+//                            dump($bjxyxxb[$k]);
 //                        }
                         $bumen_count[$key][$k_key] += 1;
                     }
                 }
             }
-//            if($v['xuehao'] == 'S13462'){
+//            if($v['xuehao'] == 'S03463'){
 //                dump($bjxyxxb[$k]);
 //            }
         }
