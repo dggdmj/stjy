@@ -82,13 +82,13 @@ class MenuModel {
                         'order' => 1
                     ),
                     array(
-                        'name' => '社保管理',
+                        'name' => '社保表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/tableList/tid/15'),
                         'order' => 1
                     ),
                     array(
-                        'name' => '公积金管理',
+                        'name' => '公积金表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/tableList/tid/16'),
                         'order' => 1

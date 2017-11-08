@@ -50,6 +50,14 @@ class TableImportAction extends CommonAction{
                     'name' => '学习卡额度表导入',
                     'url' => U('/TableImport/tableList/tid/14'),
                 ),
+                array(
+                    'name' => '社保表导入',
+                    'url' => U('/TableImport/tableList/tid/15'),
+                ),
+                array(
+                    'name' => '公积金表导入',
+                    'url' => U('/TableImport/tableList/tid/16'),
+                ),
             ),
            // 'add' => array(
            //     array('name' => '添加文章',
@@ -401,7 +409,7 @@ class TableImportAction extends CommonAction{
             $status_xzjl = M('sjzb')->where($map)->getField('status_xzjl');
             if($status_xzjl == 2){
                 unlink($file_name);// 删除excel文档
-                $this->error('上传功能已锁定,请解锁后继续');
+                $this->error('上传功能已锁定,请解锁后继续','',10);
             }
 
             $qishu_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],13);
@@ -427,6 +435,11 @@ class TableImportAction extends CommonAction{
             
             
             $excel_data = $this->getTuifeiExcelData($objPHPExcel,$highestRow,$colsNum,$qishu_id,$sid);
+            if(!$excel_data){
+                 unlink($file_name);
+                 $this->error("尚未进行扣款设置",'',10);
+            }
+            // unlink($file_name);
             // dump($excel_data);
             // die;
 
@@ -1194,50 +1207,100 @@ class TableImportAction extends CommonAction{
 
             $data['xiaoji'] = (double)$data['dingjin']+(double)$data['tuixuefje']+(double)$data['jiaocaifei'];
             $koukuan = M('koukuan')->where('sid ='.$sid)->find();
+            if(empty($koukuan)){
+                return false;
+            }
+
+            // 生成数据初始化
+            $data['jingdulsykje'] = null;
+            $data['fandulsykje'] = null;
+            $data['jiaoxuezzykje'] = null;
+            $data['jiaowuzrykje'] = null;
+            $data['jiaoxuefxzykje'] = null;
+            $data['zhaoshengzrykje'] = null;
+            $data['zhaoshengfxzykje'] = null;
+            $data['dianzhangzjykje'] = null;
+            $data['quyuzjykje'] = null;
 
             // 4次课前后对应的扣款
             if($data['sicikqh'] == '4次课前'){
-                $data['jingdulsykje'] = $koukuan['jingduls1'];
-                $data['fandulsykje'] = $koukuan['fanduls1'];
-                $data['jiaoxuezzykje'] = $koukuan['jiaoxuezz1'];
-                $data['jiaowuzrykje'] = $koukuan['jiaowuzr1'];
-                $data['jiaoxuefxzykje'] = $koukuan['jiaoxuefxz1'];
+                if(!empty($data['jingdulsyxm'])){
+                    $data['jingdulsykje'] = $koukuan['jingduls1'];
+                }
+                if(!empty($data['fandulsxm'])){
+                    $data['fandulsykje'] = $koukuan['fanduls1'];
+                }
+                if(!empty($data['jiaoxuezzxm'])){
+                    $data['jiaoxuezzykje'] = $koukuan['jiaoxuezz1'];
+                }
+                if(!empty($data['jiaowuzrxm'])){
+                    $data['jiaowuzrykje'] = $koukuan['jiaowuzr1'];
+                }
+                if(!empty($data['jiaoxuefxzxm'])){
+                    $data['jiaoxuefxzykje'] = $koukuan['jiaoxuefxz1'];
+                }
             }elseif($data['sicikqh'] == '4次课后'){
-                $data['jingdulsykje'] = $koukuan['jingduls2'];
-                $data['fandulsykje'] = $koukuan['fanduls2'];
-                $data['jiaoxuezzykje'] = $koukuan['jiaoxuezz2'];
-                $data['jiaowuzrykje'] = $koukuan['jiaowuzr2'];
-                $data['jiaoxuefxzykje'] = $koukuan['jiaoxuefxz2'];
+                if(!empty($data['jingdulsyxm'])){
+                    $data['jingdulsykje'] = $koukuan['jingduls2'];
+                }
+                if(!empty($data['fandulsxm'])){
+                    $data['fandulsykje'] = $koukuan['fanduls2'];
+                }
+                if(!empty($data['jiaoxuezzxm'])){
+                    $data['jiaoxuezzykje'] = $koukuan['jiaoxuezz2'];
+                }
+                if(!empty($data['jiaowuzrxm'])){
+                    $data['jiaowuzrykje'] = $koukuan['jiaowuzr2'];
+                }
+                if(!empty($data['jiaoxuefxzxm'])){
+                    $data['jiaoxuefxzykje'] = $koukuan['jiaoxuefxz2'];
+                }
             }
 
             // 招生顾问应扣
             // =IF(OR(D3="退差额",L3="初三",L3="高一",L3="高二",L3="高三"),0,IF(H3="非学习卡",IF(OR(AN3="招生主任",AN3="招生副校长"),(M3+N3)*5%,(M3+N3)*4%),VLOOKUP(H3,CS:CT,2,0)*(M3+N3)))
             $duiyingbl = array('1期秒杀'=>0.2,'买三送二'=>0.08,'一年国际会员'=>0.12,'二年国际会员'=>0.1,'三年拼单会员'=>0.1,'五年国际会员'=>0.12,'预定游学优惠读'=>0.12,'预定游学免费读'=>0.05,'创始会员'=>0.05);
             if(in_array($data['tuifeikc'],['高一','高二','高三']) || $data['tuifeilx'] == '退差额'){
-                $data['zhaoshengzrykje'] = 0;
+                if(!empty($data['zhaoshengzrxm'])){
+                    $data['zhaoshengzrykje'] = 0;
+                }
             }else{
                 if($data['jiesuanlx'] == '非学习卡'){
                     if(in_array($data['zhiwei'],['招生主任','招生副校长'])){
-                        $data['zhaoshengzrykje'] = ($data['dingjin']+$data['tuixuefje'])*5/100;
+                        if(!empty($data['zhaoshengzrxm'])){
+                            $data['zhaoshengzrykje'] = ($data['dingjin']+$data['tuixuefje'])*5/100;
+                        }
                     }else{
-                        $data['zhaoshengzrykje'] = ($data['dingjin']+$data['tuixuefje'])*4/100;
+                        if(!empty($data['zhaoshengzrxm'])){
+                            $data['zhaoshengzrykje'] = ($data['dingjin']+$data['tuixuefje'])*4/100;
+                        }
                     }
                 }else{
-                    $data['zhaoshengzrykje'] = ($data['dingjin']+$data['tuixuefje'])*$duiyingbl[$data['jiesuanlx']];
+                    if(!empty($data['zhaoshengzrxm'])){
+                        $data['zhaoshengzrykje'] = ($data['dingjin']+$data['tuixuefje'])*$duiyingbl[$data['jiesuanlx']];
+                    }
                 }
             }
 
             // 招生副校长应扣
             // =IF(OR(D3="退差额",L3="初三",L3="高一",L3="高二",L3="高三"),0,(M3+N3)*1%)
             if(in_array($data['tuifeikc'],['初三','高一','高二','高三']) || $data['tuifeilx'] == '退差额'){
-                $data['zhaoshengfxzykje'] = 0;
+                if(!empty($data['zhaoshengfxzxm'])){
+                    $data['zhaoshengfxzykje'] = 0;
+                }
             }else{
-                $data['zhaoshengfxzykje'] = ($data['dingjin']+$data['tuixuefje'])*1/100;
+                if(!empty($data['zhaoshengfxzxm'])){
+                    $data['zhaoshengfxzykje'] = ($data['dingjin']+$data['tuixuefje'])*1/100;
+                }
             }
 
             // 店长总监与区域总监应扣
-            $data['quyuzjykje'] = $data['dianzhangzjykje'] = $data['tuixuefje']*0.025;
-
+            if(!empty($data['dianzhangzjxm'])){
+                $data['dianzhangzjykje'] = $data['tuixuefje']*0.025;
+            }
+            if(!empty($data['quyuzjxm'])){
+                $data['quyuzjykje'] = $data['tuixuefje']*0.025;
+            }
             // 扣款合计
             $data['koukuanhj'] = $data['jingdulsykje']+$data['fandulsykje']+$data['jiaoxuezzykje']+$data['jiaowuzrykje']+$data['jiaoxuefxzykje']+$data['zhaoshengzrykje']+$data['zhaoshengfxzykje']+$data['dianzhangzjykje']+$data['quyuzjykje'];
 

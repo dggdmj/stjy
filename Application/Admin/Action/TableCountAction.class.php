@@ -37,7 +37,7 @@ class TableCountAction extends CommonAction{
                     'url' => url('TableCount/yejilist/tid/12'),
                     'icon' => 'list',
                 ),
-                array('name' => '退费',
+                array('name' => '退费表',
                     'url' => url('TableCount/yejilist/tid/13'),
                     'icon' => 'list',
                 ),
@@ -91,7 +91,16 @@ class TableCountAction extends CommonAction{
         $this->assign('rid',$rid);// 赋值角色id
         $this->assign('arr',$arr);
         $this->adminDisplay();
-	}
+    }
+    
+    public function index_xq(){
+        // dump($_GET);die;
+        $data = M('sjzb')->field('id,sid,xyxxb,bjxxb,bjxyxxb,sjjlb,kxmxb,kbmxb,xyfyyjb,xxkedb,sbmxb,gjjmxb',true)->where($_GET)->find();
+        $data['school'] = M('school')->where('id ='.$_GET['sid'])->getField('name');
+        // dump($data);
+        $this->assign('data',$data);
+        $this->adminDisplay();
+    }
 
     public function yejilist(){
         // 获取当前用户的角色
@@ -262,7 +271,7 @@ class TableCountAction extends CommonAction{
         $data_xsrsbd = M('xsrsbdb')->field('id,suoshudd,daorusj,xuhao',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();
         
         $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();
-        // dump($data_zcxsxqztb);
+        // dump($data_gbxzdrstjb);
         $sjbd = [];
         foreach($data_bjzysjb as $v){
             if($v['bumen'] == '总计'){
@@ -310,6 +319,16 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
+    // public function jysjb_xq(){
+    //     $qishu = $_GET['qishu'];
+    //     $sid = $_GET['sid'];
+
+    //     /* 实时计算开始 */
+    //     $data = new \Admin\Action\CountJysjAction();
+    //     $list = $data->getJysjbData($qishu,$sid);//获得统计数据
+    //     dump($list);die;
+    //     /* 实时计算结束 */
+    // }
 	//退费表详情
 	public function tfb_xq(){
         // $bjbm = $this->getBjbm();

@@ -16,9 +16,7 @@
                         <if condition="$rid eq 3 or $rid eq 4 or $rid eq 5">
                         <th width="200">操作</th>
                         </if>
-                        <th width="80">行政状态</th>
-                        <th width="80">行政经理状态</th>
-                        <th width="80">财务状态</th>
+                        <th width="80">状态</th>
                     </tr>
                     <foreach name='list' item='v' key='k'>
                         <tr>
@@ -51,7 +49,7 @@
                                         </td>
                                     <else />
                                         <td>
-                                            <a class="button bg-red button-small js-lock" title="已锁定" alt="已锁定" style="cursor:pointer">已锁定</a>
+                                            <a class="button bg-red button-small js-lock icon-lock" title="已锁定" alt="已锁定" style="cursor:pointer"></a>
                                         </td>
                                     </if>
                                 </if>
@@ -68,41 +66,7 @@
                                 </if>
                             </if>
                             <td>
-                                <if condition="$v.status_xz eq 1">
-                                无
-                                <elseif condition="$v.status_xz eq 2" />
-                                {$v.xingzheng}已提交
-                                <elseif condition="$v.status_xz eq 3" />
-                                被{$v.xingzhengjl}退回
-                                </if>
-                            </td>
-                            <td>
-                                <if condition="$v.status_xzjl eq 1">
-                                无
-                                <elseif condition="$v.status_xzjl eq 2" />
-                                {$v.xingzhengjl}已审核
-                                <elseif condition="$v.status_xzjl eq 3" />
-                                {$v.xingzhengjl}退回行政
-                                <elseif condition="$v.status_xzjl eq 4" />
-                                被{$v.caiwu}退回
-                                <else />
-                                无
-                                </if>
-                            </td>
-                            <td>
-                                <if condition="$v.status_cw eq 1">
-                                无
-                                <elseif condition="$v.status_cw eq 2" />
-                                {$v.caiwu}已审核
-                                <elseif condition="$v.status_cw eq 3" />
-                                {$v.caiwu}退回行政
-                                <elseif condition="$v.status_cw eq 4" />
-                                被{$v.fuzeren}退回
-                                <elseif condition="$v.status_cw eq 5" />
-                                {$v.caiwu}取消审核
-                                <else />
-                                无
-                                </if>
+                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__CONTROLLER__/index_xq/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer"></a>
                             </td>
                         </tr>
                     </foreach>
