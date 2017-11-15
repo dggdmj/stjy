@@ -318,13 +318,13 @@ class CountJysjAction extends CommonAction {
         $bumen_count['rszj'] = 0;   //初始化各班人数总计
         foreach ($bjxx_list as $k=>$v){
             //如果课程名称中包含"一"，级别为"一对一"，否则取班级名称的前三位
-            if(strpos($v['kechengmc'],"一")){
+            if(strstr($v['kechengmc'],"一")){
                 $bjxx_list[$k]["jibie"] = "一对一";
             }else{
                 $bjxx_list[$k]["jibie"] = mb_substr($v['banjimc'],0,3,"utf-8");
             }
 
-            if(strpos($v['kechengmc'],"一")){
+            if(strstr($v['kechengmc'],"一")){
                 $list[$k]["bumen"] = "一对一";
             }else{
                 $list[$k]["bumen"] = M("banjibianhao")->where("jingdujb = '".$bjxx_list[$k]["jibie"]."'")->getField("banxing");

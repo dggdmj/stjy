@@ -243,4 +243,49 @@
             layer.alert('不需要导入该表');
         });
     });
+
+    $(function(){
+        return false;
+        var list = $("#table tbody").find('tr');
+        var arr = "[";
+        $.each(list,function (i,e) {
+            var tr = "{";
+            var tds = $(this).find("td");
+            var kechengyeji = "\"kechengyeji\":{";
+            $.each(tds,function (m,n) {
+                if($(this).data("type") == 'field'){
+                    var f = $(this).data("field");
+                    if(f == undefined){
+                        return true;
+                    }
+                    if($(this).find("input").val() == undefined){
+                        var v = $(this).text();
+                    }else {
+                        var v = $(this).find("input").val();
+                    }
+                    tr += "\""+f+"\""+":\""+v+"\",";
+                }else {
+                    var f = $(this).data("field");
+                    if(f == undefined){
+                        return true;
+                    }
+                    var v = $(this).text();
+                    if(v == undefined){
+                        return true;
+                    }
+                    kechengyeji += "\""+f+"\""+":\""+v+"\",";
+                }
+
+            })
+            if(kechengyeji != ''){
+                kechengyeji = kechengyeji.substr(0,kechengyeji.length-1);
+            }
+            kechengyeji += "}";
+            tr += kechengyeji+"}";
+            arr += tr+",";
+        })
+        arr = arr.substr(0,arr.length-1);
+        arr += "]";
+        console.log(arr);
+    });
 </script>
