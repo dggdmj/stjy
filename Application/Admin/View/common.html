@@ -25,8 +25,7 @@
     <!-- webUploader 上传图片和文件插件 -->
     <link rel="stylesheet" type="text/css" href="__PUBLIC__/webuploader/webuploader.css">
     <script type="text/javascript" src="__PUBLIC__/webuploader/webuploader.min.js"></script>
-	<!-- dateTime 插件 -->
-	<link rel="stylesheet" type="text/css" href="__PUBLIC__/time/jquery.datetimepicker.css"/ >
+
 
     <style>
         body {overflow-x:hidden; background-color: #eff3f6;}
@@ -39,7 +38,7 @@
         </div>
 
         <if condition="$infoModule.menu != null">
-        <br> 
+        <br>
         <div class="tools-function clearfix">
             <div class="float-left">
                 <volist name="infoModule.menu" id="vo">
@@ -53,7 +52,7 @@
             </div>
             <if condition="$infoModule.add != null">
                 <div class="button-group float-right">
-                    <a class="button button-small bg-dot icon-plus dropdown-toggle"> 添加 <span class="downward"></span></a> 
+                    <a class="button button-small bg-dot icon-plus dropdown-toggle"> 添加 <span class="downward"></span></a>
                     <ul class="drop-menu pull-right">
                         <volist name="infoModule.add" id="vo">
                             <li><a href="{$vo.url}">{$vo.name}</a></li>
@@ -63,9 +62,9 @@
             </if>
         </div>
         </if>
-        
+
     </div>
-        
+
     <div class="admin-main">
     <!--common-->
     </div>

@@ -12,7 +12,31 @@
                     <input type="text" class="input" name="name" size="60" value="{$list.name}">
                 </div>
             </div>
-
+            <div class="form-group">
+                <div class="label">
+                    <label>公司类型</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="type" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择公司类型</option>
+                        <if condition="$list.type eq 1">
+                            <option value="1" selected>合同签订公司</option>
+                        <else />
+                            <option value="1">合同签订公司</option>
+                        </if>
+                        <if condition="$list.type eq 2">
+                            <option value="2" selected>社保购买公司</option>
+                        <else />
+                            <option value="2">社保购买公司</option>
+                        </if>
+                        <if condition="$list.type eq 3">
+                            <option value="3" selected>公积金购买公司</option>
+                        <else />
+                            <option value="3">公积金购买公司</option>
+                        </if>
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <div class="label">
                     <label>是否启用</label>

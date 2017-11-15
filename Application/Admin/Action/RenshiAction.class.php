@@ -74,6 +74,7 @@ class RenshiAction extends CommonAction{
     public function renshi_add(){
         $school = M('school')->where('isuse = 1')->select();
         $zhiwu = M('zhiwu')->where('isuse = 1')->select();
+        $bumen = M('department')->where('isuse = 1')->select();
         $leixing = M('leixing')->where('isuse = 1')->select();
         $company = M('company')->where('isuse = 1')->select();
         $bank = M('bank')->where('isuse = 1')->select();
@@ -81,11 +82,12 @@ class RenshiAction extends CommonAction{
         $guoji = M('gbdmb')->select();
         $this->assign('school',$school);
         $this->assign('zhiwu',$zhiwu);
+        $this->assign('bumen',$bumen);
         $this->assign('leixing',$leixing);
         $this->assign('company',$company);
         $this->assign('bank',$bank);
         $this->assign('qianzhenglx',$qianzhenglx);
-         $this->assign('guoji',$guoji);
+        $this->assign('guoji',$guoji);
         $this->adminDisplay();
     }
 
@@ -105,12 +107,12 @@ class RenshiAction extends CommonAction{
         // 判断身份证是否正确,提取出生日期和性别
         $res = preg_match('/^[1-9]\d{16}[\d|x|X]$/', $_POST['shenfenzhm']);
         if(!$res){
-            // $this->error('身份证号码输入有误!');
+            $this->error('身份证号码输入有误!');
         }
         $nian = substr($_POST['shenfenzhm'],6,4);
         $yue = substr($_POST['shenfenzhm'],10,2);
         $ri = substr($_POST['shenfenzhm'],12,2);
-        $chushengrq = $nian.'/'.$yue.'/'.$ri;// 出生日期
+        $chushengrq = $nian.'-'.$yue.'-'.$ri;// 出生日期
         $xingbie_num = substr($_POST['shenfenzhm'],16,1);// 倒数第二位是判断性别的,奇数是男,偶数是女
         if($xingbie_num%2 == 0){
             $xingbie = "女";
@@ -121,13 +123,26 @@ class RenshiAction extends CommonAction{
         // 判断联系电话是否正确
         $res = preg_match('/^1[34578]\d{9}$/', $_POST['lianxidh']);
         if(!$res){
-            // $this->error('联系电话输入有误!');
+            $this->error('联系电话输入有误!');
         }
-        dump($_POST);
-        die;
-        
+        // dump($_POST);
+        // die;
+        $_POST['xingbie'] = $xingbie;
+        $_POST['chushengrq'] = $chushengrq;
 
         if(empty($_GET['id'])) {
+            // 如果该姓名已存在,则添加失败
+            $res = M('renshi')->where('xingming ="'.$_POST['xingming'].'"')->find();
+            if(!empty($res)){
+                $this->error('已存在该姓名');
+            }
+
+            // 如果该省份证号码已存在,则添加失败
+            $res = M('renshi')->where('shenfenzhm ="'.$_POST['shenfenzhm'].'"')->find();
+            if(!empty($res)){
+                $this->error('已存在该身份证号码');
+            }
+
             if($bid=M('renshi')->add($_POST)) {
                 $this->success('添加成功',U('renshi'));
             } else {
@@ -135,6 +150,25 @@ class RenshiAction extends CommonAction{
             }
         }else {
             $bid=$_GET['id'];
+            $where['id'] = array('neq',$bid);
+            $res = M('renshi')->field('xingming,shenfenzhm')->where($where)->select();
+            foreach($res as $v){
+                // 除了自己以外已经登录的名字和身份证号码
+                $names[] = $v['xingming'];
+                $ids[] = $v['shenfenzhm'];
+            }
+            // dump($names);
+            // dump($_POST['xingming']);
+            // dump($ids);
+            // dump(in_array($_POST['xingming'],$names));
+            // die;
+            if(in_array($_POST['xingming'],$names)){
+                $this->error('已存在该姓名');
+            }
+            if(in_array($_POST['shenfenzhm'],$ids)){
+                $this->error('已存在该身份证号码');
+            }
+            
             if(M('renshi')->where(array('id'=>$bid))->save($_POST)) {
                 $this->success('修改成功',U('renshi'));
             } else {
@@ -145,8 +179,25 @@ class RenshiAction extends CommonAction{
 
     // 修改人士
     public function editRenshi() {
+        $school = M('school')->where('isuse = 1')->select();
+        $zhiwu = M('zhiwu')->where('isuse = 1')->select();
+        $bumen = M('department')->where('isuse = 1')->select();
+        $leixing = M('leixing')->where('isuse = 1')->select();
+        $company = M('company')->where('isuse = 1')->select();
+        $bank = M('bank')->where('isuse = 1')->select();
+        $qianzhenglx = M('qianzhenglx')->where('isuse = 1')->select();
+        $guoji = M('gbdmb')->select();
+        $this->assign('school',$school);
+        $this->assign('zhiwu',$zhiwu);
+        $this->assign('bumen',$bumen);
+        $this->assign('leixing',$leixing);
+        $this->assign('company',$company);
+        $this->assign('bank',$bank);
+        $this->assign('qianzhenglx',$qianzhenglx);
+        $this->assign('guoji',$guoji);
         $id = $_GET['id'];
         $this->list=D('renshi')->where(array('id'=>$id))->find();
+        dump($this->list);
         $this->adminDisplay('renshi_add');
         // view未套数据
     }
@@ -370,6 +421,28 @@ class RenshiAction extends CommonAction{
             $arr['data'] = $schools;
             $this->ajaxReturn($arr);
         }
+    }
+
+    public function addDepartment(){
+        // 如果是空值,就提示'请填写要添加的部门'
+        if(empty($_POST['name'])){
+            $arr['status'] = false;
+            $arr['info'] = '请填写要添加的部门';
+            $this->ajaxReturn($arr);
+        }
+        
+        $res = M('department')->where('name ="'.$_POST['name'].'"')->find();
+        if(!empty($res)){
+             $arr['status'] = false;
+             $arr['info'] = '已存在该部门';
+        }else{
+            $id = M('department')->add($_POST);
+            $arr['status'] = true;
+            $arr['id'] = $id;
+            $arr['name'] = $_POST['name'];
+            $arr['info'] = '添加成功';
+        }
+        $this->ajaxReturn($arr);
     }
 }
 ?>
