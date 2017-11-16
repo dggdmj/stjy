@@ -96,22 +96,22 @@
                 </div>
                 <div class="field">
                     <div class="button-group radio">
-                        <if condition="$list['gangweilx'] eq 1">
-                            <label class="button active">
-                                <input name="gangweilx" value="1" checked="checked" type="radio">
-                                <span class="icon icon-check"></span> 全职
-                            </label>
-                            <label class="button">
-                                <input name="gangweilx" value="2" type="radio">
-                                <span class="icon icon-check"></span> 兼职
-                            </label>
-                        <else />
+                        <if condition="$list['gangweilx'] eq 2">
                             <label class="button">
                                 <input name="gangweilx" value="1" type="radio">
                                 <span class="icon icon-check"></span> 全职
                             </label>
                             <label class="button active">
                                 <input name="gangweilx" value="2" checked="checked" type="radio">
+                                <span class="icon icon-check"></span> 兼职
+                            </label>
+                        <else />
+                            <label class="button active">
+                                <input name="gangweilx" value="1" checked="checked" type="radio">
+                                <span class="icon icon-check"></span> 全职
+                            </label>
+                            <label class="button">
+                                <input name="gangweilx" value="2" type="radio">
                                 <span class="icon icon-check"></span> 兼职
                             </label>
                         </if>
@@ -653,13 +653,19 @@
                 </div>
                 <div class="field">
                     <select class="select" name="pinyongqd" style="height:32px;border-radius: 4px;">
-                        <option value="">请选择聘用渠道</option>
+
                         <if condition="$list['pinyongqd'] eq 1">
+                            <option value="">请选择聘用渠道</option>
                             <option value="1" selected>聘用合同</option>
                             <option value="2">劳务合同</option>
-                        <else/>
+                        <elseif condition="$list['pinyongqd'] eq 2">
+                            <option value="">请选择聘用渠道</option>
                             <option value="1">聘用合同</option>
                             <option value="2" selected>劳务合同</option>
+                        <else />
+                            <option value="">请选择聘用渠道</option>
+                            <option value="1">聘用合同</option>
+                            <option value="2">劳务合同</option>
                         </if>
                     </select>
                 </div>

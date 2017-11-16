@@ -197,7 +197,7 @@ class RenshiAction extends CommonAction{
         $this->assign('guoji',$guoji);
         $id = $_GET['id'];
         $this->list=D('renshi')->where(array('id'=>$id))->find();
-        dump($this->list);
+        // dump($this->list);
         $this->adminDisplay('renshi_add');
         // view未套数据
     }
