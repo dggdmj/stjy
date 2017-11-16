@@ -19,12 +19,29 @@
                         <tr>
                             <td>{$v.qishu}</td>
                             <td>{$v.name}</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
-                            <td>7</td>
-                            <td>8</td>
+                            <td>
+                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesScb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
+                                <a class="button bg-blue button-small icon-pencil" title="修改" alt="修改" href="__CONTROLLER__/editQuyu/id/{$v['id']}"></a>
+                            </td>
+                            <td>
+                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesScb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
+                                <a class="button bg-blue button-small icon-pencil" title="修改" alt="修改" href="__CONTROLLER__/editQuyu/id/{$v['id']}"></a>
+                            </td>
+                            <td>
+                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesScb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
+                                <a class="button bg-blue button-small icon-pencil" title="修改" alt="修改" href="__CONTROLLER__/editQuyu/id/{$v['id']}"></a>
+                            </td>
+                            <td>
+                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesScb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
+                                <a class="button bg-blue button-small icon-pencil" title="修改" alt="修改" href="__CONTROLLER__/editQuyu/id/{$v['id']}"></a>
+                            </td>
+                            <td>
+                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesScb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
+                                <a class="button bg-blue button-small icon-pencil" title="修改" alt="修改" href="__CONTROLLER__/editQuyu/id/{$v['id']}"></a>
+                            </td>
+                            <if condition="$rid eq 5">
+                                <td>8</td>
+                            </if>
                         </tr>
                     </foreach>
                 </tbody>
