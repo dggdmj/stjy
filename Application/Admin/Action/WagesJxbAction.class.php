@@ -2,15 +2,15 @@
 namespace Admin\Action;
 use Think\Action;
 use Admin\Model;
-class WagesScbAction extends CommonAction{
+class WagesJxbAction extends CommonAction{
 	/**
      * 当前模块参数
      */
     public function _infoModule()
     {
         $this->class = M('class')->order('id desc')->select();
-        $data = array('info' => array('name' => '市场部工资表详情',
-            'description' => ' 查看市场部工资表',
+        $data = array('info' => array('name' => '教学部工资表详情',
+            'description' => ' 教学市场部工资表',
         ),
             'menu' => array(
                 array('name' => '工资表总表',
@@ -345,6 +345,7 @@ class WagesScbAction extends CommonAction{
                 }
             }
         }
+        dump($data);
         $res = M("scbgzb")->addAll($data);
         if($res){
             $this->ajaxRetur(true);

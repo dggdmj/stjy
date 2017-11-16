@@ -177,7 +177,7 @@ class MenuModel {
                     array(
                         'name' => '教学部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wages/jxbgzb'),
+                        'url' => U('/wagesJxb/index'),
                         'order' => 1
                     ),
                     array(
