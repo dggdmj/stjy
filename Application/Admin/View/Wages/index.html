@@ -11,61 +11,20 @@
                         <th width="120">市场部工资表</th>
                         <th width="120">总监工资表</th>
                         <th width="120">工资表汇总</th>
-                        <if condition="$rid eq 3 or $rid eq 4 or $rid eq 5">
-                        <th width="200">操作</th>
+                        <if condition="$rid eq 5">
+                            <th width="200">操作</th>
                         </if>
-                        <th width="80">状态</th>
                     </tr>
-                    <foreach name='list' item='v' key='k'>
+                    <foreach name="list" item="v">
                         <tr>
-                            <td title="期数">{$v.qishu}</td>
-                            <td title="校区">{$v.name}</td>
-                            <foreach name='arr' item='v1' key='k1'>
-                            <td title="">
-                                <a class="button bg-green button-small icon-eye" title="查看表格" alt="查看表格" href="__CONTROLLER__/{$v1}_xq/sid/{$v.sid}/qishu/{$v.qishu}"></a>
-                                <a class="button bg-blue button-small icon-download" title="下载表格" alt="下载表格" href="__MODULE__/Common/downloadScb/tid/{$k1}/qishu/{$v.qishu}/sid/{$v.sid}"></a>
-                                <if condition="$k1 eq 13">
-                                        <a class="button bg-dot button-small icon-upload" title="导入表格" alt="导入表格" href="__MODULE__/TableImport/import/tid/{$k1}/qishu/{$v.qishu}/sid/{$v.sid}"></a>
-                                </if>
-                            </td>
-                            </foreach>
-                            <td>
-                                <a class="button bg-blue button-small icon-download" title="下载表格" alt="下载表格" href="__MODULE__/Common/downloadHzb/qishu/{$v.qishu}/sid/{$v.sid}"></a>
-                            </td>
-                            <if condition="$rid eq 3">
-                                <if condition="$v.status_xzjl neq 2">
-                                    <td>
-                                        <!-- <a class="button bg-red button-small icon-tool" title="退回行政" alt="退回行政" href="__MODULE__/Common/thxz/qishu/{$v.qishu}/sid/{$v.sid}">退回行政</a> -->
-                                        <a class="button bg-red button-small js-sub" title="退回行政" alt="退回行政" target2="__MODULE__/Common/back/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">退回行政</a>
-                                        <a class="button bg-yellow button-small js-sub" title="通过审核" alt="通过审核" target2="__MODULE__/Common/checked/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">通过审核</a>
-                                    </td>
-                                <elseif condition="$v.status_xzjl eq 2" />
-                                    <!-- <a class="button bg-yellow button-small icon-tool" title="已审核" alt="已审核" href="">已审核</a> -->
-                                    <if condition="$v.status_cw neq 2">
-                                        <td>
-                                            <a class="button bg-red button-small js-sub" title="取消" alt="取消" target2="__MODULE__/Common/cancel/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">取消</a>
-                                        </td>
-                                    <else />
-                                        <td>
-                                            <a class="button bg-red button-small js-lock icon-lock" title="已锁定" alt="已锁定" style="cursor:pointer"></a>
-                                        </td>
-                                    </if>
-                                </if>
-                            <elseif condition="$rid eq 4"/>
-                                <if condition="$v.status_cw neq 2">
-                                    <td>
-                                        <a class="button bg-red button-small js-sub" title="退回行政经理" alt="退回行政经理" target2="__MODULE__/Common/back/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">退回</a>
-                                        <a class="button bg-yellow button-small js-sub" title="通过审核" alt="通过审核" target2="__MODULE__/Common/checked/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">通过</a>
-                                    </td>
-                                    <elseif condition="$v.status_cw eq 2" />
-                                    <td>
-                                        <a class="button bg-red button-small js-sub" title="取消" alt="取消" target2="__MODULE__/Common/cancel/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">取消</a>
-                                    </td>
-                                </if>
-                            </if>
-                            <td>
-                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__CONTROLLER__/index_xq/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer"></a>
-                            </td>
+                            <td>{$v.qishu}</td>
+                            <td>{$v.name}</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>7</td>
+                            <td>8</td>
                         </tr>
                     </foreach>
                 </tbody>

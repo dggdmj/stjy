@@ -325,12 +325,12 @@ class MenuModel {
                         'url' => U('Setting/kecheng'),
                         'order' => 5
                     ),
-                    array(
-                        'name' => '区域管理',
-                        'icon' => 'user',
-                        'url' => U('Setting/quyu'),
-                        'order' => 5
-                    ),
+                    // array(
+                    //     'name' => '区域管理',
+                    //     'icon' => 'user',
+                    //     'url' => U('Setting/quyu'),
+                    //     'order' => 5
+                    // ),
                     array(
                         'name' => '扣款管理',
                         'icon' => 'user',
