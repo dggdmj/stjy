@@ -80,6 +80,33 @@ class WagesJxbAction extends CommonAction{
                 $list[$sk]['jingduskrcxs']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //精读上课人次小时数
                 $list[$sk]['fanduskrcxs']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //泛读上课人次小时数
                 $list[$sk]['fenxiaoqrsrrcxspjdj']['value'] = 53;  //分校确认收入人次小时平均单价
+                $list[$sk]['amibaqrsr']['value'] = "<input class='input do_enter' type='text' name='amibaqrsr' value='0'>";  //阿米巴确认收入
+                $list[$sk]['amitcbl']['value'] = "<input class='input do_enter' type='text' name='amitcbl' value='0'>";  //阿米巴提成比例
+                $list[$sk]['jingrentou']['value'] = "<input class='input do_enter' type='text' name='jingrentou' value='0'>";  //净人头
+                $list[$sk]['jinbanjsjrt']['value'] = "<input class='input do_enter' type='text' name='jinbanjsjrt' value='0'>";  //进班结算净人头
+                $list[$sk]['renwushu']['value'] = "<input class='input do_enter' type='text' name='renwushu' value='0'>";  //任务数
+                $list[$sk]['yingyee']['value'] = "<input class='input do_enter' type='text' name='yingyee' value='0'>";  //营业额
+                $list[$sk]['jinbanjsyye']['value'] = "<input class='input do_enter' type='text' name='jinbanjsyye' value='0'>";  //进班结算营业额
+                $list[$sk]['zplzrs']['value'] = "<input class='input do_enter' type='text' name='zplzrs' value='0'>";  //招聘、离职人数
+                $list[$sk]['banjipjrs']['value'] = "<input class='input do_enter' type='text' name='banjipjrs' value='0'>";  //班级平均人数
+                $list[$sk]['amibafc']['value'] = "<input class='input do_enter' type='text' name='amibafc' value='0'>";  //阿米巴分成
+                $list[$sk]['gangweizb']['value'] = "<input class='input do_enter' type='text' name='gangweizb' value='0'>";  //岗位工资
+                $list[$sk]['gongzuoliang']['value'] = "<input class='input do_enter' type='text' name='gongzuoliang' value='0'>";  //工作量
+                $list[$sk]['xufeilvrtkf']['value'] = "<input class='input do_enter' type='text' name='xufeilvrtkf' value='0'>";  //续费人头扣罚
+                $list[$sk]['gerenxsj']['value'] = "<input class='input do_enter' type='text' name='gerenxsj' value='0'>";  //个人新生奖
+                $list[$sk]['kaohegrxfl']['value'] = "<input class='input do_enter' type='text' name='kaohegrxfl' value='0'>";  //考核个人续费率
+                $list[$sk]['kaohetdxf']['value'] = "<input class='input do_enter' type='text' name='kaohetdxf' value='0'>";  //考核团队续费
+                $list[$sk]['gangweifc']['value'] = "<input class='input do_enter' type='text' name='gangweifc' value='0'>";  //岗位分成
+                $list[$sk]['jixiaojj']['value'] = "<input class='input do_enter' type='text' name='jixiaojj' value='0'>";  //绩效奖金
+                $list[$sk]['scfy']['value'] = "<input class='input do_enter' type='text' name='scfy' value='0'>";  //市场费用
+                $list[$sk]['kaoqin']['value'] = "<input class='input do_enter' type='text' name='kaoqin' value='0'>";  //考勤
+                $list[$sk]['dianhuacc']['value'] = "<input class='input do_enter' type='text' name='dianhuacc' value='0'>";  //电话抽查
+                $list[$sk]['jiabanfei']['value'] = "<input class='input do_enter' type='text' name='jiabanfei' value='0'>";  //加班费
+                $list[$sk]['zengsongke']['value'] = "<input class='input do_enter' type='text' name='zengsongke' value='0'>";  //赠送课
+                $list[$sk]['jidizskjx']['value'] = "<input class='input do_enter' type='text' name='jidizskjx' value='0'>";  //基地招生课绩效
+                $list[$sk]['koufajl']['value'] = "<input class='input do_enter' type='text' name='koufajl' value='0'>";  //扣罚/奖励
+                $list[$sk]['suzhijj']['value'] = "<input class='input do_enter' type='text' name='suzhijj' value='0'>";  //素质基金
+                $list[$sk]['lizhibc']['value'] = "<input class='input do_enter' type='text' name='lizhibc' value='0'>";  //离职补偿
 
 
                 $list[$sk]['liushijtfjxjs']['value'] = $this->getTuifei($qishu,$sid,13,$sc['xingming']);  //流失及退费绩效结算
@@ -96,7 +123,6 @@ class WagesJxbAction extends CommonAction{
 
             }
         }
-        $this->assign("kecheng",$kecheng);
         $this->assign("qishu",$qishu);
         $this->assign("sid",$sid);
         $this->assign("table",$table);
@@ -279,7 +305,7 @@ class WagesJxbAction extends CommonAction{
     public function save(){
         $qishu = $_POST["qishu"];
         $sid = $_POST["sid"];
-        $res = M("scbgzb")->where("qishu ='".$qishu."' and sid = $sid")->delete();
+        $res = M("jxbgzb")->where("qishu ='".$qishu."' and sid = $sid")->delete();
 
         $obj = json_decode($_POST['arr']);
         $n = count($obj);
@@ -290,19 +316,14 @@ class WagesJxbAction extends CommonAction{
             foreach ($v as $m => $n){
                 if($m == 'id')
                     continue;
-                if($m == 'kechengyeji'){
-                    $data[$k]['kechengyeji'] = json_encode($n);
-                }else{
-                    $data[$k][$m] = $n;
-                }
+                $data[$k][$m] = $n;
             }
         }
-        dump($data);
-        $res = M("scbgzb")->addAll($data);
+        $res = M("jxbgzb")->addAll($data);
         if($res){
-            $this->ajaxRetur(true);
+            $this->ajaxReturn(true);
         }else{
-            $this->ajaxRetur(false);
+            $this->ajaxReturn(false);
         }
     }
 }

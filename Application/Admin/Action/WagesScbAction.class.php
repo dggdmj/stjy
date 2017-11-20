@@ -348,9 +348,9 @@ class WagesScbAction extends CommonAction{
         }
         $res = M("scbgzb")->addAll($data);
         if($res){
-            $this->ajaxRetur(true);
+            $this->ajaxReturn(true);
         }else{
-            $this->ajaxRetur(false);
+            $this->ajaxReturn(false);
         }
     }
 }
