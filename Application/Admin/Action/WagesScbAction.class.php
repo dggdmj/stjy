@@ -34,11 +34,6 @@ class WagesScbAction extends CommonAction{
                     'icon' => 'list',
                 ),
             ),
-           // 'add' => array(
-           //     array('name' => '添加文章',
-           //         'url' => url('Article/article'),
-           //     ),
-           // )
         );
         return $data;
     }
@@ -48,8 +43,9 @@ class WagesScbAction extends CommonAction{
         $qishu = $_GET['qishu']?$_GET['qishu']:'201709';
         //学校id
         $sid = $_GET['sid']?$_GET['sid']:1;
+        $action = $_GET['action']?$_GET['action']:'';
         $school = M("school")->where("id = $sid")->find();
-        $scb_list = M("scbgzb")->where("qishu = '".$qishu."' and sid = $sid and istijiao = 1")->select();
+        $scb_list = M("scbgzb")->where("qishu = '".$qishu."' and sid = $sid and istijiao = 0")->select();
         $table = M("scbgzb")->query("select column_name as fieldname,column_comment as beizhu from Information_schema.columns WHERE table_Name='stjy_scbgzb'");
         //查询出课程列表
         $kecheng = M("kecheng")->order("paixu")->select();
@@ -57,9 +53,10 @@ class WagesScbAction extends CommonAction{
         foreach ($kecheng as $k => $v){
             $kecheng_arr[$v['name']] = $v['ticheng']*100;
         }
-        //如果业绩表已经提交了，就从业绩表里取数，否则实时运算
-        if(!empty($scb_list)){
+        //如果业绩表是修改操作，就从业绩表里取数，否则实时运算
+        if($action == 'edit' && !empty($scb_list)){
             $list = $scb_list;
+            dump($list);die;
         }else{
             //取当期的市场业绩表信息
             $suoshudingdan = M("qishu_history")->where("tid = 8 and sid = $sid and qishu = $qishu")->getField("id");
@@ -77,6 +74,11 @@ class WagesScbAction extends CommonAction{
                 $list[$sk]['yuefen']['value'] = mb_substr($qishu,4).'月';   //月份
                 $list[$sk]['fenxiao']['value'] = $school['name'];   //分校名称
                 $user = M("renshi")->where("xingming = '".$sc['xingming']."' and sid = $sid")->find();  //在人事资料里取对应信息
+                $list[$sk]['bumen']['value'] = $user['bumen'];   //部门名称
+                $list[$sk]['erjibm']['value'] = $user['bumen2'];   //二级部门
+                $list[$sk]['gangweijb']['value'] = $user['gangweilx'];   //岗位类型
+                $list[$sk]['zhiwei']['value'] = $user['zhiwu'];   //岗位类型
+
                 $list[$sk]['bumen']['value'] = $user["bumen"];   //部门
                 $list[$sk]['erjibm']['value'] = $user["bumen2"];   //二级部门
                 $list[$sk]['gangweijb']['value'] = '';   //岗位级别
@@ -271,7 +273,6 @@ class WagesScbAction extends CommonAction{
         if($jrt < 2){
             $total = $total*0.85;
         }
-//        dump($total);
         return $total;
     }
 
