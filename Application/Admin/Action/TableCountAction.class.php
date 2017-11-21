@@ -64,7 +64,7 @@ class TableCountAction extends CommonAction{
         }elseif($rid == 4){
             $map['status_cw'] = array('neq',3);// 查询条件
         }elseif($rid == 5){
-            $map['status_fzr'] = array('eq',1);// 查询条件
+            $map['status_fzr'] = array('neq',3);// 查询条件
         }
 
         $map['sid'] = array('in',$school_id);// 查询条件

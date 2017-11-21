@@ -552,10 +552,31 @@ class CommonAction extends Action {
                 $this->delAllScData($qishu,$sid);
             break;
             case 4:
-                $temp['time_cw'] = date('Y-m-d H:i:s');
-                $temp['status_xzjl'] = 4;// 行政经理状态变成被退回
-                $temp['status_cw'] = 3;// 财务状态变成退回
-                $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');// 获取财务昵称
+                $status_cw = M('sjzb')->where($_GET)->getField('status_cw');
+                if($status_cw == 2){
+                    // 此时已经是工资部分
+                    $temp['time_cw2'] = date('Y-m-d H:i:s');
+                    $temp['status_fzr'] = 4;// 负责人状态变成被退回
+                    $temp['status_cw2'] = 3;// 财务2状态变成退回
+                    $temp['caiwu2'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');// 获取财务昵称
+                }else{
+                    $temp['time_cw'] = date('Y-m-d H:i:s');
+                    $temp['status_xzjl'] = 4;// 行政经理状态变成被退回
+                    $temp['status_cw'] = 3;// 财务状态变成退回
+                    $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');// 获取财务昵称
+                }
+            break;
+            case 5:
+                $temp['time_fzr'] = date('Y-m-d H:i:s');
+                $temp['status_cw'] = 4;// 财务变成被退回
+                $temp['status_fzr'] = 3;// 负责人状态变成退回
+                $temp['fuzeren'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            break;
+            case 6:
+                $temp['time_caiwuzj'] = date('Y-m-d H:i:s');
+                $temp['status_cw2'] = 4;// 财务变成被退回
+                $temp['status_cwzj'] = 3;// 负责人状态变成退回
+                $temp['caiwuzj'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             break;
         }
         M('sjzb')->where($_GET)->save($temp);// 更新数据总表
@@ -575,17 +596,35 @@ class CommonAction extends Action {
                 $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             break;
             case 4:
-                $temp['time_cw'] = date('Y-m-d H:i:s');
-                $temp['status_cw'] = 2;
-                $temp['status_fzr'] = 1;
-                $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+                $status_cw = M('sjzb')->where($_GET)->getField('status_cw');
+                if($status_cw == 2){
+                    $temp['time_cw2'] = date('Y-m-d H:i:s');
+                    $temp['status_cw2'] = 2;
+                    $temp['status_cwzj'] = 1;
+                    $temp['caiwu2'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+                }else{
+                    $temp['time_cw'] = date('Y-m-d H:i:s');
+                    $temp['status_cw'] = 2;
+                    $temp['status_fzr'] = 1;
+                    $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
 
-                // 清空初始化
-                $arr['xueshengnum'] = 0;
-                $where['id'] = $_GET['sid'];
-                M('school')->where($where)->save($arr);
-                // 还需要将生成表数据写入数据库并让表格可以下载
-                // 如果数据有误,负责人退回之后删除写入数据库的数据
+                    // 清空初始化
+                    $arr['xueshengnum'] = 0;
+                    $where['id'] = $_GET['sid'];
+                    M('school')->where($where)->save($arr);
+                }
+            break;
+            case 5:
+                $temp['time_fzr'] = date('Y-m-d H:i:s');
+                $temp['status_fzr'] = 2;
+                $temp['status_cw2'] = 1;
+                $temp['fuzeren'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            break;
+            case 6:
+                $temp['time_cwzj'] = date('Y-m-d H:i:s');
+                $temp['status_cwzj'] = 2;
+                // temp['上一级'] = 1;
+                $temp['caiwuzj'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             break;
         }
         M('sjzb')->where($_GET)->save($temp);// 更新数据总表
@@ -606,10 +645,30 @@ class CommonAction extends Action {
                 $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             break;
             case 4:
-                $temp['time_cw'] = date('Y-m-d H:i:s');
-                $temp['status_cw'] = 5;
-                $temp['status_fzr'] = null;
-                $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+                $status_cw = M('sjzb')->where($_GET)->getField('status_cw');
+                if($status_cw == 2){
+                    $temp['time_cw2'] = date('Y-m-d H:i:s');
+                    $temp['status_cw2'] = 5;
+                    $temp['status_cwzj'] = null;
+                    $temp['caiwu2'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+                }else{
+                    $temp['time_cw'] = date('Y-m-d H:i:s');
+                    $temp['status_cw'] = 5;
+                    $temp['status_fzr'] = null;
+                    $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+                }
+            break;
+            case 5:
+                $temp['time_fzr'] = date('Y-m-d H:i:s');
+                $temp['status_fzr'] = 5;
+                $temp['status_cw2'] = null;
+                $temp['fuzeren'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            break;
+            case 6:
+                $temp['time_cwzj'] = date('Y-m-d H:i:s');
+                $temp['status_cwzj'] = 4;
+                // $temp['status_cw'] = null;
+                $temp['xingzhengjl'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
             break;
         }
         M('sjzb')->where($_GET)->save($temp);// 更新数据总表

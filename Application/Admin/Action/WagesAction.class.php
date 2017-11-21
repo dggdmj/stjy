@@ -51,13 +51,13 @@ class WagesAction extends CommonAction{
         $uid = $temp['id'];// 获取用户id
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
         $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
-        // if($rid == 3 || $rid == 2 || $rid == 1){
-        //     $map['status_xzjl'] = array('neq',3);// 查询条件
-        // }elseif($rid == 4){
-        //     $map['status_cw'] = array('neq',3);// 查询条件
-        // }elseif($rid == 5){
-        //     $map['status_fzr'] = array('eq',1);// 查询条件
-        // }
+        if($rid == 5){
+            $map['status_fzr'] = array('neq',3);// 查询条件
+        }elseif($rid == 4){
+            $map['status_cw2'] = array('neq',3);// 查询条件
+        }elseif($rid == 6){
+            $map['status_cwzj'] = array('neq',3);// 查询条件
+        }
 
         // 设置能查看的角色rid,当财务审核后可以查看
         if($rid == 4){

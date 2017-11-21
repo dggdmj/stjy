@@ -171,7 +171,7 @@ class MenuModel {
                     array(
                         'name' => '行政部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wages/xzbgzb'),
+                        'url' => U('/wagesXzb/index'),
                         'order' => 1
                     ),
                     array(
