@@ -177,19 +177,19 @@ class MenuModel {
                     array(
                         'name' => '教学部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wagesJxb/index'),
+                        'url' => U('/wages/jxbgzb'),
                         'order' => 1
                     ),
                     array(
                         'name' => '市场部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wagesScb/index'),
+                        'url' => U('/wages/scbgzb'),
                         'order' => 1
                     ),
                     array(
                         'name' => '总监工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wages/zjgzb'),
+                        'url' => U('/wagesZj/index'),
                         'order' => 1
                     ),
                 )
