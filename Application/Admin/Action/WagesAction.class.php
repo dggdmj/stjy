@@ -59,11 +59,9 @@ class WagesAction extends CommonAction{
             $map['status_cwzj'] = array('neq',3);// 查询条件
         }
 
-        // 设置能查看的角色rid,当财务审核后可以查看
-        if($rid == 4){
-            $map['status_cw'] = array('eq',2);
-        }
-        $map['sid'] = array('in',$school_id);;
+        $map['status_cw'] = array('eq',2);
+        
+        $map['sid'] = array('in',$school_id);
         $data = M('sjzb'); // 实例化对象
         $count = $data->where($map)->count();// 查询满足要求的总记录数
 
@@ -91,6 +89,58 @@ class WagesAction extends CommonAction{
         // }
 
         // dump($list);
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->assign('rid',$rid);// 赋值角色id
+        $this->adminDisplay();
+    }
+
+    // 列表页
+    public function tableList(){
+        // 获取当前用户的角色
+        $username = $_SESSION['username'];// 从session获取用户名
+        $temp = M('admin')->where('username ="'.$username.'"')->find();// 获取admin表的数据
+        $uid = $temp['id'];// 获取用户id
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
+        $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        if($rid == 5){
+            $map['status_fzr'] = array('neq',3);// 查询条件
+        }elseif($rid == 4){
+            $map['status_cw2'] = array('neq',3);// 查询条件
+        }elseif($rid == 6){
+            $map['status_cwzj'] = array('neq',3);// 查询条件
+        }
+
+        $map['status_cw'] = array('eq',2);
+        
+        $map['sid'] = array('in',$school_id);
+        $data = M('sjzb'); // 实例化对象
+        $count = $data->where($map)->count();// 查询满足要求的总记录数
+
+
+        // $map['sid'] = array('in',$school_id);// 查询条件
+        // $data = M('sjzb'); // 实例化对象
+        // if(in_array($rid,[1,2,3,4,5])){
+        //     $count = $data->where($map)->count();// 查询满足要求的总记录数
+        // }
+
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+
+        $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        // dump($list);die;
+        if($_GET['table'] == 'Xzb'){
+            $tname = '行政部工资表';
+        }elseif($_GET['table'] == 'Jxb'){
+            $tname = '教学部工资表';
+        }elseif($_GET['table'] == 'Scb'){
+            $tname = '市场部工资表';
+        }elseif($_GET['table'] == 'Zj'){
+            $tname = '总监工资表';
+        }
+        $controller = 'Wages'.$_GET['table'];
+        $this->assign('controller',$controller);
+        $this->assign('tname',$tname);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('rid',$rid);// 赋值角色id

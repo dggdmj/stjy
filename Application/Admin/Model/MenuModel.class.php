@@ -171,25 +171,25 @@ class MenuModel {
                     array(
                         'name' => '行政部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wagesXzb/index'),
+                        'url' => U('/wages/tableList/table/Xzb'),
                         'order' => 1
                     ),
                     array(
                         'name' => '教学部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wages/jxbgzb'),
+                        'url' => U('/wages/tableList/table/Jxb'),
                         'order' => 1
                     ),
                     array(
                         'name' => '市场部工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wages/scbgzb'),
+                        'url' => U('/wages/tableList/table/Scb'),
                         'order' => 1
                     ),
                     array(
                         'name' => '总监工资表',
                         'icon' => 'sitemap',
-                        'url' => U('/wagesZj/index'),
+                        'url' => U('/wages/tableList/table/Zj'),
                         'order' => 1
                     ),
                 )
