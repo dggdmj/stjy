@@ -192,6 +192,12 @@ class MenuModel {
                         'url' => U('/wages/tableList/table/Zj'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '教学部工资表2',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesXzb/index'),
+                        'order' => 1
+                    ),
                 )
             ),
 //            'Article' => array(

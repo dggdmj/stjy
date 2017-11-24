@@ -74,11 +74,11 @@ class WagesJxbAction extends CommonAction{
                 $list[$sk]['ruzhisj']['value'] = $user["ruzhirq"];  //入职日期
                 $list[$sk]['yingchuqingts']['value'] = date('t', strtotime($qishu."01")); //应出勤天数:返回当期月份的天数
                 $list[$sk]['shijichuqints']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //实际出勤天数
-                $list[$sk]['peixunshijb']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //培训师级别
-                $list[$sk]['gerensdxsgmrs']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //个人所带学生规模人数
-                $list[$sk]['jiaoshisfkcxss']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //教师收费课程小时数
-                $list[$sk]['jingduskrcxs']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //精读上课人次小时数
-                $list[$sk]['fanduskrcxs']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //泛读上课人次小时数
+                $list[$sk]['peixunshijb']['value'] = "<input class='input do_enter' type='text' name='peixunshijb' value='0'>";  //培训师级别
+                $list[$sk]['gerensdxsgmrs']['value'] = "<input class='input do_enter' type='text' name='gerensdxsgmrs' value='0'>";  //个人所带学生规模人数
+                $list[$sk]['jiaoshisfkcxss']['value'] = "<input class='input do_enter' type='text' name='jiaoshisfkcxss' value='0'>";  //教师收费课程小时数
+                $list[$sk]['jingduskrcxs']['value'] = "<input class='input do_enter' type='text' name='jingduskrcxs' value='0'>";  //精读上课人次小时数
+                $list[$sk]['fanduskrcxs']['value'] = "<input class='input do_enter' type='text' name='fanduskrcxs' value='0'>";  //泛读上课人次小时数
                 $list[$sk]['fenxiaoqrsrrcxspjdj']['value'] = 53;  //分校确认收入人次小时平均单价
                 $list[$sk]['amibaqrsr']['value'] = "<input class='input do_enter' type='text' name='amibaqrsr' value='0'>";  //阿米巴确认收入
                 $list[$sk]['amitcbl']['value'] = "<input class='input do_enter' type='text' name='amitcbl' value='0'>";  //阿米巴提成比例
