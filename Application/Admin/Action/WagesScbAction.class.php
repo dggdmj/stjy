@@ -44,8 +44,10 @@ class WagesScbAction extends CommonAction{
         //学校id
         $sid = $_GET['sid']?$_GET['sid']:1;
         $action = $_GET['action']?$_GET['action']:'';
+        // dump($action);die;
         $school = M("school")->where("id = $sid")->find();
         $scb_list = M("scbgzb")->where("qishu = '".$qishu."' and sid = $sid and istijiao = 0")->select();
+        // dump($scb_list);die;
         $table = M("scbgzb")->query("select column_name as fieldname,column_comment as beizhu from Information_schema.columns WHERE table_Name='stjy_scbgzb'");
         //查询出课程列表
         $kecheng = M("kecheng")->order("paixu")->select();
@@ -54,9 +56,28 @@ class WagesScbAction extends CommonAction{
             $kecheng_arr[$v['name']] = $v['ticheng']*100;
         }
         //如果业绩表是修改操作，就从业绩表里取数，否则实时运算
-        if($action == 'edit' && !empty($scb_list)){
-            $list = $scb_list;
-            dump($list);die;
+        if(!empty($scb_list)){
+            $temp = $scb_list;
+            $list = array();
+            $extra = array('shijichuqints','xinguwenbdrt','canzhaobdx','gongzuoliang','gudinghj','tuanduiwd','dituijrtjx','weixinjx','jiazhanghuixcbjl','weijinbankhjx','shangkeksjx','jidizskjx','yuedusfjx','beizhu');
+            $i = 1;
+            foreach($temp as $k=>$v){
+                foreach($v as $k2=>$v2){
+                    if(in_array($k2,$extra)){
+                        $list[$k][$k2]['value'] = "<input class='input do_enter' type='text' name='".$k2."' value='".$v2."'>";
+                    }else{
+                        if($k2 == 'kechengyeji'){
+                            $list[$k]['kechengyj'] = $this->object2array(json_decode($v2));
+                        }elseif($k2 == 'id'){
+                            $list[$k][$k2]['value'] = $i;
+                        }else{
+                            $list[$k][$k2]['value'] = $v2;
+                        }
+                        
+                    }
+                }
+                $i++;
+            }
         }else{
             //取当期的市场业绩表信息
             $suoshudingdan = M("qishu_history")->where("tid = 8 and sid = $sid and qishu = $qishu")->getField("id");
@@ -65,11 +86,12 @@ class WagesScbAction extends CommonAction{
             $meiyeji_arr = $this->getScbrenyuan($sid,$scyj);
             $new_arr = array_merge($scyj,$meiyeji_arr);
             $list = array();
+            $i = 1;
             foreach ($new_arr as $sk=>$sc){
                 if($sc['xingming'] == "合计"){
                     continue;
                 }
-                $list[$sk]['id']['value'] = $sk;  //序号
+                $list[$sk]['id']['value'] = $i;  //序号
                 $list[$sk]['xingming']['value'] = $sc['xingming'];   //姓名
                 $list[$sk]['yuefen']['value'] = mb_substr($qishu,4).'月';   //月份
                 $list[$sk]['fenxiao']['value'] = $school['name'];   //分校名称
@@ -125,7 +147,7 @@ class WagesScbAction extends CommonAction{
                 $list[$sk]['yuedusfjbgz']['value'] = 1895;  //月度实发基本工资
                 $list[$sk]['yuedusfjx']['value'] = "<input class='input do_enter' type='text' name='yuedusfjx' value='0'>";  //月度实发绩效
                 $list[$sk]['beizhu']['value'] = "<input class='input do_enter' type='text' name='beizhu' value=''>";  //备注
-
+                $i++;
             }
         }
         $this->assign("kecheng",$kecheng);
@@ -326,16 +348,14 @@ class WagesScbAction extends CommonAction{
     }
 
     public function save(){
+        // 还需要查询该状态是否已经锁定,如果锁定了就返回不成功
         $qishu = $_POST["qishu"];
         $sid = $_POST["sid"];
         $res = M("scbgzb")->where("qishu ='".$qishu."' and sid = $sid")->delete();
-
         $obj = json_decode($_POST['arr']);
         $n = count($obj);
         $data = array();
         foreach ($obj as $k => $v){
-            $data[$k]['qishu'] = $qishu;
-            $data[$k]['sid'] = $sid;
             foreach ($v as $m => $n){
                 if($m == 'id')
                     continue;
@@ -345,7 +365,13 @@ class WagesScbAction extends CommonAction{
                     $data[$k][$m] = $n;
                 }
             }
+            $data[$k]['qishu'] = $qishu;
+            $data[$k]['sid'] = $sid;
+            // $data[$k]['addtime'] = null;
+            $data[$k]['addtime'] = date('Y-m-d H:i:s',time());
+            // dump($data);die;
         }
+        
         $res = M("scbgzb")->addAll($data);
         if($res){
             $this->ajaxReturn(true);
