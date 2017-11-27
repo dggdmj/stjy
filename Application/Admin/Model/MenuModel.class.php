@@ -270,6 +270,18 @@ class MenuModel {
                         'order' => 2
                     ),
                     array(
+                        'name' => '试用期提醒',
+                        'icon' => 'user',
+                        'url' => U('Renshi/shiyong'),
+                        'order' => 3
+                    ),
+                    array(
+                        'name' => '合同到期提醒',
+                        'icon' => 'user',
+                        'url' => U('Renshi/hetong'),
+                        'order' => 3
+                    ),
+                    array(
                         'name' => '类型管理',
                         'icon' => 'user',
                         'url' => U('Renshi/leixing'),
