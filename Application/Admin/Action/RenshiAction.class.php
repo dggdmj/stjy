@@ -111,12 +111,53 @@ class RenshiAction extends CommonAction{
         //     $notice = implode(',',$err);
         //     $this->error($notice.'没有填写');
         // }
+        // $res = $this->checkRenshi($_POST);
+        // $this->ajaxreturn($res);
+        // die;
+
+        $arr = array();
+        $temp = array();
+        // 判断是否必填字段
+        $need = array('姓名'=>'xingming','身份证号码'=>'shenfenzhm','职务'=>'zhiwu','类型'=>'leixing','校区'=>'sid','部门'=>'bumen','入职日期'=>'ruzhirq','合同开始时间'=>'hetongkssj','合同到期时间'=>'hetongdqsj','第一学历'=>'diyixl','第一学历院校'=>'diyixlyx','最高学历'=>'zuigaoxl','最高学历院校'=>'zuigaoxlyx');// 必要字段加到此数组
+        foreach($_POST as $k=>$v){
+            if(in_array($k,$need) && empty($v)){
+                $temp[] = array_flip($need)[$k];
+            }
+        }
+        if(!empty($temp)){
+            $arr['status'] = false;
+            $i = 1;
+            foreach($temp as $v){
+                if($i == 1){
+                    $str = $v;
+                }else{
+                    $str .= ','.$v;
+                }
+                $i++;
+            }
+            $arr['info'] = $str.'为必要字段';
+             $this->ajaxreturn($arr);
+        }
+       
 
         // 判断身份证是否正确,提取出生日期和性别
         $res = preg_match('/^[1-9]\d{16}[\d|x|X]$/', $_POST['shenfenzhm']);
         if(!$res){
-            $this->error('身份证号码输入有误!');
+            $arr['status'] = false;
+            $arr['info'] = '身份证号码输入有误';
+            $this->ajaxreturn($arr);
         }
+
+        // 判断联系电话是否正确
+        $res = preg_match('/^1[34578]\d{9}$/', $_POST['lianxidh']);
+        if(!$res){
+            $arr['status'] = false;
+            $arr['info'] = '联系电话输入有误';
+            $this->ajaxreturn($arr);
+        }
+        
+        
+
         $nian = substr($_POST['shenfenzhm'],6,4);
         $yue = substr($_POST['shenfenzhm'],10,2);
         $ri = substr($_POST['shenfenzhm'],12,2);
@@ -128,13 +169,6 @@ class RenshiAction extends CommonAction{
             $xingbie = "男";
         }
         
-        // 判断联系电话是否正确
-        $res = preg_match('/^1[34578]\d{9}$/', $_POST['lianxidh']);
-        if(!$res){
-            $this->error('联系电话输入有误!');
-        }
-        // dump($_POST);
-        // die;
         $_POST['xingbie'] = $xingbie;
         $_POST['chushengrq'] = $chushengrq;
 
@@ -142,19 +176,31 @@ class RenshiAction extends CommonAction{
             // 如果该姓名已存在,则添加失败
             $res = M('renshi')->where('xingming ="'.$_POST['xingming'].'"')->find();
             if(!empty($res)){
-                $this->error('已存在该姓名');
+                // $this->error('已存在该姓名');
+                $arr['status'] = false;
+                $arr['info'] = '已存在该姓名';
+                $this->ajaxreturn($arr);
             }
 
-            // 如果该省份证号码已存在,则添加失败
+            // 如果该身份证号码已存在,则添加失败
             $res = M('renshi')->where('shenfenzhm ="'.$_POST['shenfenzhm'].'"')->find();
             if(!empty($res)){
-                $this->error('已存在该身份证号码');
+                // $this->error('已存在该身份证号码');
+                $arr['status'] = false;
+                $arr['info'] = '已存在该身份证号码';
+                $this->ajaxreturn($arr);
             }
 
             if($bid=M('renshi')->add($_POST)) {
-                $this->success('添加成功',U('renshi'));
+                // $this->success('添加成功',U('renshi'));
+                $arr['status'] = true;
+                $arr['info'] = '添加成功';
+                $this->ajaxreturn($arr);
             } else {
-                $this->error('添加失败');
+                // $this->error('添加失败');
+                $arr['status'] = false;
+                $arr['info'] = '添加失败';
+                $this->ajaxreturn($arr);
             }
         }else {
             $bid=$_GET['id'];
@@ -171,16 +217,28 @@ class RenshiAction extends CommonAction{
             // dump(in_array($_POST['xingming'],$names));
             // die;
             if(in_array($_POST['xingming'],$names)){
-                $this->error('已存在该姓名');
+                // $this->error('已存在该姓名');
+                $arr['status'] = false;
+                $arr['info'] = '已存在该姓名';
+                $this->ajaxreturn($arr);
             }
             if(in_array($_POST['shenfenzhm'],$ids)){
-                $this->error('已存在该身份证号码');
+                // $this->error('已存在该身份证号码');
+                $arr['status'] = false;
+                $arr['info'] = '已存在该身份证号码';
+                $this->ajaxreturn($arr);
             }
             
             if(M('renshi')->where(array('id'=>$bid))->save($_POST)) {
-                $this->success('修改成功',U('renshi'));
+                // $this->success('修改成功',U('renshi'));
+                $arr['status'] = true;
+                $arr['info'] = '修改成功';
+                $this->ajaxreturn($arr);
             } else {
-                $this->error('修改失败');
+                // $this->error('修改失败');
+                $arr['status'] = false;
+                $arr['info'] = '修改失败';
+                $this->ajaxreturn($arr);
             }
         }
     }

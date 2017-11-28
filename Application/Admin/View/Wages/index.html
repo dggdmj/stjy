@@ -10,7 +10,7 @@
                         <th width="120">教学部工资表</th>
                         <th width="120">市场部工资表</th>
                         <th width="120">总监工资表</th>
-                        <th width="120">工资表汇总</th>
+                        <!-- <th width="120">工资表汇总</th> -->
                         <if condition="($rid eq 4) or ($rid eq 5) or ($rid eq 6)">
                             <th width="200">操作</th>
                         </if>
@@ -21,24 +21,24 @@
                             <td>{$v.name}</td>
                             <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesXzb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
-                                <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
+                                <!-- <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a> -->
                             </td>
                             <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesJxb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
-                                <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
+                                <!-- <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a> -->
                             </td>
                             <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesScb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
-                                <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
+                                <!-- <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a> -->
                             </td>
                             <td>
+                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesZj/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
+                                <!-- <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a> -->
+                            </td>
+                            <!-- <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href=""></a>
                                 <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
-                            </td>
-                            <td>
-                                <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href=""></a>
-                                <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
-                            </td>
+                            </td> -->
                             <if condition="$rid eq 5">
                                 <if condition="$v.status_fzr neq 2">
                                     <td>
