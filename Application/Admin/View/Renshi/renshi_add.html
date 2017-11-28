@@ -7,6 +7,7 @@
     cursor: pointer;
 }
 </style>
+    <input type="hidden" name="url" value="{:U('/Renshi/addRenshi',array('id'=>$list['id']))}">
 	 <div class="panel one-box  active">
         <div class="panel-head">
             <strong>添加人事档案</strong>
@@ -406,7 +407,7 @@
                 </div>
                 <div class="field">
                     <div class="button-group radio">
-                        <if condition="$list['hunfou'] eq 2">
+                        <if condition="$list['shengyuzh'] eq 2">
                             <label class="button">
                                 <input name="shengyuzh" value="1" type="radio">
                                 <span class="icon icon-check"></span> 是
@@ -582,7 +583,7 @@
                 </div>
                 <div class="field">
                     <select class="select" name="shebaogmgs" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
-                        <option value="">请选择合同签订公司</option>
+                        <option value="">请选择社保购买公司</option>
                         <foreach name="company" item="v">
                             <if condition="$v.type eq 2">
                                 <if condition="$v.name eq $list['shebaogmgs']">
@@ -863,17 +864,26 @@
             </div>
         </div>
 
-        <div class="panel-foot">
+        <!-- <div class="panel-foot">
             <div class="form-button">
                 <div id="tips"></div>
-				<button class="button bg-main" id="ajaxForm" type='submit'>保存</button>
-				<if condition='ACTION_NAME eq "article"'>
+                <button class="button bg-main" id="ajaxForm" type='submit'>保存</button>
+                <if condition='ACTION_NAME eq "article"'>
                 <button class="button bg" type="reset">重置</button>
-				</if>
+                </if>
             </div>
-        </div>
+        </div> -->
     </div>
 </form>
+<div class="panel-foot">
+    <div class="form-button">
+        <div id="tips"></div>
+        <button class="button bg-main" id="ajaxForm" type='submit'>保存</button>
+        <if condition='ACTION_NAME eq "article"'>
+        <button class="button bg" type="reset">重置</button>
+        </if>
+    </div>
+</div>
 <!-- 日期选择插件载入开始 -->
 <script src="__PUBLIC__/time/laydate.js"></script>
 
@@ -1023,7 +1033,89 @@
         $('#add1').hide();
     });
 </script>
+<script>
+    $('#ajaxForm').click(function(){
+        // $('form').submit();
+        var xingming = $("input[name='xingming']").val();
+        // console.log(xingming);
+        var shenfenzhm = $("input[name='shenfenzhm']").val();
+        var zhiwu = $("select[name='zhiwu']").val();
+        // console.log(zhiwu);
+        var leixing = $("select[name='leixing']").val();
+        var gangweilx = $('.radio').find('.active').find("input[name='gangweilx']").val();
+        // console.log(gangweilx);
+        var sid = $("select[name='sid']").val();
+        var bumen = $("select[name='bumen']").val();
+        var ruzhirq = $("input[name='ruzhirq']").val();
+        var hetongkssj = $("input[name='hetongkssj']").val();
+        var hetongdqsj = $("input[name='hetongdqsj']").val();
+        var diyixl = $("select[name='diyixl']").val();
+        var diyixlyx = $("input[name='diyixlyx']").val();
+        var diyixlzy = $("input[name='diyixlzy']").val();
+        var diyixlbysj = $("input[name='diyixlbysj']").val();
+        var zuigaoxl = $("select[name='zuigaoxl']").val();
+        var zuigaoxlyx = $("input[name='zuigaoxlyx']").val();
+        var zuigaoxlzy = $("input[name='zuigaoxlzy']").val();
+        var zuigaoxlbysj = $("input[name='zuigaoxlbysj']").val();
+        var zigezs = $("input[name='zigezs']").val();
+        var hunfou = $('.radio').find('.active').find("input[name='hunfou']").val();
+        var shengyuzh = $('.radio').find('.active').find("input[name='shengyuzh']").val();
+        var hukouxz = $("select[name='hukouxz']").val();
+        var lianxidh = $("input[name='lianxidh']").val();
+        var youxiang = $("input[name='youxiang']").val();
+        var shengao = $("input[name='shengao']").val();
+        var tizhong = $("input[name='tizhong']").val();
+        var chuanyicc = $("select[name='chuanyicc']").val();
+        var hetongqdgs = $("select[name='hetongqdgs']").val();
+        var shebaogmgs = $("select[name='shebaogmgs']").val();
+        var gongjijgmgs = $("select[name='gongjijgmgs']").val();
+        var hujisheng = $("select[name='hujisheng']").val();
+        var hujishi = $("select[name='hujishi']").val();
+        var hujiqu = $("select[name='hujiqu']").val();
+        var hujidz = $("input[name='hujidz']").val();
+        var tongxunsheng = $("select[name='tongxunsheng']").val();
+        var tongxunshi = $("select[name='tongxunshi']").val();
+        var tongxunqu = $("select[name='tongxunqu']").val();
+        var tongxundz = $("input[name='tongxundz']").val();
+        var pinyongqd = $("select[name='pinyongqd']").val();
+        var jinjilxr = $("input[name='jinjilxr']").val();
+        var guanxi = $("input[name='guanxi']").val();
+        var jinjilxrdh = $("input[name='jinjilxrdh']").val();
+        var shebaohao = $("input[name='shebaohao']").val();
+        var yinhangmc1 = $("select[name='yinhangmc1']").val();
+        var yinhangkh1 = $("input[name='yinhangkh1']").val();
+        var yinhangmc2 = $("select[name='yinhangmc2']").val();
+        var yinhangkh2 = $("input[name='yinhangkh2']").val();
+        var shifouydbr = $('.radio').find('.active').find("input[name='shifouydbr']").val();
+        var danbaorxm = $("input[name='danbaorxm']").val();
+        var danbaordh = $("input[name='danbaordh']").val();
+        var danbaorsfzhm = $("input[name='danbaorsfzhm']").val();
+        var huzhaohm = $("input[name='huzhaohm']").val();
+        var huzhaoyxq = $("input[name='huzhaoyxq']").val();
+        var chiyouqzlx = $("select[name='chiyouqzlx']").val();
+        var qianzhengyxq = $("input[name='qianzhengyxq']").val();
+        var guoji = $("select[name='guoji']").val();
+        var beizhu = $("textarea[name='beizhu']").val();
+        // console.log(beizhu);
+        var url = $("input[name='url']").val();
+        // console.log(url);
+        $.ajax({
+            type: "POST", //用POST方式传输
+            url: url, //目标地址
+            data: {xingming:xingming,shenfenzhm:shenfenzhm,zhiwu:zhiwu,leixing:leixing,gangweilx:gangweilx,sid:sid,bumen:bumen,ruzhirq:ruzhirq,hetongkssj:hetongkssj,hetongdqsj:hetongdqsj,diyixl:diyixl,diyixlyx:diyixlyx,diyixlzy:diyixlzy,diyixlbysj:diyixlbysj,zuigaoxl:zuigaoxl,zuigaoxlyx:zuigaoxlyx,zuigaoxlzy:zuigaoxlzy,zuigaoxlbysj:zuigaoxlbysj,zigezs:zigezs,hunfou:hunfou,shengyuzh:shengyuzh,hukouxz:hukouxz,lianxidh:lianxidh,youxiang:youxiang,shengao:shengao,tizhong:tizhong,chuanyicc:chuanyicc,hetongqdgs:hetongqdgs,shebaogmgs:shebaogmgs,gongjijgmgs:gongjijgmgs,hujisheng:hujisheng,hujishi:hujishi,hujiqu:hujiqu,hujidz:hujidz,tongxunsheng:tongxunsheng,tongxunshi:tongxunshi,tongxunqu:tongxunqu,tongxundz:tongxundz,pinyongqd:pinyongqd,jinjilxr:jinjilxr,guanxi:guanxi,jinjilxrdh:jinjilxrdh,shebaohao:shebaohao,yinhangmc1:yinhangmc1,yinhangkh1:yinhangkh1,yinhangmc2:yinhangmc2,yinhangkh2:yinhangkh2,shifouydbr:shifouydbr,danbaorxm:danbaorxm,danbaordh:danbaordh,danbaorsfzhm:danbaorsfzhm,huzhaohm:huzhaohm,huzhaoyxq:huzhaoyxq,chiyouqzlx:chiyouqzlx,qianzhengyxq:qianzhengyxq,guoji:guoji,beizhu:beizhu},
+            dataType:'json',
+            success: function (data){
+                if(data.status){
+                    layer.msg(data.info, {icon: 1});
+                    // 加跳转
+                }else{
+                    layer.msg(data.info, {icon: 2});
+                }
+            }
+        });
+    });
 
+</script>
 <script type="text/javascript" src="__PUBLIC__/webuploader/FileUpload.js"></script>
 
 
