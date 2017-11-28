@@ -141,7 +141,7 @@ class RenshiAction extends CommonAction{
        
 
         // 判断身份证是否正确,提取出生日期和性别
-        $res = preg_match('/^[1-9]\d{16}[\d|x|X]$/', $postData['shenfenzhm']);
+        $res = preg_match('/^[1-9]\d{16}[\d|x|X]$/', $_POST['shenfenzhm']);
         if(!$res){
             $arr['status'] = false;
             $arr['info'] = '身份证号码输入有误';
@@ -149,7 +149,7 @@ class RenshiAction extends CommonAction{
         }
 
         // 判断联系电话是否正确
-        $res = preg_match('/^1[34578]\d{9}$/', $postData['lianxidh']);
+        $res = preg_match('/^1[34578]\d{9}$/', $_POST['lianxidh']);
         if(!$res){
             $arr['status'] = false;
             $arr['info'] = '联系电话输入有误';
@@ -242,25 +242,6 @@ class RenshiAction extends CommonAction{
             }
         }
     }
-
-    // public function checkRenshi($postData){
-    //     // 判断身份证是否正确,提取出生日期和性别
-    //     $res = preg_match('/^[1-9]\d{16}[\d|x|X]$/', $postData['shenfenzhm']);
-    //     if(!$res){
-    //         $arr['status'] = false;
-    //         $arr['info'] = '身份证号码输入有误';
-    //         return $arr;
-    //     }
-
-    //     // 判断联系电话是否正确
-    //     $res = preg_match('/^1[34578]\d{9}$/', $postData['lianxidh']);
-    //     if(!$res){
-    //         $arr['status'] = false;
-    //         $arr['info'] = '联系电话输入有误';
-    //         return $arr;
-    //     }
-        
-    // }
 
     // 修改人士
     public function editRenshi() {
