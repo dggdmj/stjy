@@ -337,11 +337,11 @@ class RenshiAction extends CommonAction{
         $this->adminDisplay('zhiwu_add');
     }
 
-    //职务列表页
+    //试用期列表页
     public function shiyong(){
         $data = M('renshi'); // 实例化对象
         $time = time() - 86400*180;
-        $list = $data->where("leixing = '试用' and UNIX_TIMESTAMP(ruzhirq) < $time")->order('id desc')->select();
+        $list = $data->where("leixing = '试用期' and UNIX_TIMESTAMP(ruzhirq) < $time")->order('id desc')->select();
         $this->assign('list',$list);// 赋值数据集
         $this->adminDisplay();
     }
@@ -537,6 +537,31 @@ class RenshiAction extends CommonAction{
             $arr['info'] = '添加成功';
         }
         $this->ajaxReturn($arr);
+    }
+
+    // 转正
+    public function zhuanzheng() {
+        $id = $_GET['id'];
+        $res=M('renshi')->where(array('id'=>$id))->setField("leixing",'正式期');
+        $arr = array();
+        if($res){
+            $arr['status'] = true;
+            $arr['info'] = '修改成功';
+        }else{
+            $arr['status'] = false;
+            $arr['info'] = '修改失败';
+        }
+        $this->ajaxReturn($arr);
+    }
+
+    //合同到期列表页
+    public function hetong(){
+        $data = M('renshi'); // 实例化对象
+        $time = time() + 86400*30;
+        $list = $data->where("UNIX_TIMESTAMP(hetongdqsj) < $time")->order('id desc')->select();
+//        echo $data->getLastSql();
+        $this->assign('list',$list);// 赋值数据集
+        $this->adminDisplay();
     }
 }
 ?>
