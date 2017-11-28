@@ -21,6 +21,14 @@ class RenshiAction extends CommonAction{
                     'url' => url('Renshi/zhiwu'),
                     'icon' => 'list',
                 ),
+                array('name' => '试用期提醒',
+                    'url' => url('Renshi/shiyong'),
+                    'icon' => 'list',
+                ),
+                array('name' => '合同到期提醒',
+                    'url' => url('Renshi/hetong'),
+                    'icon' => 'list',
+                ),
                 array('name' => '类型列表',
                     'url' => url('Renshi/leixing'),
                     'icon' => 'list',
@@ -327,6 +335,15 @@ class RenshiAction extends CommonAction{
         $id = $_GET['id'];
         $this->list=D('zhiwu')->where(array('id'=>$id))->find();
         $this->adminDisplay('zhiwu_add');
+    }
+
+    //职务列表页
+    public function shiyong(){
+        $data = M('renshi'); // 实例化对象
+        $time = time() - 86400*180;
+        $list = $data->where("leixing = '试用' and UNIX_TIMESTAMP(ruzhirq) < $time")->order('id desc')->select();
+        $this->assign('list',$list);// 赋值数据集
+        $this->adminDisplay();
     }
 
     //类型列表页
