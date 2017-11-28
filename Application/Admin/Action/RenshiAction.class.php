@@ -263,7 +263,8 @@ class RenshiAction extends CommonAction{
     //职务列表页
     public function shiyong(){
         $data = M('renshi'); // 实例化对象
-        $list = $data->where("leixing = '试用' and UNIX_TIMESTAMP(ruzhirq) > ")->order('id desc')->select();
+        $time = time() - 86400*180;
+        $list = $data->where("leixing = '试用' and UNIX_TIMESTAMP(ruzhirq) < $time")->order('id desc')->select();
         $this->assign('list',$list);// 赋值数据集
         $this->adminDisplay();
     }
