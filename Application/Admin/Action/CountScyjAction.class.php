@@ -147,7 +147,7 @@ class CountScyjAction extends CommonAction {
                 $arr['scjfrqdylx'] = '新生';
             }else{
                 //首次缴费时间 比较 2016年7月1日，在此之前是老生
-                if(strtotime($arr['scjfrq']) <= strtotime($qishu)){
+                if(strtotime($arr['scjfrq']) - strtotime($qishu) > 365){
                     $arr['scjfrqdylx'] = '老生';
                 }else{
                     $arr['scjfrqdylx'] = '1年追补';
