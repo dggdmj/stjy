@@ -173,6 +173,10 @@ class WagesCommonAction extends CommonAction{
 
         return $tuifei_total;
     }
+
+    public function downloadXzb(){
+        dump($_GET);
+    }
 }
 
 ?>
