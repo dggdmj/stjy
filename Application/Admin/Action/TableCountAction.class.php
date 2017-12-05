@@ -148,8 +148,9 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 
         /* 实时计算开始 */
-	    // $data = new \Admin\Action\CountScyjAction();
-        // $list = $data->getScyjbData($qishu,$sid);//获得统计数据
+//	     $data = new \Admin\Action\CountScyjAction();
+//         $list = $data->getScyjbData($qishu,$sid);//获得统计数据
+//die;
         /* 实时计算结束 */
 
         /* 查库开始 */

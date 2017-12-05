@@ -146,8 +146,8 @@ class CountScyjAction extends CommonAction {
             if($arr["xinlao"] == '新生'){
                 $arr['scjfrqdylx'] = '新生';
             }else{
-                //首次缴费时间 比较 2016年7月1日，在此之前是老生
-                if(strtotime($arr['scjfrq']) - strtotime($qishu) > 365){
+                //首次缴费时间 比较当前期数的一号，在此之前是老生
+                if(strtotime($qishu) -  strtotime($arr['scjfrq']) > 365*86400){
                     $arr['scjfrqdylx'] = '老生';
                 }else{
                     $arr['scjfrqdylx'] = '1年追补';
@@ -334,7 +334,7 @@ class CountScyjAction extends CommonAction {
         if($arr['tqjslx'] == '预定游学优惠读' || $arr['tqjslx'] == '五年国际会员'){
 
         }
-//         dump($data["beizhu"]);
+//         dump($data);
 //         dump($arr);
         return $arr;
     }
