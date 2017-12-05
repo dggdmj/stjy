@@ -43,7 +43,7 @@ class CountScyjAction extends CommonAction {
             }
         }
 
-        $tablelist = $this->countList($newlist,$xxk_id,$rentouarr);
+        $tablelist = $this->countList($newlist,$xxk_id,$rentouarr,$qishu);
 
         $i = 1;
         $total = array();
@@ -68,7 +68,7 @@ class CountScyjAction extends CommonAction {
     }
 
     //遍历新数组，统计业绩归属人的业绩数据
-    public function countList($list,$xxk_id,$rentouarr){
+    public function countList($list,$xxk_id,$rentouarr,$qishu){
         $arr = array();     //用于存放业绩归属人的信息
         $kecheng_list = M("kecheng")->select();
         $kecheng_arr = array();
@@ -87,7 +87,7 @@ class CountScyjAction extends CommonAction {
             $arr[$v['yejigsr']]['rentou'] = $rentouarr[$v['yejigsr']]['rentou'];  //获得人头数
             $arr[$v['yejigsr']]['jrt'] += round($xishu*(double)$this->getJingrentou($beizhu),2);  //通过备注获得净人头
             //计算备注产生的扩展数据
-            $extend = $this->explodeBeizhu($v['data'],$xxked,$xishu);
+            $extend = $this->explodeBeizhu($v['data'],$xxked,$xishu,$qishu);
             if(!empty($extend)){
 //                dump($v);
 //                dump($v['data']['beizhu']);
@@ -108,7 +108,7 @@ class CountScyjAction extends CommonAction {
     }
 
     //根据签单类型返回人头数
-    public function explodeBeizhu($data,$xxked,$xishu){
+    public function explodeBeizhu($data,$xxked,$xishu,$qishu){
         if(empty($data['beizhu'])){
             return;
         }
@@ -146,8 +146,8 @@ class CountScyjAction extends CommonAction {
             if($arr["xinlao"] == '新生'){
                 $arr['scjfrqdylx'] = '新生';
             }else{
-                //首次缴费时间 比较 2016年7月1日，在此之前是老生
-                if(strtotime($arr['scjfrq']) <= strtotime('2016-7-1')){
+                //首次缴费时间 比较当前期数的一号，在此之前是老生
+                if(strtotime($qishu) -  strtotime($arr['scjfrq']) > 365*86400){
                     $arr['scjfrqdylx'] = '老生';
                 }else{
                     $arr['scjfrqdylx'] = '1年追补';
@@ -334,7 +334,7 @@ class CountScyjAction extends CommonAction {
         if($arr['tqjslx'] == '预定游学优惠读' || $arr['tqjslx'] == '五年国际会员'){
 
         }
-//         dump($data["beizhu"]);
+//         dump($data);
 //         dump($arr);
         return $arr;
     }
