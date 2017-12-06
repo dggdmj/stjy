@@ -32,7 +32,11 @@ class CountScyjAction extends CommonAction {
 //        $ar = $rt->getXzmxbData($qishu,$sid);
 
         $rt_ssid = M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid = 10")->getField('id');   //获得新增明细的所属id
-        $ar = M("xzmxb")->where("suoshudd = ".$rt_ssid)->select();
+        $ar = array();
+        if(!empty($rt_ssid)){
+            $ar = M("xzmxb")->where("suoshudd = ".$rt_ssid)->select();
+        }
+        
 
         $rentouarr = array();
         foreach ($ar as $k => $v){

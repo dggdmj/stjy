@@ -67,9 +67,9 @@ class CountJysjAction extends CommonAction {
 
         $fmonth = $this->getMonth($qishu);
         $id_fmonth = $this->getQishuId($fmonth,$sid,3);
-        $id = $this->getQishuId($qishu,$sid,3);
-        $where = 'suoshudd ='.$id_fmonth.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';        
+        $id = $this->getQishuId($qishu,$sid,3);// 貌似没用    
         if(!empty($id_fmonth)){
+            $where = 'suoshudd ='.$id_fmonth.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
             $res = M('bjxyxxb')->where($where)->select();
             $res = $this->getXuehao($res);
             $res = array_flip(array_flip($res));// 去重复学号,解决一学生多报班的情况
@@ -86,48 +86,58 @@ class CountJysjAction extends CommonAction {
         $total = $arr['本月初在册学生人数'];
 
         //判断新增明细
-//        $xz = new \Admin\Action\CountXzmxAction();
-//        $xzinfo = $xz->getXzmxbData($qishu,$sid);
+        // $xz = new \Admin\Action\CountXzmxAction();
+        // $xzinfo = $xz->getXzmxbData($qishu,$sid);
         $xz_ssid = M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid = 10")->getField('id');   //获得新增明细的所属id
-        $xzinfo = M("xzmxb")->where("suoshudd = ".$xz_ssid)->select();
-
-        $rentou_arr = array();
-        foreach ($xzinfo as $k => $v){
-            if($v['xinzenglx'] == '新生'){
-                $arr['本月新生人数'] += 1;
-                $total += 1;
-            }
-            if($v['xinzenglx'] == '转入'){
-                $arr['其他学校转入'] += 1;
-                $total += 1;
-            }
-            if($v['xinzenglx'] == '流失回来'){
-                $arr['流失回来学生'] += 1;
-                $total += 1;
+        $xzinfo = array();
+        if(!empty($xz_ssid)){
+            $xzinfo = M("xzmxb")->where("suoshudd = ".$xz_ssid)->select();
+        }
+        $rentou_arr = array();// 貌似没用
+        if(!empty($xzinfo)){
+            foreach ($xzinfo as $k => $v){
+                if($v['xinzenglx'] == '新生'){
+                    $arr['本月新生人数'] += 1;
+                    $total += 1;
+                }
+                if($v['xinzenglx'] == '转入'){
+                    $arr['其他学校转入'] += 1;
+                    $total += 1;
+                }
+                if($v['xinzenglx'] == '流失回来'){
+                    $arr['流失回来学生'] += 1;
+                    $total += 1;
+                }
             }
         }
+        
 
         //判断减少明细
-//        $js = new \Admin\Action\CountJsmxAction();
-//        $jsinfo = $js->getJsmxbData($qishu,$sid);
+        // $js = new \Admin\Action\CountJsmxAction();
+        // $jsinfo = $js->getJsmxbData($qishu,$sid);
 
         $js_ssid = M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid = 11")->getField('id');   //获得减少明细的所属id
-        $jsinfo = M("jsmxb")->where("suoshudd = ".$js_ssid)->select();
-
-        foreach ($jsinfo as $k => $v){
-            if($v['jianshaolx'] == '流失'){
-                $arr['本月流失学生人数'] += 1;
-                $total -= 1;
-            }
-            if($v['jianshaolx'] == '退费'){
-                $arr['本月退费学生'] += 1;
-                $total -= 1;
-            }
-            if($v['jianshaolx'] == '转出'){
-                $arr['转校学员'] += 1;
-                $total -= 1;
+        $jsinfo = array();
+        if(!empty($js_ssid)){
+            $jsinfo = M("jsmxb")->where("suoshudd = ".$js_ssid)->select();
+        }
+        if(!empty($jsinfo)){
+            foreach ($jsinfo as $k => $v){
+                if($v['jianshaolx'] == '流失'){
+                    $arr['本月流失学生人数'] += 1;
+                    $total -= 1;
+                }
+                if($v['jianshaolx'] == '退费'){
+                    $arr['本月退费学生'] += 1;
+                    $total -= 1;
+                }
+                if($v['jianshaolx'] == '转出'){
+                    $arr['转校学员'] += 1;
+                    $total -= 1;
+                }
             }
         }
+        
         $arr['本月底在册学生人数'] = $total;
         return $arr;
     }

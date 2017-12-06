@@ -219,11 +219,15 @@ class TableCountAction extends CommonAction{
 
         /* 查库开始 */
         $id = $this->getQishuId($qishu,$sid,10);
-        $data = M('xzmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+        if(!empty($id)){
+            $data = M('xzmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+            $this->assign('list',$data);
+        }
+        
         // dump($data);
         /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        $this->assign('list',$data);
+        
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
@@ -240,11 +244,15 @@ class TableCountAction extends CommonAction{
 
         /* 查库开始 */
         $id = $this->getQishuId($qishu,$sid,11);
-        $data = M('jsmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+        if(!empty($id)){
+            $data = M('jsmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+            $this->assign('list',$data);
+        }
+        
         // dump($data);
         /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        $this->assign('list',$data);
+        
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
@@ -341,10 +349,14 @@ class TableCountAction extends CommonAction{
         // $data = new \Admin\Action\CountTfAction();
         // $list = $data->getTfbData($qishu,$sid);//获得统计数据
         $id = $this->getQishuId($qishu,$sid,13);
-        $data = M('tfb')->where('suoshudd ='.$id)->order('xuhao')->select();
+        if(!empty($id)){
+            $data = M('tfb')->where('suoshudd ='.$id)->order('xuhao')->select();
+            $this->assign('list',$data);
+        }
+        
         $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // dump($data);die;
-        $this->assign('list',$data);
+        
         $this->assign('title',$title);
         $this->adminDisplay();
 	}

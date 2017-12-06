@@ -12,6 +12,7 @@ class CountTfAction extends CommonAction {
     public function getTfbData($qishu,$sid){
         $js = new \Admin\Action\CountJsmxAction();// 获取减少明细对象
         $data = $js->getJsmxbData($qishu,$sid);
+        $list = array();
         // dump($data);
         foreach($data as $v){
             if($v['reducetype'] == "退费"){

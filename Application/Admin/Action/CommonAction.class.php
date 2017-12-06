@@ -553,7 +553,7 @@ class CommonAction extends Action {
             break;
             case 4:
                 $status_cw = M('sjzb')->where($_GET)->getField('status_cw');
-                if($status_cw == 2){
+                if($status_fzr == 2){
                     // 此时已经是工资部分
                     $temp['time_cw2'] = date('Y-m-d H:i:s');
                     $temp['status_fzr'] = 4;// 负责人状态变成被退回
@@ -597,7 +597,7 @@ class CommonAction extends Action {
             break;
             case 4:
                 $status_cw = M('sjzb')->where($_GET)->getField('status_cw');
-                if($status_cw == 2){
+                if($status_fzr == 2){
                     $temp['time_cw2'] = date('Y-m-d H:i:s');
                     $temp['status_cw2'] = 2;
                     $temp['status_cwzj'] = 1;
@@ -646,7 +646,7 @@ class CommonAction extends Action {
             break;
             case 4:
                 $status_cw = M('sjzb')->where($_GET)->getField('status_cw');
-                if($status_cw == 2){
+                if($status_fzr == 2){
                     $temp['time_cw2'] = date('Y-m-d H:i:s');
                     $temp['status_cw2'] = 5;
                     $temp['status_cwzj'] = null;
@@ -709,9 +709,9 @@ class CommonAction extends Action {
         $sid = $_GET['sid'];
         $id = M('qishu_history')->where($_GET)->getField('id');
         $info = $this->getInfo($qishu,$sid);
-        if(empty($id)){
-            $this->error('error');
-        }
+        // if(empty($id)){
+        //     $this->error('error');
+        // }
         $tbnames = $this->getTabelnames(1,[2]);
         $tbnames_cn = $this->getTabelnames(2,[2]);
         // dump($tbnames);
@@ -748,11 +748,20 @@ class CommonAction extends Action {
             break;
             case 10:
                 $start_row = 2;
-                $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,xinzenglx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,shengyukc,yucunxfje,lianxidh,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,xinzenglx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,shengyukc,yucunxfje,lianxidh,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                }else{
+                    $data = array();
+                }
+                
             break;
             case 11:
                 $start_row = 2;
-                $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                }else{
+                    $data = array();
+                }
                 // dump($data);die;
             break;
             case 12:
@@ -761,10 +770,16 @@ class CommonAction extends Action {
             break;
             case 13:
                 $start_row = 3;
-                $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+                }else{
+                    $data = array();
+                }
+                
                 // dump($data);die;
             break;
         }
+        
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
     }
 
@@ -1553,7 +1568,9 @@ class CommonAction extends Action {
         
         $data = new \Admin\Action\CountXzmxAction();
         $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
-
+        if(empty($list)){
+            return false;
+        }
         $res = $this->isInQishuHistory(10,$qishu,$sid);
         if($res){
             return false;
@@ -1599,7 +1616,9 @@ class CommonAction extends Action {
     public function JsmxToDb($qishu,$sid){
         $data = new \Admin\Action\CountJsmxAction();
         $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
-
+        if(empty($list)){
+            return false;
+        }
         $res = $this->isInQishuHistory(11,$qishu,$sid);
         if($res){
             return false;
@@ -1773,9 +1792,12 @@ class CommonAction extends Action {
         // }
     }
 
-    public function tfToDb($qishu,$sid){
+    public function TfToDb($qishu,$sid){
         $data = new \Admin\Action\CountTfAction();
         $list = $data->getTfbData($qishu,$sid);//获得退费数据
+        if(empty($list)){
+            return false;
+        }
         $res = $this->isInQishuHistory(13,$qishu,$sid);
         if($res){
             return false;
@@ -1783,7 +1805,7 @@ class CommonAction extends Action {
 
         // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(13,$qishu,$sid);
-        // 插入xzmxb
+        // 插入tfb
         $school = $this->getInfo($qishu,$sid)['school'];
         foreach($list as $k=>$v){
             $temp['xuhao'] = $k+1;
@@ -1810,16 +1832,16 @@ class CommonAction extends Action {
         $res_xzmx = $this->XzmxToDb($qishu,$sid);
         // $t3 = microtime(true);
         // 减少明细数据写入数据库
-        $res_jsmx = $this->jsmxToDb($qishu,$sid);
+        $res_jsmx = $this->JsmxToDb($qishu,$sid);
         // $t4 = microtime(true);
         // 市场业绩数据写入数据库
         $res_scyj = $this->ScyjToDb($qishu,$sid);
         // 经营数据写入数据库
         // $t5 = microtime(true);
-        $res_jsmx = $this->jysjToDb($qishu,$sid);
+        $res_jsmx = $this->JysjToDb($qishu,$sid);
         // 退费数据写入数据库
         // $t6 = microtime(true);
-        $res_tf = $this->tfToDb($qishu,$sid);
+        $res_tf = $this->TfToDb($qishu,$sid);
         // $t7 = microtime(true);
         // echo "各表入库时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
         // echo '总入库时间:'.(($t7-$t1)*1000).'ms';
