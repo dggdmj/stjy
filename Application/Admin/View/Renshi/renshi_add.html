@@ -9,6 +9,8 @@
 </style>
     <input type="hidden" name="url" value="{:U('/Renshi/addRenshi',array('id'=>$list['id']))}">
     <input type="hidden" name="url2" value="{:U('/Renshi/renshi')}">
+    <input type="hidden" name="url3" value="{:U('/Renshi/id_check')}">
+    <input type="hidden" name="url4" value="{:U('/Renshi/phone_check')}">
 	 <div class="panel one-box  active">
         <div class="panel-head">
             <strong>添加人事档案</strong>
@@ -35,7 +37,7 @@
                     <label>身份证号码</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="shenfenzhm" size="60" value="{$list.shenfenzhm}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="text" class="input" id="shenfenzhm" name="shenfenzhm" size="60" value="{$list.shenfenzhm}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
                 </div>
             </div>
             <!-- <div class="form-group">
@@ -267,7 +269,8 @@
                     <label>第一学历院校</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" id="diyi" name="diyixlyx" size="60" value="{$list.diyixlyx}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="text" class="input" id="diyixlyx" size="20" style="border-color:rgb(255, 102, 0);">
+                    <input type="text" class="input" id="diyi" name="diyixlyx" size="30" value="{$list.diyixlyx}" style="border-color:rgb(255, 102, 0);" readonly><span style="color:red;"> *必填</span>
                 </div>
                 <div class="tags" style="position: relative; z-index: 1000; width: 567px;left: 150px;top: 38px;  display: none;border: 1px solid #ddd;border-radius: 10px;background: #fff" id="moreTagLayer">
                     <div class="close_even gb1" style="position: relative;top: -26px;left: 526px;cursor: pointer">关闭</div>
@@ -339,7 +342,8 @@
                     <label>最高学历院校</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" id="zuigao" name="zuigaoxlyx" size="60" value="{$list.zuigaoxlyx}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
+                    <input type="text" class="input" id="zuigaoxlyx" size="20" style="border-color:rgb(255, 102, 0);">
+                    <input type="text" class="input" id="zuigao" name="zuigaoxlyx" size="30" value="{$list.zuigaoxlyx}" style="border-color:rgb(255, 102, 0);" readonly><span style="color:red;"> *必填</span>
                 </div>
                 <div class="tags" style="position: relative; z-index: 1000; width: 567px;left: 150px;top: 38px;  display: none;border: 1px solid #ddd;border-radius: 10px;background: #fff" id="moreTagLayer2">
                     <div class="close_even gb2" style="position: relative;top: -26px;left: 526px;cursor: pointer">关闭</div>
@@ -721,6 +725,7 @@
                         </foreach>
                     </select>
                     <input type="text" class="input" name="yinhangkh1" size="60" value="{$list.yinhangkh1}">
+                    <span style="color:red;"> *必选</span>
                 </div>
             </div>
             <div class="form-group">
@@ -739,6 +744,7 @@
                         </foreach>
                     </select>
                     <input type="text" class="input" name="yinhangkh2" size="60" value="{$list.yinhangkh2}">
+                    <span style="color:red;"> *必选</span>
                 </div>
             </div>
             <div class="form-group">
@@ -922,7 +928,7 @@
         prettyPrint();
     });
     $(function () {
-        var v = $("#diyi");
+        var v = $("#diyixlyx");
         v.keyup(function () {
             var search_name = v.val();
             if(search_name == '')
@@ -957,14 +963,15 @@
         })
         $(document).on('click','.school-name',function () {
             var name = $(this).text();
-            v.val(name);
+            $("#diyi").val(name);
+            v.val('');
             $("#moreTagLayer").css("display","none");
         })
 
     })
 
     $(function () {
-        var v2 = $("#zuigao");
+        var v2 = $("#zuigaoxlyx");
         v2.keyup(function () {
             var search_name = v2.val();
             if(search_name == '')
@@ -999,7 +1006,8 @@
         })
         $(document).on('click','.school-name2',function () {
             var name = $(this).text();
-            v2.val(name);
+            $('#zuigao').val(name);
+            v2.val('');
             $("#moreTagLayer2").css("display","none");
         })
 
@@ -1118,6 +1126,37 @@
         });
     });
 
+    $('#shenfenzhm').blur(function(){
+        var shenfenzhm = $("input[name='shenfenzhm']").val();
+        var url = $("input[name='url3']").val();
+        $.ajax({
+            type: "POST", //用POST方式传输
+            url: url, //目标地址
+            data: {shenfenzhm:shenfenzhm},
+            dataType:'json',
+            success: function (data){
+                if(!data.status){
+                    layer.msg(data.info, {icon: 2});
+                }
+            }
+        });
+    });
+
+    $("input[name='lianxidh']").blur(function(){
+        var lianxidh = $("input[name='lianxidh']").val();
+        var url = $("input[name='url4']").val();
+        $.ajax({
+            type: "POST", //用POST方式传输
+            url: url, //目标地址
+            data: {lianxidh:lianxidh},
+            dataType:'json',
+            success: function (data){
+                if(!data.status){
+                    layer.msg(data.info, {icon: 2});
+                }
+            }
+        });
+    });
 </script>
 <script type="text/javascript" src="__PUBLIC__/webuploader/FileUpload.js"></script>
 
