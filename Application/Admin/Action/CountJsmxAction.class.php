@@ -177,6 +177,8 @@ class CountJsmxAction extends CommonAction {
                 $list[$k]['suoshubm'] = $v['banji'];
             }
 
+            $list[$k]['xiaoqu'] = $this->getInfo($qishu,$sid)['school'];// 将所有数据的校区改为本校区
+
             // $t_arr = explode(',',$v['shangkels']);
             // $list[$k]['jingduls'] = $t_arr[0];
 
