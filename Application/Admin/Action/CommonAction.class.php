@@ -1568,9 +1568,7 @@ class CommonAction extends Action {
         
         $data = new \Admin\Action\CountXzmxAction();
         $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
-        if(empty($list)){
-            return false;
-        }
+        
         $res = $this->isInQishuHistory(10,$qishu,$sid);
         if($res){
             return false;
@@ -1578,6 +1576,9 @@ class CommonAction extends Action {
 
         // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(10,$qishu,$sid);
+        if(empty($list)){
+            return false;
+        }
         // 插入xzmxb
         foreach($list as $k=>$v){
             $temp['xuhao'] = $k+1;
@@ -1616,9 +1617,7 @@ class CommonAction extends Action {
     public function JsmxToDb($qishu,$sid){
         $data = new \Admin\Action\CountJsmxAction();
         $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
-        if(empty($list)){
-            return false;
-        }
+        
         $res = $this->isInQishuHistory(11,$qishu,$sid);
         if($res){
             return false;
@@ -1626,6 +1625,9 @@ class CommonAction extends Action {
 
         // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(11,$qishu,$sid);
+        if(empty($list)){
+            return false;
+        }
         // 插入xzmxb
         foreach($list as $k=>$v){
             $temp['xuhao'] = $k+1;
@@ -1795,9 +1797,7 @@ class CommonAction extends Action {
     public function TfToDb($qishu,$sid){
         $data = new \Admin\Action\CountTfAction();
         $list = $data->getTfbData($qishu,$sid);//获得退费数据
-        if(empty($list)){
-            return false;
-        }
+        
         $res = $this->isInQishuHistory(13,$qishu,$sid);
         if($res){
             return false;
@@ -1805,6 +1805,9 @@ class CommonAction extends Action {
 
         // 插入qishu_history
         $qishu_id = $this->insertQishuHistory(13,$qishu,$sid);
+        if(empty($list)){
+            return false;
+        }
         // 插入tfb
         $school = $this->getInfo($qishu,$sid)['school'];
         foreach($list as $k=>$v){
@@ -1862,15 +1865,17 @@ class CommonAction extends Action {
                 $res4 = M('zcxsxqztb')->where('suoshudd ='.$id)->delete();
                 $res5 = M('xsrsbdb')->where('suoshudd ='.$id)->delete();
                 // if($res1 && $res2 && $res3 && $res4){
-                    M('qishu_history')->where($where)->delete();
+                    // M('qishu_history')->where($where)->delete();
                 // }
-                return true;
+                // return true;
 
+            }else{
+                $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
+
+                M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
             }
 
-            $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
-
-            M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
+            
 
             // if ($res) {
             M('qishu_history')->where($where)->delete();// 从qishu_history中删除
