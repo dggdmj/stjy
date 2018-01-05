@@ -105,8 +105,13 @@ class WagesScbAction extends WagesCommonAction{
                 $list[$sk]['erjibm']['value'] = $user["bumen2"];   //二级部门
                 $list[$sk]['gangweijb']['value'] = '';   //岗位级别
                 $list[$sk]['zhiwei']['value'] = $user["zhiwu"];  //职位
-                $list[$sk]['gangweilx']['value'] = $user["gangweilx"];  //岗位类型
-                $list[$sk]['zaizhizt']['value'] = $user["leixing"];  //在职状态
+                if($user['gangweilx'] == 1){
+                    $list[$sk]['gangweilx']['value'] = '全职';   //岗位类型
+                }elseif($user['gangweilx'] == 2){
+                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
+                }else{
+                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
+                }
                 $list[$sk]['gongzuonx']['value'] = empty($user["ruzhirq"])?'0':floor((time()-strtotime($user['ruzhirq']))/(365*86400))."年";  //工作年限
                 $list[$sk]['ruzhisj']['value'] = $user["ruzhirq"];  //入职日期
                 $list[$sk]['yingchuqingts']['value'] = date('t', strtotime($qishu."01")); //应出勤天数:返回当期月份的天数

@@ -48,7 +48,7 @@ class WagesXzbAction extends WagesCommonAction{
         $xzb_list = M("xzbgzb")->where("qishu = '".$qishu."' and sid = $sid and istijiao = 0")->select();
         $table = M("xzbgzb")->query("select column_name as fieldname,column_comment as beizhu from Information_schema.columns WHERE table_Name='stjy_xzbgzb'");
         $zcrs_ssdd = M("qishu_history")->where("tid = 12 and sid = $sid and qishu = $qishu")->getField("id");
-        $renshu = M("xsrsbdb")->where("suoshudd = $zcrs_ssdd and `xiangmu` = '本月底在册学生人数'")->getField("renshu");
+        $renshu = M("zcxsxqztb")->where("suoshudd = $zcrs_ssdd and `nianji` = '合计'")->getField("shijizbrs");
         $renshu = $renshu?$renshu:0;
         $mianji = M("school")->where("id = $sid")->getField("mianji");
         $mianji = $mianji?$mianji:0;
@@ -56,7 +56,7 @@ class WagesXzbAction extends WagesCommonAction{
         $qzyrs = $qzyrs?$qzyrs:0;  //全职员工人数
         $yuechu = strtotime($qishu);
         $yuedi = strtotime("+1 month",$qishu);
-        $xinyuangongrzrs = M("renshi")->where("sid = $sid and UNIX_TIMESTAMP(hetongkssj) >= $yuechu and UNIX_TIMESTAMP(hetongkssj) < $yuedi")->count();  //新员工入职人数
+        $xinyuangongrzrs = M("renshi")->where("sid = $sid and UNIX_TIMESTAMP(ruzhirq) >= $yuechu and UNIX_TIMESTAMP(ruzhirq) < $yuedi")->count();  //新员工入职人数
         //如果业绩表是修改操作，就从业绩表里取数，否则实时运算
         if(!empty($xzb_list)){
             // dump($xzb_list);die;
@@ -95,7 +95,15 @@ class WagesXzbAction extends WagesCommonAction{
                 $list[$sk]['bumen']['value'] = $user['bumen'];   //部门名称
                 $list[$sk]['erjibm']['value'] = $user['bumen2'];   //二级部门
                 $list[$sk]['gangweijb']['value'] = $user['gangweilx'];   //岗位类型
-                $list[$sk]['zhiwei']['value'] = $user['zhiwu'];   //岗位类型
+                $list[$sk]['zhiwei']['value'] = $user['zhiwu'];   //职务
+                if($user['gangweilx'] == 1){
+                    $list[$sk]['gangweilx']['value'] = '全职';   //岗位类型
+                }elseif($user['gangweilx'] == 2){
+                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
+                }else{
+                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
+                }
+                $list[$sk]['zaizhizt']['value'] = $user['leixing'];   //在职状态
                 $list[$sk]['gongzuonx']['value'] = empty($user["ruzhirq"])?'0':floor((time()-strtotime($user['ruzhirq']))/(365*86400))."年";  //工作年限
                 $list[$sk]['ruzhisj']['value'] = $user["ruzhirq"];  //入职日期
                 $list[$sk]['yingchuqingts']['value'] = date('t', strtotime($qishu."01")); //应出勤天数:返回当期月份的天数

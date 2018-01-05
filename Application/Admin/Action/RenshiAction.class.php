@@ -118,7 +118,7 @@ class RenshiAction extends CommonAction{
         $arr = array();
         $temp = array();
         // 判断是否必填字段
-        $need = array('姓名'=>'xingming','身份证号码'=>'shenfenzhm','职务'=>'zhiwu','类型'=>'leixing','校区'=>'sid','部门'=>'bumen','入职日期'=>'ruzhirq','合同开始时间'=>'hetongkssj','合同到期时间'=>'hetongdqsj','第一学历'=>'diyixl','第一学历院校'=>'diyixlyx','最高学历'=>'zuigaoxl','最高学历院校'=>'zuigaoxlyx','主银行名称'=>'yinhangmc1','主银行帐号'=>'yinhangkh1','副银行名称'=>'yinhangmc2','副银行帐号'=>'yinhangkh2');// 必要字段加到此数组
+        $need = array('姓名'=>'xingming','身份证号码'=>'shenfenzhm','职务'=>'zhiwu','类型'=>'leixing','校区'=>'sid','部门'=>'bumen','入职日期'=>'ruzhirq','合同开始时间'=>'hetongkssj','合同到期时间'=>'hetongdqsj','第一学历'=>'diyixl','第一学历院校'=>'diyixlyx','最高学历'=>'zuigaoxl','最高学历院校'=>'zuigaoxlyx','主银行名称'=>'yinhangmc1','主银行帐号'=>'yinhangkh1','副银行名称'=>'yinhangmc2','副银行帐号'=>'yinhangkh2','合同签订公司'=>'hetongqdgs','社保购买公司'=>'shebaogmgs','公积金购买公司'=>'gongjijgmgs','紧急联系人姓名'=>'jinjilxr','紧急联系人关系'=>'guanxi','紧急联系人手机号'=>'jinjilxrdh');// 必要字段加到此数组
         foreach($_POST as $k=>$v){
             if(in_array($k,$need) && empty($v)){
                 $temp[] = array_flip($need)[$k];
