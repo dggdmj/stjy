@@ -8,8 +8,7 @@ class MenuModel {
      * 获取菜单结构
      */
     public function getMenu(){
-        return array(
-            'Index' => array(
+        $index = array(
                 'name' => '首页',
                 'icon' => 'home',
                 'order' => 0,
@@ -21,8 +20,8 @@ class MenuModel {
                         'order' => 1
                     ),
                 )
-            ),
-            'Content' => array(
+            );
+        $content = array(
                 'name' => '校管家表格',
                 'icon' => 'bars',
                 'order' => 1,
@@ -94,21 +93,8 @@ class MenuModel {
                         'order' => 1
                     ),
                 )
-            ),
-//            'User' => array(
-//                'name' => '会员管理',
-//                'icon' => 'tree',
-//                'order' => 1,
-//                'menu' => array(
-//                    array(
-//                        'name' => '会员管理',
-//                        'icon' => 'sitemap',
-//                        'url' => U('/User/index'),
-//                        'order' => 1
-//                    ),
-//                )
-//            ),
-            'Order' => array(
+            );
+        $order = array(
                 'name' => '业绩表管理',
                 'icon' => 'file',
                 'order' => 1,
@@ -156,8 +142,8 @@ class MenuModel {
                         'order' => 6
                     ),
                 )
-            ),
-            'gongzi' => array(
+            );
+        $gongzi = array(
                 'name' => '工资表管理',
                 'icon' => 'tree',
                 'order' => 1,
@@ -193,60 +179,8 @@ class MenuModel {
                         'order' => 1
                     ),
                 )
-            ),
-//            'Article' => array(
-//                'name' => '文章',
-//                'icon' => 'tasks',
-//                'order' => 0,
-//                'menu' => array(
-//                    array(
-//                        'name' => '文章管理',
-//                        'icon' => 'reorder',
-//                        'url' => U('/Article/index'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '文章分类',
-//                        'url' => U('/Class/index'),
-//                        'icon' => 'sitemap',
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '文章回收站',
-//                        'icon' => 'trash-o',
-//                        'url' => U('/ArticleRecycle/index'),
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '属性管理',
-//                        'icon' => 'cogs',
-//                        'url' => U('/Attribute/index'),
-//                        'order' => 1
-//                    ),
-//                )
-//            ),
-
-//        	'Case' => array(
-//                'name' => '产品管理',
-//                'icon' => 'camera',
-//                'order' => 0,
-//                'menu' => array(
-//                    array(
-//                        'name' => '产品管理',
-//                        'url' => U('/Case/index'),
-//                        'icon' => 'camera',
-//                        'order' => 1
-//                    ),
-//                    array(
-//                        'name' => '产品分类管理',
-//                        'url' => U('/CaseSort/index'),
-//                        'icon' => 'sitemap',
-//                        'order' => 1
-//                    ),
-//                )
-//            ),
-//
-            'Renshi' => array(
+            );
+        $renshi = array(
                 'name' => '人事管理',
                 'icon' => 'user',
                 'order' => 10,
@@ -301,8 +235,8 @@ class MenuModel {
                     ),
                 ),
 
-            ),
-            'Function' => array(
+            );
+        $function = array(
                 'name' => '功能设置',
                 'icon' => 'wrench',
                 'order' => 3,
@@ -350,8 +284,8 @@ class MenuModel {
                         'order' => 6
                     ),
                 )
-            ),
-            'Member' => array(
+            );
+        $member = array(
                 'name' => '管理员',
                 'icon' => 'user',
                 'order' => 10,
@@ -393,7 +327,103 @@ class MenuModel {
                         'order' => 1
                     ),
                 )
-            ),
+            );
+
+        $zijin = array(
+                'name' => '资金管理',
+                'icon' => 'user',
+                'order' => 10,
+                'menu' => array(
+                    array(
+                        'name' => '资金管理',
+                        'icon' => 'user',
+                        'url' => U('/Zijin/index'),
+                        'order' => 0
+                    ),
+                    // array(
+                    //     'name' => '角色列表',
+                    //     'icon' => 'user-md',
+                    //     'url' => U('/Rbac/roleList'),
+                    //     'order' => 1
+                    // ),
+                )
+            );
+
+        $username = $_SESSION['username'];
+
+        $arr1 = array(
+            'Index' => $index,
+            'Content' => $content,
+//            'User' => array(
+//                'name' => '会员管理',
+//                'icon' => 'tree',
+//                'order' => 1,
+//                'menu' => array(
+//                    array(
+//                        'name' => '会员管理',
+//                        'icon' => 'sitemap',
+//                        'url' => U('/User/index'),
+//                        'order' => 1
+//                    ),
+//                )
+//            ),
+            'Order' => $order,
+            'Gongzi' => $gongzi,
+//            'Article' => array(
+//                'name' => '文章',
+//                'icon' => 'tasks',
+//                'order' => 0,
+//                'menu' => array(
+//                    array(
+//                        'name' => '文章管理',
+//                        'icon' => 'reorder',
+//                        'url' => U('/Article/index'),
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '文章分类',
+//                        'url' => U('/Class/index'),
+//                        'icon' => 'sitemap',
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '文章回收站',
+//                        'icon' => 'trash-o',
+//                        'url' => U('/ArticleRecycle/index'),
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '属性管理',
+//                        'icon' => 'cogs',
+//                        'url' => U('/Attribute/index'),
+//                        'order' => 1
+//                    ),
+//                )
+//            ),
+
+//          'Case' => array(
+//                'name' => '产品管理',
+//                'icon' => 'camera',
+//                'order' => 0,
+//                'menu' => array(
+//                    array(
+//                        'name' => '产品管理',
+//                        'url' => U('/Case/index'),
+//                        'icon' => 'camera',
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '产品分类管理',
+//                        'url' => U('/CaseSort/index'),
+//                        'icon' => 'sitemap',
+//                        'order' => 1
+//                    ),
+//                )
+//            ),
+//
+            'Renshi' => $renshi,
+            'Function' => $function,
+            'Member' => $member,
 //            'message' => array(
 //                'name' => '留言',
 //                'icon' => 'envelope',
@@ -462,5 +492,152 @@ class MenuModel {
 //                )
 //            ),
         );
+        $arr2 = array(
+            'Index' => $index,
+            'Content' => $content,
+//            'User' => array(
+//                'name' => '会员管理',
+//                'icon' => 'tree',
+//                'order' => 1,
+//                'menu' => array(
+//                    array(
+//                        'name' => '会员管理',
+//                        'icon' => 'sitemap',
+//                        'url' => U('/User/index'),
+//                        'order' => 1
+//                    ),
+//                )
+//            ),
+            'Order' => $order,
+            'Gongzi' => $gongzi,
+//            'Article' => array(
+//                'name' => '文章',
+//                'icon' => 'tasks',
+//                'order' => 0,
+//                'menu' => array(
+//                    array(
+//                        'name' => '文章管理',
+//                        'icon' => 'reorder',
+//                        'url' => U('/Article/index'),
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '文章分类',
+//                        'url' => U('/Class/index'),
+//                        'icon' => 'sitemap',
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '文章回收站',
+//                        'icon' => 'trash-o',
+//                        'url' => U('/ArticleRecycle/index'),
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '属性管理',
+//                        'icon' => 'cogs',
+//                        'url' => U('/Attribute/index'),
+//                        'order' => 1
+//                    ),
+//                )
+//            ),
+
+//          'Case' => array(
+//                'name' => '产品管理',
+//                'icon' => 'camera',
+//                'order' => 0,
+//                'menu' => array(
+//                    array(
+//                        'name' => '产品管理',
+//                        'url' => U('/Case/index'),
+//                        'icon' => 'camera',
+//                        'order' => 1
+//                    ),
+//                    array(
+//                        'name' => '产品分类管理',
+//                        'url' => U('/CaseSort/index'),
+//                        'icon' => 'sitemap',
+//                        'order' => 1
+//                    ),
+//                )
+//            ),
+            'Zijin' => $zijin,
+            'Renshi' => $renshi,
+            'Function' => $function,
+            'Member' => $member,
+//            'message' => array(
+//                'name' => '留言',
+//                'icon' => 'envelope',
+//                'order' => 9,
+//                'menu' => array(
+//                    array(
+//                        'name' => '客户留言',
+//                        'icon' => 'edit',
+//                        'url' => U('/Message/index'),
+//                        'order' => 0,
+//                        'divider' => true,
+//                    ),
+//                )
+//            ),
+//            'system' => array(
+//                'name' => '系统',
+//                'icon' => 'tachometer',
+//                'order' => 9,
+//                'menu' => array(
+//                    array(
+//                        'name' => '系统设置',
+//                        'icon' => 'sliders',
+//                        'url' => U('/Setting/site'),
+//                        'order' => 0,
+//                        'divider' => true,
+//                    ),
+//                    array(
+//                        'name' => '缓存管理',
+//                        'icon' => 'upload',
+//                        'url' => U('/Manage/cache'),
+//                        'order' => 3,
+//                        'divider' => true,
+//                    ),
+                    /*array(
+                        'name' => '应用管理',
+                        'icon' => 'flash',
+                        'url' => U('/Functions/index'),
+                        'order' => 4,
+                        'divider' => true,
+                    ),
+                    array(
+                        'name' => '安全记录',
+                        'icon' => 'qrcode',
+                        'url' => U('/AdminLog/index'),
+                        'order' => 5
+                    ),
+                    array(
+                        'name' => '备份还原',
+                        'icon' => 'database',
+                        'url' => U('/AdminBackup/index'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '用户管理',
+                        'icon' => 'user',
+                        'url' => U('/AdminUser/index'),
+                        'order' => 7,
+                        'divider' => true,
+                    ),
+                    array(
+                        'name' => '用户组管理',
+                        'icon' => 'group',
+                        'url' => U('/AdminUserGroup/index'),
+                        'order' => 8,
+                    )*/
+//                )
+//            ),
+        );
+        if($username == 'exlee'){
+            return $arr2;
+        }else{
+            return $arr1;
+        }
+
     }
 }
