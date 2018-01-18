@@ -86,6 +86,14 @@ class WagesZjAction extends WagesCommonAction{
                 $list[$sk]['yuefen']['value'] = mb_substr($qishu,4).'月';   //月份
                 $list[$sk]['fenxiao']['value'] = $school['name'];   //分校名称
                 $user = M("renshi")->where("xingming = '".$sc['xingming']."' and sid = $sid")->find();  //在人事资料里取对应信息
+                if($user['gangweilx'] == 1){
+                    $list[$sk]['gangweilx']['value'] = '全职';   //岗位类型
+                }elseif($user['gangweilx'] == 2){
+                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
+                }else{
+                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
+                }
+                $list[$sk]['zaizhizt']['value'] = $user['leixing'];   //在职状态
                 $list[$sk]['bumen']['value'] = $user['bumen'];   //部门名称
                 $list[$sk]['erjibm']['value'] = $user['bumen2'];   //二级部门
                 $list[$sk]['gangweijb']['value'] = $user['gangweilx'];   //岗位类型

@@ -89,7 +89,14 @@ class WagesJxbAction extends WagesCommonAction{
                 $user = M("renshi")->where("xingming = '".$sc['xingming']."' and sid = $sid")->find();  //在人事资料里取对应信息
                 $list[$sk]['bumen']['value'] = $user['bumen'];   //部门名称
                 $list[$sk]['erjibm']['value'] = $user['bumen2'];   //二级部门
-                $list[$sk]['gangweijb']['value'] = $user['gangweilx'];   //岗位类型
+                if($user['gangweilx'] == 1){
+                    $list[$sk]['gangweilx']['value'] = '全职';   //岗位类型
+                }elseif($user['gangweilx'] == 2){
+                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
+                }else{
+                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
+                }
+                $list[$sk]['zaizhizt']['value'] = $user['leixing'];   //在职状态
                 $list[$sk]['zhiwei']['value'] = $user['zhiwu'];   //岗位类型
                 $list[$sk]['gongzuonx']['value'] = empty($user["ruzhirq"])?'0':floor((time()-strtotime($user['ruzhirq']))/(365*86400))."年";  //工作年限
                 $list[$sk]['ruzhisj']['value'] = $user["ruzhirq"];  //入职日期

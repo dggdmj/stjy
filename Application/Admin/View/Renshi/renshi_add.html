@@ -40,6 +40,44 @@
                     <input type="text" class="input" id="shenfenzhm" name="shenfenzhm" size="60" value="{$list.shenfenzhm}" style="border-color:rgb(255, 102, 0);"><span style="color:red;"> *必填</span>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>校区</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="sid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择校区</option>
+                        <foreach name="school" item="v">
+                            <if condition="$v.id eq $list['sid']">
+                                <option value="{$v.id}" selected>{$v.name}</option>
+                                <else />
+                                <option value="{$v.id}">{$v.name}</option>
+                            </if>
+                        </foreach>
+                    </select>
+                    <span style="color:red;"> *必选</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>部门</label>
+                </div>
+                <div class="field">
+                    <select class="select" name="bumen" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
+                        <option value="">请选择部门</option>
+                        <foreach name="bumen" item="v">
+                            <if condition="$v.name eq $list['bumen']">
+                                <option value="{$v.name}" selected>{$v.name}</option>
+                                <else />
+                                <option value="{$v.name}">{$v.name}</option>
+                            </if>
+                        </foreach>
+                    </select>
+                    <span style="color:red;"> *必选</span>
+                    <a class="button bg-blue button-small icon-plus-circle" title="添加部门" alt="添加部门" style="cursor:pointer;margin-top:4px;" id="b1"></a>
+                    <input type="text" class="input" size="40" id="add1" style="display:none">
+                </div>
+            </div>
             <!-- <div class="form-group">
                 <div class="label">
                     <label>性别</label>
@@ -136,44 +174,7 @@
                     <span style="color:red;"> *必选</span>
                 </div>
             </div> -->
-            <div class="form-group">
-                <div class="label">
-                    <label>校区</label>
-                </div>
-                <div class="field">
-                    <select class="select" name="sid" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
-                        <option value="">请选择校区</option>
-                        <foreach name="school" item="v">
-                            <if condition="$v.id eq $list['sid']">
-                                <option value="{$v.id}" selected>{$v.name}</option>
-                            <else />
-                                <option value="{$v.id}">{$v.name}</option>
-                            </if>
-                        </foreach>
-                    </select>
-                    <span style="color:red;"> *必选</span>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="label">
-                    <label>部门</label>
-                </div>
-                <div class="field">
-                    <select class="select" name="bumen" style="border-color:rgb(255, 102, 0);height:32px;border-radius: 4px;">
-                        <option value="">请选择部门</option>
-                        <foreach name="bumen" item="v">
-                            <if condition="$v.name eq $list['bumen']">
-                                <option value="{$v.name}" selected>{$v.name}</option>
-                            <else />
-                                <option value="{$v.name}">{$v.name}</option>
-                            </if>
-                        </foreach>
-                    </select>
-                    <span style="color:red;"> *必选</span>
-                    <a class="button bg-blue button-small icon-plus-circle" title="添加部门" alt="添加部门" style="cursor:pointer;margin-top:4px;" id="b1"></a>
-                    <input type="text" class="input" size="40" id="add1" style="display:none">
-                </div>
-            </div>
+
             <!-- <div class="form-group">
                 <div class="label">
                     <label>二级部门</label>
@@ -578,6 +579,7 @@
                             </if>
                         </foreach>
                     </select>
+                    <span style="color:red;"> *必选</span>
                     <!-- <a class="button bg-blue button-small icon-plus-circle" title="添加同签订公司" alt="添加同签订公司" style="cursor:pointer;margin-top:4px;" id="b1"></a>
                     <input type="text" class="input" size="40" id="add1" style="display:none"> -->
                 </div>
@@ -599,6 +601,7 @@
                             </if>
                         </foreach>
                     </select>
+                    <span style="color:red;"> *必选</span>
                 </div>
             </div>
             <div class="form-group">
@@ -618,6 +621,7 @@
                             </if>
                         </foreach>
                     </select>
+                    <span style="color:red;"> *必选</span>
                 </div>
             </div>
             <div class="form-group">
@@ -655,50 +659,59 @@
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>聘用渠道</label>
+                    <label>聘用类型</label>
                 </div>
                 <div class="field">
                     <select class="select" name="pinyongqd" style="height:32px;border-radius: 4px;">
 
                         <if condition="$list['pinyongqd'] eq 1">
-                            <option value="">请选择聘用渠道</option>
-                            <option value="1" selected>聘用合同</option>
+                            <option value="">请选择聘用类型</option>
+                            <option value="1" selected>劳动合同</option>
                             <option value="2">劳务合同</option>
+                            <option value="3">实习协议</option>
+                            <option value="4">兼职协议</option>
                         <elseif condition="$list['pinyongqd'] eq 2">
-                            <option value="">请选择聘用渠道</option>
-                            <option value="1">聘用合同</option>
+                            <option value="">请选择聘用类型</option>
+                            <option value="1">劳动合同</option>
                             <option value="2" selected>劳务合同</option>
+                            <option value="3">实习协议</option>
+                            <option value="4">兼职协议</option>
                         <else />
-                            <option value="">请选择聘用渠道</option>
-                            <option value="1">聘用合同</option>
+                            <option value="">请选择聘用类型</option>
+                            <option value="1">劳动合同</option>
                             <option value="2">劳务合同</option>
+                            <option value="3">实习协议</option>
+                            <option value="4">兼职协议</option>
                         </if>
                     </select>
                 </div>
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>紧急联系人</label>
+                    <label>紧急联系人姓名</label>
                 </div>
                 <div class="field">
                     <input type="text" class="input" name="jinjilxr" size="60" value="{$list.jinjilxr}">
                 </div>
+                <span style="color:red;"> *必选</span>
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>关系</label>
+                    <label>紧急联系人关系</label>
                 </div>
                 <div class="field">
                     <input type="text" class="input" name="guanxi" size="60" value="{$list.guanxi}">
                 </div>
+                <span style="color:red;"> *必选</span>
             </div>
             <div class="form-group">
                 <div class="label">
-                    <label>紧急联系人电话</label>
+                    <label>紧急联系人手机号</label>
                 </div>
                 <div class="field">
                     <input type="text" class="input" name="jinjilxrdh" size="60" value="{$list.jinjilxrdh}">
                 </div>
+                <span style="color:red;"> *必选</span>
             </div>
             <div class="form-group">
                 <div class="label">
@@ -1149,6 +1162,22 @@
             type: "POST", //用POST方式传输
             url: url, //目标地址
             data: {lianxidh:lianxidh},
+            dataType:'json',
+            success: function (data){
+                if(!data.status){
+                    layer.msg(data.info, {icon: 2});
+                }
+            }
+        });
+    });
+
+    $("input[name='jinjilxrdh']").blur(function(){
+        var jinjilxrdh = $("input[name='jinjilxrdh']").val();
+        var url = $("input[name='url4']").val();
+        $.ajax({
+            type: "POST", //用POST方式传输
+            url: url, //目标地址
+            data: {jinjilxrdh:jinjilxrdh},
             dataType:'json',
             success: function (data){
                 if(!data.status){
