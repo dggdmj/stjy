@@ -633,7 +633,7 @@ class MenuModel {
 //                )
 //            ),
         );
-        if($username == 'exlee'){
+        if($username == 'admin'){
             return $arr2;
         }else{
             return $arr1;
