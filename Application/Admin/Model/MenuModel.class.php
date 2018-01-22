@@ -283,6 +283,12 @@ class MenuModel {
                         'url' => U('Setting/koukuan'),
                         'order' => 6
                     ),
+					array(
+                        'name' => '收款帐户管理',
+                        'icon' => 'user',
+                        'url' => U('Setting/manageZhanghu'),
+                        'order' => 7
+                    ),
                 )
             );
         $member = array(
@@ -340,18 +346,12 @@ class MenuModel {
                         'url' => U('/Zijin/index'),
                         'order' => 0
                     ),
-                    array(
-                        'name' => '收钱吧表格导入',
-                        'icon' => 'sitemap',
-                        'url' => U('/Zijin/tableList/tid/21'),
-                        'order' => 1
-                    ),
-                    array(
-                        'name' => '拉卡拉表格导入',
-                        'icon' => 'sitemap',
-                        'url' => U('/Zijin/tableList/tid/22'),
-                        'order' => 1
-                    ),
+                    // array(
+                    //     'name' => '角色列表',
+                    //     'icon' => 'user-md',
+                    //     'url' => U('/Rbac/roleList'),
+                    //     'order' => 1
+                    // ),
                 )
             );
 
