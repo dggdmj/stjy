@@ -41,6 +41,10 @@ class SettingAction extends CommonAction{
                 'url' => url('Setting/koukuan'),
                 'icon' => 'list',
                 ),
+				array('name' => '收款帐号管理',
+                'url' => url('Setting/manageZhanghu'),
+                'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -60,6 +64,9 @@ class SettingAction extends CommonAction{
                 ),
                 array('name' => '添加扣款',
                 'url' => url('Setting/koukuan_add'),
+                ),
+				array('name' => '添加收款帐号',
+                'url' => url('Setting/manageZhanghu_add'),
                 ),
             ),
         );
@@ -659,5 +666,54 @@ class SettingAction extends CommonAction{
         $this->assign('school',$school);// 赋值数据集
         $this->adminDisplay('koukuan_add');
     }
+	
+	
+/*****************************************************************************
+ *
+ *	收款帐号
+ *	2018-01-22
+ *
+ *
+ *****************************************************************************/
+	// 收款帐号管理
+	public function manageZhanghu(){
+		//收款帐号列表页
+        $data = M('account_detail');
+        $list = $data->order('id desc')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+	}
+	
+	// 添加收款帐号
+	public function manageZhanghu_add(){
+        $this->adminDisplay();
+	}
+	
+	
+	public function addZhanghu(){
+        if(empty($_GET['id'])) {
+            if($bid=M('account_detail')->add($_POST)) {
+                $this->success('添加成功',U('manageZhanghu'));
+            } else {
+                $this->error('添加失败');
+            }
+        }
+        else {
+            $bid=$_GET['id'];
+            if(M('account_detail')->where(array('id'=>$bid))->save($_POST)) {
+                $this->success('修改成功',U('manageZhanghu'));
+            } else {
+                $this->error('修改失败');
+            }
+        }
+    }
+
+    // 修改添加收款
+    public function editZhanghu() {
+        $id = $_GET['id'];
+        $this->list=D('account_detail')->where(array('id'=>$id))->find();
+        $this->adminDisplay('manageZhanghu_add');
+    }
+	
 }
 ?>
