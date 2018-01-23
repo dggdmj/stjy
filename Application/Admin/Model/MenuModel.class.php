@@ -346,6 +346,18 @@ class MenuModel {
                         'url' => U('/Zijin/index'),
                         'order' => 0
                     ),
+                    array(
+                        'name' => '收钱吧表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/21'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '拉卡拉表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/22'),
+                        'order' => 1
+                    ),
                     // array(
                     //     'name' => '角色列表',
                     //     'icon' => 'user-md',
