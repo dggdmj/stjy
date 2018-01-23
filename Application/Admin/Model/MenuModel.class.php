@@ -349,13 +349,13 @@ class MenuModel {
                     array(
                         'name' => '收钱吧表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/tableList/tid/21'),
+                        'url' => U('/Zijin/tableList/tid/21'),
                         'order' => 1
                     ),
                     array(
                         'name' => '拉卡拉表导入',
                         'icon' => 'sitemap',
-                        'url' => U('/TableImport/tableList/tid/22'),
+                        'url' => U('/Zijin/tableList/tid/22'),
                         'order' => 1
                     ),
                     // array(
