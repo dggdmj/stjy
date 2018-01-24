@@ -11,7 +11,7 @@
                 <tbody>
                     <tr>
                         <th width="60">期数</th>
-                        <th width="80">校区</th>
+                        <th width="80">批次</th>
                         <th width="80">收钱吧</th>
                         <th width="80">拉卡拉</th>
                         <th width="80">现金</th>
@@ -27,7 +27,7 @@
                     <foreach name='list' item='v' key='k'>
                         <tr>
                             <td>{$v.qishu}</td>
-                            <td>{$v.name}</td>
+                            <td>{$v.pici}</td>
                             <foreach name='arr' item='v1' key='k1'>
                                 <if condition="$v[$v1] eq 2">
                                     <td>
@@ -40,7 +40,7 @@
 
                                     <else />
                                     <td>
-                                        <a class="button bg-dot button-small icon-upload" title="未导入" alt="未导入" href="__CONTROLLER__/import/tid/{$k1}/qishu/{$v.qishu}/sid/{$v.sid}"></a>
+                                        <a class="button bg-dot button-small icon-upload" title="未导入" alt="未导入" href="__CONTROLLER__/import/tid/{$k1}/qishu/{$v.qishu}/pici/{$v.pici}"></a>
                                     </td>
                                 </if>
                             </foreach>

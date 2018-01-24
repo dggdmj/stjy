@@ -51,6 +51,9 @@
                     <!-- <input type="text" class="input" name="suoshufx" size="60" value="华景分校"> -->
                     <select name="pici" style="height:32px;border-radius: 4px;">
                         <option value ="">--请选择批次--</option>
+                        <if condition="$extra['pici'] gt 0">
+                            <option value ="{$extra['pici']}" selected>{$extra['pici']}</option>
+                        </if>
                         <!-- <foreach name='school' item='v' key='k'>
                             <if condition="$k eq $extra['sid']">
                                 <option value ="{$k}" selected="">{$v}</option>

@@ -29,26 +29,42 @@ class ZijinAction extends CommonAction{
     }
 
     public function index(){
-        // echo '这是首页';
+        $data = M('pczb'); // 实例化对象
+        $count = $data->count();// 查询满足要求的总记录数
+        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+        $show = $Page->show();// 分页显示输出
+        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+        $list = $data->order('stjy_pczb.qishu desc,stjy_pczb.pici desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        // dump($list);
+
+         // 获取表明与序号对应的一维数组
+        $arr = $this->getTabelnames(1,[6]);
+
+        // 查询该学校是否需要
+
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('fpage',$show);// 赋值分页输出
+        $this->assign('arr',$arr);
         $this->adminDisplay();
     }
 
     // 列表页
     public function tableList(){
-        $username = $_SESSION['username'];
-        $temp = M('admin')->where('username ="'.$username.'"')->find();
-        $uid = $temp['id'];
-        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
-        $school_id = explode(",",$temp['school_id']);
-        $map['sid'] = array('in',$school_id);// 查询条件
+        // $username = $_SESSION['username'];
+        // $temp = M('admin')->where('username ="'.$username.'"')->find();
+        // $uid = $temp['id'];
+        // $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
+        // $school_id = explode(",",$temp['school_id']);
+        // $map['sid'] = array('in',$school_id);// 查询条件
 
         $tid = $_GET['tid'];//获取表格类型id
-        $data = M('qishu_history'); // 实例化对象
-        $count = $data->where($map)->where("tid = ".$tid)->count();// 查询满足要求的总记录数
+        $data = M('pici_history'); // 实例化对象
+        // $count = $data->where($map)->where("tid = ".$tid)->count();// 查询满足要求的总记录数
+        $count = $data->where("tid = ".$tid)->count();
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_admin.nicename,stjy_school.name as school_name,stjy_school.id as sid,stjy_table_name.name,stjy_table_name.table_name')->where($map)->where("tid = ".$tid)->order('stjy_qishu_history.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $list = $data->join('LEFT JOIN stjy_table_name ON stjy_pici_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_pici_history.uid=stjy_admin.id')->field('stjy_pici_history.*,stjy_admin.nicename,stjy_table_name.name,stjy_table_name.table_name')->where("tid = ".$tid)->order('stjy_pici_history.pici desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('tid',$tid);
@@ -65,7 +81,7 @@ class ZijinAction extends CommonAction{
        
         if(count($_GET)>1){
             $extra['qishu'] = $_GET['qishu'];
-            $extra['sid'] = $_GET['sid'];
+            $extra['pici'] = $_GET['pici'];
             $this->assign("extra",$extra);
         }
         $this->assign("table_info",$table_info);
@@ -86,6 +102,10 @@ class ZijinAction extends CommonAction{
     //         // dump($_FILES);die;
     //     }
     //     // die;
+    // }
+
+    // public function dataUpload() {
+    //     dump($_POST);
     // }
 
     //数据导入
@@ -122,7 +142,7 @@ class ZijinAction extends CommonAction{
                 'exts' => array('xlsx', 'xls'),
                 'maxSize' => 3145728,
                 'rootPath' => "./Public/",
-                'savePath' => 'Uploads/',
+                'savePath' => 'Uploads/'.$_POST['qishu'].'/',
                 'subName' => array('date', 'Ymd'),
             );
 
@@ -145,15 +165,46 @@ class ZijinAction extends CommonAction{
 
             // dump($tablename);die;
 
-            
+            //在pici_history中增加
+            $_POST["filename"] = $file_name;
+            $where['pici'] = $_POST['pici'];
+            $where['tid'] = $_POST['tid'];
+            $where['qishu'] = $_POST['qishu'];
+
+            // 查询是否已经存在该表格的导入
+            $res = M('pici_history')->where($where)->find();
+
             // 如果已经导入,则导入失败
-            $pici = $_POST['pici'];
-            $qishu = $_POST['qishu'];
-            $res = M($tablename)->where('addTime ='.$pici.' and intQiShu ='.$qishu)->select();
             if(!empty($res)){
                 unlink($file_name);// 删除excel文档
                 $this->error('已经存在该表格,请删除后再导入');
             }
+
+            $where2['qishu'] = $_POST['qishu'];
+            $where2['pici'] = $_POST['pici'];
+            $pczb['qishu'] = $_POST['qishu'];
+            $pczb['pici'] = $_POST['pici'];
+            $pczb[$tablename] = 2;
+            
+            // 查询批次总表是否有该期数和批次
+            $res2 = M('pczb')->where($where2)->find();
+            // 若查询到无记录则添加,否则就更新数据
+            if(empty($res2)){
+                M('pczb')->add($pczb);
+            }else{
+                M('pczb')->where($where2)->save($pczb);
+            }
+            
+            $pici_id = M("pici_history")->add($_POST);
+            
+            // 如果已经导入,则导入失败
+            // $pici = $_POST['pici'];
+            // $qishu = $_POST['qishu'];
+            // $res = M($tablename)->where('addTime ='.$pici.' and intQiShu ='.$qishu)->select();
+            // if(!empty($res)){
+            //     unlink($file_name);// 删除excel文档
+            //     $this->error('已经存在该表格,请删除后再导入');
+            // }
 
             // excel文档超大对应设置
             if($_FILES['excel']['size']>307200){
@@ -181,13 +232,22 @@ class ZijinAction extends CommonAction{
 
                 // 删除数据总表和期数的记录
                 // --------------删除操作执行开始--------------
+                M("pici_history")->where("id = ".$pici_id)->delete();// 从pici_history删除记录
+                if(isset($where)){
+                    unset($where);
+                }
+                $where['qishu'] = $_POST['qishu'];// 期数
+                $where['pici'] = $_POST['pici'];// 学校id
+                // 对应批次总表的该字段状态改为1,就是未导入
+                $temp[$tablename] = 1;
+                M('pczb')->where($where)->save($temp);
                 unlink($file_name);// 删除excel文档
                 // --------------删除操作执行结束--------------
                 $this->error('缺少必须列'.$notice);
             }
             // dump($cha);die;
             // 获取excel里面除字段以外的数据
-            $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$qishu,$pici,$ziduan,$newTemp);
+            $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$_POST['qishu'],$_POST['pici'],$ziduan,$newTemp);
             
             // dump($excel_data);
             // die;
@@ -198,7 +258,7 @@ class ZijinAction extends CommonAction{
             }
 
             // 导入完成之后删除文件
-            unlink($file_name);
+            // unlink($file_name);
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
         }else{
             $this->error("请选择上传的文件");

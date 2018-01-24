@@ -248,26 +248,31 @@ class TableImportAction extends CommonAction{
             $where['tid'] = $_POST['tid'];
             $where['qishu'] = $_POST['qishu'];
             $where['sid'] = $_POST['sid'];
+            
+            // 查询是否已经存在该表格的导入
+            $res = M('qishu_history')->where($where)->find();
+
+             // 如果已经导入,则导入失败
+            if(!empty($res)){
+                unlink($file_name);// 删除excel文档
+                $this->error('已经存在该表格,请删除后再导入');
+            }
+
+            // 查询数据总表是否有该期数和分校
             $where2['qishu'] = $_POST['qishu'];
             $where2['sid'] = $_POST['sid'];
             $sjzb['qishu'] = $_POST['qishu'];
             $sjzb['sid'] = $_POST['sid'];
             $sjzb[$tablename] = 2;
-            // 查询是否已经存在该表格的导入
-            $res = M('qishu_history')->where($where)->find();
-            // 查询数据总表是否有该期数和分校
             $res2 = M('sjzb')->where($where2)->find();
+
             // 若查询到无记录则添加,否则就更新数据
             if(empty($res2)){
                 M('sjzb')->add($sjzb);
             }else{
                 M('sjzb')->where($where2)->save($sjzb);
             }
-            // 如果已经导入,则导入失败
-            if(!empty($res)){
-                unlink($file_name);// 删除excel文档
-                $this->error('已经存在该表格,请删除后再导入');
-            }
+           
             $qishu_id = M("qishu_history")->add($_POST);
 
             // excel文档超大对应设置
