@@ -71,6 +71,30 @@ class ZijinAction extends CommonAction{
         $this->adminDisplay();
     }
 
+    // 详情页
+    public function table_xq(){
+        if(isset($_GET['id'])){
+            $id = $_GET['id'];// 订单id
+        }else{
+            $id = M('pici_history')->where($_GET)->getField('id');
+        }
+
+        $tid = $_GET['tid'];// 表格类型id
+        $where['qishu'] = $_GET['qishu'];// 期数
+        $where['pici'] = $_GET['pici'];// 批次
+        $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
+        $list = M($tablename)->field('id,addTime,intQiShu,intCreateDate',true)->where($where)->select();
+        // dump($list);
+        // die;
+        // dump($id);
+        $tbnames = array_flip(array_diff($this->getComment($tablename),['id','addTime','intQiShu','intCreateDate']));// array_diff第二个参数的数组里面写入不需要显示的字段
+        // dump($tbnames);
+        // die;
+        $this->assign('list',$list);// 赋值数据集
+        $this->assign('tbnames',$tbnames);// 赋值数据集
+        $this->adminDisplay();
+    }
+
     //数据表导入
 	public function import(){
 	    $tid = $_GET['tid'];    //对应数据表的序号tabel_name
@@ -392,6 +416,70 @@ class ZijinAction extends CommonAction{
         }
         // dump($list);
         return $list;
+    }
+
+    //彻底删除
+    
+    public function del() {
+        if(isset($_GET['id'])){
+            $id = (int)$_GET['id'];// 订单id
+        }else{
+            $id = M('pici_history')->where($_GET)->getField('id');
+        }
+
+        // --待改--
+        $tid = $_GET['tid'];// 表格id
+        $where['qishu'] = $_GET['qishu'];// 期数
+        $where['pici'] = $_GET['pici'];// 批次
+        // $status_xz = M('pczb')->where($where)->getField('status_xz');// 获取数据总表的行政状态
+        // if($status_xz == 2){// 如果行政状态为2,就是已经提交给行政经理,不允许操作,直接提示删除失败
+        //     $arr['status'] = false;
+        //     $arr['info'] = '表格已提交,删除失败';
+        //     $this->ajaxReturn($arr);
+        // }
+
+        $filename = M('pici_history')->where('id ='.$id)->getField('filename');// 从qishu_history里面拿出excel表的存放路径
+        $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");// 从table_name里面取出相应的表名(拼音)
+
+        // --------------删除操作执行开始--------------
+        $res1 = M($tablename)->where($where)->delete();// 从表明里删除所属id对应的数据
+        $res2 = M("pici_history")->where("id = ".$id)->delete();// 从qishu_history删除记录
+        unlink($filename);// 删除存放的excel表
+
+        // 对应数据总表的该字段状态改为1,就是未导入
+        $temp[$tablename] = 1;
+        M('pczb')->where($where)->save($temp);
+        // --------------删除操作执行结束--------------
+
+        // 返回删除成功信息
+        $arr['status'] = true;
+        $arr['info'] = '删除成功';
+        $this->ajaxReturn($arr);
+    }
+
+    // 下载导入表格
+    public function download(){
+        $data = M('pici_history')->join('stjy_table_name ON stjy_pici_history.tid=stjy_table_name.id')->field('stjy_pici_history.*,stjy_table_name.name')->where($_GET)->find();
+        $file_url = $data['filename'];
+
+        if(!isset($file_url)||trim($file_url)==''){
+            return '500';
+        }
+        if(!file_exists($file_url)){ //检查文件是否存在
+            return '404';
+        }
+        $filename = $data['qishu'].'-'.$data['pici'].'-'.$data['name'];
+        $arr = explode('.',$file_url);
+        $file_type = $arr[count($arr)-1];
+        $file=fopen($file_url,'r'); //打开文件
+        //输入文件标签
+        header("Content-type: application/octet-stream");
+        header("Accept-Ranges: bytes");
+        header("Accept-Length: ".filesize($file_url));
+        header("Content-Disposition: attachment; filename=".$filename.'.'.$file_type);
+        //输出文件内容
+        echo fread($file,filesize($file_url));
+        fclose($file);
     }
 
 }
