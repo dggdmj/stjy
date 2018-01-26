@@ -13,11 +13,9 @@
 						<th>备注</th>
 						
                         <th width="80">是否启用</th>
+						<th>排序</th>
                         <th width="100">操作</th>
                     </tr>
-					<php>
-					//dump($list);
-					</php>
                     <foreach name='list' item='v'>
                         <tr>
                             <td>{$v.id}</td>
@@ -32,6 +30,7 @@
                                 <if condition="$v.isuse eq 0"><span style="color: red">未启用</span></if>
                                 <if condition="$v.isuse eq 1">已启用</if>
                             </td>
+							<td>{$v.intorderid}</td>
                             <td>
                                 <a class="button bg-blue button-small icon-pencil" title="修改" alt="修改" href="editZhanghu/id/{$v['id']}"></a>
                                 <a class="button bg-red button-small icon-trash-o js-del" title="删除" alt="删除" target2="delete/id/{$v['id']}/table/account_detail"></a>
@@ -51,9 +50,9 @@
                 </div>
                 <br>
             </div>
-            <div class="float-right pagination pagination-small">
+            <!--div class="float-right pagination pagination-small">
                 {$fpage}
-            </div>
+            </div-->
         </div>
     </div>
 </form>

@@ -346,7 +346,13 @@ class MenuModel {
                         'url' => U('/Zijin/index'),
                         'order' => 0
                     ),
-                    array(
+					array(
+                        'name' => '资金汇总',
+                        'icon' => 'user',
+                        'url' => U('/Zijin/zijinListQishu'),
+                        'order' => 0
+                    ),
+					array(
                         'name' => '收钱吧表导入',
                         'icon' => 'sitemap',
                         'url' => U('/Zijin/tableList/tid/21'),
