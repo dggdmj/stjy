@@ -6,34 +6,22 @@
                     <tr>
                         <th width="80">编号</th>
 						
-                        <th>帐户姓名</th>
-						<th>开户银行</th>
-						<th>开户银行帐号</th>
-						<th>对帐平台</th>
-						<th>备注</th>
-						
-                        <th width="80">是否启用</th>
-						<th>排序</th>
-                        <th width="100">操作</th>
+                        <th>期数</th>
+						<th>添加时间</th>
+
+                        <th width="150">操作</th>
                     </tr>
                     <foreach name='list' item='v'>
                         <tr>
                             <td>{$v.id}</td>
 							
-                            <td>{$v.strname}</td>
-							<td>{$v.strbankname}</td>
-							<td>{$v.strbankaccount}</td>
-							<td>{$v.strmoneyname}</td>
-							<td>{$v.textremark}</td>
-							
+                            <td>{$v.name}</td>
+							<td>{$v.addtime}</td>
+
                             <td>
-                                <if condition="$v.isuse eq 0"><span style="color: red">未启用</span></if>
-                                <if condition="$v.isuse eq 1">已启用</if>
-                            </td>
-							<td>{$v.intorderid}</td>
-                            <td>
-                                <a class="button bg-blue button-small icon-pencil" title="修改" alt="修改" href="editZhanghu/id/{$v['id']}"></a>
-                                <a class="button bg-red button-small icon-trash-o js-del" title="删除" alt="删除" target2="delete/id/{$v['id']}/table/account_detail"></a>
+                                <a class="button bg-blue button-small icon-pencil" title="统计" alt="统计" href="{:U('/zijin/zijinHuizong_QiShu',array('qishu'=>$v['name']))}">&nbsp;&nbsp;统计</a>
+								
+								<a class="button bg-blue button-small icon-eye" title="查看" alt="查看" href="{:U('/zijin/zijinListDay',array('qishu'=>$v['name']))}">&nbsp;&nbsp;查看</a>
                             </td>
                         </tr>
                     </foreach>
@@ -50,9 +38,9 @@
                 </div>
                 <br>
             </div>
-            <!--div class="float-right pagination pagination-small">
+            <div class="float-right pagination pagination-small">
                 {$fpage}
-            </div-->
+            </div>
         </div>
     </div>
 </form>
