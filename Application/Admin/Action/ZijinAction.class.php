@@ -17,7 +17,7 @@ class ZijinAction extends CommonAction{
             //         'url' => url('Renshi/renshi'),
             //         'icon' => 'list',
             //     ),
-                
+
             // ),
             // 'add' => array(
             //     array('name' => '添加人事',
@@ -102,7 +102,7 @@ class ZijinAction extends CommonAction{
         $qishu = M('qishu')->where('isuse = 1')->order('id desc')->select();// 可用期数
         $temp = M('admin')->where('username ="'.$_SESSION['username'].'"')->find();
         $nicename =  $temp['nicename'];// 操作人昵称
-       
+
         if(count($_GET)>1){
             $extra['qishu'] = $_GET['qishu'];
             $extra['pici'] = $_GET['pici'];
@@ -147,14 +147,14 @@ class ZijinAction extends CommonAction{
         if (!empty($_FILES)) {
             // dump($_FILES);die;
             $name = explode('.',$_FILES['excel']['name'])[0];// 获取上传excel文档的文档名
-            
+
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
             // dump($tablename);die;
             // 获取对应数据库里面注释(与excel字段相同)和字段名拼接的数组
             $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
             // dump($newTemp);die;
             $tablenames = $this->getTabelnames(2,[6]);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
-            
+
             $tid = $_POST["tid"];  //表名对应的序号
 
             $num = count(explode(explode('表',$tablenames[$tid])[0],$name));// 判断上传表格是否正确的条件,如果上传表名含有需要上传表格名的关键字段,即num>=2,若<2就是非正确的上传表名
@@ -185,7 +185,7 @@ class ZijinAction extends CommonAction{
                 $this->error('上传失败,请检查上传的文档是否正确');
             }
 
-            
+
 
             // dump($tablename);die;
 
@@ -209,7 +209,7 @@ class ZijinAction extends CommonAction{
             $pczb['qishu'] = $_POST['qishu'];
             $pczb['pici'] = $_POST['pici'];
             $pczb[$tablename] = 2;
-            
+
             // 查询批次总表是否有该期数和批次
             $res2 = M('pczb')->where($where2)->find();
             // 若查询到无记录则添加,否则就更新数据
@@ -218,9 +218,9 @@ class ZijinAction extends CommonAction{
             }else{
                 M('pczb')->where($where2)->save($pczb);
             }
-            
+
             $pici_id = M("pici_history")->add($_POST);
-            
+
             // 如果已经导入,则导入失败
             // $pici = $_POST['pici'];
             // $qishu = $_POST['qishu'];
@@ -245,12 +245,12 @@ class ZijinAction extends CommonAction{
             $highestColumn = $sheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
 
-            
+
             // 获取excel里面的所有字段
             $ziduan = $this->getExcelZiduan($objPHPExcel,$colsNum);
             // 检测必须列
             $cha = $this->checkBixu($tablename,$ziduan);
-            
+
             if(!empty($cha)){
                 $notice = implode(',',$cha);
 
@@ -272,7 +272,7 @@ class ZijinAction extends CommonAction{
             // dump($cha);die;
             // 获取excel里面除字段以外的数据
             $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$_POST['qishu'],$_POST['pici'],$ziduan,$newTemp);
-            
+
             // dump($excel_data);
             // die;
             // 将获取数组插入到数据库相应的表里面
@@ -296,7 +296,7 @@ class ZijinAction extends CommonAction{
         }else if($tablename == 'sqbb'){
             $bixu = array_flip(array_diff($bixu,['id','addTime','intQiShu','intCreateDate']));
         }
-        
+
         $cha = array_diff($bixu,$ziduan);
         if(!empty($cha)){
             return $cha;
@@ -417,11 +417,11 @@ class ZijinAction extends CommonAction{
         // dump($list);
         return $list;
     }
-	
-	
-	
-	
-	
+
+
+
+
+
 
 /*****************************************************************************
  *
@@ -435,29 +435,29 @@ class ZijinAction extends CommonAction{
 		$count = M('qishu')->where('isUse',1)->order('name desc,id desc')->count();
         $Page = new \Think\Page($count,15);
         $show = $Page->show();
-		
+
 		$list = M('qishu')->where('isUse',1)->order('name desc,id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-		
+
 		$this->assign('list',$list);
 		$this->assign('fpage',$show);
 		$this->adminDisplay();
-		
+
 	}
-	
+
 
  	public function zijinListDay(){
 		$qishu = $_GET['qishu'];
 		if(intval($qishu)>0){
-		
+
 			$strDate=$qishu."01";
 			$intDays = date('t', strtotime($strDate));
-			
+
 			$this->assign('qishu',$qishu);
 			$this->assign('intDays',$intDays);
 			$this->adminDisplay();
-		}	
+		}
 	}
-	
+
 	public function zijinHuizong_QiShu(){
 		$qishu = $_GET['qishu'];
 		if(intval($qishu)>0){
@@ -467,42 +467,42 @@ class ZijinAction extends CommonAction{
 			{
 				if(!in_array($val["sid"],$arrSid))
 					$listSchool[$key] = M('school')->where('id="'.$val["sid"].'"')->find();
-	
+
 				if(!in_array($val["aid"],$arrAid))
 					$listAccount[$key] = M('account_detail')->where('id="'.$val["aid"].'"')->find();
-					
-				$arrSid[$key]=$val["sid"];	
-				$arrAid[$key]=$val["aid"];	
+
+				$arrSid[$key]=$val["sid"];
+				$arrAid[$key]=$val["aid"];
 			}
 			foreach($listSchool as $Key => $Value){
 				foreach($listAccount as $KeyA => $ValueA){
-								
+
 					$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
-				}						
+				}
 			}
-					
-				
-		}	
+
+
+		}
 	}
-	
-	
+
+
     public function zijinHuizong(){
 
 		$strQishu = $_GET['qishu'];
 		$strPici  = $_GET['pici'];
-		
+
 		//测试数据-参数设置
 		//$strQishu="201710";
 		//$strPici="8";
-		
+
 		if(intval($strQishu)>0 && intval($strPici)>0)
 			$listSF = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."'" )->order('id asc')->select();
 		else
 			$this->error("数据操作有误，请检查！");
-			
+
 		//if(intval($strQishu)>0 && intval($strPici)=="")
 		//	$listSF = M('shoufei_info')->where("'intQiShu = '".intval($strQishu)."'" )->order('id asc')->select();
-		
+
 		if(is_array($listSF) && !empty($listSF))
 		{
 			//$listSF = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."'" )->order('id asc')->select();
@@ -511,85 +511,85 @@ class ZijinAction extends CommonAction{
 			{
 				if(!in_array($val["sid"],$arrSid))
 					$listSchool[$key] = M('school')->where('id="'.$val["sid"].'"')->find();
-	
+
 				if(!in_array($val["aid"],$arrAid))
 					$listAccount[$key] = M('account_detail')->where('id="'.$val["aid"].'"')->find();
-					
-				$arrSid[$key]=$val["sid"];	
-				$arrAid[$key]=$val["aid"];	
+
+				$arrSid[$key]=$val["sid"];
+				$arrAid[$key]=$val["aid"];
 			}
 			foreach($listSchool as $Key => $Value){
 				foreach($listAccount as $KeyA => $ValueA){
-								
+
 					$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
-				}						
+				}
 			}
 
-			
+
 		}
 		else
 		{
 			$listSchool = M('school')->where('isuse',1)->order('id desc')->select();//
 			$listAccount = M('account_detail')->where('isUse',1)->order('intOrderID asc,id desc')->select();//
-			
+
 			if(intval($strQishu)>0 && intval($strPici)>0)
 			{
 				foreach($listSchool as $Key => $Value){
-					foreach($listAccount as $KeyA => $ValueA){			
+					foreach($listAccount as $KeyA => $ValueA){
 						$listHZBJ_D = M('lklb')->where("strmername = '".$Value["subname"]."' and intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and straccountname = '".$ValueA["strname"]."' and straccountbank = '".$ValueA["strbankname"]."'")->sum('douHZBJ');
 						$listSXF_D = M('lklb')->where("strmername = '".$Value["subname"]."' and intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and straccountname = '".$ValueA["strname"]."' and straccountbank = '".$ValueA["strbankname"]."'")->sum('douSXF');
-						
+
 						//echo  M('lklb')->getLastSql();
 						//echo "<br>";
 						$arrData["sid"]	= $Value["id"];
 						$arrData["aid"]	= $ValueA["id"];
-						
+
 						$arrData["douSF"]	= floatval($listHZBJ_D);
 						$arrData["douSFHJ"]	= floatval($listHZBJ_D) - abs(floatval($listSXF_D));
 						$arrData["douSXF"]	= floatval($listSXF_D);
-						
+
 						$arrData["addTime"]	= intval($strPici);
 						$arrData["intQiShu"]	= intval($strQishu);
 						$arrData["intCreateDate"]	= date('Y-m-d H:i:s');
-						
+
 						M('shoufei_info')->add($arrData);
-					}						
+					}
 				}
-				
+
 				foreach($listSchool as $Key => $Value){
 					foreach($listAccount as $KeyA => $ValueA){
-									
+
 						$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
-					}						
+					}
 				}
 				//dump($listSXF);
 			}
-			
-			
-			
+
+
+
 		}
 		$this->assign('listHZBJ',$listHZBJ);
 		$this->assign('listSXF',$listSXF);
-		
+
 		$this->assign('listSchool',$listSchool);
 		$this->assign('listAccount',$listAccount);
-		
+
 		$this->assign('qishu',$strQishu);
 		$this->assign('pici',$strPici);
-		
+
 		$this->adminDisplay();
-		
+
 	}
-	
+
 	public function zijin_num_ajax(){
-	
+
 		$douSF_Z_js	= $_POST["douSF_Z_js"]*100;	//电子总收入
 		$douSF_D_js	= $_POST["douSF_D_js"]*100;	//最后计算结果
-		
+
 		$douXJSR_js	= $_POST["douXJSR_js"]*100;	//现金收入
 		$douXXK_js	= $_POST["douXXK_js"]*100;	//学习卡
 		$douRZK_js	= $_POST["douRZK_js"]*100;	//融资款
-		
+
 		$floSXF_js	= abs($_POST["floSXF_js"])*100;	//手续费
 
 		if($douSF_Z_js>0)
@@ -603,15 +603,15 @@ class ZijinAction extends CommonAction{
 			$temp['msg'] 	= '请在正确的收款平台下填写！';
 			$temp['status'] = 'NO';
 		}
-		echo json_encode($temp); 
+		echo json_encode($temp);
 		//dump($temp);
 	}
-	
+
 	public function addZijinHuizong(){
-	
+
 		$sid	= $_POST["sid"];
 		$aid	= $_POST["aid"];
-		
+
 		$douSF		= $_POST["douSF"];
 		$douSFHJ	= $_POST["douSFHJ"];
 		$douXJSR	= $_POST["douXJSR"];
@@ -619,21 +619,21 @@ class ZijinAction extends CommonAction{
 		$douRZK		= $_POST["douRZK"];
 		$douQTSR	= $_POST["douQTSR"];
 		$douSXF		= $_POST["douSXF"];
-		
+
 		$addTime	= $_POST["addTime"];
 		$intQiShu	= $_POST["intQiShu"];
 
 		$intCreateDate	= $_POST["intCreateDate"];
-		
+
 		$intID	= $_POST["intID"];
-		
+
 		if(!empty($intID) && is_array($intID))
 		{
 			foreach($intCreateDate as $key=>$val)
 			{
 				//$arrData["sid"]	= $sid[$key];
 				//$arrData["aid"]	= $aid[$key];
-				
+
 				$arrData["douSF"]	= $douSF[$key];
 				$arrData["douSFHJ"]	= $douSFHJ[$key];
 				$arrData["douXJSR"]	= $douXJSR[$key];
@@ -641,29 +641,29 @@ class ZijinAction extends CommonAction{
 				$arrData["douRZK"]	= $douRZK[$key];
 				$arrData["douQTSR"]	= $douQTSR[$key];
 				$arrData["douSXF"]	= $douSXF[$key];
-				
+
 				//$arrData["addTime"]	= $addTime[$key];
 				//$arrData["intQiShu"]= $intQiShu[$key];
-				
+
 				$arrData["intCreateDate"]	= $intCreateDate[$key];
-				
+
 				$fid	= $intID[$key];
 
 				M('shoufei_info')->where(array('id'=>$fid))->save($arrData);
 
 				$uQiShu	=	$intQiShu[$key];
 			}
-			
+
 			$this->success('修改成功',U('zijinListDay',array('qishu'=>$uQiShu)));
 
         }
-        else 
+        else
 		{
 			foreach($intCreateDate as $key=>$val)
 			{
 				$arrData["sid"]	= $sid[$key];
 				$arrData["aid"]	= $aid[$key];
-				
+
 				$arrData["douSF"]	= $douSF[$key];
 				$arrData["douSFHJ"]	= $douSFHJ[$key];
 				$arrData["douXJSR"]	= $douXJSR[$key];
@@ -671,24 +671,24 @@ class ZijinAction extends CommonAction{
 				$arrData["douRZK"]	= $douRZK[$key];
 				$arrData["douQTSR"]	= $douQTSR[$key];
 				$arrData["douSXF"]	= $douSXF[$key];
-				
+
 				$arrData["addTime"]	= $addTime[$key];
 				$arrData["intQiShu"]= $intQiShu[$key];
-				
+
 				$arrData["intCreateDate"]	= $intCreateDate[$key];
-			
+
 				M('shoufei_info')->add($arrData);
-				
+
 				$uQiShu	=	$intQiShu[$key];
 			}
 			$this->success('保存成功',U('zijinListDay',array('qishu'=>$uQiShu)));
-           
+
         }
-			
+
 	}
-	
+
 	public function zijin_rem_ajax(){
-	
+
 		$textPiZhu_js	= $_POST["textPiZhu"];
 		$intID_js	= $_POST["intID"];
 		$fieldName_js	= $_POST["fieldName"];
@@ -706,9 +706,9 @@ class ZijinAction extends CommonAction{
 			else
 			{
 				$arrData[$fieldName_js]=$textPiZhu_js;
-				
+
 				M('shoufei_info')->where("id = '".intval($intID_js)."'")->save($arrData);
-				
+
 				$temp["msg"] = '添加 批注信息 成功！';
 				$temp["status"] = 'OK';
 			}
@@ -718,17 +718,17 @@ class ZijinAction extends CommonAction{
 			$temp['msg'] 	= '此项没有内容，无法添加批注！';
 			$temp['status'] = 'NO';
 		}
-		
-		echo json_encode($temp); 
+
+		echo json_encode($temp);
 		//dump($temp);
 	}
-	
+
 	public function zijinHuizong_cz(){
-	
+
 		$intQishu = $_GET['qishu'];
 		$intPici  = $_GET['pici'];
 
-		
+
 		if(intval($intQishu)>0 && intval($intPici)>0)
 		{
 			M("shoufei_info")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."'")->delete();
@@ -738,15 +738,15 @@ class ZijinAction extends CommonAction{
 			$temp['msg'] 	= '此项没有内容，无法添加批注！';
 			$temp['status'] = 'NO';
 		}
-		
-		echo json_encode($temp); 
+
+		echo json_encode($temp);
 		//dump($temp);
 	}
-	
-	
+
+
 
     //彻底删除
-    
+
     public function del() {
         if(isset($_GET['id'])){
             $id = (int)$_GET['id'];// 订单id
