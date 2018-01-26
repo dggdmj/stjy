@@ -1,0 +1,368 @@
+<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/zijin/addzijinHuizong')}">
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <table id="table" class="table table-hover table-bordered table-condensed">
+                <tbody>
+                    <tr>
+						<th width="50" rowspan="2">编号</th>
+    					<th rowspan="2" width="280">分校</th>
+						<php>
+							$i=0;
+						</php>
+						<foreach name='listAccount' item='vo'>
+                        	<th colspan="6" id="cs_2018">{$vo.strname}-{$vo.strbankname}-{$vo.strmoneyname} ({$vo.textremark})</th>
+							<php>
+								$i++;	
+							</php>
+						</foreach>
+
+                    </tr>
+             		<tr>
+						<for start="0" end="$i">
+							<th width="120">收费</th>
+							
+							<th width="180">现金收入</th>
+							<th width="180">学习卡</th>
+							<th width="180">融资款</th>
+							<th width="180">其它收入</th>
+							
+							<th width="90">手续费</th>
+						</for>
+					</tr>
+					<php>
+						$k=1;
+						
+						//dump($listHZBJ);
+					</php>
+					<foreach name='listSchool' item='v'>
+					<tr>
+						<td>{$k}</td>
+						<td>{$v.subname}</td>
+
+							<foreach name='listAccount' item='vo'>
+								<php>
+									if(is_array($listHZBJ[$v['id']][$vo['id']]) && !empty($listHZBJ[$v['id']][$vo['id']]))
+									{
+										$douSF	= $listHZBJ[$v['id']][$vo['id']]['dousf'];
+										
+										$floHZBJ = $listHZBJ[$v['id']][$vo['id']]['dousfhj'];
+										if(abs($floHZBJ)>0)
+											$floHZBJ=$floHZBJ;
+										else
+											$floHZBJ="";
+										
+										$douXJSR = $listHZBJ[$v['id']][$vo['id']]['douxjsr'];
+										if($douXJSR>0)
+											$douXJSR=$douXJSR;
+										else
+											$douXJSR="";
+											
+										$douXXK = $listHZBJ[$v['id']][$vo['id']]['douxxk'];
+										if($douXXK>0)
+											$douXXK=$douXXK;
+										else
+											$douXXK="";
+											
+										$douRZK = $listHZBJ[$v['id']][$vo['id']]['dourzk'];
+										if($douRZK>0)
+											$douRZK=$douRZK;
+										else
+											$douRZK="";
+										
+										$douQTSR = $listHZBJ[$v['id']][$vo['id']]['douqtsr'];
+										if($douQTSR>0)
+											$douQTSR=$douQTSR;
+										else
+											$douQTSR="";
+											
+										$floSXF = $listHZBJ[$v['id']][$vo['id']]['dousxf'];
+										if(abs($floSXF)>0)
+											$floSXF=$floSXF;
+										else
+											$floSXF="";
+											
+										$strInputID='<input type="hidden" name="intID[]" value="'.$listHZBJ[$v['id']][$vo['id']]['id'].'" />';
+										$intID_js=$listHZBJ[$v['id']][$vo['id']]['id'];
+										
+										
+										$douXJSR_Rem=$listHZBJ[$v['id']][$vo['id']]['douxjsr_rem'];
+										if($douXJSR_Rem!="")
+											$douXJSR_Rem_css="border-green";
+										else
+											$douXJSR_Rem_css="border-main";
+											
+										$douXXK_Rem=$listHZBJ[$v['id']][$vo['id']]['douxxk_rem'];
+										if($douXXK_Rem!="")
+											$douXXK_Rem_css="border-green";
+										else
+											$douXXK_Rem_css="border-main";
+										
+										$douRZK_Rem=$listHZBJ[$v['id']][$vo['id']]['dourzk_rem'];
+										if($douRZK_Rem!="")
+											$douRZK_Rem_css="border-green";
+										else
+											$douRZK_Rem_css="border-main";
+										
+										$douQTSR_Rem=$listHZBJ[$v['id']][$vo['id']]['douqtsr_rem'];
+										if($douQTSR_Rem!="")
+											$douQTSR_Rem_css="border-green";
+										else
+											$douQTSR_Rem_css="border-main";
+										
+									}
+									else
+									{
+										$floHZBJ = number_format($listHZBJ[$v['id']][$vo['id']]-abs($listSXF[$v['id']][$vo['id']]),2,".","");
+										if(abs($floHZBJ)>0)
+											$floHZBJ=$floHZBJ;
+										else
+											$floHZBJ="";
+											
+										$floSXF = $listSXF[$v['id']][$vo['id']];
+										
+										$douSF = $listHZBJ[$v['id']][$vo['id']];
+									}
+									
+								</php>
+								<td align="right" id="htmlSF_{$v.id}_{$vo.id}" title="最终收费 = 读取总收费({$douSF}) + 现金 {//$douXJSR}- 学习卡 {//$douXXK}- 融资款 {//$douRZK}- 手续费 {//$floSXF} ">{$floHZBJ}</td>
+								<input type="hidden" name="douSF[]" id="douSF_Z_{$v.id}_{$vo.id}" value="{$douSF}" /><!-- 总的收入 不改动 -->
+								<input type="hidden" name="douSFHJ[]" id="douSF_D_{$v.id}_{$vo.id}" value="{$floHZBJ}" /><!-- 最后计算结果 -->
+								
+								<td>
+									<div style="float:left;"><input class="input" style="width:100px;" name="douXJSR[]" value="{$douXJSR}" id="douXJSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXJSR_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}')" /></div>
+									<div style="float:left; margin-left:15px;">
+										<button type="button" onclick="jsGetData('douXJSR_Rem','{$intID_js}')" class="button button-small {$douXJSR_Rem_css}" >批注</button>
+									</div>
+								</td>
+								
+								<td>
+									<div style="float:left;"><input class="input" style="width:100px;" name="douXXK[]" value="{$douXXK}" id="douXXK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXXK_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}')" /></div>
+									<div style="float:left; margin-left:15px;">
+										<button type="button" onclick="jsGetData('douXXK_Rem','{$intID_js}')" class="button button-small {$douXXK_Rem_css}" >批注</button>
+									</div>
+								</td>
+								
+								<td>
+									<div style="float:left;"><input class="input" style="width:100px;" name="douRZK[]" value="{$douRZK}" id="douRZK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douRZK_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}')" /></div>
+									<div style="float:left; margin-left:15px;">
+										<button type="button" onclick="jsGetData('douRZK_Rem','{$intID_js}')" class="button button-small {$douRZK_Rem_css}" >批注</button>
+									</div>
+								</td>
+								
+								<td>
+									<div style="float:left;"><input class="input" style="width:100px;" name="douQTSR[]" value="{$douQTSR}" onkeyup="numMoney_N(this)" /></div>
+									<div style="float:left; margin-left:15px;">
+										<button type="button" onclick="jsGetData('douQTSR_Rem','{$intID_js}')" class="button button-small {$douQTSR_Rem_css}" >批注</button>
+									</div>
+								</td>
+								
+								<td>{$floSXF}</td>
+								<input type="hidden" name="douSXF[]" id="floSXF_{$v.id}_{$vo.id}" value="{$floSXF}" /><!-- 手续费 -->
+								
+								<input type="hidden" name="addTime[]" value="{$pici}" />
+								<input type="hidden" name="intQiShu[]" value="{$qishu}" />
+								<input type="hidden" name="intCreateDate[]" value="<php> echo date('Y-m-d h:i:s')</php>" />
+								<input type="hidden" name="sid[]" value="{$v.id}" />
+								<input type="hidden" name="aid[]" value="{$vo.id}" />
+								
+								{$strInputID}
+							</foreach>
+
+					</tr>
+						<php>
+							$k++;
+						</php>
+      				</foreach>
+					
+					
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-foot table-foot clearfix">
+            <div class="float-left">
+                <div class="form-inline">
+                    <div class="form-group"><button class="button bg-sub icon-save"> &nbsp;保存</button></div>
+                    </div>
+                </div>
+                <br>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+
+<!--div id="mydialog">
+	<div class="dialog">
+		<div class="dialog-head">
+			<span class="close rotate-hover"></span><strong>批注信息</strong></div>
+		<div class="dialog-body">
+		<textarea rows="5" class="input" name="textPiZhu" placeholder="批注信息" id="textPiZhu"></textarea>
+		<input type="hidden" id="fieldName" value="" />
+		<input type="hidden" id="intID" value="" />
+		</div>
+		<div class="dialog-foot">
+			<button class="button dialog-close">取消</button>
+			<button class="button bg-green" onclick="postData()">确认</button>
+		</div>
+	</div>visibility:hidden;
+</div-->
+
+<div id="myModal" style="width:600px; display:none; position:fixed; left:50%; top:50%; margin-left:-300px; margin-top:-100px; z-index:100000;">
+	<div class="" style="border:#CCCCCC 1px solid; border-radius:5px; background:#FFFFFF;">
+		<div class="" style="border-bottom:#CCCCCC 1px solid; line-height:35px; font-size:16px; padding:0px 0px 0px 15px;"><span class="rotate-hover"></span><strong>批注信息</strong></div>
+		
+		<div class="dialog-body" style=" padding:10px 15px 10px 15px; border-bottom:#CCCCCC 1px solid;">
+			<textarea rows="5" class="input" name="textPiZhu" placeholder="批注信息" id="textPiZhu"></textarea>
+			<input type="hidden" id="fieldName" value="" />
+			<input type="hidden" id="intID" value="" />
+		</div>
+		
+		<div class="dialog-foot" style="text-align:right; padding:10px 50px 10px 0px;">
+			<button class="button dialog-close" style="margin-right:10px;" onclick="$('#myModal').hide();$('#mask_my').hide();">取消</button>
+			<button class="button bg-green" onclick="postData()">确认</button>
+		</div>
+		
+	</div>
+</div>
+
+
+<div id="mask_my"></div>
+
+<style>
+body {overflow-x: scroll;}
+#mask_my {width:100%; height:100%; background-color:#000;position:fixed;top:0; left:0;z-index:2;opacity:0.4;filter: alpha(opacity=40); display:none;}
+
+</style>
+
+<script>
+
+function jsGetData(fieldName,intID){
+	$("#fieldName").val(fieldName);
+	$("#intID").val(intID);
+	
+	$("#mask_my").show();
+	 $("#myModal").show(300);
+	// document.getElementById("myModal").style.visibility="visible";
+	//alert($("#intID").val());
+	
+	$.ajax({
+		type: "POST",
+		url: "{:url('Zijin/zijin_rem_ajax','',false)}",
+		data: {
+				intID:intID,
+				fieldName:fieldName
+			  },
+		dataType:"json",
+		success: function(result){
+			if(result.status == 'OK'){
+				$('#textPiZhu').val(result.msg);
+			} else {
+				alert(result.msg);
+				$('#myModal').hide();
+				$('#mask_my').hide();
+			}	              
+		} 
+	});
+}
+
+function postData()
+{
+
+	var intID 	= $("#intID").val();
+	var	fieldName	= $("#fieldName").val();
+	var	textPiZhu	= $("#textPiZhu").val();
+
+	$.ajax({
+		type: "POST",
+		url: "{:url('Zijin/zijin_rem_ajax','',false)}",
+		data: {
+				intID:intID,
+				textPiZhu:textPiZhu,
+				fieldName:fieldName
+			  },
+		dataType:"json",
+		success: function(result){
+			if(result.status == 'OK'){
+				alert(result.msg);
+				//button button-small border-green
+				$('#myModal').hide();
+				$('#mask_my').hide();
+			} else {
+				alert(result.msg);
+				$('#myModal').hide();
+				$('#mask_my').hide();
+			}	              
+		} 
+	});
+	
+
+}
+
+$(function(){
+	var W = <php>echo $i*930</php>+330;
+	$("body").width(W);
+});
+
+function numMoney_N(obj){
+	obj.value = obj.value.replace(/[^\d.]/g,""); 
+	obj.value = obj.value.replace(/^\./g,"");
+	obj.value = obj.value.replace(/\.{2,}/g,".");
+	obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+	obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
+}
+
+
+function numMoney_Y(obj,htmlSF,douSF_Z,douSF_D,douXJSR,douXXK,douRZK,floSXF){
+
+	obj.value = obj.value.replace(/[^\d.]/g,"");
+	obj.value = obj.value.replace(/^\./g,"");
+	obj.value = obj.value.replace(/\.{2,}/g,".");
+	obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+	obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
+
+	
+	//最终收费 = 读取收费+现金-学习卡-融资款-手续费
+	
+	var douSF_Z_js = $("#"+douSF_Z+"").val();//电子总收入
+	var douSF_D_js = $("#"+douSF_D+"").val();//最后计算结果
+	
+	var douXJSR_js = $("#"+douXJSR+"").val();//现金收入
+	var douXXK_js  = $("#"+douXXK+"").val();//学习卡
+	var douRZK_js  = $("#"+douRZK+"").val();//融资款
+	
+	var floSXF_js  = $("#"+floSXF+"").val();//手续费
+	
+	//$("#cs_2018").html("电子收入："+douSF_Z_js+"==计算结果"+douSF_D_js+"==现金收入"+douXJSR_js+"==学习卡"+douXXK_js+"==融资款"+douRZK_js+"==手续费"+floSXF_js);
+	$.ajax({
+		type: "POST",
+		url: "{:url('Zijin/zijin_num_ajax','',false)}",
+		data: {
+				douSF_Z_js:douSF_Z_js,
+				douSF_D_js:douSF_D_js,
+				
+				douXJSR_js:douXJSR_js,
+				douXXK_js:douXXK_js,
+				douRZK_js:douRZK_js,
+				
+				floSXF_js:floSXF_js
+			  },
+		dataType:"json",
+		success: function(result){
+			if(result.status == 'OK'){
+				$("#"+htmlSF+"").html(result.msg);
+				$("#"+douSF_D+"").val(result.msg);
+			} else {
+				obj.value="";
+				alert(result.msg);
+			}
+			              
+		} 
+	});
+
+	event.preventDefault(); 
+	//$("input[name='"+intputName+"']").val()
+}
+
+
+</script>
