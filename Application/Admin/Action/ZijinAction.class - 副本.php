@@ -289,6 +289,67 @@ class ZijinAction extends CommonAction{
         }
     }
 
+    // 下载导入表格
+    public function download(){
+        $data = M('pici_history')->join('stjy_table_name ON stjy_pici_history.tid=stjy_table_name.id')->field('stjy_pici_history.*,stjy_table_name.name')->where($_GET)->find();
+
+        $file_url = $data['filename'];
+
+        if(!isset($file_url)||trim($file_url)==''){
+            return '500';
+        }
+        if(!file_exists($file_url)){ //检查文件是否存在
+            return '404';
+        }
+
+        if($data['pici']<10){
+            $data['pici'] = '0'.$data['pici'];
+        }
+        $filename = $data['qishu'].$data['pici'].$data['name'];
+        $arr = explode('.',$file_url);
+        $file_type = $arr[count($arr)-1];
+        // dump($arr);
+        // die;
+        $file=fopen($file_url,'r'); //打开文件
+        //输入文件标签
+        header("Content-Type:application/octet-stream");
+        header("Accept-Ranges: bytes");
+        header("Accept-Length: ".filesize($file_url));
+        header("Content-Disposition: attachment; filename='".$filename.'.'.$file_type."'");
+        //输出文件内容
+        echo fread($file,filesize($file_url));
+        fclose($file);
+    }
+
+    // public function download(){
+    //     vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+    //     $data = M('pici_history')->join('stjy_table_name ON stjy_pici_history.tid=stjy_table_name.id')->field('stjy_pici_history.*,stjy_table_name.name')->where($_GET)->find();
+
+    //     $file_url = $data['filename'];
+    //     $template = $file_url;          //使用模板
+    //     if($data['pici']<10){
+    //         $data['pici'] = '0'.$data['pici'];
+    //     }
+    //     $filename = $data['qishu'].$data['pici'].$data['name'];
+    //     $arr = explode('.',$file_url);
+    //     $file_type = $arr[count($arr)-1];
+
+    //     $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+
+    //     $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+    //     // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+    //     header("Pragma: public");
+    //     header("Expires: 0");
+    //     header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+    //     header("Content-Type:application/force-download");
+    //     header("Content-Type:application/vnd.ms-execl");
+    //     header("Content-Type:application/octet-stream");
+    //     header("Content-Type:application/download");;
+    //     header('Content-Disposition:attachment;filename="'.$filename.'.'.$file_type.'"');
+    //     header("Content-Transfer-Encoding:binary");
+    //     $objWriter->save('php://output');
+    // }
+
     public function checkBixu($tablename,$ziduan){
         $bixu = $this->getComment($tablename);
         if($tablename == 'lklb'){
@@ -417,9 +478,335 @@ class ZijinAction extends CommonAction{
         // dump($list);
         return $list;
     }
+	
+	
+	
+	
+	
+
+/*****************************************************************************
+ *
+ *	收款汇总信息
+ *	2018-01-22
+ *
+ *
+ *****************************************************************************/
+
+ 	public function zijinListQishu(){
+		$count = M('qishu')->where('isUse',1)->order('name desc,id desc')->count();
+        $Page = new \Think\Page($count,15);
+        $show = $Page->show();
+		
+		$list = M('qishu')->where('isUse',1)->order('name desc,id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+		
+		$this->assign('list',$list);
+		$this->assign('fpage',$show);
+		$this->adminDisplay();
+		
+	}
+	
+
+ 	public function zijinListDay(){
+		$qishu = $_GET['qishu'];
+		if(intval($qishu)>0){
+		
+			$strDate=$qishu."01";
+			$intDays = date('t', strtotime($strDate));
+			
+			$this->assign('qishu',$qishu);
+			$this->assign('intDays',$intDays);
+			$this->adminDisplay();
+		}	
+	}
+	
+	public function zijinHuizong_QiShu(){
+		$qishu = $_GET['qishu'];
+		if(intval($qishu)>0){
+
+			$list = M('shoufei_info')->where("intQiShu = '".intval($strQishu)."'" )->order('id asc')->select();
+			foreach($list as $key => $val)
+			{
+				if(!in_array($val["sid"],$arrSid))
+					$listSchool[$key] = M('school')->where('id="'.$val["sid"].'"')->find();
+	
+				if(!in_array($val["aid"],$arrAid))
+					$listAccount[$key] = M('account_detail')->where('id="'.$val["aid"].'"')->find();
+					
+				$arrSid[$key]=$val["sid"];	
+				$arrAid[$key]=$val["aid"];	
+			}
+			foreach($listSchool as $Key => $Value){
+				foreach($listAccount as $KeyA => $ValueA){
+								
+					$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
+				}						
+			}
+					
+				
+		}	
+	}
+	
+	
+    public function zijinHuizong(){
+
+		$strQishu = $_GET['qishu'];
+		$strPici  = $_GET['pici'];
+		
+		//测试数据-参数设置
+		//$strQishu="201710";
+		//$strPici="8";
+		
+		if(intval($strQishu)>0 && intval($strPici)>0)
+			$listSF = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."'" )->order('id asc')->select();
+		else
+			$this->error("数据操作有误，请检查！");
+			
+		//if(intval($strQishu)>0 && intval($strPici)=="")
+		//	$listSF = M('shoufei_info')->where("'intQiShu = '".intval($strQishu)."'" )->order('id asc')->select();
+		
+		if(is_array($listSF) && !empty($listSF))
+		{
+			//$listSF = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."'" )->order('id asc')->select();
+			//dump($listSF);
+			foreach($listSF as $key => $val)
+			{
+				if(!in_array($val["sid"],$arrSid))
+					$listSchool[$key] = M('school')->where('id="'.$val["sid"].'"')->find();
+	
+				if(!in_array($val["aid"],$arrAid))
+					$listAccount[$key] = M('account_detail')->where('id="'.$val["aid"].'"')->find();
+					
+				$arrSid[$key]=$val["sid"];	
+				$arrAid[$key]=$val["aid"];	
+			}
+			foreach($listSchool as $Key => $Value){
+				foreach($listAccount as $KeyA => $ValueA){
+								
+					$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
+				}						
+			}
+
+			
+		}
+		else
+		{
+			$listSchool = M('school')->where('isuse',1)->order('id desc')->select();//
+			$listAccount = M('account_detail')->where('isUse',1)->order('intOrderID asc,id desc')->select();//
+			
+			if(intval($strQishu)>0 && intval($strPici)>0)
+			{
+				foreach($listSchool as $Key => $Value){
+					foreach($listAccount as $KeyA => $ValueA){			
+						$listHZBJ_D = M('lklb')->where("strmername = '".$Value["subname"]."' and intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and straccountname = '".$ValueA["strname"]."' and straccountbank = '".$ValueA["strbankname"]."'")->sum('douHZBJ');
+						$listSXF_D = M('lklb')->where("strmername = '".$Value["subname"]."' and intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and straccountname = '".$ValueA["strname"]."' and straccountbank = '".$ValueA["strbankname"]."'")->sum('douSXF');
+						
+						//echo  M('lklb')->getLastSql();
+						//echo "<br>";
+						$arrData["sid"]	= $Value["id"];
+						$arrData["aid"]	= $ValueA["id"];
+						
+						$arrData["douSF"]	= floatval($listHZBJ_D);
+						$arrData["douSFHJ"]	= floatval($listHZBJ_D) - abs(floatval($listSXF_D));
+						$arrData["douSXF"]	= floatval($listSXF_D);
+						
+						$arrData["addTime"]	= intval($strPici);
+						$arrData["intQiShu"]	= intval($strQishu);
+						$arrData["intCreateDate"]	= date('Y-m-d H:i:s');
+						
+						M('shoufei_info')->add($arrData);
+					}						
+				}
+				
+				foreach($listSchool as $Key => $Value){
+					foreach($listAccount as $KeyA => $ValueA){
+									
+						$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
+					}						
+				}
+				//dump($listSXF);
+			}
+			
+			
+			
+		}
+		$this->assign('listHZBJ',$listHZBJ);
+		$this->assign('listSXF',$listSXF);
+		
+		$this->assign('listSchool',$listSchool);
+		$this->assign('listAccount',$listAccount);
+		
+		$this->assign('qishu',$strQishu);
+		$this->assign('pici',$strPici);
+		
+		$this->adminDisplay();
+		
+	}
+	
+	public function zijin_num_ajax(){
+	
+		$douSF_Z_js	= $_POST["douSF_Z_js"]*100;	//电子总收入
+		$douSF_D_js	= $_POST["douSF_D_js"]*100;	//最后计算结果
+		
+		$douXJSR_js	= $_POST["douXJSR_js"]*100;	//现金收入
+		$douXXK_js	= $_POST["douXXK_js"]*100;	//学习卡
+		$douRZK_js	= $_POST["douRZK_js"]*100;	//融资款
+		
+		$floSXF_js	= abs($_POST["floSXF_js"])*100;	//手续费
+
+		if($douSF_Z_js>0)
+		{
+			//最终收费 = 读取收费+现金-学习卡-融资款-手续费
+			$temp["msg"] = number_format(($douSF_Z_js + $douXJSR_js - $douXXK_js - $douRZK_js - $floSXF_js)/100,2,".","");
+			$temp["status"] = 'OK';
+		}
+		else
+		{
+			$temp['msg'] 	= '请在正确的收款平台下填写！';
+			$temp['status'] = 'NO';
+		}
+		echo json_encode($temp); 
+		//dump($temp);
+	}
+	
+	public function addZijinHuizong(){
+	
+		$sid	= $_POST["sid"];
+		$aid	= $_POST["aid"];
+		
+		$douSF		= $_POST["douSF"];
+		$douSFHJ	= $_POST["douSFHJ"];
+		$douXJSR	= $_POST["douXJSR"];
+		$douXXK		= $_POST["douXXK"];
+		$douRZK		= $_POST["douRZK"];
+		$douQTSR	= $_POST["douQTSR"];
+		$douSXF		= $_POST["douSXF"];
+		
+		$addTime	= $_POST["addTime"];
+		$intQiShu	= $_POST["intQiShu"];
+
+		$intCreateDate	= $_POST["intCreateDate"];
+		
+		$intID	= $_POST["intID"];
+		
+		if(!empty($intID) && is_array($intID))
+		{
+			foreach($intCreateDate as $key=>$val)
+			{
+				//$arrData["sid"]	= $sid[$key];
+				//$arrData["aid"]	= $aid[$key];
+				
+				$arrData["douSF"]	= $douSF[$key];
+				$arrData["douSFHJ"]	= $douSFHJ[$key];
+				$arrData["douXJSR"]	= $douXJSR[$key];
+				$arrData["douXXK"]	= $douXXK[$key];
+				$arrData["douRZK"]	= $douRZK[$key];
+				$arrData["douQTSR"]	= $douQTSR[$key];
+				$arrData["douSXF"]	= $douSXF[$key];
+				
+				//$arrData["addTime"]	= $addTime[$key];
+				//$arrData["intQiShu"]= $intQiShu[$key];
+				
+				$arrData["intCreateDate"]	= $intCreateDate[$key];
+				
+				$fid	= $intID[$key];
+
+				M('shoufei_info')->where(array('id'=>$fid))->save($arrData);
+
+				$uQiShu	=	$intQiShu[$key];
+			}
+			
+			$this->success('修改成功',U('zijinListDay',array('qishu'=>$uQiShu)));
+
+        }
+        else 
+		{
+			foreach($intCreateDate as $key=>$val)
+			{
+				$arrData["sid"]	= $sid[$key];
+				$arrData["aid"]	= $aid[$key];
+				
+				$arrData["douSF"]	= $douSF[$key];
+				$arrData["douSFHJ"]	= $douSFHJ[$key];
+				$arrData["douXJSR"]	= $douXJSR[$key];
+				$arrData["douXXK"]	= $douXXK[$key];
+				$arrData["douRZK"]	= $douRZK[$key];
+				$arrData["douQTSR"]	= $douQTSR[$key];
+				$arrData["douSXF"]	= $douSXF[$key];
+				
+				$arrData["addTime"]	= $addTime[$key];
+				$arrData["intQiShu"]= $intQiShu[$key];
+				
+				$arrData["intCreateDate"]	= $intCreateDate[$key];
+			
+				M('shoufei_info')->add($arrData);
+				
+				$uQiShu	=	$intQiShu[$key];
+			}
+			$this->success('保存成功',U('zijinListDay',array('qishu'=>$uQiShu)));
+           
+        }
+			
+	}
+	
+	public function zijin_rem_ajax(){
+	
+		$textPiZhu_js	= $_POST["textPiZhu"];
+		$intID_js	= $_POST["intID"];
+		$fieldName_js	= $_POST["fieldName"];
+
+
+		$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'" )->find();
+		if($rsRem["dousf"]>0)
+		{
+			if(strlen(trim($textPiZhu_js))==0)
+			{
+				//$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'")->find();
+				$temp["msg"] = $rsRem[strtolower($fieldName_js)];
+				$temp["status"] = 'OK';
+			}
+			else
+			{
+				$arrData[$fieldName_js]=$textPiZhu_js;
+				
+				M('shoufei_info')->where("id = '".intval($intID_js)."'")->save($arrData);
+				
+				$temp["msg"] = '添加 批注信息 成功！';
+				$temp["status"] = 'OK';
+			}
+		}
+		else
+		{
+			$temp['msg'] 	= '此项没有内容，无法添加批注！';
+			$temp['status'] = 'NO';
+		}
+		
+		echo json_encode($temp); 
+		//dump($temp);
+	}
+	
+	public function zijinHuizong_cz(){
+	
+		$intQishu = $_GET['qishu'];
+		$intPici  = $_GET['pici'];
+
+		
+		if(intval($intQishu)>0 && intval($intPici)>0)
+		{
+			M("shoufei_info")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."'")->delete();
+		}
+		else
+		{
+			$temp['msg'] 	= '此项没有内容，无法添加批注！';
+			$temp['status'] = 'NO';
+		}
+		
+		echo json_encode($temp); 
+		//dump($temp);
+	}
+	
+	
 
     //彻底删除
-    
     public function del() {
         if(isset($_GET['id'])){
             $id = (int)$_GET['id'];// 订单id
@@ -457,31 +844,24 @@ class ZijinAction extends CommonAction{
         $this->ajaxReturn($arr);
     }
 
-    // 下载导入表格
-    public function download(){
-        $data = M('pici_history')->join('stjy_table_name ON stjy_pici_history.tid=stjy_table_name.id')->field('stjy_pici_history.*,stjy_table_name.name')->where($_GET)->find();
-        $file_url = $data['filename'];
-        // dump($file_url);die;
-
-        if(!isset($file_url)||trim($file_url)==''){
-            return '500';
-        }
-        if(!file_exists($file_url)){ //检查文件是否存在
-            return '404';
-        }
-        $filename = $data['qishu'].'-'.$data['pici'].'-'.$data['name'];
-        $arr = explode('.',$file_url);
-        $file_type = $arr[count($arr)-1];
-        $file=fopen($file_url,'r'); //打开文件
-        //输入文件标签
-        header("Content-type: application/octet-stream");
-        header("Accept-Ranges: bytes");
-        header("Accept-Length: ".filesize($file_url));
-        header("Content-Disposition: attachment; filename=".$filename.'.'.$file_type);
-        //输出文件内容
-        echo fread($file,filesize($file_url));
-        fclose($file);
-    }
-
 }
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
