@@ -269,6 +269,8 @@ class ZijinAction extends CommonAction{
         $bixu = $this->getComment($tablename);
         if($tablename == 'lklb'){
             $bixu = array_flip(array_diff($bixu,['id','addTime','intQiShu','strAccountName','strAccountBank','intCreateDate']));
+        }else if($tablename == 'sqbb'){
+            $bixu = array_flip(array_diff($bixu,['id','addTime','intQiShu','intCreateDate']));
         }
         
         $cha = array_diff($bixu,$ziduan);
@@ -303,6 +305,11 @@ class ZijinAction extends CommonAction{
             // 必须设置$col,否则会跳过所有
             foreach($ziduan as $k=>$v){// 遍历字段数组
                 switch($tid){
+                    case 21:
+                        if($v == '商户订单号'){// 设置字段为学号的列如果值为空就跳过,其他跟这个原理一样
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
                     case 22:
                         if($v == '商户号'){// 设置字段为学号的列如果值为空就跳过,其他跟这个原理一样
                             $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
@@ -372,8 +379,10 @@ class ZijinAction extends CommonAction{
                 }
                 $data['addTime'] = $pici;  // 批次
                 $data['intQiShu'] = $qishu; // 期数
-                $data['strAccountName'] = explode('/',$data['strAccount'])[1];
-                $data['strAccountBank'] = explode('/',$data['strAccount'])[2];
+                if($tid==22){
+                    $data['strAccountName'] = explode('/',$data['strAccount'])[1];
+                    $data['strAccountBank'] = explode('/',$data['strAccount'])[2];
+                }
                 $data['intCreateDate'] = date('Y-m-d H:i:s');
             }
             // dump($data);
