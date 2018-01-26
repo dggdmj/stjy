@@ -34,7 +34,11 @@
                     <label>对帐平台</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="strMoneyName" size="60" value="{$list.strmoneyname}">
+					<select class="select" style="height:32px;border-radius: 4px;" name="strMoneyName">
+						<option value="">=====请选择对帐平台=====</option>
+						<option value="拉卡拉" <if condition="$list['strmoneyname']=='拉卡拉'">selected</if>>拉卡拉</option>
+						<option value="收钱吧" <if condition="$list['strmoneyname']=='收钱吧'">selected</if>>收钱吧</option>
+					</select>
                 </div>
             </div>
 			
@@ -76,6 +80,17 @@
                     <div class="input-note">是否启用收款帐号</div>
                 </div>
             </div>
+			
+			<div class="form-group">
+                <div class="label">
+                    <label>排序</label>
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="intOrderID" size="60" value="{$list.intorderid}">
+                </div>
+            </div>
+			
+			
         </div>
         <div class="panel-foot">
             <div class="form-button">
