@@ -420,16 +420,16 @@ class ZijinAction extends CommonAction{
 
     //彻底删除
     public function del() {
-        if(isset($_GET['id'])){
-            $id = (int)$_GET['id'];// 订单id
-        }else{
-            $id = M('pici_history')->where($_GET)->getField('id');
-        }
+        // if(isset($_GET['id'])){
+        //     $id = (int)$_GET['id'];// 订单id
+        // }else{
+        //     $id = M('pici_history')->where($_GET)->getField('id');
+        // }
 
         // --待改--
-        $tid = $_GET['tid'];// 表格id
-        $where['qishu'] = $_GET['qishu'];// 期数
-        $where['pici'] = $_GET['pici'];// 批次
+        $tid = $where['tid'] = $_GET['tid'];// 表格id
+        $where2['intQiShu'] = $where['qishu'] = $_GET['qishu'];// 期数
+        $where2['addTime'] = $where['pici'] = $_GET['pici'];// 批次
         // $status_xz = M('pczb')->where($where)->getField('status_xz');// 获取数据总表的行政状态
         // if($status_xz == 2){// 如果行政状态为2,就是已经提交给行政经理,不允许操作,直接提示删除失败
         //     $arr['status'] = false;
@@ -437,12 +437,12 @@ class ZijinAction extends CommonAction{
         //     $this->ajaxReturn($arr);
         // }
 
-        $filename = M('pici_history')->where('id ='.$id)->getField('filename');// 从qishu_history里面拿出excel表的存放路径
+        $filename = M('pici_history')->where($where)->getField('filename');// 从qishu_history里面拿出excel表的存放路径
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");// 从table_name里面取出相应的表名(拼音)
 
         // --------------删除操作执行开始--------------
-        $res1 = M($tablename)->where($where)->delete();// 从表明里删除所属id对应的数据
-        $res2 = M("pici_history")->where("id = ".$id)->delete();// 从qishu_history删除记录
+        $res1 = M($tablename)->where($where2)->delete();// 从表明里删除所属id对应的数据
+        $res2 = M("pici_history")->where($where)->delete();// 从qishu_history删除记录
         unlink($filename);// 删除存放的excel表
 
         // 对应数据总表的该字段状态改为1,就是未导入
@@ -480,6 +480,35 @@ class ZijinAction extends CommonAction{
         //输出文件内容
         echo fread($file,filesize($file_url));
         fclose($file);
+    }
+
+    // 删除总表行操作
+    public function delRow(){
+        $tablenames = $this->getTabelnames(1,[6]);// 获取序号和导入表名对应的一维数组
+        $field = implode(',',$tablenames);// 组成筛选条件
+        $data = M('pczb')->field($field)->where($_GET)->find();// 获取表格导入情况
+        // 若所有表格导入再进行操作
+        $count = 0;
+        $i = 1;
+        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
+        foreach($data as $v){
+           $count += $v;
+           $i++;
+        }
+        // dump($count);die;
+        if($count == 2){
+            // 删除此行在sjzb的记录
+            M('pczb')->where($_GET)->delete();
+
+            $arr['status'] = true;
+            $arr['info'] = '操作成功';
+            $this->ajaxReturn($arr);
+        }else{
+            // $this->error('请导入所有表格后再通知财务');
+            $arr['status'] = false;
+            $arr['info'] = '请把此行表格都删除再执行此操作';
+            $this->ajaxReturn($arr);
+        }
     }
 /*****************************************************************************
  *
