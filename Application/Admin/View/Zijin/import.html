@@ -100,7 +100,7 @@
 </script>
 
 <script>
-    $('select[name="qishu"]').change(function(){
+    $('select[name="qishu"]').click(function(){
         var qishu = $(this).val();
         var nian = qishu.substr(0,4);
         var yue = qishu.substr(4,2);
@@ -115,7 +115,7 @@
             $('select[name="pici"]').append("<option value ='"+i+"'>"+i+"</option>");
         }
 
-    });
+    }).trigger('click');
 </script>
 
 <script type="text/javascript" src="__PUBLIC__/webuploader/FileUpload.js"></script>
