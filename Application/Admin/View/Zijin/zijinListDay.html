@@ -26,7 +26,7 @@
 							<tr>
 								<td>日期：{$qishu}{$strK} &nbsp;&nbsp;&nbsp;&nbsp; 
 								<a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$strK))}">&nbsp;&nbsp;编辑</a>
-								<a class="button bg-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" href="javascript:;">&nbsp;&nbsp;重置</a>
+								<a class="button bg-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$strK))}" href="javascript:;">&nbsp;&nbsp;重置</a>
 								</td>
 							
 						<php>
@@ -36,7 +36,7 @@
 						</php>
 								<td>日期：{$qishu}{$strK} &nbsp;&nbsp;&nbsp;&nbsp; 
 								<a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$strK))}">&nbsp;&nbsp;编辑</a>
-								<a class="button bg-red button-small icon-wrench" title="重置" alt="重置" href="javascript:;" onclick="optDelPici('{$qishu}','{$k}')">&nbsp;&nbsp;重置</a>
+								<a class="button bg-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$strK))}" href="javascript:;">&nbsp;&nbsp;重置</a>
 								</td>
 						<php>
 							}
@@ -68,7 +68,28 @@
 
 
 <script>
-function optDelPici(intQishu,intPici){
-	
-}
+
+$(".js_ctr_del").click(function () {
+	var subUrl = $(this).attr('target');
+	var title = $(this).attr('title');
+
+	layer.confirm('您确定 '+title+' 吗?', {
+		icon: 4,
+		btn: ['确定','取消'] //按钮
+	}, function(){
+		//loading层
+		var index = layer.load(1, {
+			shade: [0.8,'#fff'] //0.1透明度的白色背景
+		});
+		$.post(subUrl,$("form").serialize(),function(data){
+			if(data.status){
+				layer.msg(data.info, {icon: 1});
+			}else{
+				layer.msg(data.info, {icon: 2});
+			}
+			setTimeout("window.location.reload()",1000); // 让提示框停留一会
+		});
+	});
+});
+
 </script>
