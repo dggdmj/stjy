@@ -14,8 +14,8 @@
                         <th width="80">批次</th>
                         <th width="80">收钱吧</th>
                         <th width="80">拉卡拉</th>
-                        <th width="80">现金</th>
-                        <th width="80">投资款</th>
+                        <!-- <th width="80">现金</th> -->
+                        <!-- <th width="80">投资款</th> -->
                         <th width="80">操作</th>
                         <!-- <if condition="$rid eq 2 or $rid eq 3">
                         <th width="80">操作</th>
@@ -44,47 +44,8 @@
                                     </td>
                                 </if>
                             </foreach>
-                            <if condition="$v['sbmxb'] eq 2">
-                                <td>
-                                    <div>
-                                        <a class="button bg-green button-small icon-eye" title="查看表格" alt="查看表格" href="__CONTROLLER__/table_xq/tid/15/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer;margin-top:4px;"></a>
-                                        <a class="button bg-red button-small icon-trash-o js-sub" title="删除" alt="删除" target2="__CONTROLLER__/del/tid/15/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer;margin-top:4px;"></a>
-                                        <a href="__MODULE__/Common/download/tid/15/qishu/{$v.qishu}/sid/{$v.sid}" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载" style="cursor:pointer;margin-top:4px;"></a>
-                                    </div>
-                                </td>
-                                <else />
-                                    <if condition="$v['isshebao'] eq 1">
-                                        <td>
-                                            <a class="button bg-dot button-small icon-upload" title="未导入" alt="未导入" href="__CONTROLLER__/import/tid/15/qishu/{$v.qishu}/sid/{$v.sid}"></a>
-                                        </td>
-                                    <else />
-                                        <td>
-                                            <a class="button bg-gray button-small js-notNeed" title="不需要" alt="不需要" style="cursor:pointer">不需要</a>
-                                        </td>
-                                    </if>
 
-                            </if>
-                            <if condition="$v['gjjmxb'] eq 2">
-                                <td>
-                                    <div>
-                                        <a class="button bg-green button-small icon-eye" title="查看表格" alt="查看表格" href="__CONTROLLER__/table_xq/tid/16/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer;margin-top:4px;"></a>
-                                        <a class="button bg-red button-small icon-trash-o js-sub" title="删除" alt="删除" target2="__CONTROLLER__/del/tid/16/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer;margin-top:4px;"></a>
-                                        <a href="__MODULE__/Common/download/tid/16/qishu/{$v.qishu}/sid/{$v.sid}" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载" style="cursor:pointer;margin-top:4px;"></a>
-                                    </div>
-                                </td>
-                                <else />
-                                    <if condition="$v['isgongjijin'] eq 1">
-                                        <td>
-                                            <a class="button bg-dot button-small icon-upload" title="未导入" alt="未导入" href="__CONTROLLER__/import/tid/16/qishu/{$v.qishu}/sid/{$v.sid}"></a>
-                                        </td>
-                                    <else />
-                                        <td>
-                                            <a class="button bg-gray button-small js-notNeed" title="不需要" alt="不需要" style="cursor:pointer">不需要</a>
-                                        </td>
-                                    </if>
-
-                            </if>
-                            <if condition="$rid eq 2 or $rid eq 3">
+                            <!-- <if condition="$rid eq 2 or $rid eq 3">
                                 <if condition="$v.status_xz neq 2">
                                     <td>
                                         <a class="button bg-green button-small js-sub" title="通知行政经理" alt="通知行政经理" target2="__MODULE__/Common/create/qishu/{$v.qishu}/sid/{$v.sid}" target3="__MODULE__/Common/waitNum/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">通知行政经理</a>
@@ -100,7 +61,7 @@
                                         </td>
                                     </if>
                                 </if>
-                            </if>
+                            </if> -->
                             <!-- <td>
                                 <if condition="$v.status_xz eq 1">
                                 无
@@ -127,8 +88,8 @@
                             </td> -->
                             <td>
                                 <div>
-                                    <a class="button bg-red button-small js-sub icon-trash-o" title="删除此行" alt="删除此行" target2="__CONTROLLER__/delRow/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer"></a>
-                                    <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__CONTROLLER__/index_xq/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer"></a>
+                                    <a class="button bg-red button-small js-sub icon-trash-o" title="删除此行" alt="删除此行" target2="__CONTROLLER__/delRow/pici/{$v.pici}/qishu/{$v.qishu}" style="cursor:pointer"></a>
+                                   <!--  <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__CONTROLLER__/index_xq/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer"></a> -->
                                 </div>
                             </td>
                         </tr>
