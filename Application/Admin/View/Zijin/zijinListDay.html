@@ -1,0 +1,74 @@
+
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <table id="table" class="table table-hover table-bordered table-condensed">
+                <tbody>
+                    <!--tr>
+                        <th width="80">编号</th>
+						
+                        <th>日期</th>
+						<th>添加时间</th>
+
+                        <th width="100">操作</th>
+                    </tr-->
+					<php>
+					$k=1;
+					$intK=0;
+					</php>
+					
+                    <for start="0" end="$intDays">
+						<php>
+							$strK=sprintf("%02d",$k);
+							
+							if( $intK%5==0 )
+							{
+						</php>
+							<tr>
+								<td>日期：{$qishu}{$strK} &nbsp;&nbsp;&nbsp;&nbsp; 
+								<a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$strK))}">&nbsp;&nbsp;编辑</a>
+								<a class="button bg-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" href="javascript:;">&nbsp;&nbsp;重置</a>
+								</td>
+							
+						<php>
+							}
+							else
+							{
+						</php>
+								<td>日期：{$qishu}{$strK} &nbsp;&nbsp;&nbsp;&nbsp; 
+								<a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$strK))}">&nbsp;&nbsp;编辑</a>
+								<a class="button bg-red button-small icon-wrench" title="重置" alt="重置" href="javascript:;" onclick="optDelPici('{$qishu}','{$k}')">&nbsp;&nbsp;重置</a>
+								</td>
+						<php>
+							}
+							$k++;
+							$intK++;
+						</php>
+							
+                    </for>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-foot table-foot clearfix">
+            <div class="float-left">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <div class="field">
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div class="float-right pagination pagination-small">
+                {$fpage}
+            </div>
+        </div>
+    </div>
+
+
+
+
+<script>
+function optDelPici(intQishu,intPici){
+	
+}
+</script>

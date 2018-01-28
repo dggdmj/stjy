@@ -679,7 +679,7 @@ class SettingAction extends CommonAction{
 	public function manageZhanghu(){
 		//收款帐号列表页
         $data = M('account_detail');
-        $list = $data->order('id desc')->select();
+        $list = $data->order('intOrderID asc,id desc')->select();
         $this->assign('list',$list);
         $this->adminDisplay();
 	}
