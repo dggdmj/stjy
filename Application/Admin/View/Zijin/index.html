@@ -16,7 +16,7 @@
                         <th width="80">拉卡拉</th>
                         <!-- <th width="80">现金</th> -->
                         <!-- <th width="80">投资款</th> -->
-                        <th width="80">操作</th>
+                        <th width="80">行操作</th>
                         <!-- <if condition="$rid eq 2 or $rid eq 3">
                         <th width="80">操作</th>
                         </if> -->
@@ -45,51 +45,9 @@
                                 </if>
                             </foreach>
 
-                            <!-- <if condition="$rid eq 2 or $rid eq 3">
-                                <if condition="$v.status_xz neq 2">
-                                    <td>
-                                        <a class="button bg-green button-small js-sub" title="通知行政经理" alt="通知行政经理" target2="__MODULE__/Common/create/qishu/{$v.qishu}/sid/{$v.sid}" target3="__MODULE__/Common/waitNum/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">通知行政经理</a>
-                                    </td>
-                                <elseif condition="$v.status_xz eq 2" />
-                                    <if condition="$v.status_xzjl eq 2 or $v.status_cw eq 2">
-                                        <td>
-                                            <a class="button bg-red button-small js-lock icon-lock" title="已锁定" alt="已锁定" style="cursor:pointer"></a>
-                                        </td>
-                                    <else />
-                                        <td>
-                                            <a class="button bg-red button-small js-sub" title="取消" alt="取消" target2="__MODULE__/Common/rollBack/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">取消</a>
-                                        </td>
-                                    </if>
-                                </if>
-                            </if> -->
-                            <!-- <td>
-                                <if condition="$v.status_xz eq 1">
-                                无
-                                <elseif condition="$v.status_xz eq 2" />
-                                {$v.xingzheng}已提交
-                                <elseif condition="$v.status_xz eq 3" />
-                                被{$v.xingzhengjl}退回
-                                <elseif condition="$v.status_xz eq 4" />
-                                {$v.xingzheng}已取消
-                                </if>
-                            </td>
-                            <td>
-                                <if condition="$v.status_xzjl eq 1">
-                                无
-                                <elseif condition="$v.status_xzjl eq 2" />
-                                {$v.xingzhengjl}已审核
-                                <elseif condition="$v.status_xzjl eq 3" />
-                                {$v.xingzhengjl}退回行政
-                                <elseif condition="$v.status_xzjl eq 4" />
-                                被{$v.caiwu}退回
-                                <else />
-                                无
-                                </if>
-                            </td> -->
                             <td>
                                 <div>
                                     <a class="button bg-red button-small js-sub icon-trash-o" title="删除此行" alt="删除此行" target2="__CONTROLLER__/delRow/pici/{$v.pici}/qishu/{$v.qishu}" style="cursor:pointer"></a>
-                                   <!--  <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__CONTROLLER__/index_xq/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer"></a> -->
                                 </div>
                             </td>
                         </tr>

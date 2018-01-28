@@ -510,6 +510,7 @@ class ZijinAction extends CommonAction{
         echo fread($file,filesize($file_url));
         fclose($file);
     }
+
 /*****************************************************************************
  *
  *	收款汇总信息
