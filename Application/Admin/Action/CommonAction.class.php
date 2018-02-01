@@ -122,7 +122,6 @@ class CommonAction extends Action {
      * @return void
      */
     protected function adminDisplay($tpl = '') {
-        ini_set('memory_limit', '256M');
         //复制当前URL
         $this->assign('self',__SELF__);
         $common = $this->fetch('Index/common');

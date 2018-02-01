@@ -41,7 +41,8 @@ class ZijinIndexAction extends CommonAction{
         $arr = $this->getTabelnames(1,[6]);
 
         // 查询该学校是否需要
-
+        $rid = $this->getRid();
+        $this->assign('rid',$rid);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('arr',$arr);
@@ -426,16 +427,17 @@ class ZijinIndexAction extends CommonAction{
         //     $id = M('pici_history')->where($_GET)->getField('id');
         // }
 
-        // --待改--
         $tid = $where['tid'] = $_GET['tid'];// 表格id
-        $where2['intQiShu'] = $where['qishu'] = $_GET['qishu'];// 期数
-        $where2['addTime'] = $where['pici'] = $_GET['pici'];// 批次
-        // $status_xz = M('pczb')->where($where)->getField('status_xz');// 获取数据总表的行政状态
-        // if($status_xz == 2){// 如果行政状态为2,就是已经提交给行政经理,不允许操作,直接提示删除失败
-        //     $arr['status'] = false;
-        //     $arr['info'] = '表格已提交,删除失败';
-        //     $this->ajaxReturn($arr);
-        // }
+        $where3['qishu'] = $where2['intQiShu'] = $where['qishu'] = $_GET['qishu'];// 期数
+        $where3['pici'] = $where2['addTime'] = $where['pici'] = $_GET['pici'];// 批次
+
+        $status_cw = M('pczb')->where($where3)->getField('status_cw');// 获取批次总表的财务状态
+        if($status_cw == 2){
+            // 返回删除失败信息
+            $arr['status'] = false;
+            $arr['info'] = '该数据已锁定';
+            $this->ajaxReturn($arr);
+        }
 
         $filename = M('pici_history')->where($where)->getField('filename');// 从qishu_history里面拿出excel表的存放路径
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");// 从table_name里面取出相应的表名(拼音)
@@ -484,17 +486,7 @@ class ZijinIndexAction extends CommonAction{
 
     // 删除总表行操作
     public function delRow(){
-        $tablenames = $this->getTabelnames(1,[6]);// 获取序号和导入表名对应的一维数组
-        $field = implode(',',$tablenames);// 组成筛选条件
-        $data = M('pczb')->field($field)->where($_GET)->find();// 获取表格导入情况
-        // 若所有表格导入再进行操作
-        $count = 0;
-        $i = 1;
-        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
-        foreach($data as $v){
-           $count += $v;
-           $i++;
-        }
+        $count = $this->checkUpload($_GET);
         // dump($count);die;
         if($count == 2){
             // 删除此行在sjzb的记录
@@ -511,6 +503,66 @@ class ZijinIndexAction extends CommonAction{
         }
     }
 
+    // 检查资金管理导入状态
+    public function checkUpload($arr){
+        $tablenames = $this->getTabelnames(1,[6]);// 获取序号和导入表名对应的一维数组
+        $field = implode(',',$tablenames);// 组成筛选条件
+        $data = M('pczb')->field($field)->where($arr)->find();// 获取表格导入情况
+        // 若所有表格导入再进行操作
+        $count = 0;
+        $i = 1;
+        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
+        foreach($data as $v){
+           $count += $v;
+           $i++;
+        }
+        return $count;
+    }
 
+    // -------------财务审核及取消操作-------------
+    // 通过审核操作
+    public function checked(){
+        $count = $this->checkUpload($_GET);
+        // $arr['info'] = $count;
+        // $this->ajaxReturn($arr);
+        // die;
+        if($count == 4){
+            $rid = $this->getRid();
+            switch($rid){
+                case 4:
+                    $temp['time_cw'] = date('Y-m-d H:i:s');
+                    $temp['status_cw'] = 2;
+                    $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+                break;
+            }
+            M('pczb')->where($_GET)->save($temp);// 更新数据总表
+            $arr['status'] = true;
+            $arr['info'] = '操作成功';
+            // 还需要将生成表数据写入数据库并让表格可以下载
+            $this->ajaxReturn($arr);
+        }else{
+            $arr['status'] = false;
+            $arr['info'] = '请等待表格导入后再操作';
+            // 还需要将生成表数据写入数据库并让表格可以下载
+            $this->ajaxReturn($arr);
+        }
+        
+    }
+
+    // 取消通过审核操作
+    public function cancel(){
+        $rid = $this->getRid();
+        switch($rid){
+            case 4:
+                $temp['time_cw'] = date('Y-m-d H:i:s');
+                $temp['status_cw'] = 3;
+                $temp['caiwu'] = M('admin')->where('username ="'.$_SESSION['username'].'"')->getField('nicename');
+            break;
+        }
+        M('pczb')->where($_GET)->save($temp);// 更新数据总表
+        $arr['status'] = true;
+        $arr['info'] = '操作成功';
+        $this->ajaxReturn($arr);
+    }
 }
 ?>

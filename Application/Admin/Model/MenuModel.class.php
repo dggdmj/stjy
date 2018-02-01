@@ -657,7 +657,8 @@ class MenuModel {
 //                )
 //            ),
         );
-        if($username == 'admin'){
+        $allow = ['caiwu','admin'];
+        if(in_array($username,$allow)){
             return $arr2;
         }else{
             return $arr1;

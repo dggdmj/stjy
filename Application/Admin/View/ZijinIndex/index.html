@@ -16,10 +16,13 @@
                         <th width="80">拉卡拉</th>
                         <!-- <th width="80">现金</th> -->
                         <!-- <th width="80">投资款</th> -->
+                        <if condition="$rid eq 4">
+                            <th width="80">操作</th>
+                        <else />
+                            <th width="80">状态</th>
+                        </if>
                         <th width="80">行操作</th>
-                        <!-- <if condition="$rid eq 2 or $rid eq 3">
-                        <th width="80">操作</th>
-                        </if> -->
+
                         <!-- <th width="80">行政状态</th>
                         <th width="80">行政经理状态</th> -->
                         <!-- <th width="80">行操作</th> -->
@@ -44,7 +47,18 @@
                                     </td>
                                 </if>
                             </foreach>
+                            <if condition="$rid eq 4">
+                                <td>
+                                    <if condition="$v.status_cw neq 2">
+                                        <a class="button bg-yellow button-small js-sub" title="通过审核" alt="通过审核" target2="__CONTROLLER__/checked/qishu/{$v.qishu}/pici/{$v.pici}" style="cursor:pointer">通过</a>
+                                    <else />
+                                        <a class="button bg-red button-small js-sub" title="取消" alt="取消" target2="__CONTROLLER__/cancel/qishu/{$v.qishu}/pici/{$v.pici}" style="cursor:pointer">取消</a>
+                                    </if>
 
+                                </td>
+                            <else />
+                                <td>占位</td>
+                            </if>
                             <td>
                                 <div>
                                     <a class="button bg-red button-small js-sub icon-trash-o" title="删除此行" alt="删除此行" target2="__CONTROLLER__/delRow/pici/{$v.pici}/qishu/{$v.qishu}" style="cursor:pointer"></a>
