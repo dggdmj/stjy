@@ -40,7 +40,7 @@
 						//dump($listHZBJ);
 					</php>
 					<foreach name='listSchool' item='v' key='vk'>
-					<tr>
+					<tr title="{$v.subname}">
 						<td>{$k}</td>
 						<td style="border-right:#0099cc 1px solid;">{$v.subname}</td>
 
@@ -196,7 +196,7 @@
 								$intID_CY = $listHZBJ[$v['id']]["chayi"]['id'];
 									
 							</php>
-							<td align="right" title="{$v.subname}" id="douSF_total_s_{$v.id}" class="bg-main bgTrans">{$douSF_total_s}</td>
+							<td align="right" id="douSF_total_s_{$v.id}" class="bg-main bgTrans">{$douSF_total_s}</td>
 							
 							
 							<td><input class="input" style="width:120px;" name="douXGJ[]" id="douXGJ_{$intID_CY}" value="{$douXGJ}" onkeyup="chayiRem_XGJ(douXGJ_{$intID_CY},'{$intID_CY}')" /></td>

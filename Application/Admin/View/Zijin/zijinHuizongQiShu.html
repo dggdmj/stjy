@@ -37,7 +37,7 @@
 						$k=1;
 					</php>
 					<foreach name='listSchool' item='vs' key="ks">
-					<tr>
+					<tr title="{$vs.subname}">
 						<td>{$k}</td>
 						<td style="border-right:#0099cc 1px solid;">{$vs.subname}</td>
 
@@ -88,7 +88,7 @@
 											$dousxf_qs="";
 									}
 								</php>
-								<td align="right" title="{$vs.subname}: 最终收费 = 读取总收费({$dousfhj_qs}) + 现金 {$douxjsr_qs}- 学习卡 {$douxxk_qs}- 融资款 {$dourzk_qs}- 手续费 {$dousxf_qs} ">{$dousfhj_qs}</td>
+								<td align="right" title="{$vs.subname}: 最终收费 = 读取总收费({$dousf_qs}) + 现金({$douxjsr_qs}) - 学习卡({$douxxk_qs}) - 融资款({$dourzk_qs}) - 手续费({$dousxf_qs}) ">{$dousfhj_qs}</td>
 								
 								<td align="right">{$douxjsr_qs}</td>
 								
@@ -124,7 +124,7 @@
 									$tdBgCY="";
 								}	
 							</php>
-							<td align="right" title="{$vs.subname}" class="bg-main bgTrans">{$dousfhj_qs}</td>
+							<td align="right" class="bg-main bgTrans">{$dousfhj_qs}</td>
 							<td align="right">{$douxgj_qs}</td>
 							<td align="right" {$tdBgCY}>{$doucy_qs}</td>
 
