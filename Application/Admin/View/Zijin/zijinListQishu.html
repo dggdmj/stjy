@@ -5,7 +5,7 @@
                 <tbody>
                     <tr>
                         <th width="80">编号</th>
-						
+
                         <th>期数</th>
 						<th>添加时间</th>
 
@@ -14,14 +14,14 @@
                     <foreach name='list' item='v'>
                         <tr>
                             <td>{$v.id}</td>
-							
+
                             <td>{$v.name}</td>
 							<td>{$v.addtime}</td>
 
                             <td>
                                 <a class="button bg-blue button-small icon-pencil" title="统计" alt="统计" href="{:U('/zijin/zijinHuizongQishu',array('qishu'=>$v['name']))}">&nbsp;&nbsp;统计</a>
-								
-								<a class="button bg-blue button-small icon-eye" title="查看" alt="查看" href="{:U('/zijin/zijinListDay',array('qishu'=>$v['name']))}">&nbsp;&nbsp;查看</a>
+
+								<a class="button bg-blue button-small icon-eye" title="查看" alt="查看" href="{:U('/zijinIndex/index',array('qishu'=>$v['name']))}">&nbsp;&nbsp;查看</a>
                             </td>
                         </tr>
                     </foreach>

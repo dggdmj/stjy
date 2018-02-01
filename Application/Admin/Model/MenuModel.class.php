@@ -340,12 +340,12 @@ class MenuModel {
                 'icon' => 'user',
                 'order' => 10,
                 'menu' => array(
-                    array(
-                        'name' => '资金管理',
-                        'icon' => 'user',
-                        'url' => U('/ZijinIndex/index'),
-                        'order' => 0
-                    ),
+                    // array(
+                    //     'name' => '资金管理',
+                    //     'icon' => 'user',
+                    //     'url' => U('/ZijinIndex/index'),
+                    //     'order' => 0
+                    // ),
 					array(
                         'name' => '资金汇总',
                         'icon' => 'user',

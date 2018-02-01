@@ -28,23 +28,44 @@ class ZijinIndexAction extends CommonAction{
         return $data;
     }
 
+    // public function index(){
+    //     $data = M('pczb'); // 实例化对象
+    //     $count = $data->count();// 查询满足要求的总记录数
+    //     $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
+    //     $show = $Page->show();// 分页显示输出
+    //     // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
+    //     $list = $data->order('stjy_pczb.qishu desc,stjy_pczb.pici desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+    //     // dump($list);
+
+    //      // 获取表明与序号对应的一维数组
+    //     $arr = $this->getTabelnames(1,[6]);
+
+    //     // 查询该学校是否需要
+    //     $rid = $this->getRid();
+    //     $this->assign('rid',$rid);
+    //     $this->assign('list',$list);// 赋值数据集
+    //     $this->assign('fpage',$show);// 赋值分页输出
+    //     $this->assign('arr',$arr);
+    //     $this->adminDisplay();
+    // }
+
     public function index(){
-        $data = M('pczb'); // 实例化对象
-        $count = $data->count();// 查询满足要求的总记录数
-        $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
-        $show = $Page->show();// 分页显示输出
-        // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->order('stjy_pczb.qishu desc,stjy_pczb.pici desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        // dump($list);
-
-         // 获取表明与序号对应的一维数组
+        // dump($_GET);
+        $qishu = $_GET['qishu'];
+		if(intval($qishu)>0){
+			$strDate=$qishu."01";
+			$intDays = date('t', strtotime($strDate));
+			// dump($intDays);
+			$this->assign('intDays',$intDays);
+        }
+        $list = M('pczb')->where('qishu = '.$qishu)->order('stjy_pczb.qishu desc,stjy_pczb.pici desc')->select();
+        // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames(1,[6]);
-
-        // 查询该学校是否需要
         $rid = $this->getRid();
         $this->assign('rid',$rid);
+        // dump($list);
+        $this->assign('qishu',$qishu);
         $this->assign('list',$list);// 赋值数据集
-        $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('arr',$arr);
         $this->adminDisplay();
     }
@@ -190,6 +211,22 @@ class ZijinIndexAction extends CommonAction{
 
             // dump($tablename);die;
 
+            // 期数第一次上传在批次总表建立一个月的数据
+            $res3 = M('pczb')->where('qishu = '.$_POST['qishu'])->find();
+            if(empty($res3)){
+                $qs = $_POST['qishu'];
+                if(intval($qs)>0){
+                    $strDate=$qs."01";
+                    $intDays = date('t', strtotime($strDate));
+                    for($i=1;$i<=$intDays;$i++){
+                        $temp['qishu'] = $_POST['qishu'];
+                        $temp['pici'] = $i;
+                        M('pczb')->add($temp);
+                        unset($temp);
+                    }
+                }
+            }
+
             //在pici_history中增加
             $_POST["filename"] = $file_name;
             $where['pici'] = $_POST['pici'];
@@ -284,7 +321,7 @@ class ZijinIndexAction extends CommonAction{
 
             // 导入完成之后删除文件
             // unlink($file_name);
-            $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
+            $this->success('导入成功！',__CONTROLLER__.'/index/qishu/'.$_POST['qishu']);//获得成功跳转的链接
         }else{
             $this->error("请选择上传的文件");
         }
