@@ -1,10 +1,10 @@
 <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/zijin/addzijinHuizong')}">
     <div class="panel one-box">
         <div class="table-responsive">
-            <table id="table" class="table table-hover table-bordered table-condensed">
+            <table id="table" class="table table-bordered table-condensed"><!-- table-hover -->
                 <tbody>
                     <tr>
-						<th width="50" rowspan="2">编号</th>
+						<th rowspan="2" width="50">编号</th>
     					<th rowspan="2" width="280" style="border-right:#0099cc 1px solid;">分校</th>
 						<php>
 							$i=0;
@@ -19,7 +19,7 @@
 						<th width="150" rowspan="2" style="text-align:center;">总收费</th>
 						<th width="150" rowspan="2" style="text-align:center;">校管家</th>
 						<th width="150" rowspan="2" style="text-align:center;">差异</th>
-						<th width="250" rowspan="2" style="text-align:center;">差异原因</th><td></td>
+						<th width="350" rowspan="2" style="text-align:center;">差异原因</th>
 
                     </tr>
              		<tr>
@@ -39,8 +39,8 @@
 						
 						//dump($listHZBJ);
 					</php>
-					<foreach name='listSchool' item='v'>
-					<tr>
+					<foreach name='listSchool' item='v' key='vk'>
+					<tr title="{$v.subname}">
 						<td>{$k}</td>
 						<td style="border-right:#0099cc 1px solid;">{$v.subname}</td>
 
@@ -174,21 +174,44 @@
 								
 								{$strInputID}
 							</foreach>
-							
-								<td align="right" title="{$v.subname}">总收费</td>
-								<td><input class="input" style="width:120px;" name="douXGJ[]" value="{$douXGJ}" onkeyup="numMoney_N(this)" /></td>
-								<td>差异</td>
-								<td id="textRem_{$v.id}"><input class="input" style="width:220px;" name="textRem[]" value="{$textRem}" onkeyup="numMoney_N(this)" /></td>
+							<php>
+								$douSF_total_s = $listHZBJ[$v['id']]["douSFHJ_total"];	//+floatval($listHZBJ[$v['id']]["douXJSR_total"]);
 								
+								$douXGJ = $listHZBJ[$v['id']]["chayi"]['douxgj'];
+								if(abs($douXGJ)>0)
+									$douXGJ=$douXGJ;
+								else
+									$douXGJ="";
+									
+								$douCY = $listHZBJ[$v['id']]["chayi"]['doucy'];
+								if(abs($douCY)>0){
+									$douCY=$douCY;
+									$tdBgCY=" class = 'bg-red' ";
+								}else{
+									$douCY="";
+									$tdBgCY=" class = '' ";
+								}	
+								$textRemarks = $listHZBJ[$v['id']]["chayi"]['textremarks'];
+								
+								$intID_CY = $listHZBJ[$v['id']]["chayi"]['id'];
+									
+							</php>
+							<td align="right" id="douSF_total_s_{$v.id}" class="bg-main bgTrans">{$douSF_total_s}</td>
+							
+							
+							<td><input class="input" style="width:120px;" name="douXGJ[]" id="douXGJ_{$intID_CY}" value="{$douXGJ}" onkeyup="chayiRem_XGJ(douXGJ_{$intID_CY},'{$intID_CY}')" /></td>
+							<td {$tdBgCY} id="douCY_{$intID_CY}">{$douCY}</td>
+							<td><input class="input" style="width:320px;" name="textRemarks[]" id="textRemarks_{$intID_CY}" value="{$textRemarks}" onblur="chayiRem('textRemarks_{$intID_CY}','{$intID_CY}')" /></td>
+							
 					</tr>
 						<php>
 							$k++;
 						</php>
       				</foreach>
 					
-					<tr>
-						<td id="cs_2018"></td>
-    					<th style="border-right:#0099cc 1px solid;">合计：</th>
+					<tr class="bg-main bgTrans">
+						<td></td>
+    					<th style="border-right:#cccccc 1px solid; background:#0099cc" class="bgTrans">合计：</th>
 						<foreach name='shoufei_total' item='vo' key='k'>
 							<td>收费：<span id="douSFHJ_total_{$k}">{$vo.dousfhj_total}</span></td>
 							
@@ -197,11 +220,17 @@
 							<td>融资款：<span id="douRZK_total_{$k}">{$vo.dourzk_total}</span></td>
 							<td>其它收入：<span id="douQTSR_total_{$k}">{$vo.douqtsr_total}</span></td>
 							
-							<td style="border-right:#0099cc 1px solid;">手续费：<span id="douSXF_total_{$k}">{$vo.dousxf_total}</span></td>
+							<td style="border-right:#cccccc 1px solid;">手续费：<span id="douSXF_total_{$k}">{$vo.dousxf_total}</span></td>
 						</foreach>
-						<td></td>
-						<td></td>
-						<td></td>
+						<php>
+							$douSFHJ_total = $listCY_HZ["douSFHJ_total"];
+							$douXGJ_total = $listCY_HZ["douXGJ_total"];
+							$douCY_total = $listCY_HZ["douCY_total"];
+						</php>
+						
+						<td align="right" id="douSFHJ_total">{$douSFHJ_total}</td>
+						<td align="right" id="douXGJ_total">{$douXGJ_total}</td>
+						<td align="right" id="douCY_total">{$douCY_total}</td>
 						<td></td>
 					</tr>
 					
@@ -263,12 +292,12 @@
 <style>
 body {overflow-x: scroll;}
 #mask_my {width:100%; height:100%; background-color:#000;position:fixed;top:0; left:0;z-index:2;opacity:0.4;filter: alpha(opacity=40); display:none;}
-
+.bgTrans{opacity:0.6;filter: alpha(opacity=60);}
 </style>
 
 <script>
 $(function(){
-	var W = <php>echo $i*1130</php>+1030;
+	var W = <php>echo $i*1130</php>+1130;
 	$("body").width(W);
 });
 
@@ -346,6 +375,67 @@ function numMoney_N(obj){
 }
 
 
+
+
+function chayiRem(textRemarks,intID){
+	var textRemarks_js = $("#"+textRemarks+"").val();
+	//alert(textRemarks_js);
+	
+	$.ajax({
+		type: "POST",
+		url: "{:url('Zijin/zijin_chayi_rem_ajax','',false)}",
+		data: {
+				textRemarks_js:textRemarks_js,
+				intID_js:intID
+			  },
+		dataType:"json",
+		success: function(result){
+			if(result.status == 'OK'){
+				//alert(result.msg);
+				//$("#douCY_"+intID+"").html(result.msg);
+				
+			} else {
+				alert(result.msg);
+			}	              
+		} 
+	});
+
+	//event.preventDefault(); 
+}
+
+function chayiRem_XGJ(obj,intID){
+	obj.value = obj.value.replace(/[^\d.]/g,"");
+	obj.value = obj.value.replace(/^\./g,"");
+	obj.value = obj.value.replace(/\.{2,}/g,".");
+	obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+	obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
+
+	$.ajax({
+		type: "POST",
+		url: "{:url('Zijin/zijin_chayi_ajax','',false)}",
+		data: {
+				douXGJ_js:obj.value,
+				intID_js:intID
+			  },
+		dataType:"json",
+		success: function(result){
+			if(result.status == 'OK'){
+				//alert(result.msg);
+				$("#douCY_"+intID+"").html(result.msg);
+				
+				$("#douXGJ_total").html(result.douXGJ_total);
+				$("#douCY_total").html(result.douCY_total);
+				
+			} else {
+				alert(result.msg);
+			}	              
+		} 
+	});
+
+	//event.preventDefault(); 
+}
+
+
 function numMoney_Y(obj,htmlSF,douSF_Z,douSF_D,douXJSR,douXXK,douRZK,floSXF,intID){
 
 	obj.value = obj.value.replace(/[^\d.]/g,"");
@@ -393,14 +483,21 @@ function numMoney_Y(obj,htmlSF,douSF_Z,douSF_D,douXJSR,douXXK,douRZK,floSXF,intI
 			if(result.status == 'OK'){
 				$("#"+htmlSF+"").html(result.msg);
 				$("#"+douSF_D+"").val(result.msg);
-				
-				//alert(result.arrTotal.dousfhj_total);
+
 				$("#douSFHJ_total_"+result.aid+"").html(result.arrTotal.dousfhj_total);
 				$("#douXJSR_total_"+result.aid+"").html(result.arrTotal.douxjsr_total);
 				$("#douXXK_total_"+result.aid+"").html(result.arrTotal.douxxk_total);
 				$("#douRZK_total_"+result.aid+"").html(result.arrTotal.dourzk_total);
 				$("#douQTSR_total_"+result.aid+"").html(result.arrTotal.douqtsr_total);
 				$("#douSXF_total_"+result.aid+"").html(result.arrTotal.dousxf_total);
+				
+				var arr_js=htmlSF.split("_");
+				$("#douSF_total_s_"+arr_js[1]+"").html(result.douTotal_s);
+				$("#douCY_"+result.cyid+"").html(result.douCY);
+				
+				$("#douXGJ_total").html(result.douXGJ_total_s);
+				$("#douCY_total").html(result.douCY_total_s);
+				$("#douSFHJ_total").html(result.douSFHJ_total_s);
 				
 			} else {
 				obj.value="";

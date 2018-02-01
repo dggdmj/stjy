@@ -1,0 +1,202 @@
+
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <table id="table" class="table table-bordered table-condensed"><!-- table-hover -->
+                <tbody>
+                    <tr>
+						<th rowspan="2" width="50">编号</th>
+    					<th rowspan="2" width="280" style="border-right:#0099cc 1px solid;">分校</th>
+						<php>
+							$i=0;
+						</php>
+						<foreach name='listAccount' item='vo'>
+                        	<th colspan="6" style="text-align:center; border-right:#0099cc 1px solid;">{$vo.strname}-{$vo.strbankname}-{$vo.strmoneyname} ({$vo.textremark})</th>
+							<php>
+								$i++;	
+							</php>
+						</foreach>
+						
+						<th width="120" rowspan="2" style="text-align:center;">总收费</th>
+						<th width="90" rowspan="2" style="text-align:center;">校管家</th>
+						<th width="90" rowspan="2" style="text-align:center;">差异</th>
+                    </tr>
+             		<tr>
+						<for start="0" end="$i">
+							<th width="100" style="text-align:center;">收费</th>
+							
+							<th width="100" style="text-align:center;">现金收入</th>
+							<th width="100" style="text-align:center;">学习卡</th>
+							<th width="100" style="text-align:center;">融资款</th>
+							<th width="100" style="text-align:center;">其它收入</th>
+							
+							<th width="100" style="text-align:center; border-right:#0099cc 1px solid;">手续费</th>
+						</for>
+					</tr>
+					
+					<php>
+						$k=1;
+					</php>
+					<foreach name='listSchool' item='vs' key="ks">
+					<tr title="{$vs.subname}">
+						<td>{$k}</td>
+						<td style="border-right:#0099cc 1px solid;">{$vs.subname}</td>
+
+							<foreach name='listAccount' item='va' key="ka">
+								<php>
+									if(is_array($listQishu_HZ[$vs["id"]][$va["id"]]) && !empty($listQishu_HZ[$vs["id"]][$va["id"]]))
+									{
+										$dousf_qs = $listQishu_HZ[$vs["id"]][$va["id"]]["dousf_qs"];
+										if(abs($dousf_qs)>0)
+											$dousf_qs=$dousf_qs;
+										else
+											$dousf_qs="";	
+										
+										$dousfhj_qs = $listQishu_HZ[$vs["id"]][$va["id"]]["dousfhj_qs"];
+										if(abs($dousfhj_qs)>0)
+											$dousfhj_qs=$dousfhj_qs;
+										else
+											$dousfhj_qs="";
+											
+										$douxjsr_qs = $listQishu_HZ[$vs["id"]][$va["id"]]["douxjsr_qs"];
+										if(abs($douxjsr_qs)>0)
+											$douxjsr_qs=$douxjsr_qs;
+										else
+											$douxjsr_qs="";
+										
+										$douxxk_qs = $listQishu_HZ[$vs["id"]][$va["id"]]["douxxk_qs"];
+										if(abs($douxxk_qs)>0)
+											$douxxk_qs=$douxxk_qs;
+										else
+											$douxxk_qs="";
+											
+										$dourzk_qs = $listQishu_HZ[$vs["id"]][$va["id"]]["dourzk_qs"];
+										if(abs($dourzk_qs)>0)
+											$dourzk_qs=$dourzk_qs;
+										else
+											$dourzk_qs="";
+											
+										$douqtsr_qs = $listQishu_HZ[$vs["id"]][$va["id"]]["douqtsr_qs"];
+										if(abs($douqtsr_qs)>0)
+											$douqtsr_qs=$douqtsr_qs;
+										else
+											$douqtsr_qs="";
+											
+										$dousxf_qs = $listQishu_HZ[$vs["id"]][$va["id"]]["dousxf_qs"];
+										if(abs($dousxf_qs)>0)
+											$dousxf_qs=$dousxf_qs;
+										else
+											$dousxf_qs="";
+									}
+								</php>
+								<td align="right" title="{$vs.subname}: 最终收费 = 读取总收费({$dousf_qs}) + 现金({$douxjsr_qs}) - 学习卡({$douxxk_qs}) - 融资款({$dourzk_qs}) - 手续费({$dousxf_qs}) ">{$dousfhj_qs}</td>
+								
+								<td align="right">{$douxjsr_qs}</td>
+								
+								<td align="right">{$douxxk_qs}</td>
+								
+								<td align="right">{$dourzk_qs}</td>
+								
+								<td align="right">{$douqtsr_qs}</td>
+								
+								<td align="right" style="border-right:#0099cc 1px solid;">{$dousxf_qs}</td>
+								
+							</foreach>
+							
+							<php>
+								$dousfhj_qs = $listQishu_HZ[$vs["id"]]["chayi"]["dousfhj_qs"];
+								if(abs($dousfhj_qs)>0)
+									$dousfhj_qs=$dousfhj_qs;
+								else
+									$dousfhj_qs="";
+							
+								$douxgj_qs = $listQishu_HZ[$vs["id"]]["chayi"]["douxgj_qs"];
+								if(abs($douxgj_qs)>0)
+									$douxgj_qs=$douxgj_qs;
+								else
+									$douxgj_qs="";
+									
+								$doucy_qs = $listQishu_HZ[$vs["id"]]["chayi"]["doucy_qs"];
+								if(abs($doucy_qs)>0){
+									$doucy_qs=$doucy_qs;
+									$tdBgCY=" class = 'bg-red' ";
+								}else{
+									$doucy_qs="";
+									$tdBgCY="";
+								}	
+							</php>
+							<td align="right" class="bg-main bgTrans">{$dousfhj_qs}</td>
+							<td align="right">{$douxgj_qs}</td>
+							<td align="right" {$tdBgCY}>{$doucy_qs}</td>
+
+							
+					</tr>
+						<php>
+							$k++;
+						</php>
+      				</foreach>
+					
+					<tr class="bg-main bgTrans">
+						<td></td>
+    					<th style="border-right:#cccccc 1px solid; background:#0099cc" class="bgTrans">合计：</th>
+						<php>
+							if(is_array($listQishu_HZ["total"]) && !empty($listQishu_HZ[$vs["id"]][$va["id"]]))
+							
+						</php>
+						
+						<foreach name='listAccount' item='vo'>
+							<php>
+								$dousfhj_total = $listQishu_HZ["total"][$vo["id"]]["dousfhj_total"];
+								$douxjsr_total = $listQishu_HZ["total"][$vo["id"]]["douxjsr_total"];
+								$douxxk_total = $listQishu_HZ["total"][$vo["id"]]["douxxk_total"];
+								$dourzk_total = $listQishu_HZ["total"][$vo["id"]]["dourzk_total"];
+								$douqtsr_total = $listQishu_HZ["total"][$vo["id"]]["douqtsr_total"];
+								$dousxf_total = $listQishu_HZ["total"][$vo["id"]]["dousxf_total"];
+							</php>
+							<td>收费：<br />{$dousfhj_total}</td>
+							
+							<td>现金收入：<br />{$douxjsr_total}</td>
+							<td>学习卡：<br />{$douxxk_total}</td>
+							<td>融资款：<br />{$dourzk_total}</td>
+							<td>其它收入：<br />{$douqtsr_total}</td>
+							
+							<td style="border-right:#cccccc 1px solid;">手续费：<br />{$dousxf_total}</td>
+						</foreach>
+						<php>
+							$douSFHJ_total = $listQishu_HZ["total"]["chayi"]["douSFHJ_total"];
+							$douXGJ_total = $listQishu_HZ["total"]["chayi"]["douXGJ_total"];
+							$douCY_total = $listQishu_HZ["total"]["chayi"]["douCY_total"];
+						</php>
+						<td align="right">{$douSFHJ_total}</td>
+						<td align="right">{$douXGJ_total}</td>
+						<td align="right">{$douCY_total}</td>
+					</tr>
+					
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-foot table-foot clearfix">
+            <div class="float-left">
+                <div class="form-inline">
+                   
+                </div>
+                <br>
+            </div>
+
+        </div>
+    </div>
+
+
+
+<style>
+body {overflow-x: scroll;}
+#mask_my {width:100%; height:100%; background-color:#000;position:fixed;top:0; left:0;z-index:2;opacity:0.4;filter: alpha(opacity=40); display:none;}
+.bgTrans{opacity:0.6;filter: alpha(opacity=60);}
+</style>
+
+<script>
+$(function(){
+	var W = <php>echo $i*600</php>+630;
+	$("body").width(W);
+});
+
+</script>

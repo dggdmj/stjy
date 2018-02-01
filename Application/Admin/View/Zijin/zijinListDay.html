@@ -20,13 +20,22 @@
 						<php>
 							$strK=sprintf("%02d",$k);
 							
+							$isBg=M('shoufei_info')->where(" addTime = '".$k."' and intQiShu = '".$qishu."' ")->select();
+							if(is_array($isBg) && !empty($isBg)){
+								$btn_css="bg-green";
+								//$btn_title="编辑";
+							}else{
+								$btn_css="border-blue";
+								//$btn_title="编辑";
+							}
+								
 							if( $intK%5==0 )
 							{
 						</php>
 							<tr>
 								<td>日期：{$qishu}{$strK} &nbsp;&nbsp;&nbsp;&nbsp; 
-								<a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$strK))}">&nbsp;&nbsp;编辑</a>
-								<a class="button bg-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$strK))}" href="javascript:;">&nbsp;&nbsp;重置</a>
+								<a class="button {$btn_css} button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$strK))}">&nbsp;&nbsp;编辑</a>
+								<a class="button border-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$strK))}" href="javascript:;">&nbsp;&nbsp;重置</a>
 								</td>
 							
 						<php>
@@ -35,8 +44,8 @@
 							{
 						</php>
 								<td>日期：{$qishu}{$strK} &nbsp;&nbsp;&nbsp;&nbsp; 
-								<a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$strK))}">&nbsp;&nbsp;编辑</a>
-								<a class="button bg-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$strK))}" href="javascript:;">&nbsp;&nbsp;重置</a>
+								<a class="button {$btn_css} button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$strK))}">&nbsp;&nbsp;编辑</a>
+								<a class="button border-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$strK))}" href="javascript:;">&nbsp;&nbsp;重置</a>
 								</td>
 						<php>
 							}
