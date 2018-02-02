@@ -486,25 +486,28 @@ class ZijinAction extends CommonAction{
 		$textPiZhu_js	= $_POST["textPiZhu"];
 		$intID_js	= $_POST["intID"];
 		$fieldName_js	= $_POST["fieldName"];
-
+		$isFun_js	= $_POST["isFun"];
 
 		$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'" )->find();
 		if($rsRem["dousf"]>0)
-		{
-			if(strlen(trim($textPiZhu_js))==0)
-			{
-				//$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'")->find();
-				$temp["msg"] = $rsRem[strtolower($fieldName_js)];
-				$temp["status"] = 'OK';
-			}
-			else
-			{
+		{		
+			if(strlen(trim($textPiZhu_js))>0){
 				$arrData[$fieldName_js]=$textPiZhu_js;
 				
 				M('shoufei_info')->where("id = '".intval($intID_js)."'")->save($arrData);
 				
 				$temp["msg"] = '添加 批注信息 成功！';
 				$temp["status"] = 'OK';
+			}else{
+			
+				if($rsRem[strtolower($fieldName_js)]!=""){
+					$temp["msg"] = $rsRem[strtolower($fieldName_js)];
+					$temp["status"] = 'OK';
+				}
+				if($isFun_js>0){
+					$temp["msg"] = '批注信息不能为空！';
+					$temp["status"] = 'NO';
+				}
 			}
 		}
 		else

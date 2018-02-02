@@ -138,28 +138,28 @@
 								<td>
 									<div style="float:left;"><input class="input" style="width:100px;" name="douXJSR[]" value="{$douXJSR}" id="douXJSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXJSR_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
-										<button type="button" onclick="jsGetData('douXJSR_Rem','{$intID_js}')" class="button button-small {$douXJSR_Rem_css}" >批注</button>
+										<button type="button" onclick="jsGetData('douXJSR_Rem','{$intID_js}')" id="douXJSR_Rem_{$intID_js}" class="button button-small {$douXJSR_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
 								<td>
 									<div style="float:left;"><input class="input" style="width:100px;" name="douXXK[]" value="{$douXXK}" id="douXXK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXXK_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
-										<button type="button" onclick="jsGetData('douXXK_Rem','{$intID_js}')" class="button button-small {$douXXK_Rem_css}" >批注</button>
+										<button type="button" onclick="jsGetData('douXXK_Rem','{$intID_js}')" id="douXXK_Rem_{$intID_js}" class="button button-small {$douXXK_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
 								<td>
 									<div style="float:left;"><input class="input" style="width:100px;" name="douRZK[]" value="{$douRZK}" id="douRZK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douRZK_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
-										<button type="button" onclick="jsGetData('douRZK_Rem','{$intID_js}')" class="button button-small {$douRZK_Rem_css}" >批注</button>
+										<button type="button" onclick="jsGetData('douRZK_Rem','{$intID_js}')" id="douRZK_Rem_{$intID_js}" class="button button-small {$douRZK_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
 								<td>
 									<div style="float:left;"><input class="input" style="width:100px;" name="douQTSR[]" value="{$douQTSR}" id="douQTSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douQTSR_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /><!--input class="input" style="width:100px;" name="douQTSR[]" value="{$douQTSR}" onkeyup="numMoney_N(this)" /--></div>
 									<div style="float:left; margin-left:15px;">
-										<button type="button" onclick="jsGetData('douQTSR_Rem','{$intID_js}')" class="button button-small {$douQTSR_Rem_css}" >批注</button>
+										<button type="button" onclick="jsGetData('douQTSR_Rem','{$intID_js}')" id="douQTSR_Rem_{$intID_js}" class="button button-small {$douQTSR_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
@@ -276,6 +276,7 @@
 			<textarea rows="5" class="input" name="textPiZhu" placeholder="批注信息" id="textPiZhu"></textarea>
 			<input type="hidden" id="fieldName" value="" />
 			<input type="hidden" id="intID" value="" />
+			<input type="hidden" id="btnRemID" value="" />
 		</div>
 		
 		<div class="dialog-foot" style="text-align:right; padding:10px 50px 10px 0px;">
@@ -305,6 +306,7 @@ $(function(){
 function jsGetData(fieldName,intID){
 	$("#fieldName").val(fieldName);
 	$("#intID").val(intID);
+	$("#btnRemID").val(fieldName+"_"+intID);
 	
 	$("#mask_my").show();
 	 $("#myModal").show(300);
@@ -338,6 +340,7 @@ function postData()
 	var intID 	= $("#intID").val();
 	var	fieldName	= $("#fieldName").val();
 	var	textPiZhu	= $("#textPiZhu").val();
+	var	btnID	= $("#btnRemID").val();
 
 	$.ajax({
 		type: "POST",
@@ -345,18 +348,19 @@ function postData()
 		data: {
 				intID:intID,
 				textPiZhu:textPiZhu,
-				fieldName:fieldName
+				fieldName:fieldName,
+				isFun:1
 			  },
 		dataType:"json",
 		success: function(result){
 			if(result.status == 'OK'){
 				//alert(result.msg);
 				layer.msg(result.msg, {icon: 1});
-				//$("").attr("class","button button-small border-green");
+				$("#"+btnID+"").attr("class","button button-small border-green");
 				$('#myModal').hide();
 				$('#mask_my').hide();
 			} else {
-				layer.msg(result.msg, {icon: 1});
+				layer.msg(result.msg, {icon: 2});
 				$('#myModal').hide();
 				$('#mask_my').hide();
 			}	              
