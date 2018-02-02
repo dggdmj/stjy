@@ -486,7 +486,6 @@ class ZijinAction extends CommonAction{
 		$textPiZhu_js	= $_POST["textPiZhu"];
 		$intID_js	= $_POST["intID"];
 		$fieldName_js	= $_POST["fieldName"];
-		$isFun_js	= $_POST["isFun"];
 
 		$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'" )->find();
 		if($rsRem["dousf"]>0)
@@ -499,16 +498,33 @@ class ZijinAction extends CommonAction{
 				$temp["msg"] = '添加 批注信息 成功！';
 				$temp["status"] = 'OK';
 			}else{
-			
-				if($rsRem[strtolower($fieldName_js)]!=""){
-					$temp["msg"] = $rsRem[strtolower($fieldName_js)];
-					$temp["status"] = 'OK';
-				}
-				if($isFun_js>0){
-					$temp["msg"] = '批注信息不能为空！';
-					$temp["status"] = 'NO';
-				}
+
+				$temp["msg"] = '批注信息不能为空！';
+				$temp["status"] = 'NO';
 			}
+		}
+		else
+		{
+			$temp['msg'] 	= '此项没有内容，无法添加批注！';
+			$temp['status'] = 'NO';
+		}
+		
+		echo json_encode($temp); 
+		//dump($temp);
+	}
+	
+	public function zijin_getrem_ajax(){
+
+		$intID_js	= $_POST["intID"];
+		$fieldName_js	= $_POST["fieldName"];
+
+		$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'" )->find();
+		if($rsRem["dousf"]>0)
+		{		
+			if($rsRem[strtolower($fieldName_js)]!=""){
+				$temp["msg"] = $rsRem[strtolower($fieldName_js)];
+			}
+			$temp["status"] = 'OK';
 		}
 		else
 		{

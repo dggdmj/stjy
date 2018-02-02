@@ -315,7 +315,7 @@ function jsGetData(fieldName,intID){
 	
 	$.ajax({
 		type: "POST",
-		url: "{:url('Zijin/zijin_rem_ajax','',false)}",
+		url: "{:url('Zijin/zijin_getrem_ajax','',false)}",
 		data: {
 				intID:intID,
 				fieldName:fieldName
@@ -340,7 +340,6 @@ function postData()
 	var intID 	= $("#intID").val();
 	var	fieldName	= $("#fieldName").val();
 	var	textPiZhu	= $("#textPiZhu").val();
-	var	btnID	= $("#btnRemID").val();
 
 	$.ajax({
 		type: "POST",
@@ -348,8 +347,7 @@ function postData()
 		data: {
 				intID:intID,
 				textPiZhu:textPiZhu,
-				fieldName:fieldName,
-				isFun:1
+				fieldName:fieldName
 			  },
 		dataType:"json",
 		success: function(result){
