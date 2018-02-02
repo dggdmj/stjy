@@ -192,7 +192,7 @@ class ZijinAction extends CommonAction{
 							$douCY =  number_format((floatval($douSFHJ_total)*100-floatval($arrCY["douxgj"]))/100,2,".","");
 
 							$arrDataCY["douCY"]=$douCY;
-							M('shoufei_chayi')->where("id = '".intval($intID_js)."'")->save($arrDataCY);
+							M('shoufei_chayi')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."'")->save($arrDataCY);
 						}else{
 							$arrData["sid"]	= $Value["id"];
 							$arrData["aid"]	= $ValueA["id"];
