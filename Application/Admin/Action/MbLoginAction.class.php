@@ -6,16 +6,14 @@ use Org\Util\Rbac;
 class MbLoginAction extends Action {
 	
     public function index(){
+	
+		$strUserInfo = md5("test_123456789");
 		
-		$strUserName = "test";
-		$strPassword = md5("123456789");
-		
-		$cookieUserName = cookie('cookieUserName');
-		$cookiePassword = cookie('cookiePassword');
+		$cookieUserInfo = cookie('cookieUserInfo');
 		
 		if($cookieUserName!=""){
-			if($strUserName == $cookieUserName && $strPassword == $cookiePassword){
-				$this->success("登录成功！",'',5);
+			if($strUserInfo == $cookieUserInfo){
+				//$this->success("登录成功！",'',5);
 				$this->redirect('/MbLogin/showZijin');
 			}else{
 				$this->error("您输入的用户名或密码错误，请检查！");
@@ -27,16 +25,15 @@ class MbLoginAction extends Action {
 
 	public function login(){
         
-		$strUserName = "test";
-		$strPassword = md5("123456789");
+		$strUserInfo = md5("test_123456789");
 		
 		$cookieUserName = $_POST['username'];
-		$cookiePassword = md5($_POST['password']);
+		$cookiePassword = $_POST['password'];
 		
 		if($cookieUserName!=""){
-			if($strUserName == $cookieUserName && $strPassword == $cookiePassword){
-				cookie('cookieUserName',$cookieUserName,(time()+86400)*30);
-				cookie('cookiePassword',$cookiePassword,(time()+86400)*30);
+			$cookieUserInfo = md5($cookieUserName."_".$cookiePassword);
+			if($strUserInfo == $cookieUserInfo){
+				cookie('cookieUserInfo',$strUserInfo,(time()+86400)*30);
 				$this->redirect('/MbLogin/showZijin');
 			}else{
 				$this->error("您输入的用户名或密码错误，请检查！");
@@ -53,8 +50,7 @@ class MbLoginAction extends Action {
 	
 
 	public function logout(){
-        cookie('cookieUserName',null);
-		cookie('cookiePassword',null);
+        cookie('cookieUserInfo',null);
 		$this->redirect('/MbLogin/');
     }
 	
