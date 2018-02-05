@@ -9,7 +9,7 @@
                         <th>期数</th>
 						<th>添加时间</th>
 
-                        <th width="150">操作</th>
+                        <th width="200">操作</th>
                     </tr>
                     <foreach name='list' item='v'>
                         <tr>
@@ -22,6 +22,7 @@
                                 <a class="button bg-blue button-small icon-pencil" title="统计" alt="统计" href="{:U('/zijin/zijinHuizongQishu',array('qishu'=>$v['name']))}">&nbsp;&nbsp;统计</a>
 
 								<a class="button bg-blue button-small icon-eye" title="查看" alt="查看" href="{:U('/zijinIndex/index',array('qishu'=>$v['name']))}">&nbsp;&nbsp;查看</a>
+                                <a class="button bg-yellow button-small js-sub" title="通过审核" alt="通过审核" target2="__CONTROLLER__/checked/qishu/{$v.name}" style="cursor:pointer">通过</a>
                             </td>
                         </tr>
                     </foreach>
@@ -60,6 +61,27 @@
 	            });
 			});
         });
-
+        $(".js-sub").click(function () {
+            var subUrl = $(this).attr('target2');
+            var dd = $(this).attr('title');
+            //询问框
+            layer.confirm('您确定'+dd+'吗?', {
+                icon: 4,
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                //loading层
+                var index = layer.load(1, {
+                    shade: [0.8,'#fff'] //0.1透明度的白色背景
+                });
+                $.post(subUrl,$("form").serialize(),function(data){
+                    if(data.status){
+                        layer.msg(data.info, {icon: 1});
+                    }else{
+                        layer.msg(data.info, {icon: 2});
+                    }
+                    setTimeout("window.location.reload()",1000); // 让提示框停留一会
+                });
+            });
+        });
     });
 </script>
