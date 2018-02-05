@@ -10,7 +10,13 @@
 							$i=0;
 						</php>
 						<foreach name='listAccount' item='vo'>
-                        	<th colspan="6" style="text-align:center; border-right:#0099cc 1px solid;">{$vo.strname}-{$vo.strbankname}-{$vo.strmoneyname} ({$vo.textremark})</th>
+							<php>
+								if($vo["textremark"])
+									$textremark="(".$vo["textremark"].")";
+								else
+									$textremark="";	
+							</php>
+                        	<th colspan="6" style="text-align:center; border-right:#0099cc 1px solid;">{$vo.strname} — {$vo.strbankname} — {$vo.strmoneyname} {$textremark}</th>
 							<php>
 								$i++;	
 							</php>
