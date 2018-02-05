@@ -115,6 +115,12 @@ class ZijinAction extends CommonAction{
 	
 	
     public function zijinHuizong(){
+		// 获取当前用户的角色
+        $username = $_SESSION['username'];
+        $temp = M('admin')->where('username ="'.$username.'"')->find();
+        $uid = $temp['id'];
+        $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
+		$school_id = explode(",",$temp['school_id']);
 
 		$strQishu = $_GET['qishu'];
 		$strPici  = $_GET['pici'];
@@ -244,13 +250,26 @@ class ZijinAction extends CommonAction{
 		$listCY_HZ["douXGJ_total"]=M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' ")->sum("douXGJ");
 		$listCY_HZ["douCY_total"]=M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' ")->sum("douCY");
 
+
+		if($rid == 2 || $rid == 3){
+			foreach($listSchool as $v){
+				if(in_array($v['id'],$school_id)){
+					$listSchool_xz[] = $v;
+				}
+			}
+			dump($listSchool_xz);
+			$this->assign('listSchool',$listSchool_xz);
+		}else if($rid == 4){
+			$this->assign('listSchool',$listSchool);
+		}
 		//dump($listHZBJ);
-		
+		// dump($school_id);
+		// dump($listSchool);
 		$this->assign('listHZBJ',$listHZBJ);
 		$this->assign('listSXF',$listSXF);
 		$this->assign('listCY_HZ',$listCY_HZ);
 		
-		$this->assign('listSchool',$listSchool);
+		
 		$this->assign('listAccount',$listAccount);
 		$this->assign('shoufei_total',$shoufei_total);
 		//$this->assign('school_total',$school_total);
