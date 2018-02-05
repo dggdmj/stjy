@@ -605,6 +605,57 @@ class ZijinAction extends CommonAction{
 		//echo "<br>";
 	}
 
+	// 期数审核
+	public function checked(){
+        $count = $this->checkUpload($_GET);
+        if($count){
+            $rid = $this->getRid();
+            switch($rid){
+                case 4:
+                    $temp['shoufei_checked'] = 2;
+                break;
+            }
+            M('qishu')->where($_GET)->save($temp);// 更新数据总表
+            $arr['status'] = true;
+            $arr['info'] = '操作成功';
+            // 还需要将生成表数据写入数据库并让表格可以下载
+            $this->ajaxReturn($arr);
+        }else{
+            $arr['status'] = false;
+            $arr['info'] = '请审核本月所有批次后在操作';
+            // 还需要将生成表数据写入数据库并让表格可以下载
+            $this->ajaxReturn($arr);
+        }
+        
+    }
+
+	// 检查当月所有批次是否上传完毕
+	public function checkUpload($arr){
+		$res = M('pczb')->field('status_cw')->where($arr)->select();
+		if(empty($res)){
+			return false;
+		}
+		foreach($res as $v){
+			if($v['status_cw'] == 1){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// 取消通过审核操作
+    public function cancel(){
+        $rid = $this->getRid();
+        switch($rid){
+            case 4:
+                $temp['shoufei_checked'] = 1;
+            break;
+		}
+        M('qishu')->where($_GET)->save($temp);// 更新数据总表
+        $arr['status'] = true;
+        $arr['info'] = '操作成功';
+        $this->ajaxReturn($arr);
+    }
 }
 ?>
 

@@ -22,7 +22,11 @@
                                 <a class="button bg-blue button-small icon-pencil" title="统计" alt="统计" href="{:U('/zijin/zijinHuizongQishu',array('qishu'=>$v['name']))}">&nbsp;&nbsp;统计</a>
 
 								<a class="button bg-blue button-small icon-eye" title="查看" alt="查看" href="{:U('/zijinIndex/index',array('qishu'=>$v['name']))}">&nbsp;&nbsp;查看</a>
-                                <a class="button bg-yellow button-small js-sub" title="通过审核" alt="通过审核" target2="__CONTROLLER__/checked/qishu/{$v.name}" style="cursor:pointer">通过</a>
+                                <if condition="$v.shoufei_checked eq 2">
+                                    <a class="button bg-red button-small js-sub" title="取消" alt="取消" target2="__CONTROLLER__/cancel/qishu/{$v.name}" style="cursor:pointer">取消</a>
+                                <else />
+                                    <a class="button bg-yellow button-small js-sub" title="通过审核" alt="通过审核" target2="__CONTROLLER__/checked/qishu/{$v.name}" style="cursor:pointer">通过</a>
+                                </if>
                             </td>
                         </tr>
                     </foreach>
