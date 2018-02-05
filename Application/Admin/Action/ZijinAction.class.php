@@ -109,7 +109,7 @@ class ZijinAction extends CommonAction{
 		$this->assign('listAccount',$listAccount);
 		
 		$this->assign('listQishu_HZ',$listQishu_HZ);
-		$this->adminDisplay();
+		$this->adminDisplay("index2");
 	}
 	
 	
