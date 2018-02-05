@@ -33,7 +33,7 @@ class MbLoginAction extends Action {
 		if($cookieUserName!=""){
 			$cookieUserInfo = md5($cookieUserName."_".$cookiePassword);
 			if($strUserInfo == $cookieUserInfo){
-				cookie('cookieUserInfo',$strUserInfo,(time()+86400)*30);
+				cookie('cookieUserInfo',$strUserInfo,(time()+86400*30));
 				$this->redirect('/MbLogin/showZijin');
 			}else{
 				$this->error("您输入的用户名或密码错误，请检查！");
