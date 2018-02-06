@@ -60,8 +60,15 @@
                                     </foreach>
                                     <!-- 操作 -->
                                     <td>
-                                        <a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$i))}">&nbsp;&nbsp;编辑</a>
-
+                                       
+										
+										 
+										 <if condition="$v['status_cw'] eq 2">
+											<a class="button bg-green button-small icon-pencil" title="查看" alt="查看" href="{:U('/zijin/zijinHuizongPici',array('qishu'=>$qishu,'pici'=>$i))}">&nbsp;&nbsp;查看</a>
+										<else />
+											 <a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$i))}">&nbsp;&nbsp;编辑</a>
+										</if>
+										 
                                         <if condition="$rid eq 4">
                                             <a class="button border-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$i))}" href="javascript:;">&nbsp;&nbsp;重置</a>
                                             <if condition="$v.status_cw neq 2">

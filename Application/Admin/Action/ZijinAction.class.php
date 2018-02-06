@@ -135,6 +135,82 @@ class ZijinAction extends CommonAction{
 	}
 	
 	
+	public function zijinHuizongPici(){
+		$intQishu = intval($_GET['qishu']);
+		$intPici = intval($_GET['pici']);
+		
+		$intRoleID=$this->getRoleId();
+		$arrSchoolID=$this->getSchoolId();
+		
+		if($intRoleID == 2 || $intRoleID == 3){
+			$strSchoolID=implode(",",$arrSchoolID);
+			$strSQL_School=" and id in (".$strSchoolID.")";
+			$strSQL=" and sid in (".$strSchoolID.")";
+			
+			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
+			foreach($listSchool_all as $vs){
+				if(in_array($vs['id'],$arrSchoolID)){
+					$arrSchoolName[] = $vs['subname'];
+				}
+			}
+			$strSchoolName=implode(",",$arrSchoolName);
+			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
+			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
+		}elseif($intRoleID == 4){
+			$strSQL="";
+		}else{
+			$this->error("非法操作，请返回！");
+		}
+		
+		if(intval($intQishu)>0 && intval($intQishu)>0){
+			$listSF = M('shoufei_info')->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' ".$strSQL." " )->order('id asc')->select();
+			
+			foreach($listSF as $key => $val)
+			{
+				if(!in_array($val["sid"],$arrSid))
+					$listSchool[$key] = M('school')->where('id="'.$val["sid"].'"')->find();
+	
+				if(!in_array($val["aid"],$arrAid))
+					$listAccount[$key] = M('account_detail')->where('id="'.$val["aid"].'"')->find();
+					
+				$arrSid[$key]=$val["sid"];	
+				$arrAid[$key]=$val["aid"];	
+			}
+			foreach($listSchool as $Key => $Value){
+				foreach($listAccount as $KeyA => $ValueA){
+					$listQishu_HZ[$Value["id"]][$ValueA["id"]]=M('shoufei_info')->field(" sum(`douSF`) as `douSF_qs`, sum(`douSFHJ`) as `douSFHJ_qs`, sum(`douXJSR`) as `douXJSR_qs`, sum(`douXXK`) as `douXXK_qs`, sum(`douRZK`) as `douRZK_qs`, sum(`douQTSR`) as `douQTSR_qs`, sum(`douSXF`) as `douSXF_qs` ")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ".$strSQL." ")->find();
+				}
+				$listQishu_HZ[$Value["id"]]["chayi"]=M("shoufei_chayi")->field(" sum(`douXGJ`) as `douXGJ_qs`, sum(`douCY`) as `douCY_qs` ")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' and sid='".$Value["id"]."' ".$strSQL." ")->find();	
+				$listQishu_HZ[$Value["id"]]["chayi"]["dousfhj_qs"]=M("shoufei_info")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' and sid='".intval($Value["id"])."' ".$strSQL." ")->sum('douSFHJ');					
+			}
+			
+			
+			foreach($listAccount as $K => $Val){
+				$listQishu_HZ["total"][$Val["id"]]=M("shoufei_info")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' and aid='".intval($Val["id"])."' ".$strSQL." ")->field(" sum(`douSF`) as `douSF_total`, sum(`douSFHJ`) as `douSFHJ_total`, sum(`douXJSR`) as `douXJSR_total`, sum(`douXXK`) as `douXXK_total`, sum(`douRZK`) as `douRZK_total`, sum(`douQTSR`) as `douQTSR_total`, sum(`douSXF`) as `douSXF_total` ")->find();
+			}
+
+			
+			$listQishu_HZ["total"]["chayi"]["douSFHJ_total"]=M("shoufei_info")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douSFHJ");
+			$listQishu_HZ["total"]["chayi"]["douXGJ_total"]=M("shoufei_chayi")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douXGJ");
+			$listQishu_HZ["total"]["chayi"]["douCY_total"]=M("shoufei_chayi")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douCY");
+
+			//dump($listQishu_HZ);
+
+		}else{
+			$this->error("数据操作有误，请检查！");
+		}
+		
+
+		
+		$this->assign('listSchool',$listSchool);
+		$this->assign('listAccount',$listAccount);
+		
+		$this->assign('listQishu_HZ',$listQishu_HZ);
+		$this->adminDisplay("index1");
+		
+	}
+	
+	
 	
     public function zijinHuizong(){
 	
