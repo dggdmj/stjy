@@ -42,7 +42,6 @@ class MbLoginAction extends Action {
     }
 	
 	public function showZijin(){
-		$this->checkLogin();
 		if($this->checkLogin()){
 			echo "登录成功！！！";
 		}else{
