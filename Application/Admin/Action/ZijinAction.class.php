@@ -89,8 +89,31 @@ class ZijinAction extends CommonAction{
 	public function zijinHuizongQishu(){
 		$intQishu = intval($_GET['qishu']);
 		
+		$intRoleID=$this->getRoleId();
+		$arrSchoolID=$this->getSchoolId();
+		
+		if($intRoleID == 2 || $intRoleID == 3){
+			$strSchoolID=implode(",",$arrSchoolID);
+			$strSQL_School=" and id in (".$strSchoolID.")";
+			$strSQL=" and sid in (".$strSchoolID.")";
+			
+			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
+			foreach($listSchool_all as $vs){
+				if(in_array($vs['id'],$arrSchoolID)){
+					$strSchoolName .= '"'.$vs['subname'].'",';
+				}
+			}
+			$strSchoolName=substr($strSchoolName,0,-1);
+			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
+			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
+		}elseif($intRoleID == 4){
+			$strSQL="";
+		}else{
+			$this->error("非法操作，请返回！");
+		}
+		
 		if($intQishu>0){
-			$listSF = M('shoufei_info')->where(" intQiShu = '".$intQishu."'" )->order('id asc')->select();
+			$listSF = M('shoufei_info')->where(" intQiShu = '".$intQishu."' ".$strSQL." " )->order('id asc')->select();
 
 			foreach($listSF as $key => $val)
 			{
@@ -105,21 +128,21 @@ class ZijinAction extends CommonAction{
 			}
 			foreach($listSchool as $Key => $Value){
 				foreach($listAccount as $KeyA => $ValueA){
-					$listQishu_HZ[$Value["id"]][$ValueA["id"]]=M('shoufei_info')->field(" sum(`douSF`) as `douSF_qs`, sum(`douSFHJ`) as `douSFHJ_qs`, sum(`douXJSR`) as `douXJSR_qs`, sum(`douXXK`) as `douXXK_qs`, sum(`douRZK`) as `douRZK_qs`, sum(`douQTSR`) as `douQTSR_qs`, sum(`douSXF`) as `douSXF_qs` ")->where(" intQiShu = '".$intQishu."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."'")->find();
+					$listQishu_HZ[$Value["id"]][$ValueA["id"]]=M('shoufei_info')->field(" sum(`douSF`) as `douSF_qs`, sum(`douSFHJ`) as `douSFHJ_qs`, sum(`douXJSR`) as `douXJSR_qs`, sum(`douXXK`) as `douXXK_qs`, sum(`douRZK`) as `douRZK_qs`, sum(`douQTSR`) as `douQTSR_qs`, sum(`douSXF`) as `douSXF_qs` ")->where(" intQiShu = '".$intQishu."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ".$strSQL." ")->find();
 				}
-				$listQishu_HZ[$Value["id"]]["chayi"]=M("shoufei_chayi")->field(" sum(`douXGJ`) as `douXGJ_qs`, sum(`douCY`) as `douCY_qs` ")->where(" intQiShu = '".$intQishu."' and sid='".$Value["id"]."'")->find();	
-				$listQishu_HZ[$Value["id"]]["chayi"]["dousfhj_qs"]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' and sid='".intval($Value["id"])."'")->sum('douSFHJ');					
+				$listQishu_HZ[$Value["id"]]["chayi"]=M("shoufei_chayi")->field(" sum(`douXGJ`) as `douXGJ_qs`, sum(`douCY`) as `douCY_qs` ")->where(" intQiShu = '".$intQishu."' and sid='".$Value["id"]."' ".$strSQL." ")->find();	
+				$listQishu_HZ[$Value["id"]]["chayi"]["dousfhj_qs"]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' and sid='".intval($Value["id"])."' ".$strSQL." ")->sum('douSFHJ');					
 			}
 			
 			
 			foreach($listAccount as $K => $Val){
-				$listQishu_HZ["total"][$Val["id"]]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' and aid='".intval($Val["id"])."'")->field(" sum(`douSF`) as `douSF_total`, sum(`douSFHJ`) as `douSFHJ_total`, sum(`douXJSR`) as `douXJSR_total`, sum(`douXXK`) as `douXXK_total`, sum(`douRZK`) as `douRZK_total`, sum(`douQTSR`) as `douQTSR_total`, sum(`douSXF`) as `douSXF_total` ")->find();
+				$listQishu_HZ["total"][$Val["id"]]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' and aid='".intval($Val["id"])."' ".$strSQL." ")->field(" sum(`douSF`) as `douSF_total`, sum(`douSFHJ`) as `douSFHJ_total`, sum(`douXJSR`) as `douXJSR_total`, sum(`douXXK`) as `douXXK_total`, sum(`douRZK`) as `douRZK_total`, sum(`douQTSR`) as `douQTSR_total`, sum(`douSXF`) as `douSXF_total` ")->find();
 			}
 
 			
-			$listQishu_HZ["total"]["chayi"]["douSFHJ_total"]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' ")->sum("douSFHJ");
-			$listQishu_HZ["total"]["chayi"]["douXGJ_total"]=M("shoufei_chayi")->where(" intQiShu = '".intval($intQishu)."' ")->sum("douXGJ");
-			$listQishu_HZ["total"]["chayi"]["douCY_total"]=M("shoufei_chayi")->where(" intQiShu = '".intval($intQishu)."' ")->sum("douCY");
+			$listQishu_HZ["total"]["chayi"]["douSFHJ_total"]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douSFHJ");
+			$listQishu_HZ["total"]["chayi"]["douXGJ_total"]=M("shoufei_chayi")->where(" intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douXGJ");
+			$listQishu_HZ["total"]["chayi"]["douCY_total"]=M("shoufei_chayi")->where(" intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douCY");
 
 			//dump($listQishu_HZ);
 
@@ -150,10 +173,10 @@ class ZijinAction extends CommonAction{
 			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
 			foreach($listSchool_all as $vs){
 				if(in_array($vs['id'],$arrSchoolID)){
-					$arrSchoolName[] = $vs['subname'];
+					$strSchoolName .= '"'.$vs['subname'].'",';
 				}
 			}
-			$strSchoolName=implode(",",$arrSchoolName);
+			$strSchoolName=substr($strSchoolName,0,-1);
 			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
 			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 		}elseif($intRoleID == 4){
@@ -232,10 +255,10 @@ class ZijinAction extends CommonAction{
 			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
 			foreach($listSchool_all as $vs){
 				if(in_array($vs['id'],$arrSchoolID)){
-					$arrSchoolName[] = $vs['subname'];
+					$strSchoolName .= '"'.$vs['subname'].'",';
 				}
 			}
-			$strSchoolName=implode(",",$arrSchoolName);
+			$strSchoolName=substr($strSchoolName,0,-1);
 			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
 			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 		}elseif($intRoleID == 4){
@@ -250,10 +273,10 @@ class ZijinAction extends CommonAction{
 			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
 			foreach($listSchool_all as $vs){
 				if(in_array($vs['id'],$arrSchoolID)){
-					$arrSchoolName[] = $vs['subname'];
+					$strSchoolName .= '"'.$vs['subname'].'",';
 				}
 			}
-			$strSchoolName=implode(",",$arrSchoolName);
+			$strSchoolName=substr($strSchoolName,0,-1);
 			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
 			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 			*/
@@ -282,17 +305,17 @@ class ZijinAction extends CommonAction{
 			}
 			foreach($listSchool as $Key => $Value){
 				foreach($listAccount as $KeyA => $ValueA){
-					$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
+					$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ".$strSQL." ")->find();
 				}						
 			}
 		}
 		else
 		{
-			$listSchool = M('school')->where("isuse=1 ".$strSQL_School." ")->order('id desc')->select();
+			$listSchool = M('school')->where("isuse=1 ")->order('id desc')->select();
 			$listAccount = M('account_detail')->where('isUse',1)->order('intOrderID asc,id desc')->select();
 			
-			$listLklb = M('lklb')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' ".$strSQL_lkl." ")->select();
-			$listSqbb = M('sqbb')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' ".$strSQL_sqb." ")->select();
+			$listLklb = M('lklb')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' ")->select();
+			$listSqbb = M('sqbb')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' ")->select();
 			
 			//if(intval($strQishu)>0 && intval($strPici)>0 &&  ( (is_array($listLklb) && !empty($listLklb)) || (is_array($listSqbb) && !empty($listSqbb)) ) )
 			if(intval($strQishu)>0 && intval($strPici)>0 &&  ( (is_array($listLklb) && !empty($listLklb)) && (is_array($listSqbb) && !empty($listSqbb)) ) )
@@ -313,21 +336,21 @@ class ZijinAction extends CommonAction{
 						//echo "<br>";
 						
 						if(is_array($listSF) && !empty($listSF)){
-							$rs_SF=M('shoufei_info')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ".$strSQL." ")->find();
+							$rs_SF=M('shoufei_info')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
 							
 							$arrData["douSF"]	= floatval($sfTotal);
 							$arrData["douSFHJ"]	= floatval($sfTotal) + floatval($rs_SF["douxjsr"]) - floatval($rs_SF["douxxk"]) - floatval($rs_SF["dourzk"]) - abs(floatval($sxfTotal));
 							//dousfhj=dousf+douxjsr-douxxk-dourzk-dousxf
 							$arrData["douSXF"]	= floatval($sxfTotal);
 
-							M('shoufei_info')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ".$strSQL." ")->save($arrData);
+							M('shoufei_info')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->save($arrData);
 
-							$douSFHJ_total = M("shoufei_info")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ".$strSQL." ")->sum('douSFHJ');
-							$arrCY = M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ".$strSQL." ")->find();
+							$douSFHJ_total = M("shoufei_info")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->sum('douSFHJ');
+							$arrCY = M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->find();
 							$douCY =  number_format((floatval($douSFHJ_total)*100-floatval($arrCY["douxgj"]))/100,2,".","");
 
 							$arrDataCY["douCY"]=$douCY;
-							M('shoufei_chayi')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' ".$strSQL." ")->save($arrDataCY);
+							M('shoufei_chayi')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' ")->save($arrDataCY);
 						}else{
 							$arrData["sid"]	= $Value["id"];
 							$arrData["aid"]	= $ValueA["id"];
@@ -344,7 +367,7 @@ class ZijinAction extends CommonAction{
 						}
 					}
 					
-					$listCY = M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ".$strSQL." ")->select();
+					$listCY = M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->select();
 					if(empty($listCY)){
 						$arrDataCY["sid"]=$Value["id"];
 						$arrDataCY["addTime"]=intval($strPici);
@@ -356,7 +379,7 @@ class ZijinAction extends CommonAction{
 				
 				foreach($listSchool as $Key => $Value){
 					foreach($listAccount as $KeyA => $ValueA){		
-						$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
+						$listHZBJ[$Value["id"]][$ValueA["id"]] = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ".$strSQL." ")->find();
 					}						
 				}	
 			}
@@ -424,10 +447,10 @@ class ZijinAction extends CommonAction{
 			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
 			foreach($listSchool_all as $vs){
 				if(in_array($vs['id'],$arrSchoolID)){
-					$arrSchoolName[] = $vs['subname'];
+					$strSchoolName .= '"'.$vs['subname'].'",';
 				}
 			}
-			$strSchoolName=implode(",",$arrSchoolName);
+			$strSchoolName=substr($strSchoolName,0,-1);
 			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
 			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 		}elseif($intRoleID == 4){
@@ -437,8 +460,8 @@ class ZijinAction extends CommonAction{
 		}
 		
 		
-		if(abs($douSF_Z_js)>0)
-		{
+		//if(abs($douSF_Z_js)>0)
+		//{
 			//最终收费 = 读取收费+现金-学习卡-融资款-手续费
 			$douSFHJ = number_format(($douSF_Z_js + $douXJSR_js - $douXXK_js - $douRZK_js - $floSXF_js)/100,2,".","");
 			
@@ -478,12 +501,12 @@ class ZijinAction extends CommonAction{
 			$temp["aid"] = $reA["aid"];
 			$temp["msg"] = $douSFHJ;
 			$temp["status"] = 'OK';
-		}
-		else
-		{
-			$temp['msg'] 	= '请在正确的收款平台下填写！';
-			$temp['status'] = 'NO';
-		}
+		//}
+		//else
+		//{
+		//	$temp['msg'] 	= '请在正确的收款平台下填写！';
+		//	$temp['status'] = 'NO';
+		//}
 		echo json_encode($temp); 
 		//dump($temp);
 	}
@@ -507,10 +530,10 @@ class ZijinAction extends CommonAction{
 			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
 			foreach($listSchool_all as $vs){
 				if(in_array($vs['id'],$arrSchoolID)){
-					$arrSchoolName[] = $vs['subname'];
+					$strSchoolName .= '"'.$vs['subname'].'",';
 				}
 			}
-			$strSchoolName=implode(",",$arrSchoolName);
+			$strSchoolName=substr($strSchoolName,0,-1);
 			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
 			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 		}elseif($intRoleID == 4){
@@ -672,8 +695,8 @@ class ZijinAction extends CommonAction{
 		$fieldName_js	= $_POST["fieldName"];
 
 		$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'" )->find();
-		if($rsRem["dousf"]>0)
-		{		
+		//if($rsRem["dousf"]>0)
+		//{		
 			if(strlen(trim($textPiZhu_js))>0){
 				$arrData[$fieldName_js]=$textPiZhu_js;
 				
@@ -686,12 +709,12 @@ class ZijinAction extends CommonAction{
 				$temp["msg"] = '批注信息不能为空！';
 				$temp["status"] = 'NO';
 			}
-		}
-		else
-		{
-			$temp['msg'] 	= '此项没有内容，无法添加批注！';
-			$temp['status'] = 'NO';
-		}
+		//}
+		//else
+		//{
+		//	$temp['msg'] 	= '此项没有内容，无法添加批注！';
+		//	$temp['status'] = 'NO';
+		//}
 		
 		echo json_encode($temp); 
 		//dump($temp);
@@ -703,18 +726,18 @@ class ZijinAction extends CommonAction{
 		$fieldName_js	= $_POST["fieldName"];
 
 		$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'" )->find();
-		if($rsRem["dousf"]>0)
-		{		
+		//if($rsRem["dousf"]>0)
+		//{		
 			if($rsRem[strtolower($fieldName_js)]!=""){
 				$temp["msg"] = $rsRem[strtolower($fieldName_js)];
 			}
 			$temp["status"] = 'OK';
-		}
-		else
-		{
-			$temp['msg'] 	= '此项没有内容，无法添加批注！';
-			$temp['status'] = 'NO';
-		}
+		//}
+		//else
+		//{
+		//	$temp['msg'] 	= '此项没有内容，无法添加批注！';
+		//	$temp['status'] = 'NO';
+		//}
 		
 		echo json_encode($temp); 
 		//dump($temp);
