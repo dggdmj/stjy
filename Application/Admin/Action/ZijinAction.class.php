@@ -614,7 +614,7 @@ class ZijinAction extends CommonAction{
 					$uQiShu	=	$intQiShu[$key];
 				}
 				
-				$this->success('修改成功',U('zijinListDay',array('qishu'=>$uQiShu)));
+				$this->success('修改成功',U('zijinIndex/index',array('qishu'=>$uQiShu)));
 		
 			}
 			else 
