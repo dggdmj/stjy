@@ -402,7 +402,9 @@ function chayiRem(textRemarks,intID){
 				//$("#douCY_"+intID+"").html(result.msg);
 				
 			} else {
-				alert(result.msg);
+				//alert(result.msg);
+				$("#"+textRemarks+"").val("");
+				layer.msg(result.msg, {icon: 2});
 			}	              
 		} 
 	});
@@ -434,7 +436,8 @@ function chayiRem_XGJ(obj,intID){
 				$("#douCY_total").html(result.douCY_total);
 				
 			} else {
-				alert(result.msg);
+				obj.value="";
+				layer.msg(result.msg, {icon: 2});
 			}	              
 		} 
 	});
@@ -509,7 +512,7 @@ function numMoney_Y(obj,htmlSF,douSF_Z,douSF_D,douXJSR,douXXK,douRZK,floSXF,intI
 			} else {
 				obj.value="";
 				//alert(result.msg);
-				layer.msg(result.msg, {icon: 1});
+				layer.msg(result.msg, {icon: 2});
 			}
 			              
 		} 

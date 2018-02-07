@@ -96,16 +96,6 @@ class ZijinAction extends CommonAction{
 			$strSchoolID=implode(",",$arrSchoolID);
 			$strSQL_School=" and id in (".$strSchoolID.")";
 			$strSQL=" and sid in (".$strSchoolID.")";
-			
-			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
-			foreach($listSchool_all as $vs){
-				if(in_array($vs['id'],$arrSchoolID)){
-					$strSchoolName .= '"'.$vs['subname'].'",';
-				}
-			}
-			$strSchoolName=substr($strSchoolName,0,-1);
-			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
-			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 		}elseif($intRoleID == 4){
 			$strSQL="";
 		}else{
@@ -169,16 +159,6 @@ class ZijinAction extends CommonAction{
 			$strSchoolID=implode(",",$arrSchoolID);
 			$strSQL_School=" and id in (".$strSchoolID.")";
 			$strSQL=" and sid in (".$strSchoolID.")";
-			
-			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
-			foreach($listSchool_all as $vs){
-				if(in_array($vs['id'],$arrSchoolID)){
-					$strSchoolName .= '"'.$vs['subname'].'",';
-				}
-			}
-			$strSchoolName=substr($strSchoolName,0,-1);
-			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
-			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 		}elseif($intRoleID == 4){
 			$strSQL="";
 		}else{
@@ -265,25 +245,10 @@ class ZijinAction extends CommonAction{
 			$strSQL="";
 		}else{
 			$this->error("非法操作，请返回！");
-			/*
-			$strSchoolID=implode(",",$arrSchoolID);
-			$strSQL_School=" and id in (".$strSchoolID.")";
-			$strSQL=" and sid in (".$strSchoolID.")";
-			
-			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
-			foreach($listSchool_all as $vs){
-				if(in_array($vs['id'],$arrSchoolID)){
-					$strSchoolName .= '"'.$vs['subname'].'",';
-				}
-			}
-			$strSchoolName=substr($strSchoolName,0,-1);
-			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
-			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
-			*/
 		}
 
-		
-		if(intval($strQishu)>0 && intval($strPici)>0){
+		$arrRs = M('pczb')->where("qishu = '".$strQishu."' and pici='".$strPici."' ")->find();
+		if(intval($strQishu)>0 && intval($strPici)>0 && $arrRs["status_cw"]!=2){
 			$listSF = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' ".$strSQL." " )->order('id asc')->select();
 			$isReset = M('shoufei_info')->where("addTime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' ".$strSQL." " )->sum('douSF');
 		}else{
@@ -443,16 +408,6 @@ class ZijinAction extends CommonAction{
 			$strSchoolID=implode(",",$arrSchoolID);
 			$strSQL_School=" and id in (".$strSchoolID.")";
 			$strSQL=" and sid in (".$strSchoolID.")";
-			
-			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
-			foreach($listSchool_all as $vs){
-				if(in_array($vs['id'],$arrSchoolID)){
-					$strSchoolName .= '"'.$vs['subname'].'",';
-				}
-			}
-			$strSchoolName=substr($strSchoolName,0,-1);
-			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
-			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 		}elseif($intRoleID == 4){
 			$strSQL="";
 		}else{
@@ -460,8 +415,12 @@ class ZijinAction extends CommonAction{
 		}
 		
 		
+		$reA = M('shoufei_info')->where("id = '".$intID_js."'")->find();
+		$arrRs = M('pczb')->where("qishu = '".$reA["intqishu"]."' and pici='".$reA["addtime"]."' ")->find();
+		
 		//if(abs($douSF_Z_js)>0)
-		//{
+		if($arrRs["status_cw"]!=2)
+		{
 			//最终收费 = 读取收费+现金-学习卡-融资款-手续费
 			$douSFHJ = number_format(($douSF_Z_js + $douXJSR_js - $douXXK_js - $douRZK_js - $floSXF_js)/100,2,".","");
 			
@@ -469,7 +428,7 @@ class ZijinAction extends CommonAction{
 			$arrData["douSFHJ"]	= $douSFHJ;
 			M('shoufei_info')->where("id = '".$intID_js."'")->save($arrData);
 			
-			$reA = M('shoufei_info')->where("id = '".$intID_js."'")->find();
+			//$reA = M('shoufei_info')->where("id = '".$intID_js."'")->find();
 
 			$douTotal = M("shoufei_info")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' and aid='".intval($reA["aid"])."' ".$strSQL." ")->field(" sum(`douSF`) as `douSF_total`, sum(`douSFHJ`) as `douSFHJ_total`, sum(`douXJSR`) as `douXJSR_total`, sum(`douXXK`) as `douXXK_total`, sum(`douRZK`) as `douRZK_total`, sum(`douQTSR`) as `douQTSR_total`, sum(`douSXF`) as `douSXF_total` ")->find();
 			
@@ -501,12 +460,13 @@ class ZijinAction extends CommonAction{
 			$temp["aid"] = $reA["aid"];
 			$temp["msg"] = $douSFHJ;
 			$temp["status"] = 'OK';
-		//}
-		//else
-		//{
-		//	$temp['msg'] 	= '请在正确的收款平台下填写！';
-		//	$temp['status'] = 'NO';
-		//}
+		}
+		else
+		{
+			//$temp['msg'] 	= '请在正确的收款平台下填写！';
+			$temp['msg'] 	= '此日期批次已通过审核，无法进行操作！';
+			$temp['status'] = 'NO';
+		}
 		echo json_encode($temp); 
 		//dump($temp);
 	}
@@ -526,25 +486,17 @@ class ZijinAction extends CommonAction{
 			$strSchoolID=implode(",",$arrSchoolID);
 			$strSQL_School=" and id in (".$strSchoolID.")";
 			$strSQL=" and sid in (".$strSchoolID.")";
-			
-			$listSchool_all = M('school')->where('isuse',1)->order('id desc')->select();
-			foreach($listSchool_all as $vs){
-				if(in_array($vs['id'],$arrSchoolID)){
-					$strSchoolName .= '"'.$vs['subname'].'",';
-				}
-			}
-			$strSchoolName=substr($strSchoolName,0,-1);
-			$strSQL_lkl=" and strMerName in (".$strSchoolName.")";
-			$strSQL_sqb=" and strSchoolName in (".$strSchoolName.")";
 		}elseif($intRoleID == 4){
 			$strSQL="";
 		}else{
 			$this->error("非法操作，请返回！");
 		}
-
-		if(intval($intID_js)>0)
+		
+		$rsCY=M("shoufei_chayi")->where("id = '".intval($intID_js)."'")->find();
+		$arrRs = M('pczb')->where("qishu = '".$rsCY["intqishu"]."' and pici='".$rsCY["addtime"]."' ")->find();
+		if(intval($intID_js)>0 && $arrRs["status_cw"]!=2)
 		{
-			$rsCY=M("shoufei_chayi")->where("id = '".intval($intID_js)."'")->find();
+			//$rsCY=M("shoufei_chayi")->where("id = '".intval($intID_js)."'")->find();
 			if($douXGJ_js>0){
 				$douSFHJ_total = M("shoufei_info")->where("addtime = '".intval($rsCY["addtime"])."' and intQiShu = '".intval($rsCY["intqishu"])."' and sid='".intval($rsCY["sid"])."' ".$strSQL." ")->sum('douSFHJ');
 				$douCY =  number_format((floatval($douSFHJ_total)*100-floatval($douXGJ_js))/100,2,".","");
@@ -579,20 +531,26 @@ class ZijinAction extends CommonAction{
 		$intID_js	= $_POST["intID_js"];
 
 		$rsRem = M('shoufei_chayi')->where("id = '".intval($intID_js)."'" )->find();
-		if(is_array($rsRem) && !empty($rsRem) && $textRemarks_js!="")
-		{
-			$arrData["textRemarks"]=$textRemarks_js;
-			M('shoufei_chayi')->where("id = '".intval($intID_js)."'")->save($arrData);
-			
-			//$temp['msg'] 	= '！';
-			//$temp['status'] = 'OK';
-		}
-		else
-		{
-			//$temp['msg'] 	= '！';
-			//$temp['status'] = 'NO';
-		}
 		
+		$arrRs = M('pczb')->where("qishu = '".$rsRem["intqishu"]."' and pici='".$rsRem["addtime"]."' ")->find();
+		if( $arrRs["status_cw"]!=2 ){
+			if(is_array($rsRem) && !empty($rsRem) && $textRemarks_js!="")
+			{
+				$arrData["textRemarks"]=$textRemarks_js;
+				M('shoufei_chayi')->where("id = '".intval($intID_js)."'")->save($arrData);
+				
+				//$temp['msg'] 	= '！';
+				//$temp['status'] = 'OK';
+			}
+			else
+			{
+				//$temp['msg'] 	= '！';
+				//$temp['status'] = 'NO';
+			}
+		}else{
+			$temp['msg'] 	= '非法操作！';
+			$temp['status'] = 'NO';
+		}
 		echo json_encode($temp); 
 		//dump($temp);
 	}
@@ -621,71 +579,74 @@ class ZijinAction extends CommonAction{
 		$douXGJ	= $_POST["douXGJ"];
 		$douCY	= $_POST["douCY"];
 		$textRemarks = $_POST["textRemarks"];
-
 		
-		if(!empty($intID) && is_array($intID))
-		{
-			foreach($intCreateDate as $key=>$val)
+		$arrRs = M('pczb')->where("qishu = '".intval($intQiShu)."' and pici='".intval($addTime)."' ")->find();
+		if($arrRs["status_cw"]!=2){
+			if(!empty($intID) && is_array($intID))
 			{
-				//$arrData["sid"]	= $sid[$key];
-				//$arrData["aid"]	= $aid[$key];
+				foreach($intCreateDate as $key=>$val)
+				{
+					//$arrData["sid"]	= $sid[$key];
+					//$arrData["aid"]	= $aid[$key];
+					
+					$arrData["douSF"]	= $douSF[$key];
+					$arrData["douSFHJ"]	= $douSFHJ[$key];
+					$arrData["douXJSR"]	= $douXJSR[$key];
+					$arrData["douXXK"]	= $douXXK[$key];
+					$arrData["douRZK"]	= $douRZK[$key];
+					$arrData["douQTSR"]	= $douQTSR[$key];
+					$arrData["douSXF"]	= $douSXF[$key];
+					
+					//$arrData["addTime"]	= $addTime[$key];
+					//$arrData["intQiShu"]= $intQiShu[$key];
+					
+					$arrData["intCreateDate"]	= $intCreateDate[$key];
+					
+					$fid	= $intID[$key];
+		
+					M('shoufei_info')->where(array('id'=>$fid))->save($arrData);
+		
+					$arrData_CY["douXGJ"]	= $douXGJ[$key];
+					$arrData_CY["douCY"]	= $douCY[$key];
+					$arrData_CY["textRemarks"]	= $textRemarks[$key];
+					M('shoufei_chayi')->where("sid = '".$sid[$key]."' and addTime = '".$addTime."' and intQiShu = '".$intQiShu."'")->save($arrData_CY);
+		
+					$uQiShu	=	$intQiShu[$key];
+				}
 				
-				$arrData["douSF"]	= $douSF[$key];
-				$arrData["douSFHJ"]	= $douSFHJ[$key];
-				$arrData["douXJSR"]	= $douXJSR[$key];
-				$arrData["douXXK"]	= $douXXK[$key];
-				$arrData["douRZK"]	= $douRZK[$key];
-				$arrData["douQTSR"]	= $douQTSR[$key];
-				$arrData["douSXF"]	= $douSXF[$key];
-				
-				//$arrData["addTime"]	= $addTime[$key];
-				//$arrData["intQiShu"]= $intQiShu[$key];
-				
-				$arrData["intCreateDate"]	= $intCreateDate[$key];
-				
-				$fid	= $intID[$key];
-
-				M('shoufei_info')->where(array('id'=>$fid))->save($arrData);
-
-				$arrData_CY["douXGJ"]	= $douXGJ[$key];
-				$arrData_CY["douCY"]	= $douCY[$key];
-				$arrData_CY["textRemarks"]	= $textRemarks[$key];
-				M('shoufei_chayi')->where("sid = '".$sid[$key]."' and addTime = '".$addTime."' and intQiShu = '".$intQiShu."'")->save($arrData_CY);
-
-				$uQiShu	=	$intQiShu[$key];
+				$this->success('修改成功',U('zijinListDay',array('qishu'=>$uQiShu)));
+		
 			}
-			
-			$this->success('修改成功',U('zijinListDay',array('qishu'=>$uQiShu)));
-
-        }
-        else 
-		{
-			foreach($intCreateDate as $key=>$val)
+			else 
 			{
-				$arrData["sid"]	= $sid[$key];
-				$arrData["aid"]	= $aid[$key];
+				foreach($intCreateDate as $key=>$val)
+				{
+					$arrData["sid"]	= $sid[$key];
+					$arrData["aid"]	= $aid[$key];
+					
+					$arrData["douSF"]	= $douSF[$key];
+					$arrData["douSFHJ"]	= $douSFHJ[$key];
+					$arrData["douXJSR"]	= $douXJSR[$key];
+					$arrData["douXXK"]	= $douXXK[$key];
+					$arrData["douRZK"]	= $douRZK[$key];
+					$arrData["douQTSR"]	= $douQTSR[$key];
+					$arrData["douSXF"]	= $douSXF[$key];
+					
+					$arrData["addTime"]	= $addTime[$key];
+					$arrData["intQiShu"]= $intQiShu[$key];
+					
+					$arrData["intCreateDate"]	= $intCreateDate[$key];
 				
-				$arrData["douSF"]	= $douSF[$key];
-				$arrData["douSFHJ"]	= $douSFHJ[$key];
-				$arrData["douXJSR"]	= $douXJSR[$key];
-				$arrData["douXXK"]	= $douXXK[$key];
-				$arrData["douRZK"]	= $douRZK[$key];
-				$arrData["douQTSR"]	= $douQTSR[$key];
-				$arrData["douSXF"]	= $douSXF[$key];
-				
-				$arrData["addTime"]	= $addTime[$key];
-				$arrData["intQiShu"]= $intQiShu[$key];
-				
-				$arrData["intCreateDate"]	= $intCreateDate[$key];
-			
-				M('shoufei_info')->add($arrData);
-				
-				$uQiShu	=	$intQiShu[$key];
+					M('shoufei_info')->add($arrData);
+					
+					$uQiShu	=	$intQiShu[$key];
+				}
+				$this->success('保存成功',U('zijinIndex/index',array('qishu'=>$uQiShu)));
+			   
 			}
-			$this->success('保存成功',U('zijinIndex/index',array('qishu'=>$uQiShu)));
-           
-        }
-			
+		}else{
+			$this->error("此日期批次已通过审核，无法进行操作！");
+		}	
 	}
 	
 	public function zijin_rem_ajax(){
@@ -695,8 +656,10 @@ class ZijinAction extends CommonAction{
 		$fieldName_js	= $_POST["fieldName"];
 
 		$rsRem = M('shoufei_info')->where("id = '".intval($intID_js)."'" )->find();
-		//if($rsRem["dousf"]>0)
-		//{		
+		
+		$arrRs = M('pczb')->where("qishu = '".$rsRem["intqishu"]."' and pici='".$rsRem["addtime"]."' ")->find();
+		if($arrRs["status_cw"]!=2)
+		{//if($rsRem["dousf"]>0)
 			if(strlen(trim($textPiZhu_js))>0){
 				$arrData[$fieldName_js]=$textPiZhu_js;
 				
@@ -709,12 +672,13 @@ class ZijinAction extends CommonAction{
 				$temp["msg"] = '批注信息不能为空！';
 				$temp["status"] = 'NO';
 			}
-		//}
-		//else
-		//{
-		//	$temp['msg'] 	= '此项没有内容，无法添加批注！';
-		//	$temp['status'] = 'NO';
-		//}
+		}
+		else
+		{
+			//$temp['msg'] 	= '此项没有内容，无法添加批注！';
+			$temp['msg'] 	= '此日期批次已通过审核，无法添加批注！';
+			$temp['status'] = 'NO';
+		}
 		
 		echo json_encode($temp); 
 		//dump($temp);
@@ -748,7 +712,9 @@ class ZijinAction extends CommonAction{
 	
 		$intQishu = $_GET['qishu'];
 		$intPici  = $_GET['pici'];
-		if(intval($intQishu)>0 && intval($intPici)>0)
+		
+		$arrRs = M('pczb')->where("qishu = '".$intQishu."' and pici='".$intPici."' ")->find();
+		if(intval($intQishu)>0 && intval($intPici)>0 && $arrRs["status_cw"]!=2)
 		{
 			//M("shoufei_info")->where("addtime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."'")->delete();
 			//M("shoufei_chayi")->where("addtime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."'")->delete();
@@ -808,6 +774,7 @@ class ZijinAction extends CommonAction{
 		
 		//echo "<br>";
 	}
+
 
 	// 期数审核
 	public function checked(){
