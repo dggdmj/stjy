@@ -59,6 +59,13 @@ class ZijinIndexAction extends CommonAction{
 			$this->assign('intDays',$intDays);
         }
         $list = M('pczb')->where('qishu = '.$qishu)->order('stjy_pczb.qishu desc,stjy_pczb.pici desc')->select();
+        
+        // upload_check为检查上传状态,4为上传好
+        foreach($list as $k=>$v){
+            $list[$k]['upload_check'] = $v['sqbb'] + $v['lklb'];
+        }
+        // dump($list);
+
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames(1,[6]);
         $rid = $this->getRid();

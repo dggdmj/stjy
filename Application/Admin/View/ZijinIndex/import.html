@@ -100,7 +100,9 @@
 </script>
 
 <script>
+    var pici = $('select[name="pici"]').val();
     $('select[name="qishu"]').click(function(){
+        $('select[name="pici"]').find("option").remove();
         var qishu = $(this).val();
         var nian = qishu.substr(0,4);
         var yue = qishu.substr(4,2);
@@ -112,7 +114,12 @@
             // if(i<10){
             //     i = parseInt('0'+i);
             // }
-            $('select[name="pici"]').append("<option value ='"+i+"'>"+i+"</option>");
+            if(pici == i){
+                $('select[name="pici"]').append("<option value ='"+i+"' selected>"+i+"</option>");
+            }else{
+                $('select[name="pici"]').append("<option value ='"+i+"'>"+i+"</option>");
+            }
+
         }
 
     }).trigger('click');
