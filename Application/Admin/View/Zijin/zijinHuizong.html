@@ -137,39 +137,39 @@
 									}
 									
 								</php>
-								<td align="right" id="htmlSF_{$v.id}_{$vo.id}" title="{$v.subname}: 最终收费 = 读取总收费({$douSF}) + 现金 {//$douXJSR}- 学习卡 {//$douXXK}- 融资款 {//$douRZK}- 手续费 {//$floSXF} ">{$floHZBJ}</td>
+								<td align="right" id="htmlSF_{$v.id}_{$vo.id}" title="最终收费：读取总收费({$douSF}) + 现金 {//$douXJSR}- 学习卡 {//$douXXK}- 融资款 {//$douRZK}- 手续费 {//$floSXF}&#10;&nbsp;&nbsp;&nbsp;&nbsp;学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">{$floHZBJ}</td>
 								<input type="hidden" name="douSF[]" id="douSF_Z_{$v.id}_{$vo.id}" value="{$douSF}" /><!-- 总的收入 不改动 -->
 								<input type="hidden" name="douSFHJ[]" id="douSF_D_{$v.id}_{$vo.id}" value="{$floHZBJ}" /><!-- 最后计算结果 -->
 								
-								<td>
+								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">
 									<div style="float:left;"><input class="input" style="width:100px;" name="douXJSR[]" value="{$douXJSR}" id="douXJSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXJSR_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
 										<button type="button" onclick="jsGetData('douXJSR_Rem','{$intID_js}')" id="douXJSR_Rem_{$intID_js}" class="button button-small {$douXJSR_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
-								<td>
+								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">
 									<div style="float:left;"><input class="input" style="width:100px;" name="douXXK[]" value="{$douXXK}" id="douXXK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXXK_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
 										<button type="button" onclick="jsGetData('douXXK_Rem','{$intID_js}')" id="douXXK_Rem_{$intID_js}" class="button button-small {$douXXK_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
-								<td>
+								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">
 									<div style="float:left;"><input class="input" style="width:100px;" name="douRZK[]" value="{$douRZK}" id="douRZK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douRZK_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
 										<button type="button" onclick="jsGetData('douRZK_Rem','{$intID_js}')" id="douRZK_Rem_{$intID_js}" class="button button-small {$douRZK_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
-								<td>
+								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">
 									<div style="float:left;"><input class="input" style="width:100px;" name="douQTSR[]" value="{$douQTSR}" id="douQTSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douQTSR_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /><!--input class="input" style="width:100px;" name="douQTSR[]" value="{$douQTSR}" onkeyup="numMoney_N(this)" /--></div>
 									<div style="float:left; margin-left:15px;">
 										<button type="button" onclick="jsGetData('douQTSR_Rem','{$intID_js}')" id="douQTSR_Rem_{$intID_js}" class="button button-small {$douQTSR_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
-								<td align="right" style="border-right:#0099cc 1px solid;">{$floSXF}</td>
+								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}" align="right" style="border-right:#0099cc 1px solid;">{$floSXF}</td>
 								<input type="hidden" name="douSXF[]" id="floSXF_{$v.id}_{$vo.id}" value="{$floSXF}" /><!-- 手续费 -->
 								
 								<input type="hidden" name="intCreateDate[]" value="<php> echo date('Y-m-d h:i:s')</php>" />
