@@ -422,7 +422,8 @@ class ZijinAction extends CommonAction{
 		}elseif($intRoleID == 4){
 			$strSQL="";
 		}else{
-			$this->error("非法操作，请返回！");
+			$temp['msg'] 	= '非法操作，请返回！';
+			$temp['status'] = 'NO';
 		}
 		
 		
@@ -504,7 +505,8 @@ class ZijinAction extends CommonAction{
 		}elseif($intRoleID == 4){
 			$strSQL="";
 		}else{
-			$this->error("非法操作，请返回！");
+			$temp['msg'] 	= '非法操作，请返回！';
+			$temp['status'] = 'NO';
 		}
 		
 		$rsCY=M("shoufei_chayi")->where("id = '".intval($intID_js)."'")->find();
