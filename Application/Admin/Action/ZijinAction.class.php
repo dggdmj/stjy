@@ -103,7 +103,18 @@ class ZijinAction extends CommonAction{
 		}
 		
 		if($intQishu>0){
-			$listSF = M('shoufei_info')->where(" intQiShu = '".$intQishu."' ".$strSQL." " )->order('id asc')->select();
+			
+			$listAudit=M('pczb')->where(" qishu = '".$intQishu."' and status_cw=2 ".$strSQL." " )->select();
+			foreach($listAudit as $v){
+				$arrAuditPici[]= $v['pici'];
+			}
+			if(is_array($arrAuditPici) && !empty($arrAuditPici))
+				$strPiciSQL=" and addTime in (".implode(",",$arrAuditPici).") ";
+			else
+				$this->error("此期数没有被审核过的批次数据，请检查！");
+			
+				
+			$listSF = M('shoufei_info')->where(" intQiShu = '".$intQishu."' ".$strPiciSQL." ".$strSQL." " )->order('id asc')->select();
 
 			foreach($listSF as $key => $val)
 			{
@@ -118,24 +129,21 @@ class ZijinAction extends CommonAction{
 			}
 			foreach($listSchool as $Key => $Value){
 				foreach($listAccount as $KeyA => $ValueA){
-					$listQishu_HZ[$Value["id"]][$ValueA["id"]]=M('shoufei_info')->field(" sum(`douSF`) as `douSF_qs`, sum(`douSFHJ`) as `douSFHJ_qs`, sum(`douXJSR`) as `douXJSR_qs`, sum(`douXXK`) as `douXXK_qs`, sum(`douRZK`) as `douRZK_qs`, sum(`douQTSR`) as `douQTSR_qs`, sum(`douSXF`) as `douSXF_qs` ")->where(" intQiShu = '".$intQishu."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ".$strSQL." ")->find();
+					$listQishu_HZ[$Value["id"]][$ValueA["id"]]=M('shoufei_info')->field(" sum(`douSF`) as `douSF_qs`, sum(`douSFHJ`) as `douSFHJ_qs`, sum(`douXJSR`) as `douXJSR_qs`, sum(`douXXK`) as `douXXK_qs`, sum(`douRZK`) as `douRZK_qs`, sum(`douQTSR`) as `douQTSR_qs`, sum(`douSXF`) as `douSXF_qs` ")->where(" intQiShu = '".$intQishu."' ".$strPiciSQL." and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ".$strSQL." ")->find();
 				}
-				$listQishu_HZ[$Value["id"]]["chayi"]=M("shoufei_chayi")->field(" sum(`douXGJ`) as `douXGJ_qs`, sum(`douCY`) as `douCY_qs` ")->where(" intQiShu = '".$intQishu."' and sid='".$Value["id"]."' ".$strSQL." ")->find();	
-				$listQishu_HZ[$Value["id"]]["chayi"]["dousfhj_qs"]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' and sid='".intval($Value["id"])."' ".$strSQL." ")->sum('douSFHJ');					
+				$listQishu_HZ[$Value["id"]]["chayi"]=M("shoufei_chayi")->field(" sum(`douXGJ`) as `douXGJ_qs`, sum(`douCY`) as `douCY_qs` ")->where(" intQiShu = '".$intQishu."' ".$strPiciSQL." and sid='".$Value["id"]."' ".$strSQL." ")->find();	
+				$listQishu_HZ[$Value["id"]]["chayi"]["dousfhj_qs"]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' ".$strPiciSQL." and sid='".intval($Value["id"])."' ".$strSQL." ")->sum('douSFHJ');					
 			}
-			
 			
 			foreach($listAccount as $K => $Val){
-				$listQishu_HZ["total"][$Val["id"]]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' and aid='".intval($Val["id"])."' ".$strSQL." ")->field(" sum(`douSF`) as `douSF_total`, sum(`douSFHJ`) as `douSFHJ_total`, sum(`douXJSR`) as `douXJSR_total`, sum(`douXXK`) as `douXXK_total`, sum(`douRZK`) as `douRZK_total`, sum(`douQTSR`) as `douQTSR_total`, sum(`douSXF`) as `douSXF_total` ")->find();
+				$listQishu_HZ["total"][$Val["id"]]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' ".$strPiciSQL." and aid='".intval($Val["id"])."' ".$strSQL." ")->field(" sum(`douSF`) as `douSF_total`, sum(`douSFHJ`) as `douSFHJ_total`, sum(`douXJSR`) as `douXJSR_total`, sum(`douXXK`) as `douXXK_total`, sum(`douRZK`) as `douRZK_total`, sum(`douQTSR`) as `douQTSR_total`, sum(`douSXF`) as `douSXF_total` ")->find();
 			}
-
 			
-			$listQishu_HZ["total"]["chayi"]["douSFHJ_total"]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douSFHJ");
-			$listQishu_HZ["total"]["chayi"]["douXGJ_total"]=M("shoufei_chayi")->where(" intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douXGJ");
-			$listQishu_HZ["total"]["chayi"]["douCY_total"]=M("shoufei_chayi")->where(" intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douCY");
+			$listQishu_HZ["total"]["chayi"]["douSFHJ_total"]=M("shoufei_info")->where(" intQiShu = '".intval($intQishu)."' ".$strPiciSQL." ".$strSQL." ")->sum("douSFHJ");
+			$listQishu_HZ["total"]["chayi"]["douXGJ_total"]=M("shoufei_chayi")->where(" intQiShu = '".intval($intQishu)."' ".$strPiciSQL." ".$strSQL." ")->sum("douXGJ");
+			$listQishu_HZ["total"]["chayi"]["douCY_total"]=M("shoufei_chayi")->where(" intQiShu = '".intval($intQishu)."' ".$strPiciSQL." ".$strSQL." ")->sum("douCY");
 
 			//dump($listQishu_HZ);
-
 		}else{
 			$this->error("数据操作有误，请检查！");
 		}
@@ -192,7 +200,6 @@ class ZijinAction extends CommonAction{
 				$listQishu_HZ["total"][$Val["id"]]=M("shoufei_info")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' and aid='".intval($Val["id"])."' ".$strSQL." ")->field(" sum(`douSF`) as `douSF_total`, sum(`douSFHJ`) as `douSFHJ_total`, sum(`douXJSR`) as `douXJSR_total`, sum(`douXXK`) as `douXXK_total`, sum(`douRZK`) as `douRZK_total`, sum(`douQTSR`) as `douQTSR_total`, sum(`douSXF`) as `douSXF_total` ")->find();
 			}
 
-			
 			$listQishu_HZ["total"]["chayi"]["douSFHJ_total"]=M("shoufei_info")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douSFHJ");
 			$listQishu_HZ["total"]["chayi"]["douXGJ_total"]=M("shoufei_chayi")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douXGJ");
 			$listQishu_HZ["total"]["chayi"]["douCY_total"]=M("shoufei_chayi")->where("addTime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' ".$strSQL." ")->sum("douCY");
@@ -303,25 +310,26 @@ class ZijinAction extends CommonAction{
 						if(is_array($listSF) && !empty($listSF)){
 							$rs_SF=M('shoufei_info')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->find();
 							
+							//dousfhj=dousf-douxxk-dourzk-douqtsr
 							$arrData["douSF"]	= floatval($sfTotal);
-							$arrData["douSFHJ"]	= floatval($sfTotal) + floatval($rs_SF["douxjsr"]) - floatval($rs_SF["douxxk"]) - floatval($rs_SF["dourzk"]) - abs(floatval($sxfTotal));
-							//dousfhj=dousf+douxjsr-douxxk-dourzk-dousxf
+							$arrData["douSFHJ"]	= floatval($sfTotal) - floatval($rs_SF["douxxk"]) - floatval($rs_SF["dourzk"]) - floatval($rs_SF["douqtsr"]);
 							$arrData["douSXF"]	= floatval($sxfTotal);
-
 							M('shoufei_info')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' and aid = '".$ValueA["id"]."' ")->save($arrData);
 
-							$douSFHJ_total = M("shoufei_info")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->sum('douSFHJ');
-							$arrCY = M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->find();
-							$douCY =  number_format((floatval($douSFHJ_total)*100-floatval($arrCY["douxgj"]))/100,2,".","");
 
+							$douSFHJ_total = M("shoufei_info")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->sum('douSFHJ');
+							$douXJSR_total = M("shoufei_info")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->sum('douXJSR');
+							$arrCY = M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->find();
+							$douCY =  number_format((floatval($douSFHJ_total)*100 + floatval($douXJSR_total) -floatval($arrCY["douxgj"]))/100,2,".","");
 							$arrDataCY["douCY"]=$douCY;
 							M('shoufei_chayi')->where("intqishu = '".intval($strQishu)."' and addtime = '".intval($strPici)."' and sid = '".$Value["id"]."' ")->save($arrDataCY);
+							
 						}else{
 							$arrData["sid"]	= $Value["id"];
 							$arrData["aid"]	= $ValueA["id"];
 							
 							$arrData["douSF"]	= floatval($sfTotal);
-							$arrData["douSFHJ"]	= floatval($sfTotal) - abs(floatval($sxfTotal));
+							$arrData["douSFHJ"]	= floatval($sfTotal);
 							$arrData["douSXF"]	= floatval($sxfTotal);
 							
 							$arrData["addTime"]	= intval($strPici);
@@ -364,6 +372,7 @@ class ZijinAction extends CommonAction{
 		}
 
 		$listCY_HZ["douSFHJ_total"]=M("shoufei_info")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' ".$strSQL."  ")->sum("douSFHJ");
+		$listCY_HZ["douXJSR_total"]=M("shoufei_info")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' ".$strSQL."  ")->sum("douXJSR");
 		$listCY_HZ["douXGJ_total"]=M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' ".$strSQL."  ")->sum("douXGJ");
 		$listCY_HZ["douCY_total"]=M("shoufei_chayi")->where("addtime = '".intval($strPici)."' and intQiShu = '".intval($strQishu)."' ".$strSQL."  ")->sum("douCY");
 
@@ -386,14 +395,16 @@ class ZijinAction extends CommonAction{
 	
 	public function zijin_num_ajax(){
 	
-		$douSF_Z_js	= $_POST["douSF_Z_js"]*100;	//电子总收入
-		$douSF_D_js	= $_POST["douSF_D_js"]*100;	//最后计算结果
+		$douSF_Z_js	= $_POST["douSF_Z_js"]*100;	//倒进去统计结果
+		$douSF_D_js	= $_POST["douSF_D_js"]*100;	//计算后结果
 		
 		$douXJSR_js	= $_POST["douXJSR_js"]*100;	//现金收入
 		$douXXK_js	= $_POST["douXXK_js"]*100;	//学习卡
 		$douRZK_js	= $_POST["douRZK_js"]*100;	//融资款
+		$douQTSR_js	= $_POST["douQTSR_js"]*100;	//其他收入
 		
 		$floSXF_js	= abs($_POST["floSXF_js"])*100;	//手续费
+		
 		
 		$strFieldName_js = substr($_POST["strFieldName_js"], 0, -2);
 		$strFieldValue_js = floatval($_POST["strFieldValue_js"]);
@@ -421,8 +432,8 @@ class ZijinAction extends CommonAction{
 		//if(abs($douSF_Z_js)>0)
 		if($arrRs["status_cw"]!=2)
 		{
-			//最终收费 = 读取收费+现金-学习卡-融资款-手续费
-			$douSFHJ = number_format(($douSF_Z_js + $douXJSR_js - $douXXK_js - $douRZK_js - $floSXF_js)/100,2,".","");
+			//最终收费 = 读取收费-学习卡-融资款-其它收入
+			$douSFHJ = number_format((floatval($douSF_Z_js) - floatval($douXXK_js) - floatval($douRZK_js) - floatval($douQTSR_js))/100,2,".","");
 			
 			$arrData[$strFieldName_js]	= $strFieldValue_js;
 			$arrData["douSFHJ"]	= $douSFHJ;
@@ -432,9 +443,10 @@ class ZijinAction extends CommonAction{
 
 			$douTotal = M("shoufei_info")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' and aid='".intval($reA["aid"])."' ".$strSQL." ")->field(" sum(`douSF`) as `douSF_total`, sum(`douSFHJ`) as `douSFHJ_total`, sum(`douXJSR`) as `douXJSR_total`, sum(`douXXK`) as `douXXK_total`, sum(`douRZK`) as `douRZK_total`, sum(`douQTSR`) as `douQTSR_total`, sum(`douSXF`) as `douSXF_total` ")->find();
 			
-			$douTotal_s = M("shoufei_info")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' and sid='".intval($reA["sid"])."' ".$strSQL." ")->sum('douSFHJ');
-			
+			$douTotal_sf = M("shoufei_info")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' and sid='".intval($reA["sid"])."' ".$strSQL." ")->sum('douSFHJ');
+			$douTotal_xj = M("shoufei_info")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' and sid='".intval($reA["sid"])."' ".$strSQL." ")->sum('douXJSR');
 			$rsCY = M("shoufei_chayi")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' and sid='".intval($reA["sid"])."' ".$strSQL." ")->find();
+			$douTotal_s=floatval($douTotal_sf) + floatval($douTotal_xj);
 			if(floatval($rsCY["douxgj"]>0)){
 				$douCY= floatval($douTotal_s) - floatval($rsCY["douxgj"]);
 			}else{
@@ -443,11 +455,14 @@ class ZijinAction extends CommonAction{
 			$arrData["douCY"]=$douCY;
 			M('shoufei_chayi')->where("id = '".$rsCY["id"]."'")->save($arrData);
 			
-			$douSFHJ_total_s=M("shoufei_info")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' ".$strSQL."  ")->sum("douSFHJ");
+			$dou_Total_sf=M("shoufei_info")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' ".$strSQL."  ")->sum("douSFHJ");
+			$dou_Total_xj=M("shoufei_info")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' ".$strSQL."  ")->sum("douXJSR");
+			$dou_Total_s=floatval($dou_Total_sf) + floatval($dou_Total_xj);
+			
 			$douXGJ_total_s=M("shoufei_chayi")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' ".$strSQL."  ")->sum("douXGJ");
 			$douCY_total_s=M("shoufei_chayi")->where("addtime = '".intval($reA["addtime"])."' and intQiShu = '".intval($reA["intqishu"])."' ".$strSQL."  ")->sum("douCY");
 			
-			$temp["douSFHJ_total_s"] = $douSFHJ_total_s;
+			$temp["dou_Total_s"] = $dou_Total_s;
 			$temp["douXGJ_total_s"] = $douXGJ_total_s;
 			$temp["douCY_total_s"] = $douCY_total_s;
 			
@@ -499,7 +514,8 @@ class ZijinAction extends CommonAction{
 			//$rsCY=M("shoufei_chayi")->where("id = '".intval($intID_js)."'")->find();
 			if($douXGJ_js>0){
 				$douSFHJ_total = M("shoufei_info")->where("addtime = '".intval($rsCY["addtime"])."' and intQiShu = '".intval($rsCY["intqishu"])."' and sid='".intval($rsCY["sid"])."' ".$strSQL." ")->sum('douSFHJ');
-				$douCY =  number_format((floatval($douSFHJ_total)*100-floatval($douXGJ_js))/100,2,".","");
+				$douXJSR_total = M("shoufei_info")->where("addtime = '".intval($rsCY["addtime"])."' and intQiShu = '".intval($rsCY["intqishu"])."' and sid='".intval($rsCY["sid"])."' ".$strSQL." ")->sum('douXJSR');
+				$douCY =  number_format((floatval($douSFHJ_total)*100+floatval($douXJSR_total)*100-floatval($douXGJ_js))/100,2,".","");
 				$arrData["douCY"]=$douCY;
 			}else{
 				$arrData["douCY"]="";
@@ -738,6 +754,45 @@ class ZijinAction extends CommonAction{
 	}
 	
 	
+	
+	public function zijinSchool_lkl(){
+	
+		$intQishu = $_GET['qishu'];
+		$intPici  = $_GET['pici'];
+		$sid  = $_GET['sid'];
+		
+		//$intQishu = "201801";
+		//$intPici  = "2";
+		//$sid  = "75";
+
+		if(intval($intQishu)>0 && intval($intPici)>0 && intval($sid)>0)
+		{
+			$rs = M('school')->where("id = '".intval($sid)."' ")->find();
+			$list = M('lklb')->where("addtime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' and strmername = '".$rs["subname"]."' ")->select();
+		}
+		$this->assign('list',$list);
+		$this->adminDisplay();
+	}
+	
+	
+	public function zijinSchool_sqb(){
+	
+		$intQishu = $_GET['qishu'];
+		$intPici  = $_GET['pici'];
+		$sid  = $_GET['sid'];
+		
+		//$intQishu = "201801";
+		//$intPici  = "2";
+		//$sid  = "75";
+
+		if(intval($intQishu)>0 && intval($intPici)>0 && intval($sid)>0)
+		{
+			$rs = M('school')->where("id = '".intval($sid)."' ")->find();
+			$list = M('sqbb')->where("addtime = '".intval($intPici)."' and intQiShu = '".intval($intQishu)."' and strSchoolName = '".$rs["subname"]."' ")->select();
+		}
+		$this->assign('list',$list);
+		$this->adminDisplay();
+	}
 	
 	public function showphpinfo(){
 			
