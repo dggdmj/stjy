@@ -62,8 +62,22 @@ class ZijinIndexAction extends CommonAction{
         
         // upload_check为检查上传状态,4为上传好
         foreach($list as $k=>$v){
-            $list[$k]['upload_check'] = $v['sqbb'] + $v['lklb'];
+            // if($v['pici'] == 1){ // 测试用
+                $list[$k]['upload_check'] = $v['sqbb'] + $v['lklb'];
+                $res = M('shoufei_info')->where('addTime = '.$v['pici'].' and intQiShu = '.$v['qishu'])->select();
+                if(!empty($res)){
+                    foreach($res as $v1){
+                        if($v1['dousf']>0){
+                            $list[$k]['status_edit'] = 1;// 已编辑
+                        }
+                    }
+                }else{
+                    $list[$k]['status_edit'] = 0;// 未编辑
+                }
+            // }
+            
         }
+        // die;
         // dump($list);
 
         // 获取表明与序号对应的一维数组
@@ -93,7 +107,13 @@ class ZijinIndexAction extends CommonAction{
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->join('LEFT JOIN stjy_table_name ON stjy_pici_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_pici_history.uid=stjy_admin.id')->field('stjy_pici_history.*,stjy_admin.nicename,stjy_table_name.name,stjy_table_name.table_name')->where("tid = ".$tid)->order('stjy_pici_history.pici desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        if($tid == 21){
+            $list = $data->join('LEFT JOIN stjy_sqbb ON stjy_pici_history.qishu=stjy_sqbb.intQiShu AND stjy_pici_history.pici=stjy_sqbb.addTime')->join('LEFT JOIN stjy_admin ON stjy_pici_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_table_name ON stjy_pici_history.tid=stjy_table_name.xuhao')->field('stjy_pici_history.*,stjy_admin.nicename,stjy_table_name.name,stjy_table_name.table_name,sum(stjy_sqbb.douSSJE) as shishouje')->where("tid = ".$tid)->group('stjy_pici_history.qishu,stjy_pici_history.pici')->order('stjy_pici_history.qishu desc,stjy_pici_history.pici desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+            // dump($list);
+        }else{
+            $list = $data->join('LEFT JOIN stjy_table_name ON stjy_pici_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_pici_history.uid=stjy_admin.id')->field('stjy_pici_history.*,stjy_admin.nicename,stjy_table_name.name,stjy_table_name.table_name')->where("tid = ".$tid)->order('stjy_pici_history.pici desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        }
+        
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('tid',$tid);
@@ -277,7 +297,7 @@ class ZijinIndexAction extends CommonAction{
 
             // excel文档超大对应设置
             if($_FILES['excel']['size']>307200){
-                ini_set('memory_limit', '512M');
+                ini_set('memory_limit', '1024M');
             }
 
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件

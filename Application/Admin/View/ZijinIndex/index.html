@@ -63,9 +63,13 @@
                                         <if condition="$v['upload_check'] eq 4">
                                             <if condition="$rid eq 4">
                                                 <if condition="$v['status_cw'] neq 2">
+                                                    <?php if($v['status_edit'] != 1){ ?>
+                                                    <a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$i))}">&nbsp;&nbsp;编辑</a>
+                                                    <?php }else{ ?>
                                                     <a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$i))}">&nbsp;&nbsp;编辑</a>
                                                     <a class="button border-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$i))}" href="javascript:;">&nbsp;&nbsp;重置</a>
                                                     <a class="button bg-yellow button-small js-sub" title="通过审核" alt="通过审核" target2="__CONTROLLER__/checked/qishu/{$v.qishu}/pici/{$v.pici}" style="cursor:pointer">通过</a>
+                                                    <?php } ?>
                                                 <else />
                                                     <a class="button bg-green button-small icon-pencil" title="查看" alt="查看" href="{:U('/zijin/zijinHuizongPici',array('qishu'=>$qishu,'pici'=>$i))}">&nbsp;&nbsp;查看</a>
                                                         <a class="button bg-red button-small js-sub" title="取消" alt="取消" target2="__CONTROLLER__/cancel/qishu/{$v.qishu}/pici/{$v.pici}" style="cursor:pointer">取消</a>
