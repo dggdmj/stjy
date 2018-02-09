@@ -678,17 +678,15 @@ class ZijinAction extends CommonAction{
 		$arrRs = M('pczb')->where("qishu = '".$rsRem["intqishu"]."' and pici='".$rsRem["addtime"]."' ")->find();
 		if($arrRs["status_cw"]!=2)
 		{//if($rsRem["dousf"]>0)
+			$arrData[$fieldName_js]=$textPiZhu_js;
+			M('shoufei_info')->where("id = '".intval($intID_js)."'")->save($arrData);
+			
 			if(strlen(trim($textPiZhu_js))>0){
-				$arrData[$fieldName_js]=$textPiZhu_js;
-				
-				M('shoufei_info')->where("id = '".intval($intID_js)."'")->save($arrData);
-				
 				$temp["msg"] = '添加 批注信息 成功！';
 				$temp["status"] = 'OK';
 			}else{
-
 				$temp["msg"] = '批注信息不能为空！';
-				$temp["status"] = 'NO';
+				$temp["status"] = 'Yes';
 			}
 		}
 		else

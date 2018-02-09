@@ -104,25 +104,25 @@
 										if($douXJSR_Rem!="")
 											$douXJSR_Rem_css="border-green";
 										else
-											$douXJSR_Rem_css="border-main";
+											$douXJSR_Rem_css="border-red";
 											
 										$douXXK_Rem=$listHZBJ[$v['id']][$vo['id']]['douxxk_rem'];
 										if($douXXK_Rem!="")
 											$douXXK_Rem_css="border-green";
 										else
-											$douXXK_Rem_css="border-main";
+											$douXXK_Rem_css="border-red";
 										
 										$douRZK_Rem=$listHZBJ[$v['id']][$vo['id']]['dourzk_rem'];
 										if($douRZK_Rem!="")
 											$douRZK_Rem_css="border-green";
 										else
-											$douRZK_Rem_css="border-main";
+											$douRZK_Rem_css="border-red";
 										
 										$douQTSR_Rem=$listHZBJ[$v['id']][$vo['id']]['douqtsr_rem'];
 										if($douQTSR_Rem!="")
 											$douQTSR_Rem_css="border-green";
 										else
-											$douQTSR_Rem_css="border-main";
+											$douQTSR_Rem_css="border-red";
 										
 									}
 									else
@@ -376,11 +376,16 @@ function postData()
 				$("#"+btnID+"").attr("class","button button-small border-green");
 				$('#myModal').hide();
 				$('#mask_my').hide();
-			} else {
+			} else if(result.status == 'Yes') {
+				//layer.msg(result.msg, {icon: 2});
+				$("#"+btnID+"").attr("class","button button-small border-red");
+				$('#myModal').hide();
+				$('#mask_my').hide();
+			}else{
 				layer.msg(result.msg, {icon: 2});
 				$('#myModal').hide();
 				$('#mask_my').hide();
-			}	              
+			}	                           
 		} 
 	});
 	
