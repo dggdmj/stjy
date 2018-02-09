@@ -1,0 +1,38 @@
+
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <table id="table" class="table table-bordered table-condensed"><!-- table-hover -->
+                <tbody>
+                    <tr>
+						<th>编号</th>
+						<th>商户名称</th>
+    					<th>商户号</th>
+						<th>划款日期</th>
+						<th>汇总本金</th>
+						<th>手续费</th>
+						<th>入帐帐户</th>
+                    </tr>
+					<foreach name='list' item='v' key="k">
+             		<tr>
+						<td>{$k}</th>
+    					<td>{$v.strmername}</td>
+						<td>{$v.strmerid}</td>
+						<td>{$v.strdate}</td>
+						<td>{$v.douhzbj}</td>
+						<td>{$v.dousxf}</td>
+						<td>{$v.straccount}</td>
+					</tr>
+					</foreach>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-foot table-foot clearfix">
+            <div class="float-left">
+                <div class="form-inline">
+                   
+                </div>
+                <br>
+            </div>
+
+        </div>
+    </div>

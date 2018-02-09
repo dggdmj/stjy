@@ -25,7 +25,9 @@
 						<th width="150" rowspan="2" style="text-align:center;">总收费</th>
 						<th width="150" rowspan="2" style="text-align:center;">校管家</th>
 						<th width="150" rowspan="2" style="text-align:center;">差异</th>
-						<th width="350" rowspan="2" style="text-align:center;">差异原因</th>
+						<th width="350" rowspan="2" style="text-align:center; border-right:#0099cc 1px solid;">差异原因</th>
+						
+						<th width="200" rowspan="2" style="text-align:center;">操作</th>
 
                     </tr>
              		<tr>
@@ -137,40 +139,47 @@
 									}
 									
 								</php>
-								<td align="right" id="htmlSF_{$v.id}_{$vo.id}" title="最终收费：读取总收费({$douSF}) + 现金 {//$douXJSR}- 学习卡 {//$douXXK}- 融资款 {//$douRZK}- 手续费 {//$floSXF}&#10;&nbsp;&nbsp;&nbsp;&nbsp;学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">{$floHZBJ}</td>
+								<!-- 收费 -->
+								<td align="right" id="htmlSF_{$v.id}_{$vo.id}" title="最终收费：读取总收费({$douSF}) - 学习卡 {//$douXXK}- 融资款 {//$douRZK}- 其它收入 {//$douQTSR}&#10;&nbsp;&nbsp;&nbsp;&nbsp;学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">{$floHZBJ}</td>
 								<input type="hidden" name="douSF[]" id="douSF_Z_{$v.id}_{$vo.id}" value="{$douSF}" /><!-- 总的收入 不改动 -->
 								<input type="hidden" name="douSFHJ[]" id="douSF_D_{$v.id}_{$vo.id}" value="{$floHZBJ}" /><!-- 最后计算结果 -->
 								
+								<!-- 现金收入 -->
 								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">
-									<div style="float:left;"><input class="input" style="width:100px;" name="douXJSR[]" value="{$douXJSR}" id="douXJSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXJSR_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
+									<div style="float:left;"><input class="input" style="width:100px;" name="douXJSR[]" value="{$douXJSR}" id="douXJSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXJSR_{$v.id}_{$vo.id},'{$v.id}','{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
 										<button type="button" onclick="jsGetData('douXJSR_Rem','{$intID_js}')" id="douXJSR_Rem_{$intID_js}" class="button button-small {$douXJSR_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
+								<!-- 学习卡 -->
 								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">
-									<div style="float:left;"><input class="input" style="width:100px;" name="douXXK[]" value="{$douXXK}" id="douXXK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXXK_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
+									<div style="float:left;"><input class="input" style="width:100px;" name="douXXK[]" value="{$douXXK}" id="douXXK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douXXK_{$v.id}_{$vo.id},'{$v.id}','{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
 										<button type="button" onclick="jsGetData('douXXK_Rem','{$intID_js}')" id="douXXK_Rem_{$intID_js}" class="button button-small {$douXXK_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
+								
+								<!-- 融资款 -->
 								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">
-									<div style="float:left;"><input class="input" style="width:100px;" name="douRZK[]" value="{$douRZK}" id="douRZK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douRZK_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /></div>
+									<div style="float:left;"><input class="input" style="width:100px;" name="douRZK[]" value="{$douRZK}" id="douRZK_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douRZK_{$v.id}_{$vo.id},'{$v.id}','{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
 										<button type="button" onclick="jsGetData('douRZK_Rem','{$intID_js}')" id="douRZK_Rem_{$intID_js}" class="button button-small {$douRZK_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
+								<!-- 其它收入 -->
 								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}">
-									<div style="float:left;"><input class="input" style="width:100px;" name="douQTSR[]" value="{$douQTSR}" id="douQTSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douQTSR_{$v.id}_{$vo.id},'htmlSF_{$v.id}_{$vo.id}','douSF_Z_{$v.id}_{$vo.id}','douSF_D_{$v.id}_{$vo.id}','douXJSR_{$v.id}_{$vo.id}','douXXK_{$v.id}_{$vo.id}','douRZK_{$v.id}_{$vo.id}','floSXF_{$v.id}_{$vo.id}','{$intID_js}')" /><!--input class="input" style="width:100px;" name="douQTSR[]" value="{$douQTSR}" onkeyup="numMoney_N(this)" /--></div>
+									<div style="float:left;"><input class="input" style="width:100px;" name="douQTSR[]" value="{$douQTSR}" id="douQTSR_{$v.id}_{$vo.id}" onkeyup="numMoney_Y(douQTSR_{$v.id}_{$vo.id},'{$v.id}','{$vo.id}','{$intID_js}')" /></div>
 									<div style="float:left; margin-left:15px;">
 										<button type="button" onclick="jsGetData('douQTSR_Rem','{$intID_js}')" id="douQTSR_Rem_{$intID_js}" class="button button-small {$douQTSR_Rem_css}" >批注</button>
 									</div>
 								</td>
 								
+								<!-- 手续费 -->
 								<td title="学&nbsp;&nbsp;校：{$v.subname}&#10;对帐平台：{$vo.strname}___{$vo.strbankname}___{$vo.strmoneyname}" align="right" style="border-right:#0099cc 1px solid;">{$floSXF}</td>
-								<input type="hidden" name="douSXF[]" id="floSXF_{$v.id}_{$vo.id}" value="{$floSXF}" /><!-- 手续费 -->
+								<input type="hidden" name="douSXF[]" id="douSXF_{$v.id}_{$vo.id}" value="{$floSXF}" /><!-- 手续费 -->
 								
 								<input type="hidden" name="intCreateDate[]" value="<php> echo date('Y-m-d h:i:s')</php>" />
 								<input type="hidden" name="sid[]" value="{$v.id}" />
@@ -179,7 +188,7 @@
 								{$strInputID}
 							</foreach>
 							<php>
-								$douSF_total_s = $listHZBJ[$v['id']]["douSFHJ_total"];	//+floatval($listHZBJ[$v['id']]["douXJSR_total"]);
+								$douSF_total_s = $listHZBJ[$v['id']]["douSFHJ_total"]+floatval($listHZBJ[$v['id']]["douXJSR_total"]);
 								
 								$douXGJ = $listHZBJ[$v['id']]["chayi"]['douxgj'];
 								if(abs($douXGJ)>0)
@@ -202,10 +211,14 @@
 							</php>
 							<td align="right" id="douSF_total_s_{$v.id}" class="bg-main bgTrans">{$douSF_total_s}</td>
 							
-							
 							<td><input class="input" style="width:120px;" name="douXGJ[]" id="douXGJ_{$intID_CY}" value="{$douXGJ}" onkeyup="chayiRem_XGJ(douXGJ_{$intID_CY},'{$intID_CY}')" /></td>
 							<td {$tdBgCY} id="douCY_{$intID_CY}">{$douCY}</td>
-							<td><input class="input" style="width:320px;" name="textRemarks[]" id="textRemarks_{$intID_CY}" value="{$textRemarks}" onblur="chayiRem('textRemarks_{$intID_CY}','{$intID_CY}')" /></td>
+							<td style="border-right:#0099cc 1px solid;"><input class="input" style="width:320px;" name="textRemarks[]" id="textRemarks_{$intID_CY}" value="{$textRemarks}" onblur="chayiRem('textRemarks_{$intID_CY}','{$intID_CY}')" /></td>
+							
+							<td>
+								<a class="button button-small border-main" target="_blank" href="{:U('/Zijin/zijinSchool_lkl',array('qishu'=>$qishu,'pici'=>$pici,'sid'=>$v['id']))}">查看拉卡拉</a>
+								<a class="button button-small border-main" target="_blank" href="{:U('/Zijin/zijinSchool_sqb',array('qishu'=>$qishu,'pici'=>$pici,'sid'=>$v['id']))}">查看收钱吧</a>
+							</td>
 							
 					</tr>
 						<php>
@@ -228,7 +241,7 @@
 							<td style="border-right:#cccccc 1px solid;">手续费：<span id="douSXF_total_{$k}">{$vo.dousxf_total}</span></td>
 						</foreach>
 						<php>
-							$douSFHJ_total = $listCY_HZ["douSFHJ_total"];
+							$douSFHJ_total = $listCY_HZ["douSFHJ_total"] + $listCY_HZ["douXJSR_total"];
 							$douXGJ_total = $listCY_HZ["douXGJ_total"];
 							$douCY_total = $listCY_HZ["douCY_total"];
 						</php>
@@ -236,6 +249,7 @@
 						<td align="right" id="douSFHJ_total">{$douSFHJ_total}</td>
 						<td align="right" id="douXGJ_total">{$douXGJ_total}</td>
 						<td align="right" id="douCY_total">{$douCY_total}</td>
+						<td></td>
 						<td></td>
 					</tr>
 					
@@ -303,7 +317,7 @@ body {overflow-x: scroll;}
 
 <script>
 $(function(){
-	var W = <php>echo $i*1130</php>+1130;
+	var W = <php>echo $i*1130</php>+1330;
 	$("body").width(W);
 });
 
@@ -373,14 +387,6 @@ function postData()
 
 }
 
-function numMoney_N(obj){
-	obj.value = obj.value.replace(/[^\d.]/g,""); 
-	obj.value = obj.value.replace(/^\./g,"");
-	obj.value = obj.value.replace(/\.{2,}/g,".");
-	obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
-	obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
-}
-
 
 
 
@@ -446,7 +452,7 @@ function chayiRem_XGJ(obj,intID){
 }
 
 
-function numMoney_Y(obj,htmlSF,douSF_Z,douSF_D,douXJSR,douXXK,douRZK,floSXF,intID){
+function numMoney_Y(obj,intSchoolID,intAccountID,intID){
 
 	obj.value = obj.value.replace(/[^\d.]/g,"");
 	obj.value = obj.value.replace(/^\./g,"");
@@ -454,22 +460,22 @@ function numMoney_Y(obj,htmlSF,douSF_Z,douSF_D,douXJSR,douXXK,douRZK,floSXF,intI
 	obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
 	obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
 	
-	//最终收费 = 读取收费+现金-学习卡-融资款-手续费
+	//计算后结果 = 收费-学习卡-融资款-其它收入
+	var douSF_Z_js = $("#douSF_Z_"+intSchoolID+"_"+intAccountID).val();//倒进去统计结果
+	var douSF_D_js = $("#douSF_D_"+intSchoolID+"_"+intAccountID).val();//计算后结果
 	
-	var douSF_Z_js = $("#"+douSF_Z+"").val();//电子总收入
-	var douSF_D_js = $("#"+douSF_D+"").val();//最后计算结果
+	var douXJSR_js = $("#douXJSR_"+intSchoolID+"_"+intAccountID).val();//现金收入
+	var douXXK_js = $("#douXXK_"+intSchoolID+"_"+intAccountID).val();//学习卡
+	var douRZK_js = $("#douRZK_"+intSchoolID+"_"+intAccountID).val();//融资款
+	var douQTSR_js = $("#douQTSR_"+intSchoolID+"_"+intAccountID).val();//其它收入
 	
-	var douXJSR_js = $("#"+douXJSR+"").val();//现金收入
-	var douXXK_js  = $("#"+douXXK+"").val();//学习卡
-	var douRZK_js  = $("#"+douRZK+"").val();//融资款
-	
-	var floSXF_js  = $("#"+floSXF+"").val();//手续费
-	
-	//$("#cs_2018").html("电子收入："+douSF_Z_js+"==计算结果"+douSF_D_js+"==现金收入"+douXJSR_js+"==学习卡"+douXXK_js+"==融资款"+douRZK_js+"==手续费"+floSXF_js);
+	var douSXF_js = $("#douSXF_"+intSchoolID+"_"+intAccountID).val();//手续费
+	//$("#cs_2018").html("倒进去统计结果："+douSF_Z_js+"==计算后结果"+douSF_D_js+"==现金收入"+douXJSR_js+"==学习卡"+douXXK_js+"==融资款"+douRZK_js+"==其它收入"+douQTSR_js+"==手续费"+douSXF_js);
 
 	var strFieldName_js = $(obj).attr("name");
 	var strFieldValue_js = $(obj).val();
-
+	//$("#cs_2018").html(strFieldName_js);
+	
 	$.ajax({
 		type: "POST",
 		url: "{:url('Zijin/zijin_num_ajax','',false)}",
@@ -480,8 +486,9 @@ function numMoney_Y(obj,htmlSF,douSF_Z,douSF_D,douXJSR,douXXK,douRZK,floSXF,intI
 				douXJSR_js:douXJSR_js,
 				douXXK_js:douXXK_js,
 				douRZK_js:douRZK_js,
+				douQTSR_js:douQTSR_js,
 				
-				floSXF_js:floSXF_js,
+				douSXF_js:douSXF_js,
 				
 				strFieldName_js:strFieldName_js,
 				strFieldValue_js:strFieldValue_js,
@@ -491,23 +498,23 @@ function numMoney_Y(obj,htmlSF,douSF_Z,douSF_D,douXJSR,douXXK,douRZK,floSXF,intI
 		success: function(result){
 			//alert(result.aid)
 			if(result.status == 'OK'){
-				$("#"+htmlSF+"").html(result.msg);
-				$("#"+douSF_D+"").val(result.msg);
-
+				//计算结果
+				$("#htmlSF_"+intSchoolID+"_"+intAccountID).html(result.msg);
+				$("#douSF_D_"+intSchoolID+"_"+intAccountID).val(result.msg);
+				//纵向当前对帐平台六项计算结果
 				$("#douSFHJ_total_"+result.aid+"").html(result.arrTotal.dousfhj_total);
 				$("#douXJSR_total_"+result.aid+"").html(result.arrTotal.douxjsr_total);
 				$("#douXXK_total_"+result.aid+"").html(result.arrTotal.douxxk_total);
 				$("#douRZK_total_"+result.aid+"").html(result.arrTotal.dourzk_total);
 				$("#douQTSR_total_"+result.aid+"").html(result.arrTotal.douqtsr_total);
 				$("#douSXF_total_"+result.aid+"").html(result.arrTotal.dousxf_total);
-				
-				var arr_js=htmlSF.split("_");
-				$("#douSF_total_s_"+arr_js[1]+"").html(result.douTotal_s);
+				//差异
+				//var arr_js=htmlSF.split("_");
+				$("#douSF_total_s_"+intSchoolID+"").html(result.douTotal_s);
 				$("#douCY_"+result.cyid+"").html(result.douCY);
-				
 				$("#douXGJ_total").html(result.douXGJ_total_s);
 				$("#douCY_total").html(result.douCY_total_s);
-				$("#douSFHJ_total").html(result.douSFHJ_total_s);
+				$("#douSFHJ_total").html(result.dou_Total_s);
 				
 			} else {
 				obj.value="";
