@@ -25,6 +25,10 @@
 						<th width="120" rowspan="2" style="text-align:center;">总收费</th>
 						<th width="90" rowspan="2" style="text-align:center;">校管家</th>
 						<th width="90" rowspan="2" style="text-align:center;">差异</th>
+						<th width="300" rowspan="2" style="text-align:center; border-right:#0099cc 1px solid;">差异原因</th>
+						
+						<th width="200" rowspan="2" style="text-align:center;">操作</th>
+						
                     </tr>
              		<tr>
 						<for start="0" end="$i">
@@ -133,8 +137,11 @@
 							<td align="right" class="bg-main bgTrans">{$dousfhj_qs}</td>
 							<td align="right">{$douxgj_qs}</td>
 							<td align="right" {$tdBgCY}>{$doucy_qs}</td>
-
-							
+							<td align="left" style="border-right:#0099cc 1px solid;"></td>
+							<td>
+								<a class="button button-small border-main" target="_blank" href="{:U('/Zijin/zijinSchool_lkl',array('qishu'=>$qishu,'pici'=>$pici,'sid'=>$vs['id']))}">查看拉卡拉</a>
+								<a class="button button-small border-main" target="_blank" href="{:U('/Zijin/zijinSchool_sqb',array('qishu'=>$qishu,'pici'=>$pici,'sid'=>$vs['id']))}">查看收钱吧</a>
+							</td>
 					</tr>
 						<php>
 							$k++;
@@ -175,6 +182,8 @@
 						<td align="right">{$douSFHJ_total}</td>
 						<td align="right">{$douXGJ_total}</td>
 						<td align="right">{$douCY_total}</td>
+						<td></td>
+						<td></td>
 					</tr>
 					
                 </tbody>
@@ -201,7 +210,7 @@ body {overflow-x: scroll;}
 
 <script>
 $(function(){
-	var W = <php>echo $i*600</php>+630;
+	var W = <php>echo $i*600</php>+1130;
 	$("body").width(W);
 });
 

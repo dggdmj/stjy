@@ -215,6 +215,9 @@ class ZijinAction extends CommonAction{
 		$this->assign('listSchool',$listSchool);
 		$this->assign('listAccount',$listAccount);
 		
+		$this->assign('qishu',$intQishu);
+		$this->assign('pici',$intPici);
+		
 		$this->assign('listQishu_HZ',$listQishu_HZ);
 		$this->adminDisplay("index1");
 		
