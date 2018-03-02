@@ -362,7 +362,13 @@ class MenuModel {
                         'name' => '拉卡拉表导入',
                         'icon' => 'sitemap',
                         'url' => U('/ZijinIndex/tableList/tid/22'),
-                        'order' => 1
+                        'order' => 2
+                    ),
+                    array(
+                        'name' => '校管家表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/ZijinIndex/tableList/tid/23'),
+                        'order' => 3
                     ),
                     // array(
                     //     'name' => '角色列表',

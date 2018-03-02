@@ -360,6 +360,8 @@ class ZijinIndexAction extends CommonAction{
             $bixu = array_flip(array_diff($bixu,['id','addTime','intQiShu','strAccountName','strAccountBank','intCreateDate']));
         }else if($tablename == 'sqbb'){
             $bixu = array_flip(array_diff($bixu,['id','addTime','intQiShu','intCreateDate']));
+        }else if($tablename == 'xgjb'){
+            $bixu = array_flip(array_diff($bixu,['id','addTime','intQiShu','intCreateDate']));
         }
 
         $cha = array_diff($bixu,$ziduan);
@@ -404,6 +406,11 @@ class ZijinIndexAction extends CommonAction{
                             $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
                         }
                     break;
+                    case 23:
+                        if($v == '账户'){// 设置字段为学号的列如果值为空就跳过,其他跟这个原理一样
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
                 }
             }
 
@@ -416,6 +423,16 @@ class ZijinIndexAction extends CommonAction{
             if(empty(trim($col))){
                 continue;
             }
+
+            // 校管家表跳过操作(账户里面的：结转学费,老带新返现不取数)
+            if($tid == 23){
+                $newcol = trim($col);
+                $notIn = ['结转学费','老带新返现'];
+                if(in_array($newcol,$notIn)){
+                    continue;
+                }
+            }
+
             // dump($ziduan);
             // dump($newTemp);
             for($i=0;$i<count($ziduan);$i++){
