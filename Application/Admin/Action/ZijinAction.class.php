@@ -233,7 +233,7 @@ class ZijinAction extends CommonAction{
 		//测试数据-参数设置
 		//$strQishu="201710";
 		//$strPici="8";
-		/*
+		
 		$intRoleID=$this->getRoleId();
 		$arrSchoolID=$this->getSchoolId();
 		
@@ -256,7 +256,7 @@ class ZijinAction extends CommonAction{
 		}else{
 			$this->error("非法操作，请返回！");
 		}
-		*/
+		
 		$arrRs=M('pczb')->where("qishu='".$strQishu."' and pici='".$strPici."' ")->find();
 		if(intval($strQishu)>0 && intval($strPici)>0 && $arrRs["status_cw"]!=2){
 			$listSF=M('shoufei_info')->where("addTime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' ".$strSQL." " )->order('id asc')->select();
