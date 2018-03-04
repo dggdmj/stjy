@@ -14,6 +14,7 @@
                         <th width="80">状态</th>
                         <th width="80">收钱吧</th>
                         <th width="80">拉卡拉</th>
+                        <th width="80">校管家</th>
                         <!-- <th width="80">现金</th> -->
                         <!-- <th width="80">投资款</th> -->
                         <th width="80">操作</th>
@@ -60,7 +61,7 @@
                                     </foreach>
                                     <!-- 操作开始 -->
                                     <td>
-                                        <if condition="$v['upload_check'] eq 4">
+                                        <if condition="$v['upload_check'] eq 6">
                                             <if condition="$rid eq 4">
                                                 <if condition="$v['status_cw'] neq 2">
                                                     <?php if($v['status_edit'] != 1){ ?>
