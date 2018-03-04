@@ -27,7 +27,7 @@
 						<th width="150" rowspan="2" style="text-align:center;">差异</th>
 						<th width="350" rowspan="2" style="text-align:center; border-right:#0099cc 1px solid;">差异原因</th>
 						
-						<th width="200" rowspan="2" style="text-align:center;">操作</th>
+						<th width="280" rowspan="2" style="text-align:center;">操作</th>
 
                     </tr>
              		<tr>
@@ -211,13 +211,14 @@
 							</php>
 							<td align="right" id="douSF_total_s_{$v.id}" class="bg-main bgTrans">{$douSF_total_s}</td>
 							
-							<td><input class="input" style="width:120px;" name="douXGJ[]" id="douXGJ_{$intID_CY}" value="{$douXGJ}" onkeyup="chayiRem_XGJ(douXGJ_{$intID_CY},'{$intID_CY}')" /></td>
+							<td align="right" id="douXGJ_{$intID_CY}">{$douXGJ}</td>
 							<td {$tdBgCY} id="douCY_{$intID_CY}">{$douCY}</td>
 							<td style="border-right:#0099cc 1px solid;"><input class="input" style="width:320px;" name="textRemarks[]" id="textRemarks_{$intID_CY}" value="{$textRemarks}" onblur="chayiRem('textRemarks_{$intID_CY}','{$intID_CY}')" /></td>
 							
 							<td>
 								<a class="button button-small border-main" target="_blank" href="{:U('/Zijin/zijinSchool_lkl',array('qishu'=>$qishu,'pici'=>$pici,'sid'=>$v['id']))}">查看拉卡拉</a>
 								<a class="button button-small border-main" target="_blank" href="{:U('/Zijin/zijinSchool_sqb',array('qishu'=>$qishu,'pici'=>$pici,'sid'=>$v['id']))}">查看收钱吧</a>
+								<a class="button button-small border-main" target="_blank" href="{:U('/Zijin/showChayi',array('qishu'=>$qishu,'pici'=>$pici,'sid'=>$v['id']))}">查看差异</a>
 							</td>
 							
 					</tr>
@@ -317,7 +318,7 @@ body {overflow-x: scroll;}
 
 <script>
 $(function(){
-	var W = <php>echo $i*1130</php>+1330;
+	var W = <php>echo $i*1130</php>+1410;
 	$("body").width(W);
 });
 

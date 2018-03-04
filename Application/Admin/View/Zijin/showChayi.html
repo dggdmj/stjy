@@ -1,0 +1,34 @@
+
+    <div class="panel one-box" style="width:500px;">
+        <div class="table-responsive" style="width:500px;">
+            <table id="table" class="table table-bordered table-condensed" style="width:500px;"><!-- table-hover -->
+                <tbody>
+                    <tr>
+						<th width="50%">校管家数</th>
+    					<th>拉卡拉/收钱吧</th>
+                    </tr>
+					<foreach name='result_2' item='v2' key="k2">
+             		<tr>
+						<td>{$v2}</td>
+    					<td></td>
+					</tr>
+					</foreach>
+					<foreach name='result_1' item='v1' key="k1">
+             		<tr>
+						<td></td>
+    					<td>{$v1}</td>
+					</tr>
+					</foreach>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-foot table-foot clearfix">
+            <div class="float-left">
+                <div class="form-inline">
+                   
+                </div>
+                <br>
+            </div>
+
+        </div>
+    </div>
