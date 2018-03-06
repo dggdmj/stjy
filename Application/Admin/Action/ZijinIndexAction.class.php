@@ -59,8 +59,9 @@ class ZijinIndexAction extends CommonAction{
 			$this->assign('intDays',$intDays);
         }
         $list = M('pczb')->where('qishu = '.$qishu)->order('stjy_pczb.qishu desc,stjy_pczb.pici desc')->select();
-
+        
         // upload_check为检查上传状态,6为上传好
+
         foreach($list as $k=>$v){
             // if($v['pici'] == 1){ // 测试用
                 $list[$k]['upload_check'] = $v['sqbb'] + $v['lklb'] + $v['xgjb'];
@@ -75,7 +76,7 @@ class ZijinIndexAction extends CommonAction{
                     $list[$k]['status_edit'] = 0;// 未编辑
                 }
             // }
-
+            
         }
         // die;
         // dump($list);
@@ -113,7 +114,7 @@ class ZijinIndexAction extends CommonAction{
         }else{
             $list = $data->join('LEFT JOIN stjy_table_name ON stjy_pici_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_pici_history.uid=stjy_admin.id')->field('stjy_pici_history.*,stjy_admin.nicename,stjy_table_name.name,stjy_table_name.table_name')->where("tid = ".$tid)->order('stjy_pici_history.pici desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         }
-
+        
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('tid',$tid);
@@ -627,7 +628,7 @@ class ZijinIndexAction extends CommonAction{
             // 还需要将生成表数据写入数据库并让表格可以下载
             $this->ajaxReturn($arr);
         }
-
+        
     }
 
     // 取消通过审核操作
