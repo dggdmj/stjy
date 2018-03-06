@@ -840,7 +840,7 @@ class ZijinAction extends CommonAction{
 				$list_total[]=$val2["douhzbj"];
 			}
 
-			$list_xgjb=M('xgjb')->field("douShouRu")->where("addtime='".intval($intPici)."' and intQiShu='".intval($intQishu)."' and strXiaoQu='".$rs["subname"]."' ")->select();
+			$list_xgjb=M('xgjb')->field("douShouRu")->where("addtime='".intval($intPici)."' and intQiShu='".intval($intQishu)."' and strXiaoQu='".$rs["name"]."' ")->select();
 			foreach($list_xgjb as $key=>$val){
 				$list_xgj[]=$val["doushouru"];
 			}
