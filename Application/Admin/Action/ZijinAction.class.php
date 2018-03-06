@@ -361,14 +361,21 @@ class ZijinAction extends CommonAction{
 					
 					$listCY=M("shoufei_chayi")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->select();
 					if(empty($listCY)){
-						$sumXGJ=M("xgjb")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and strXiaoQu='".$Value["subname"]."' ")->sum('douShouRu');
+						$sumXGJ=M("xgjb")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and strXiaoQu='".$Value["name"]."' ")->sum('douShouRu');
 						$arrDataCY["sid"]=$Value["id"];
 						$arrDataCY["addTime"]=intval($strPici);
 						$arrDataCY["intQiShu"]=intval($strQishu);
 						$arrDataCY["douXGJ"]=floatval($sumXGJ);
 						$arrDataCY["intCreateDate"]=date('Y-m-d H:i:s');
 						M('shoufei_chayi')->add($arrDataCY);
-					}							
+					}else{
+						$sumXGJ=M("shoufei_chayi")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->sum('douXGJ');
+						if(floatval($sumXGJ)==0){
+							$sumXGJ_add=M("xgjb")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and strXiaoQu='".$Value["name"]."' ")->sum('douShouRu');
+							$arrDataCY["douXGJ"]=floatval($sumXGJ_add);
+							M('shoufei_chayi')->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->save($arrDataCY);
+						}
+					}						
 				}
 				
 				foreach($listSchool as $Key=> $Value){
@@ -761,6 +768,7 @@ class ZijinAction extends CommonAction{
 			M("shoufei_info")->where("addtime='".intval($intPici)."' and intQiShu='".intval($intQishu)."'")->save($arrData);
 			
 			$arr["douCY"]="";
+			$arr["douXGJ"]="";
 			M("shoufei_chayi")->where("addtime='".intval($intPici)."' and intQiShu='".intval($intQishu)."'")->save($arr);
 
 			$arr['status']=true;
@@ -770,7 +778,6 @@ class ZijinAction extends CommonAction{
 		{
 			$arr['status']=false;
 			$arr['info']='操作失败！';
-			
 		}
 		$this->ajaxReturn($arr);
 	}
