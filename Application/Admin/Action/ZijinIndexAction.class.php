@@ -60,10 +60,11 @@ class ZijinIndexAction extends CommonAction{
         }
         $list = M('pczb')->where('qishu = '.$qishu)->order('stjy_pczb.qishu desc,stjy_pczb.pici desc')->select();
         
-        // upload_check为检查上传状态,4为上传好
+        // upload_check为检查上传状态,6为上传好
+
         foreach($list as $k=>$v){
             // if($v['pici'] == 1){ // 测试用
-                $list[$k]['upload_check'] = $v['sqbb'] + $v['lklb'];
+                $list[$k]['upload_check'] = $v['sqbb'] + $v['lklb'] + $v['xgjb'];
                 $res = M('shoufei_info')->where('addTime = '.$v['pici'].' and intQiShu = '.$v['qishu'])->select();
                 if(!empty($res)){
                     foreach($res as $v1){
