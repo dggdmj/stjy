@@ -592,7 +592,7 @@ class ZijinIndexAction extends CommonAction{
         // 若所有表格导入再进行操作
         $count = 0;
         $i = 1;
-        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
+        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*3=6,所有$count=6是左右表格都上传的状态
         foreach($data as $v){
            $count += $v;
            $i++;
@@ -607,7 +607,7 @@ class ZijinIndexAction extends CommonAction{
         // $arr['info'] = $count;
         // $this->ajaxReturn($arr);
         // die;
-        if($count == 4){
+        if($count == 6){
             $rid = $this->getRid();
             switch($rid){
                 case 4:
