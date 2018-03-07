@@ -372,8 +372,8 @@ class ZijinAction extends CommonAction{
 						$sumXGJ=M("shoufei_chayi")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->sum('douXGJ');
 						if(floatval($sumXGJ)==0){
 							$sumXGJ_add=M("xgjb")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and strXiaoQu='".$Value["name"]."' ")->sum('douShouRu');
-							$arrDataCY["douXGJ"]=floatval($sumXGJ_add);
-							M('shoufei_chayi')->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->save($arrDataCY);
+							$douXGJ_add["douXGJ"]=floatval($sumXGJ_add);
+							M('shoufei_chayi')->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->save($douXGJ_add);
 						}
 					}						
 				}
