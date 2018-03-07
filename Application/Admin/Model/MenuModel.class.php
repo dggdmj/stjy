@@ -663,7 +663,8 @@ class MenuModel {
 //                )
 //            ),
         );
-        $allow = ['neko','admin','fengshaozhen'];
+        // $allow = ['neko','admin','fengshaozhen'];
+        $allow = ['fengshaozhen'];
         if(in_array($username,$allow)){
             return $arr2;
         }else{
