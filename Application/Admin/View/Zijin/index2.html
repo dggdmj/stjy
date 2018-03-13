@@ -5,7 +5,8 @@
                 <tbody>
                     <tr>
 						<th rowspan="2" width="50">编号</th>
-    					<th rowspan="2" width="280" style="border-right:#0099cc 1px solid;">分校</th>
+    					<th rowspan="2" width="280" style="border-right:#0099cc 1px solid;">分校名称</th>
+    					<th rowspan="2" width="280" style="border-right:#0099cc 1px solid;">收款分校</th>
 						<php>
 							$i=0;
 						</php>
@@ -45,6 +46,7 @@
 					<foreach name='listSchool' item='vs' key="ks">
 					<tr title="{$vs.subname}">
 						<td>{$k}</td>
+						<td style="border-right:#0099cc 1px solid;">{$vs.name}</td>
 						<td style="border-right:#0099cc 1px solid;">{$vs.subname}</td>
 
 							<foreach name='listAccount' item='va' key="ka">
@@ -143,6 +145,7 @@
 					
 					<tr class="bg-main bgTrans">
 						<td></td>
+						<td></td>
     					<th style="border-right:#cccccc 1px solid; background:#0099cc" class="bgTrans">合计：</th>
 						<php>
 							if(is_array($listQishu_HZ["total"]) && !empty($listQishu_HZ[$vs["id"]][$va["id"]]))
@@ -201,7 +204,7 @@ body {overflow-x: scroll;}
 
 <script>
 $(function(){
-	var W = <php>echo $i*600</php>+630;
+	var W = <php>echo $i*600</php>+910;
 	$("body").width(W);
 });
 </script>
