@@ -35,6 +35,10 @@ class TableImportAction extends CommonAction{
                     'url' => U('/TableImport/tableList/tid/4'),
                 ),
                 array(
+                    'name' => '收据明细表导入',
+                    'url' => U('/TableImport/tableList/tid/24'),
+                ),
+                array(
                     'name' => '课消明细表导入',
                     'url' => U('/TableImport/tableList/tid/5'),
                 ),
@@ -45,6 +49,22 @@ class TableImportAction extends CommonAction{
                 array(
                     'name' => '学员费用预警表导入',
                     'url' => U('/TableImport/tableList/tid/7'),
+                ),
+                array(
+                    'name' => '出勤明细表导入',
+                    'url' => U('/TableImport/tableList/tid/25'),
+                ),
+                array(
+                    'name' => '收支流水',
+                    'url' => U('/TableImport/tableList/tid/26'),
+                ),
+                array(
+                    'name' => '转出记录',
+                    'url' => U('/TableImport/tableList/tid/27'),
+                ),
+                array(
+                    'name' => '转入记录',
+                    'url' => U('/TableImport/tableList/tid/28'),
                 ),
                 array(
                     'name' => '学习卡额度表导入',
@@ -202,7 +222,7 @@ class TableImportAction extends CommonAction{
             $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
             // dump($newTemp);die;
             $tablenames = $this->getTabelnames(2,[1,3,4]);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
-            
+
             $tid = $_POST["tid"];  //表名对应的序号
 
             $num = count(explode(explode('表',$tablenames[$tid])[0],$name));// 判断上传表格是否正确的条件,如果上传表名含有需要上传表格名的关键字段,即num>=2,若<2就是非正确的上传表名
@@ -212,7 +232,7 @@ class TableImportAction extends CommonAction{
 
             $config = array(
                 'exts' => array('xlsx', 'xls'),
-                'maxSize' => 3145728,
+                'maxSize' => 8145728,
                 'rootPath' => "./Public/",
                 'savePath' => 'Uploads/',
                 'subName' => array('date', 'Ymd'),
@@ -241,7 +261,7 @@ class TableImportAction extends CommonAction{
                 }
             }
 
-            // dump($tablename);die;
+//             dump($tablename);die;
 
             //在qishu_history中增加
             $_POST["filename"] = $file_name;
@@ -320,10 +340,11 @@ class TableImportAction extends CommonAction{
                 // 获取excel里面除字段以外的数据
                 $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$qishu_id,$ziduan,$newTemp);
             }
-            // dump($excel_data);
-            // die;
+//             dump($excel_data);
+//             die;
             // 将获取数组插入到数据库相应的表里面
             // $res = M($tablename)->addAll($excel_data);
+
             foreach($excel_data as $v){
                 M($tablename)->add($v);
             }
@@ -352,6 +373,12 @@ class TableImportAction extends CommonAction{
                 break;
                 case 4:
                     $res = $this->checkSjjlb($_POST);
+                    if($res == 'error'){
+                        return 'error';
+                    }
+                break;
+                case 24:
+                    $res = $this->checkSjmxb($_POST);
                     if($res == 'error'){
                         return 'error';
                     }
@@ -747,6 +774,11 @@ class TableImportAction extends CommonAction{
         }
     }
 
+    // 渲染数据记录表异常页面
+    public function checkSjmxb($postData){
+
+    }
+
     /* $objPHPExcel:phpexcel对象;$colsNum:获取总列数(数字);*/
     public function getExcelZiduan($objPHPExcel,$colsNum){
         // 获取excel里面的所有字段
@@ -788,6 +820,31 @@ class TableImportAction extends CommonAction{
                     break;
                     case 4:
                         if($v == '收据号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 24:
+                        if($v == '收据号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 25:
+                        if($v == '班级'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 26:
+                        if($v == '收据号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 27:
+                        if($v == '学号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 28:
+                        if($v == '学号'){
                             $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
                         }
                     break;

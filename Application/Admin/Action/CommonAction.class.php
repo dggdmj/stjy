@@ -290,44 +290,6 @@ class CommonAction extends Action {
         return $list;
     }
 
-    // 查询本期班级学员信息表所有学员的学号
-    // public function getStu($qishu,$sid,$tid=3){
-    //     $where['qishu'] = $qishu;
-    //     $where['sid'] = $sid;
-    //     $where['tid'] = $tid;
-    //     $id = M('qishu_history')->where($where)->getField('id');
-    //     $tbnames = $this->getTabelnames();
-    //     if(!empty($id)){
-    //         $stu = M($tbnames[$tid])->where('suoshudd ='.$id)->field('xuehao')->select();
-    //         // dump($stu);
-    //         foreach($stu as $v){
-    //             $xueyuan[] = $v['xuehao'];
-    //         }
-    //         return $xueyuan;
-    //     }else{
-    //         return false;
-    //     }
-    // }
-
-    // 从班级学员信息表取数
-    // public function getData($qishu,$sid){
-    //     $where['qishu'] = $qishu;
-    //     $where['sid'] = $sid;
-    //     $where['tid'] = 3;
-    //     $id = M('qishu_history')->where($where)->getField('id');
-    //     if(!empty($id)){
-    //         $where = 'suoshudd ='.$id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
-    //         $stu = M('bjxyxxb')->where($where)->field('xuehao')->select();
-    //         // dump($stu);
-    //         foreach($stu as $v){
-    //             $xueyuan[] = $v['xuehao'];
-    //         }
-    //         return $xueyuan;
-    //     }else{
-    //         return false;
-    //     }
-    // }
-
     // 从学员信息表取数
     public function getData($qishu,$sid){
         $where['qishu'] = $qishu;
@@ -373,31 +335,6 @@ class CommonAction extends Action {
                 case '初二':
                     $heji[$this->encode($v['nianji'],'all')] = $v['count'];
                 break;
-                // case '一年级':
-                //     $heji['yinianji'] = $v['count'];
-                // break;
-                // case '二年级':
-                //     $heji['ernianji'] = $v['count'];
-                // break;
-                // case '三年级':
-                //     $heji['sannianji'] = $v['count'];
-                // break;
-                // case '四年级':
-                // case '四年级':
-                //     $heji['sinianji'] = $v['count'];
-                // break;
-                // case '五年级':
-                //     $heji['wunianji'] = $v['count'];
-                // break;
-                // case '六年级':
-                //     $heji['liunianji'] = $v['count'];
-                // break;
-                // case '初一':
-                //     $heji['chuyi'] = $v['count'];
-                // break;
-                // case '初二':
-                //     $heji['chuer'] = $v['count'];
-                // break;
                 default:
                     $heji['chuerys'] += $v['count'];
                 break;

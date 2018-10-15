@@ -57,6 +57,12 @@ class MenuModel {
                         'order' => 1
                     ),
                     array(
+                        'name' => '收据明细表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/24'),
+                        'order' => 1
+                    ),
+                    array(
                         'name' => '课消明细表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/tableList/tid/5'),
@@ -78,6 +84,30 @@ class MenuModel {
                         'name' => '学习卡额度表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/tableList/tid/14'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '出勤明细表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/25'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '收支明细表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/26'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '转出记录',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/27'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '转入记录',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/28'),
                         'order' => 1
                     ),
                     array(

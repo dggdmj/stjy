@@ -66,6 +66,7 @@
                                                 <if condition="$v['status_cw'] neq 2">
                                                     <?php if($v['status_edit'] != 1){ ?>
                                                     <a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$i))}">&nbsp;&nbsp;编辑</a>
+                                                    <a class="button border-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$i))}" href="javascript:;">&nbsp;&nbsp;重置</a>
                                                     <?php }else{ ?>
                                                     <a class="button bg-blue button-small icon-pencil" title="编辑" alt="编辑" href="{:U('/zijin/zijinHuizong',array('qishu'=>$qishu,'pici'=>$i))}">&nbsp;&nbsp;编辑</a>
                                                     <a class="button border-red button-small icon-wrench js_ctr_del" title="重置" alt="重置" target="{:U('/zijin/zijin_reset_ajax',array('qishu'=>$qishu,'pici'=>$i))}" href="javascript:;">&nbsp;&nbsp;重置</a>

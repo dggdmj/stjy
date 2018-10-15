@@ -24,6 +24,9 @@ class IndexAction extends CommonAction {
         $Menu = new \Admin\Model\MenuModel();
         $menuList = $Menu->getMenu();
         $this->assign('menuList',json_encode($menuList));
+
+        $school = M("school")->field("id,name,subname")->where("isuse = 1")->select();
+        $this->assign('school',$school);
         // 进入首页
         $this->display();
     }

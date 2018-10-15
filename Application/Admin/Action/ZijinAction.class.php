@@ -320,7 +320,7 @@ class ZijinAction extends CommonAction{
                                 $arrData["douSFHJ"]=floatval($sfTotal) - floatval($rs_SF["douxxk"]) - floatval($rs_SF["dourzk"]) - floatval($rs_SF["douqtsr"]);
                                 $arrData["douSXF"]=floatval($sxfTotal);
                                 M('shoufei_info')->where("intqishu='".intval($strQishu)."' and addtime='".intval($strPici)."' and sid='".$Value["id"]."' and aid='".$ValueA["id"]."' ")->save($arrData);
-
+//echo M('shoufei_info')->getLastSql()."<br/>";
 
                                 $douSFHJ_total=M("shoufei_info")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->sum('douSFHJ');
                                 $douXJSR_total=M("shoufei_info")->where("addtime='".intval($strPici)."' and intQiShu='".intval($strQishu)."' and sid='".intval($Value["id"])."' ")->sum('douXJSR');
