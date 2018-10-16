@@ -193,7 +193,7 @@ class TableImportAction extends CommonAction{
         $tid = $_GET['tid'];//获取表格类型id
         $map['_string'] ? $map['_string'] .= " and tid = ".$tid : '';
         $data = M('qishu_history'); // 实例化对象
-        $count = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->where($map)->where("tid = ".$tid)->count();// 查询满足要求的总记录数
+        $count = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->where($map)->count();// 查询满足要求的总记录数
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
