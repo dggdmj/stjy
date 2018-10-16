@@ -3,11 +3,16 @@ LQ.selectUi={
 	show:function(options){
 		var def={
 			id:"", //selectUi的ID值
+
 			hiddenInput:"", //设置下拉列表获取值保存的字段；
+
 			selectInit:"", //接收下拉表数据，数组[{name:name,value:value}]
 			selectNext:"", //二级菜单值
+
 			pulldown:function(){},//下拉列表选择后返回函数
+
 			callback:function(){} //callback 初始插件时返回函数
+
 		};
 		var ini=$.extend(def,options);
 		
@@ -50,6 +55,7 @@ LQ.selectUi={
 		if($val != undefined){
 			if($options.length==0){
 				//获取同类值
+
 				val=LQ.selectUi.getPreventData($val);
 				LQ.selectUi.appendData(ini.id,val);
 				LQ.selectUi.selectOption(sel,$val);
@@ -107,6 +113,7 @@ LQ.selectUi={
 		$this.bind("click",function(e){
 			e.stopPropagation();
 			var id=$(".select_ul_ui").index($this); //获取索引值
+
 			ulhide(id);
 			ulStatus();
 		});

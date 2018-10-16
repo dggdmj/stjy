@@ -98,6 +98,30 @@ class TableImportAction extends CommonAction{
         $school_id = explode(",",$temp['school_id']);
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
+        $keywords = I('keywords','');
+        $keywords ? $map['_string'] = " stjy_school.name like '%$keywords%'" : '';//关键字搜索
+        $start_time = I('start_time','');
+        $end_time = I('end_time','');
+        //开始时间
+        if ($start_time){
+            $start_time_arr = explode('-',$start_time);
+            if (strlen($start_time_arr[1]) == 1){
+                $start_time_trim = $start_time_arr[0].'0'.$start_time_arr[1];
+            }else{
+                $start_time_trim = $start_time_arr[0].$start_time_arr[1];
+            }
+            $map['_string'] ? $map['_string'].=" and stjy_sjzb.qishu >= '$start_time_trim'" : $map['_string']=" stjy_sjzb.qishu >= '$start_time_trim'";
+        }
+        // 结束时间
+        if ($end_time){
+            $end_time_arr = explode('-',$end_time);
+            if (strlen($end_time_arr[1]) == 1){
+                $end_time_trim = $end_time_arr[0].'0'.$end_time_arr[1];
+            }else{
+                $end_time_trim = $end_time_arr[0].$end_time_arr[1];
+            }
+            $map['_string'] ? $map['_string'].=" and stjy_sjzb.qishu <= '$end_time_trim'" : $map['_string']=" stjy_sjzb.qishu <= '$end_time_trim'";
+        }
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -108,9 +132,8 @@ class TableImportAction extends CommonAction{
         //  or $_SESSION['superadmin'] == true,若需要用admin查看数据,把这个加入到if里面
         //
         // if($rid == 2 or $rid == 3){
-        $count = $data->where($map)->count();// 查询满足要求的总记录数
+        $count = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->where($map)->count();// 查询满足要求的总记录数
         // }
-
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
@@ -124,7 +147,7 @@ class TableImportAction extends CommonAction{
         $arr = $this->getTabelnames();
 
         // 查询该学校是否需要
-
+        $this->assign('post',$_POST);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('rid',$rid);// 赋值角色id

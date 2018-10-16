@@ -4,22 +4,22 @@
     margin-top:4px;
 }
 </style>
-<form method="post" id="form" action="#">
+<form method="post" id="form" action="">
     <div class="panel one-box">
 
         <div class="table-tools clearfix">
             <div class="form-inline">
                 <div class="form-group">
                     <div class="field">
-                        学校：<input type="text" class="input" size="30" name="title" value="{$s_title}">
+                        学校：<input type="text" class="input" size="30" name="keywords" value="{$post.keywords}">
 
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="field">
-                        时间从：<input type="text" class="input datetimepicker" size="30" name="starttime" value="{$s_title}">
+                        时间从：<input type="text" class="input datetimepicker" size="30" name="start_time" value="{$post.start_time}">
                             到
-                        <input type="text" class="input datetimepicker" size="30" name="endtime" value="{$s_title}">
+                        <input type="text" class="input datetimepicker" size="30" name="end_time" value="{$post.end_time}">
                     </div>
                 </div>
                 <div class="form-button">
@@ -275,6 +275,8 @@
 <script type="text/javascript">
     $(function (){
         $(".datetimepicker").on("click",function(e){
+            $('.check').removeClass('check');
+            $(this).addClass('check');
             e.stopPropagation();
             $(this).lqdatetimepicker({
                 css : 'datetime-day',
@@ -283,7 +285,6 @@
 
                 }
             });
-
         });
     });
 </script>
