@@ -18,3 +18,21 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(function (){
+        $(".datetimepicker").on("click",function(e){
+            e.stopPropagation();
+            $(this).lqdatetimepicker({
+                css : 'datetime-day',
+                dateType : 'D',
+                selectback : function(){
+
+                }
+            });
+            $('.lq-datetimepick').css('width','250px');
+            $('.datetime-day').remove();
+            $('.datetimepicker').removeClass('check');
+            $(this).addClass('check');
+        });
+    });
+</script>

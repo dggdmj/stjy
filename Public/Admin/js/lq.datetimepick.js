@@ -117,6 +117,7 @@ $.fn.lqdatetimepicker = function (options) {
             pulldown:function(){
                 var _year = $("#selectYear").val();
                 var _month = $("#selectMonth").val();
+                $('.check').val(_year+'-'+_month);
                 var _day = $(".datetime-time>dd.selected").attr("data-value");
                 _day = _day==undefined ? _this.date.D.selected : _day;
                 _this.date.D.month = new Date(_year+'/'+_month+'/'+_day);
@@ -129,6 +130,7 @@ $.fn.lqdatetimepicker = function (options) {
             pulldown:function(){
                 var _year = $("#selectYear").val();
                 var _month = $("#selectMonth").val();
+                $('.check').val(_year+'-'+_month);
                 var _day = $(".datetime-time>dd.selected").attr("data-value");
                 _day = _day==undefined ? _this.date.D.selected : _day;
                 _this.date.D.month = new Date(_year+'/'+_month+'/'+_day);

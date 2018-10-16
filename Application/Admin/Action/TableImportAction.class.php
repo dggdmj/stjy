@@ -24,7 +24,7 @@ class TableImportAction extends CommonAction{
                     ),
                 array(
                         'name' => '班级信息表导入',
-                        'url' => U('/TableImport/tableList/tid/2'),
+                        'url' => U('/TableImport/tableList/tid/2'), 
                     ),
                 array(
                     'name' => '班级学员信息表导入',
@@ -191,7 +191,7 @@ class TableImportAction extends CommonAction{
         $string = $this->pingWhrere($keywords,$start_time,$end_time,'stjy_qishu_history');//调取拼接where
         $string ? $map['_string'] = $string : ''; 
         $tid = $_GET['tid'];//获取表格类型id
-        $map['_string'] ? $map['_string'] .= " and tid = ".$tid : '';
+        $map['_string'] ? $map['_string'] .= " and tid = ".$tid : $map['_string'] .= " tid = ".$tid;
         $data = M('qishu_history'); // 实例化对象
         $count = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->where($map)->count();// 查询满足要求的总记录数
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
@@ -1549,7 +1549,7 @@ class TableImportAction extends CommonAction{
         $this->ajaxReturn($arr);
     }
 
-    // 删除总表行操作
+    // 删除总表行操作(重写)
     public function delRow(){
         $tablenames = $this->getTabelnames();// 获取序号和导入表名对应的一维数组
         $field = implode(',',$tablenames);// 组成筛选条件

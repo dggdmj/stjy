@@ -253,19 +253,4 @@
     });
 </script>
 
-<script type="text/javascript">
-    $(function (){
-        $(".datetimepicker").on("click",function(e){
-            $('.check').removeClass('check');
-            $(this).addClass('check');
-            e.stopPropagation();
-            $(this).lqdatetimepicker({
-                css : 'datetime-day',
-                dateType : 'D',
-                selectback : function(){
 
-                }
-            });
-        });
-    });
-</script>
