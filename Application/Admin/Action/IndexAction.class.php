@@ -23,6 +23,7 @@ class IndexAction extends CommonAction {
         // 加载菜单列表
         $Menu = new \Admin\Model\MenuModel();
         $menuList = $Menu->getMenu();
+        // dump($menuList);exit;
         $this->assign('menuList',json_encode($menuList));
 
         $school = M("school")->field("id,name,subname")->where("isuse = 1")->select();

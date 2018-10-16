@@ -165,16 +165,18 @@ class TableImportAction extends CommonAction{
 
     // 详情页
     public function table_xq(){
+        
         if(isset($_GET['id'])){
             $id = $_GET['id'];// 订单id
         }else{
             $id = M('qishu_history')->where($_GET)->getField('id');
         }
-
+        
         $tid = $_GET['tid'];// 表格类型id
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");
-        $list = M($tablename)->field('id',true)->where("suoshudd = ".$id)->select();
-        // dump($id);
+        //判断是否在分表里面获取返回的表名
+        $tablename_fenbiao = $this->checkFenbiao($id,$tablename);
+        $list = M($tablename_fenbiao)->field('id',true)->where("suoshudd = ".$id)->select();
         $tbnames = array_flip(array_diff($this->getComment($tablename),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
         $this->assign('list',$list);// 赋值数据集
         $this->assign('tbnames',$tbnames);// 赋值数据集
@@ -213,11 +215,11 @@ class TableImportAction extends CommonAction{
     //数据导入
     public function dataUpload() {
         if (!empty($_FILES)) {
-//             dump($_FILES);die;
+            // dump($_FILES);die;
             $name = explode('.',$_FILES['excel']['name'])[0];// 获取上传excel文档的文档名
             
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
-            // dump($tablename);die;
+            // dump($_POST);die;
             // 获取对应数据库里面注释(与excel字段相同)和字段名拼接的数组
             $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
             // dump($newTemp);die;
@@ -344,9 +346,11 @@ class TableImportAction extends CommonAction{
 //             die;
             // 将获取数组插入到数据库相应的表里面
             // $res = M($tablename)->addAll($excel_data);
-
+            
+            //获取分表年份表名
+            $table = $this->checkFenbiao($qishu_id,$_POST['table_name']);
             foreach($excel_data as $v){
-                M($tablename)->add($v);
+                M($table)->add($v);
             }
 
             // 位置不能移动,要等班级学员信息表执行完才有其$id_bjxyxxb
@@ -391,6 +395,8 @@ class TableImportAction extends CommonAction{
             $this->error("请选择上传的文件");
         }
     }
+
+    
 
     // 退费表专用上传方法
     public function dataUpload2() {
@@ -1485,7 +1491,8 @@ class TableImportAction extends CommonAction{
         $tablename = M("table_name")->where("id = ".$tid)->getField("table_name");// 从table_name里面取出相应的表名(拼音)
 
         // --------------删除操作执行开始--------------
-        $res1 = M($tablename)->where("suoshudd = ".$id)->delete();// 从表明里删除所属id对应的数据
+        $tablename_fenbiao = $this->checkFenbiao($id,$tablename);
+        $res1 = M($tablename_fenbiao)->where("suoshudd = ".$id)->delete();// 从表明里删除所属id对应的数据
         $res2 = M("qishu_history")->where("id = ".$id)->delete();// 从qishu_history删除记录
         unlink($filename);// 删除存放的excel表
 

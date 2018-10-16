@@ -19,7 +19,7 @@ class CommonAction extends Action {
     *  echo CUtf8_PY::encode('阿里巴巴科技有限公司'); //编码为拼音首字母
     *  echo CUtf8_PY::encode('阿里巴巴科技有限公司', 'all'); //编码为全拼音
     */
-
+ 
     // 优化了传统的拼音转换处理类的算法，专门针对UTF-8字符集进行处理。
     // 如果你使用GBK或GB2312字符集，只需要去掉iconv函数，直接赋值，不需要转换就行。
     // 不多说了，直接上代码，完全开源你拿去直接用。如果你觉得有用，使用时请帮忙保留作者的信息。
@@ -618,7 +618,6 @@ class CommonAction extends Action {
     public function download(){
         $data = M('qishu_history')->join('stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.id')->join('stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_school.name as school_name,stjy_table_name.name')->where($_GET)->find();
         $file_url = $data['filename'];
-
         if(!isset($file_url)||trim($file_url)==''){
             return '500';
         }
@@ -1910,5 +1909,186 @@ class CommonAction extends Action {
             $data['error'] = 1;
         }
         return $data;
+    }
+
+    //判断是否是分表如果是返回有期数年份的表名
+    //订单id，表名tablename
+    public function checkFenbiao($id='',$tablename=''){
+        $qishu = '';
+        //定义分表
+        $fenbiao = array('kbmxb','sjjlb','xyfyyjb','xyxxb');
+        if (in_array($tablename,$fenbiao)){
+            $qishu = M('qishu_history')->where(array('id'=>$id))->getField('qishu');//获取期数
+            $qishu = mb_substr($qishu,0,4);//截取年份
+            //判断是否创建了分表
+            $this->ifTables($qishu,$tablename);
+            return $tablename.'_'.$qishu;
+        }
+        return $tablename;
+    }
+
+    //判断表是否存在，不存在就创建
+    public function ifTables($nian='',$table=''){
+        $niantable = C('DB_PREFIX').$table.'_'.$nian;//分表一年一个表
+        $res = M('')->query('show tables like \''.$niantable.'\'');
+        //不存在就创建一个表
+        if (empty($res)){
+            //判断是否是开办明细表
+            if ($table == 'kbmxb'){
+                M('')->execute("CREATE TABLE `$niantable` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                      `banjimc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级名称',
+                      `banjibq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级标签',
+                      `kaibanrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '开班日期',
+                      `jiebanrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '结班日期',
+                      `shangkedd` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课地点',
+                      `shangkesjd` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课时间段',
+                      `shangkesj` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课时间',
+                      `shangkexss` double(11,2) DEFAULT NULL COMMENT '上课小时数',
+                      `jingjiangxs` double(11,2) DEFAULT NULL COMMENT '精讲小时',
+                      `fanduxs` double(11,2) DEFAULT NULL COMMENT '泛读小时',
+                      `waijiaoxs` double(11,2) DEFAULT NULL COMMENT '外教小时',
+                      `jingjiangls` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '精讲老师',
+                      `fanduls` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '泛读老师',
+                      `waijiaols` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '外教老师',
+                      `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
+                      `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+                      PRIMARY KEY (`id`),
+                      KEY `IDX_suoshudd` (`suoshudd`) USING BTREE
+                    ) ENGINE=MyISAM AUTO_INCREMENT=40254 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                );
+            }
+
+            //判断是否是收据记录表
+            if ($table == 'sjjlb'){
+                M('')->execute("CREATE TABLE `$niantable` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                      `jiaofeirq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '交费日期',
+                      `shoujuhao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收据号',
+                      `fapiaohao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发票号',
+                      `xuehao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
+                      `xingming` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
+                      `shoujihao` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手机号码',
+                      `gonglixx` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '公立学校',
+                      `gonglibj` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '公立班级',
+                      `jiatingzz` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '家庭住址',
+                      `fuqindh` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '父亲电话',
+                      `muqindh` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '母亲电话',
+                      `xueshenglb` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学生类别',
+                      `zhaoshengly` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '招生来源',
+                      `nianji` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '年级',
+                      `kechengmc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '课程名称',
+                      `wupinmc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '物品名称',
+                      `zhekouje` double(11,2) DEFAULT NULL COMMENT '折扣金额',
+                      `zhijianje` double(11,2) DEFAULT NULL COMMENT '直减金额',
+                      `yingjiaoje` double(11,2) DEFAULT NULL COMMENT '应交金额',
+                      `jiaofeije` double(11,2) DEFAULT NULL COMMENT '交费金额',
+                      `qianjiaoje` double(11,2) DEFAULT NULL COMMENT '欠交金额',
+                      `dianziqb` double(11,2) DEFAULT NULL COMMENT '电子钱包',
+                      `xianjin` double(11,2) DEFAULT NULL COMMENT '现金',
+                      `weixin` double(11,2) DEFAULT NULL COMMENT '微信',
+                      `zhifubao` double(11,2) DEFAULT NULL COMMENT '支付宝',
+                      `shuaka` double(11,2) DEFAULT NULL COMMENT '刷卡',
+                      `zhifudh` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '支付单号',
+                      `xiaoqu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区',
+                      `jingshouren` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '经手人',
+                      `shoujulx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收据类型',
+                      `shoukuanzh` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收款账号',
+                      `fukuanzh` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '付款账户',
+                      `zhuangtai` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '状态',
+                      `qiandanlx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '签单类型',
+                      `yejigsr` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '业绩归属人',
+                      `jieshaoren` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '介绍人',
+                      `pindandx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '拼单对象',
+                      `jingrentou` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '净人头',
+                      `yujianje` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '预减金额',
+                      `beizhu` text COLLATE utf8mb4_unicode_ci COMMENT '备注',
+                      `tuifeijzyy` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退费/结转原因',
+                      `gongsish` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '公司税号',
+                      `chanpinlx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '产品类型',
+                      `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
+                      `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+                      PRIMARY KEY (`id`),
+                      KEY `IDX_suoshudd` (`suoshudd`)
+                    ) ENGINE=MyISAM AUTO_INCREMENT=1134716 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                );
+            }
+
+            //判断是否是学员费用预警表
+            if($table == 'xyfyyjb'){
+                M('')->execute("CREATE TABLE `$niantable` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                      `xuehao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
+                      `xingming` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
+                      `dianhua` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '电话',
+                      `xiaoqu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区',
+                      `kechengmc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '课程名称',
+                      `xueguanshi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学管师',
+                      `shengyugmsl` double(11,2) DEFAULT NULL COMMENT '剩余购买数量',
+                      `shengyuzssl` double(11,2) DEFAULT NULL COMMENT '剩余赠送数量',
+                      `danwei` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '单位',
+                      `feiyong` double(11,2) DEFAULT NULL COMMENT '费用',
+                      `chanpinlx` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '产品类型',
+                      `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
+                      `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+                      PRIMARY KEY (`id`),
+                      KEY `IDX_suoshudd` (`suoshudd`)
+                    ) ENGINE=MyISAM AUTO_INCREMENT=645728 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                );
+            }
+
+            //判断是否是学员信息表
+            if ($table == 'xyxxb'){
+                M('')->execute("CREATE TABLE `$niantable` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                      `xuehao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
+                      `xingming` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
+                      `xingbie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '性别',
+                      `shishengxin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '师生信',
+                      `shenfenzheng` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '身份证',
+                      `chushengrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '出生日期',
+                      `nianling` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '年龄',
+                      `shoujihm` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手机号码',
+                      `yingwenming` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '英文名',
+                      `qingjiacs` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '请假次数',
+                      `zhaoshengly` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '招生来源',
+                      `laiyuanfx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '来源分校',
+                      `baomingrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '报名日期',
+                      `xiuxuerq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '休学日期',
+                      `tuixueriqi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退学日期',
+                      `xiaoqu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区',
+                      `xueguanshi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学管师',
+                      `fuqinxm` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '父亲姓名',
+                      `fuqindh` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '父亲电话',
+                      `muqinxm` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '母亲姓名',
+                      `muqindh` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '母亲电话',
+                      `jiatingzz` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '家庭住址',
+                      `qq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'QQ',
+                      `jiuduxx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '就读学校',
+                      `nianji` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '年级',
+                      `banji` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级',
+                      `beizhu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+                      `jifen` double(11,2) DEFAULT NULL COMMENT '积分',
+                      `leixing` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '类型',
+                      `zhuangtai` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '状态',
+                      `xiuyuanyy` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '休学原因',
+                      `yujifxrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '预计复学日期',
+                      `tuixuerq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退学日期',
+                      `tuixueyy` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退学原因',
+                      `dianziqbye` double(11,2) DEFAULT NULL COMMENT '电子钱包余额',
+                      `qianjiaoje` double(11,2) DEFAULT NULL COMMENT '欠交金额',
+                      `shengyuxf` double(11,2) DEFAULT NULL COMMENT '剩余学费',
+                      `zhanghuye` double(11,2) DEFAULT NULL COMMENT '账户余额',
+                      `shoucijfrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '首次缴费日期',
+                      `shoucixfrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '首次消费日期',
+                      `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
+                      `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
+                      PRIMARY KEY (`id`),
+                      KEY `IDX_soushudd` (`suoshudd`)
+                    ) ENGINE=MyISAM AUTO_INCREMENT=2043723 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                );
+            }
+
+        }
     }
 }
