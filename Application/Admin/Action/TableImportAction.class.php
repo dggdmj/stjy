@@ -98,6 +98,11 @@ class TableImportAction extends CommonAction{
         $school_id = explode(",",$temp['school_id']);
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
+        $keywords = I('keywords','');
+        $keywords ? $map['_string'] = " stjy_school.name like '%$keywords%'" : '';//
+        $stat_time = I('stat_time','');
+        $end_time = I('end_time','');
+        
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -108,7 +113,7 @@ class TableImportAction extends CommonAction{
         //  or $_SESSION['superadmin'] == true,若需要用admin查看数据,把这个加入到if里面
         //
         // if($rid == 2 or $rid == 3){
-        $count = $data->where($map)->count();// 查询满足要求的总记录数
+        $count = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->where($map)->count();// 查询满足要求的总记录数
         // }
 
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
