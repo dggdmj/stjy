@@ -99,29 +99,12 @@ class TableImportAction extends CommonAction{
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
         $keywords = I('keywords','');
-        $keywords ? $map['_string'] = " stjy_school.name like '%$keywords%'" : '';//关键字搜索
         $start_time = I('start_time','');
         $end_time = I('end_time','');
+        $string = $this->pingWhrere($keywords,$start_time,$end_time,'stjy_sjzb');//调取拼接where
+        $string ? $map['_string'] = $string : ''; 
         //开始时间
-        if ($start_time){
-            $start_time_arr = explode('-',$start_time);
-            if (strlen($start_time_arr[1]) == 1){
-                $start_time_trim = $start_time_arr[0].'0'.$start_time_arr[1];
-            }else{
-                $start_time_trim = $start_time_arr[0].$start_time_arr[1];
-            }
-            $map['_string'] ? $map['_string'].=" and stjy_sjzb.qishu >= '$start_time_trim'" : $map['_string']=" stjy_sjzb.qishu >= '$start_time_trim'";
-        }
-        // 结束时间
-        if ($end_time){
-            $end_time_arr = explode('-',$end_time);
-            if (strlen($end_time_arr[1]) == 1){
-                $end_time_trim = $end_time_arr[0].'0'.$end_time_arr[1];
-            }else{
-                $end_time_trim = $end_time_arr[0].$end_time_arr[1];
-            }
-            $map['_string'] ? $map['_string'].=" and stjy_sjzb.qishu <= '$end_time_trim'" : $map['_string']=" stjy_sjzb.qishu <= '$end_time_trim'";
-        }
+        
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -147,12 +130,40 @@ class TableImportAction extends CommonAction{
         $arr = $this->getTabelnames();
 
         // 查询该学校是否需要
-        $this->assign('post',$_POST);
+        $this->assign('get',$_GET);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('rid',$rid);// 赋值角色id
         $this->assign('arr',$arr);
         $this->adminDisplay();
+    }
+
+    //根据搜索条件拼接where条件
+    //关键字，开始时间，结束时间，时间表名
+    public function pingWhrere($keywords='',$start_time='',$end_time='',$table_name=''){
+        $result = '';
+        $keywords ? $result = " stjy_school.name like '%$keywords%' " : '';//关键字搜索
+        //开始时间
+        if ($start_time){
+            $start_time_arr = explode('-',$start_time);
+            if (strlen($start_time_arr[1]) == 1){
+                $start_time_trim = $start_time_arr[0].'0'.$start_time_arr[1];
+            }else{
+                $start_time_trim = $start_time_arr[0].$start_time_arr[1];
+            }
+            $result ? $result.=" and stjy_sjzb.qishu >= '$start_time_trim'" : $result=" stjy_sjzb.qishu >= '$start_time_trim'";
+        }
+        // 结束时间
+        if ($end_time){
+            $end_time_arr = explode('-',$end_time);
+            if (strlen($end_time_arr[1]) == 1){
+                $end_time_trim = $end_time_arr[0].'0'.$end_time_arr[1];
+            }else{
+                $end_time_trim = $end_time_arr[0].$end_time_arr[1];
+            }
+            $result ? $result.=" and stjy_sjzb.qishu <= '$end_time_trim'" : $result=" stjy_sjzb.qishu <= '$end_time_trim'";
+        }
+        return $result;
     }
     
     public function index_xq(){
@@ -173,13 +184,21 @@ class TableImportAction extends CommonAction{
         $school_id = explode(",",$temp['school_id']);
         $map['sid'] = array('in',$school_id);// 查询条件
 
+        //搜索和时间选择
+        $keywords = I('keywords','');
+        $start_time = I('start_time','');
+        $end_time = I('end_time','');
+        $string = $this->pingWhrere($keywords,$start_time,$end_time,'stjy_qishu_history');//调取拼接where
+        $string ? $map['_string'] = $string : ''; 
         $tid = $_GET['tid'];//获取表格类型id
+        $map['_string'] ? $map['_string'] .= " and tid = ".$tid : '';
         $data = M('qishu_history'); // 实例化对象
-        $count = $data->where($map)->where("tid = ".$tid)->count();// 查询满足要求的总记录数
+        $count = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->where($map)->where("tid = ".$tid)->count();// 查询满足要求的总记录数
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        $list = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_admin.nicename,stjy_school.name as school_name,stjy_school.id as sid,stjy_table_name.name,stjy_table_name.table_name')->where($map)->where("tid = ".$tid)->order('stjy_qishu_history.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $list = $data->join('LEFT JOIN stjy_table_name ON stjy_qishu_history.tid=stjy_table_name.xuhao')->join('LEFT JOIN stjy_admin ON stjy_qishu_history.uid=stjy_admin.id')->join('LEFT JOIN stjy_school ON stjy_qishu_history.sid=stjy_school.id')->field('stjy_qishu_history.*,stjy_admin.nicename,stjy_school.name as school_name,stjy_school.id as sid,stjy_table_name.name,stjy_table_name.table_name')->where($map)->order('stjy_qishu_history.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $this->assign('get',$_GET);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('tid',$tid);
