@@ -1576,5 +1576,6 @@ class TableImportAction extends CommonAction{
             $this->ajaxReturn($arr);
         }
     }
+
 }
 ?>

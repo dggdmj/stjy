@@ -41,6 +41,26 @@ class TableCountAction extends CommonAction{
                     'url' => url('TableCount/yejilist/tid/13'),
                     'icon' => 'list',
                 ),
+                array('name' => '老师确认营业额',
+                    'url' => url('TableCount/yejilist/tid/29'),
+                    'icon' => 'list',
+                ),
+                array('name' => '老师确认收入',
+                    'url' => url('TableCount/yejilist/tid/30'),
+                    'icon' => 'list',
+                ),
+                array('name' => '中心会员台账',
+                    'url' => url('TableCount/yejilist/tid/31'),
+                    'icon' => 'list',
+                ),
+                array('name' => '老带新台账',
+                    'url' => url('TableCount/yejilist/tid/32'),
+                    'icon' => 'list',
+                ),
+                array('name' => '中心学习卡额度',
+                    'url' => url('TableCount/yejilist/tid/33'),
+                    'icon' => 'list',
+                ),
             ),
            // 'add' => array(
            //     array('name' => '添加文章',
@@ -378,6 +398,33 @@ class TableCountAction extends CommonAction{
             $arr['status'] = false;
         }
         return $arr;
+    }
+
+    //老师确认营业额表详情
+    public function lsqryye_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+
+        /* 实时计算开始 */
+        $data = new \Admin\Action\CountJsmxAction();
+        $list = $data->getJsmxbData(201808,15);//获得统计数据
+        /* 实时计算结束 */
+
+        /* 查库开始 */
+        // $id = $this->getQishuId($qishu,$sid,11);
+        // if(!empty($id)){
+        //     $data = M('jsmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+     
+        // }
+        /* 查库结束 */
+        
+        $this->assign('list',$list);
+        
+        // dump($data);
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
     }
 
 

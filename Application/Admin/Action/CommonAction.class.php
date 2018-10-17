@@ -1955,7 +1955,7 @@ class CommonAction extends Action {
                           `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
                           KEY `IDX_suoshudd` (`suoshudd`) USING BTREE
-                        ) ENGINE=MyISAM AUTO_INCREMENT=40254 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                        ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
                 case 'sjjlb':
@@ -2008,7 +2008,7 @@ class CommonAction extends Action {
                           `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
                           KEY `IDX_suoshudd` (`suoshudd`)
-                        ) ENGINE=MyISAM AUTO_INCREMENT=1134716 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                        ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
                 case 'xyfyyjb':
@@ -2029,7 +2029,7 @@ class CommonAction extends Action {
                           `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
                           KEY `IDX_suoshudd` (`suoshudd`)
-                        ) ENGINE=MyISAM AUTO_INCREMENT=645728 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                        ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
                 case 'xyxxb':
@@ -2079,7 +2079,7 @@ class CommonAction extends Action {
                           `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
                           KEY `IDX_soushudd` (`suoshudd`)
-                        ) ENGINE=MyISAM AUTO_INCREMENT=2043723 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                        ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
                 case 'kxmxb':
@@ -2120,10 +2120,10 @@ class CommonAction extends Action {
                           `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
                           KEY `IDX_suoshudd` (`suoshudd`)
-                        ) ENGINE=MyISAM AUTO_INCREMENT=1633638 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                        ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
-                case 'stjy_bjxyxxb':
+                case 'bjxyxxb':
                     M('')->execute("CREATE TABLE `$niantable` (
                           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                           `xuehao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
@@ -2161,7 +2161,42 @@ class CommonAction extends Action {
                           `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
                           KEY `IDX_suoshudd` (`suoshudd`)
-                        ) ENGINE=MyISAM AUTO_INCREMENT=1633638 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                        ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
+                    );
+                    break;
+                case 'bjxxb':
+                    M('')->execute("CREATE TABLE `$niantable` (
+                          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                          `banjimc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级名称',
+                          `xiaoqumc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区名称',
+                          `kechengmc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '课程名称',
+                          `banjibq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级标签',
+                          `shangkels` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课老师',
+                          `banzhuren` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班主任',
+                          `morenjs` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '默认教室',
+                          `kaibanrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '开班日期',
+                          `dangqianjd` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '当前进度',
+                          `paikejsrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '排课结束日期',
+                          `jihuajyrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '计划结业日期',
+                          `shangkesj` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课时间',
+                          `nianji` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '年级',
+                          `kemu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '科目',
+                          `leixing` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '类型',
+                          `yuzhaors` double(11,2) DEFAULT NULL COMMENT '预招人数',
+                          `dangqianrs` double(11,2) DEFAULT NULL COMMENT '当前人数',
+                          `rubanlv` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '入班率',
+                          `jihuakc` double(11,2) DEFAULT NULL COMMENT '计划课次',
+                          `jifeidw` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '计费单位',
+                          `yipaikc` double(11,2) DEFAULT NULL COMMENT '已排课次',
+                          `yishangkc` double(11,2) DEFAULT NULL COMMENT '已上课次',
+                          `shangkejdys` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课进度（已上）',
+                          `shangkejdyp` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课进度（已排）',
+                          `jieyezt` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '结业状态',
+                          `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
+                          `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
+                          PRIMARY KEY (`id`),
+                          KEY `IDX_soushudd` (`suoshudd`)
+                        ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
                 default:

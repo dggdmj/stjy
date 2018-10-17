@@ -171,6 +171,36 @@ class MenuModel {
                         'url' => U('/TableCount/yejilist/tid/13'),
                         'order' => 6
                     ),
+                    array(
+                        'name' => '老师确认营业额',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/yejilist/tid/29'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '老师确认收入',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/yejilist/tid/30'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '中心会员台账',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/yejilist/tid/31'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '老带新台账',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/yejilist/tid/32'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '中心学习卡额度',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/yejilist/tid/33'),
+                        'order' => 6
+                    ),
                 )
             );
         $gongzi = array(
