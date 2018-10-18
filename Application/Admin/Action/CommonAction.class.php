@@ -2043,7 +2043,7 @@ class CommonAction extends Action {
                           `qingjiacs` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '请假次数',
                           `zhaoshengly` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '招生来源',
                           `laiyuanfx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '来源分校',
-                          `baomingrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '报名日期',
+                          `baomingrq` char(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '报名日期',
                           `xiuxuerq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '休学日期',
                           `tuixueriqi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退学日期',
                           `xiaoqu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区',
@@ -2060,7 +2060,7 @@ class CommonAction extends Action {
                           `beizhu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
                           `jifen` double(11,2) DEFAULT NULL COMMENT '积分',
                           `leixing` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '类型',
-                          `zhuangtai` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '状态',
+                          `zhuangtai` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '状态',
                           `xiuyuanyy` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '休学原因',
                           `yujifxrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '预计复学日期',
                           `tuixuerq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退学日期',
@@ -2074,7 +2074,10 @@ class CommonAction extends Action {
                           `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
                           `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
-                          KEY `IDX_soushudd` (`suoshudd`)
+                          KEY `IDX_soushudd` (`suoshudd`),
+                          KEY `IDX_zhuangtai` (`zhuangtai`),
+                          KEY `IDX_xuehao` (`xuehao`),
+                          KEY `IDX_baomingrq` (`baomingrq`)
                         ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
