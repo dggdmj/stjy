@@ -15,6 +15,13 @@ class CountSczylAction extends CommonAction {
         $where = 'suoshudd ='.$id.' and xuehao != "" and jiuduxx != "" and (zhuangtai = "在读" or zhuangtai = "休学")';// 下面$arr获取数据的查询条件
         $schools = M('xyxxb')->field('jiuduxx,nianji,count(*) as count')->where($where)->group('jiuduxx,nianji')->select();
 
+        //获取分校公立学校规模数
+        $guimo = M("gonglixx")->where("sid = $sid")->select();
+        $guimo_arr = array();
+        foreach ($guimo as $g){
+            $guimo_arr[$g['xuexiao']] = $g['xuexiaogms'];
+        }
+
         $data = array();
         $nianji_arr = array("幼儿园"=>"youeryuan","一年级"=>"yinianji","二年级"=>"ernianji","三年级"=>"sannianji","四年级"=>"sinianji","五年级"=>"wunianji","六年级"=>"liunianji","初一"=>"chuyi","初二"=>"chuer","初二以上"=>"chuerys");
 
@@ -56,8 +63,12 @@ class CountSczylAction extends CommonAction {
                 }
             }
             $arr[$i]['heji'] = $heji;
-            $arr[$i]['xuexiaogms'] = 100;
-            $arr[$i]['zhaoyoulv'] = $heji/$arr[$i]['xuexiaogms'];
+            $arr[$i]['xuexiaogms'] = $guimo_arr[$k]?$guimo_arr[$k]:0;
+            if($arr[$i]['xuexiaogms'] ==0){
+                $arr[$i]['zhaoyoulv'] = 0;
+            }else{
+                $arr[$i]['zhaoyoulv'] = round($heji/$arr[$i]['xuexiaogms'],4);
+            }
             $i++;
         }
 
