@@ -49,6 +49,10 @@ class SettingAction extends CommonAction{
                 'url' => url('Setting/shoufeilx'),
                 'icon' => 'list',
                 ),
+                array('name' => '公立学校管理',
+                    'url' => url('Setting/gonglixxlist'),
+                    'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -314,6 +318,131 @@ class SettingAction extends CommonAction{
     //班级编号管理清空
     public function banjibianhao_delete(){
         if(M('banjibianhao')->where("1 = 1")->delete()) {
+            $this->success('删除成功');
+        }else {
+            $this->error('删除失败');
+        }
+    }
+
+    //公立学校列表
+    public function gonglixxlist(){
+        $data = M('school'); // 实例化对象
+        $list = $data->order('id desc')->select();
+        $this->assign('list',$list);// 赋值数据集
+        $this->adminDisplay();
+    }
+
+    //公立学校管理
+    public function gonglixx(){
+        $sid = $_GET['id'];
+        $res = M()->query("SELECT COLUMN_NAME,COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'stjy_gonglixx' AND TABLE_SCHEMA = 'stjy'");
+        $fields = array();
+        foreach ($res as $k=>$v){
+            $fields[$v["column_name"]] = $v["column_comment"];
+        }
+        $list = M("gonglixx")->where("sid = $sid")->select();
+        $this->assign("list",$list);
+        $this->assign("fields",$fields);
+        $this->adminDisplay("gonglixx");
+    }
+
+    //公立学校管理导入
+    public function gonglixx_import(){
+        if (!empty($_FILES)) {
+            $sid = $_POST['sid'];
+            $school_name = M("school")->where("id = $sid")->getField("name");
+            M('gonglixx')->where("sid = $sid")->delete();// 清空数据
+            $newTemp = $this->getComment('gonglixx');// 获得公立学校表字段和备注一一对应的数组
+//            dump($newTemp);
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+
+            // 获取excel里面的所有字段
+            for($i=0;$i<$colsNum;$i++){// 从第一行获取所有字段
+                $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
+
+                // 如果取出的obj,则转为string
+                if(is_object($cell_val)){
+                    $cell_val= $cell_val->__toString();
+                }
+                // echo $cell_val.'<br>';
+                $ziduan[] = $cell_val;
+            }
+//            dump($ziduan);
+            // 从第2行开始,到最后一行
+            for($j=2;$j<=$highestRow;$j++){
+                for($i=0;$i<count($ziduan);$i++){
+                    if(array_key_exists($ziduan[$i], $newTemp)){
+                        $temp1 = $ziduan[$i];// 字段名称
+                        $temp2 = $newTemp[$temp1];// 数组newTemp里面字段名称对应的拼音,则数据库对应表的字段名称
+
+                        // 自动判断单元格是时间格式
+                        $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j);
+                        $value = $cell->getValue();
+
+                        // $cell->getCoordinate()当前单元格,如A1
+
+                        // 自动识别单元格为日期格式
+                        if($cell->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
+                            $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $cell->getCoordinate() )->getNumberFormat();
+                            $formatcode=$cellstyleformat->getFormatCode();
+                            if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
+                                $value=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
+                            }else{
+                                $value=\PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                            }
+                        }
+                        $data[$temp2] = $value;
+                        // $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+
+
+                        // 如果开头是'='的数据就是公式,使用getOldCalculatedValue()函数读取公式后的值
+                        if(substr($data[$temp2],0,1) == '='){
+                            $data[$temp2] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                        }
+                    }
+                }
+//                 dump($data);
+//                 die;
+                $data["sid"] = $sid;
+                $data["suoshuff"] = $school_name;
+                M('gonglixx')->add($data);
+            }
+            $this->success('导入成功！');//获得成功跳转的链接
+
+        }else{
+            $this->error('请先上传文件');
+        }
+    }
+
+    //公立学校管理清空
+    public function gonglixx_delete(){
+        $sid = $_POST['sid'];
+        if(M('gonglixx')->where("sid = $sid")->delete()) {
             $this->success('删除成功');
         }else {
             $this->error('删除失败');
