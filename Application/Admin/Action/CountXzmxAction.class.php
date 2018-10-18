@@ -10,6 +10,21 @@ class CountXzmxAction extends CommonAction {
      * @return array
      */
     public function getXzmxbData($qishu,$sid){
+        //本月的时间范围
+        $nianfen = substr($qishu,0,4);
+        $date = $this->getNextMonthDays($qishu."01");
+        $starttime = strtotime($qishu."01");
+        $endtime = strtotime($date[0]);
+        $xyxxb_id = $this->getQishuId($qishu,$sid,1);
+
+        // 查询本期班级学员信息表里的所有学员
+        $list = M("xyxxb_".$nianfen)->where("suoshudd = $xyxxb_id and xuehao != '' and UNIX_TIMESTAMP(`baomingrq`) >= $starttime and UNIX_TIMESTAMP(`baomingrq`) < $endtime ")->select();
+
+        dump($list);die;
+        return $res;
+    }
+
+    public function getXzmxbData_bak($qishu,$sid){
         // 查询本期班级学员信息表里的所有学员
         // $t1 = microtime(true);
         $data_bjxyxxb = $this->getData($qishu,$sid);
@@ -23,7 +38,7 @@ class CountXzmxAction extends CommonAction {
             M('sjzb')->where($_GET)->save($temp);// 更新数据总表
             // 删除生成数据
             $this->delAllScData($qishu,$sid);
-    
+
             $arr['status'] = false;
             $arr['info'] = '学员信息表和班级学员信息表中的校区名称和校区设置对应的名称不一致';
             $this->ajaxReturn($arr);
@@ -49,7 +64,7 @@ class CountXzmxAction extends CommonAction {
         }else{
             $data_sjjlb = [];
         }
-        
+
         // dump($data_sjjlb);die;
         unset($where);
         if(!empty(array_diff($data_sjjlb,$data_bjxyxxb))){
@@ -95,7 +110,7 @@ class CountXzmxAction extends CommonAction {
         }else{
             $res = array();
         }
-        
+
         return $res;
     }
 

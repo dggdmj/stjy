@@ -234,18 +234,18 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 
         /* 实时计算开始 */
-        // $data = new \Admin\Action\CountXzmxAction();
-        // $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+         $data = new \Admin\Action\CountXzmxAction();
+         $list = $data->getXzmxbData(201808,15);//获得统计数据
         /* 实时计算结束 */
 
         /* 查库开始 */
-        $id = $this->getQishuId($qishu,$sid,10);
-        if(!empty($id)){
-            $data = M('xzmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
-            $this->assign('list',$data);
-        }
+//        $id = $this->getQishuId($qishu,$sid,10);
+//        if(!empty($id)){
+//            $data = M('xzmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+//            $this->assign('list',$data);
+//        }
         
-        // dump($data);
+         dump($list);die;
         /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         

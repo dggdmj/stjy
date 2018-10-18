@@ -53,6 +53,7 @@ class CountJysjAction extends CommonAction {
         }
 
         //本月的时间范围
+        $nianfen = substr($qishu,0,4);
         $date = $this->getNextMonthDays($qishu."01");
         $starttime = strtotime($qishu."01");
         $endtime = strtotime($date[0]);
@@ -68,7 +69,7 @@ class CountJysjAction extends CommonAction {
         }
 
         $xyxxb_suoshudd = $this->getQishuId($qishu,$sid,1);
-        $arr['本月新生人数'] = M("xyxxb")->where("suoshudd = $xyxxb_suoshudd and xuehao != '' and UNIX_TIMESTAMP(`baomingrq`) >= $starttime and UNIX_TIMESTAMP(`baomingrq`) < $endtime ")->count();
+        $arr['本月新生人数'] = M("xyxxb_".$nianfen)->where("suoshudd = $xyxxb_suoshudd and xuehao != '' and UNIX_TIMESTAMP(`baomingrq`) >= $starttime and UNIX_TIMESTAMP(`baomingrq`) < $endtime ")->count();
         $arr['流失回来学生'] = 0;
 
         $zrjlb_suoshudd = $this->getQishuId($qishu,$sid,28);    //转入记录表
@@ -80,22 +81,6 @@ class CountJysjAction extends CommonAction {
         $arr['本月底在册学生人数'] = $arr['本月初在册学生人数'] + $arr['本月新生人数'] + $arr['其他学校转入'] + $arr['流失回来学生'] - $arr['本月流失学生人数'] - $arr['本月退费学生'] - $arr['转校学员'];
 
         return $arr;
-    }
-
-    //获得下个月的时间段
-    public function getNextMonthDays($date){
-        $timestamp=strtotime($date);
-        $arr=getdate($timestamp);
-        if($arr['mon'] == 12){
-            $year=$arr['year'] +1;
-            $month=$arr['mon'] -11;
-            $firstday=$year.'-0'.$month.'-01';
-            $lastday=date('Y-m-d',strtotime("$firstday +1 month -1 day"));
-        }else{
-            $firstday=date('Y-m-01',strtotime(date('Y',$timestamp).'-'.(date('m',$timestamp)+1).'-01'));
-            $lastday=date('Y-m-d',strtotime("$firstday +1 month -1 day"));
-        }
-        return array($firstday,$lastday);
     }
 
     //获得学生人数变动数据
