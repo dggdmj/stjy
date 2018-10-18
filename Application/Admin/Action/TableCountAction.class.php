@@ -195,11 +195,11 @@ class TableCountAction extends CommonAction{
         // // dump($list);
         // /* 查库结束 */
         // // dump($list);
-        // $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
         // $this->assign("kecheng",$kecheng);
         $this->assign("list",$list['list']);
-        // $this->assign('arr',$arr);
+        $this->assign('arr',$arr);
         $this->adminDisplay();
     }
 
