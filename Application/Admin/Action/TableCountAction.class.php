@@ -209,20 +209,21 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 
         /* 实时计算开始 */
-        // $data = new \Admin\Action\CountSczylAction();
-        // $list = $data->getSczylbData($qishu,$sid);//获得统计数据
+         $data = new \Admin\Action\CountSczylAction();
+         $list = $data->getSczylbData(201808,15);//获得统计数据
+//         dump($list);die;
         /* 实时计算结束 */
 
         /* 查库开始 */
-        $id = $this->getQishuId($qishu,$sid,9);
-        $data = M('sczylb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
-        $data[0]['xuhao'] = '';
+//        $id = $this->getQishuId($qishu,$sid,9);
+//        $data = M('sczylb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+//        $data[0]['xuhao'] = '';
         // dump($data);
         /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // $this->assign("data",$list['data']);
         // $this->assign("heji",$list['heji']);
-        $this->assign("list",$data);
+        $this->assign("list",$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}

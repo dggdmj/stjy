@@ -314,11 +314,6 @@ class CommonAction extends Action {
     public function getHeji($arr){
         $heji['youeryuan'] = 0;
         foreach($arr as $v){
-            // if($v['nianji'] == '小班' or $v['nianji'] == '中班' or $v['nianji'] == '大班'){
-            //     $heji['youeryuan'] += $v['count'];
-            // }else{
-            //     $heji[$this->encode($v['nianji'],'all')] = $v['count'];
-            // }
             switch($v['nianji']){
                 case '小班':
                 case '中班':

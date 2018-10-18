@@ -10,6 +10,61 @@ class CountSczylAction extends CommonAction {
      * @return array
      */
     public function getSczylbData($qishu,$sid){
+        $id = $this->getQishuId($qishu,$sid,1);
+
+        $where = 'suoshudd ='.$id.' and xuehao != "" and jiuduxx != "" and (zhuangtai = "在读" or zhuangtai = "休学")';// 下面$arr获取数据的查询条件
+        $schools = M('xyxxb')->field('jiuduxx,nianji,count(*) as count')->where($where)->group('jiuduxx,nianji')->select();
+
+        $data = array();
+        $nianji_arr = array("幼儿园"=>"youeryuan","一年级"=>"yinianji","二年级"=>"ernianji","三年级"=>"sannianji","四年级"=>"sinianji","五年级"=>"wunianji","六年级"=>"liunianji","初一"=>"chuyi","初二"=>"chuer","初二以上"=>"chuerys");
+
+        foreach($schools as $k=>$v){
+            switch($v['nianji']){
+                case '小班':
+                case '中班':
+                case '大班':
+                    $data[$v['jiuduxx']]['幼儿园'] += $v['count'];
+                    break;
+                case '一年级':
+                case '二年级':
+                case '三年级':
+                case '四年级':
+                case '五年级':
+                case '六年级':
+                case '初一':
+                case '初二':
+                    $data[$v['jiuduxx']][$v['nianji']] += $v['count'];
+                    break;
+                default:
+                    $data[$v['jiuduxx']][$v['初二以上']] += $v['count'];
+                    break;
+            }
+        }
+
+        $arr = array();
+        $i = 1;
+        foreach ($data as $k=>$v){
+            $arr[$i]['xuhao'] = $i;
+            $arr[$i]['gonglixx'] = $k;
+            $heji = 0;
+            foreach ($nianji_arr as $m=>$n){
+                if (array_key_exists($m,$v)){
+                    $arr[$i][$n] = $v[$m];
+                    $heji += $v[$m];
+                }else{
+                    $arr[$i][$n] = 0;
+                }
+            }
+            $arr[$i]['heji'] = $heji;
+            $arr[$i]['xuexiaogms'] = 100;
+            $arr[$i]['zhaoyoulv'] = $heji/$arr[$i]['xuexiaogms'];
+            $i++;
+        }
+
+        return $arr;
+    }
+
+    public function getSczylbData_bak($qishu,$sid){
         $where['qishu'] = $qishu;// 获取期数
         $where['sid'] = $sid;// 获取学校id
         $where['tid'] = 3;// 从班级学员信息表获取信息,它的tid是3
