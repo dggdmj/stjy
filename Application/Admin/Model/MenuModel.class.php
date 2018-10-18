@@ -349,6 +349,12 @@ class MenuModel {
                         'url' => U('Setting/manageZhanghu'),
                         'order' => 7
                     ),
+                    array(
+                        'name' => '收费类型',
+                        'icon' => 'user',
+                        'url' => U('Setting/shoufeilx'),
+                        'order' => 7
+                    ),
                 )
             );
         $member = array(

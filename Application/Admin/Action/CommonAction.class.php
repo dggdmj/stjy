@@ -2206,4 +2206,13 @@ class CommonAction extends Action {
             }
         }
     }
+
+    //获取订单id  根据期数，校区，表id
+    public function getOid($qishu,$sid,$tid){
+        $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
+        $where['tid'] = $tid;
+        $oid = M('qishu_history')->where($where)->getField('id');
+        return $oid;
+    }
 }
