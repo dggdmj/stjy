@@ -168,38 +168,38 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 
         /* 实时计算开始 */
-//	     $data = new \Admin\Action\CountScyjAction();
-//         $list = $data->getScyjbData($qishu,$sid);//获得统计数据
+	     $data = new \Admin\Action\CountScyjAction();
+        $list = $data->getScyjbData('201810','1');//获得统计数据
 //die;
         /* 实时计算结束 */
 
         /* 查库开始 */
-        $id = $this->getQishuId($qishu,$sid,8);
-        $data = M('scyjb')->where('suoshudd ='.$id)->order('xuhao')->select();
-        $list = array();
-        foreach($data as $v){
-            if(!empty($v['kechengyj'])){
-                $v['kechengyj'] = json_decode($v['kechengyj']);
-                foreach($v['kechengyj'] as $key=>$val){
-                    $v[$key] = $val;
-                }
-            }
-            unset($v['kechengyj']);
-            if($v['xingming'] == '合计'){
-                $heji = $v;
-            }else{
-                $list[] = $v;
-            }
-        }
-        array_push($list,$heji);
-        // dump($list);
-        /* 查库结束 */
-        // dump($list);
-        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
-        $this->assign("kecheng",$kecheng);
-        $this->assign("list",$list);
-        $this->assign('arr',$arr);
+        // $id = $this->getQishuId($qishu,$sid,8);
+        // $data = M('scyjb')->where('suoshudd ='.$id)->order('xuhao')->select();
+        // $list = array();
+        // foreach($data as $v){
+        //     if(!empty($v['kechengyj'])){
+        //         $v['kechengyj'] = json_decode($v['kechengyj']);
+        //         foreach($v['kechengyj'] as $key=>$val){
+        //             $v[$key] = $val;
+        //         }
+        //     }
+        //     unset($v['kechengyj']);
+        //     if($v['xingming'] == '合计'){
+        //         $heji = $v;
+        //     }else{
+        //         $list[] = $v;
+        //     }
+        // }
+        array_push($list['list'],$list['heji']);
+        // // dump($list);
+        // /* 查库结束 */
+        // // dump($list);
+        // $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        // $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
+        // $this->assign("kecheng",$kecheng);
+        $this->assign("list",$list['list']);
+        // $this->assign('arr',$arr);
         $this->adminDisplay();
     }
 
