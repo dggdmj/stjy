@@ -13,7 +13,7 @@ class CountXzmxAction extends CommonAction {
         // 查询本期班级学员信息表里的所有学员
         // $t1 = microtime(true);
         $data_bjxyxxb = $this->getData($qishu,$sid);
-        // dump($data_bjxyxxb);die;
+        dump($data_bjxyxxb);die;
         // 如果$data_bjxyxxb为空,基本可以断定是因为数据里面校区和校区设置里面校区名称不一致
         if(empty($data_bjxyxxb)){
             $temp['time_xz'] = date('Y-m-d H:i:s');

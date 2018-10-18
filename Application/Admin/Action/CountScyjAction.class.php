@@ -9,7 +9,28 @@ class CountScyjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getScyjbData($qishu,$sid){
+    public function getScyjbData($qishu='201806',$sid='1'){
+        $nianfen = substr($qishu,0,4);
+        $tid = 4;//收据记录表的id
+        $oid = $this->getOid($qishu,$sid,$tid);//获取订单id
+        //人事数组
+        $renshi_list = M('renshi as rs')
+                    ->field('rs.xingming')
+                    // ->join('')
+                    ->where("rs.bumen='市场部'")
+                    ->select();
+        //获取收据记录
+        $sjjlb_list = M('sjjlb_'.$nianfen)->field('yejigsr,chanpinlx,jingrentou')->where(" suoshudd = '$oid' and yejigsr != '' ")->select();
+        dump($oid);
+        dump($sjjlb_list);
+
+
+
+
+
+
+
+        exit;
         //按照期数和分校查询出结果，并以表名为键拼接成一个数组
         $Model = M();
         $tablelist = array();  //初始化要返回的数据
@@ -18,7 +39,7 @@ class CountScyjAction extends CommonAction {
         $where['tid'] = 4;// 从收据记录表获取信息,它的tid是4
         $suoshuid = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id
         //查询出所有数据
-        $list = $Model->query("select * from stjy_sjjlb where suoshudd = $suoshuid and `yejigsr` != '' order by `xuehao` ");
+        $list = $Model->query("select * from stjy_sjjlb where suoshudd = '$suoshuid' and `yejigsr` != '' order by `xuehao` ");
 
         //学习卡额度数据
         $xxk_id =  M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid =14")->getField('id');

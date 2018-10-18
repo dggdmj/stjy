@@ -292,13 +292,14 @@ class CommonAction extends Action {
 
     // 从学员信息表取数
     public function getData($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
         $where['qishu'] = $qishu;
         $where['sid'] = $sid;
         $where['tid'] = 1;
         $id = M('qishu_history')->where($where)->getField('id');
         $school = $this->getInfo($qishu,$sid)['school'];
         if(!empty($id)){
-            $stu = M('xyxxb')->where('suoshudd ='.$id.' and zhuangtai ="在读" and xiaoqu ="'.$school.'"')->field('xuehao')->select();
+            $stu = M('xyxxb_'.$nianfen)->where('suoshudd ='.$id.' and zhuangtai ="在读" and xiaoqu ="'.$school.'"')->field('xuehao')->select();
             // dump($stu);
             foreach($stu as $v){
                 $xueyuan[] = $v['xuehao'];
@@ -413,11 +414,11 @@ class CommonAction extends Action {
         }else{
             $gongjijin = 0;
         }
-        $need = 16 + $shebao + $gongjijin;
+        $need = 26 + $shebao + $gongjijin;
         // 若所有表格导入再进行操作
         $count = 0;
         $i = 1;
-        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*7=14,所有$count=14是左右表格都上传的状态
+        // 计算出所有上传表格的状态,表格上传状态为2,若所有表格上传,即是2*13=26,所有$count=26是左右表格都上传的状态
         foreach($data as $v){
            $count += $v;
            $i++;
@@ -2199,5 +2200,14 @@ class CommonAction extends Action {
                     break;
             }
         }
+    }
+
+    //获取订单id  根据期数，校区，表id
+    public function getOid($qishu,$sid,$tid){
+        $where['qishu'] = $qishu;
+        $where['sid'] = $sid;
+        $where['tid'] = $tid;
+        $oid = M('qishu_history')->where($where)->getField('id');
+        return $oid;
     }
 }

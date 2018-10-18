@@ -45,6 +45,10 @@ class SettingAction extends CommonAction{
                 'url' => url('Setting/manageZhanghu'),
                 'icon' => 'list',
                 ),
+                array('name' => '收费类型',
+                'url' => url('Setting/shoufeilx'),
+                'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -67,6 +71,9 @@ class SettingAction extends CommonAction{
                 ),
 				array('name' => '添加收款帐号',
                 'url' => url('Setting/manageZhanghu_add'),
+                ),
+                array('name' => '添加收费类型',
+                'url' => url('Setting/shoufeilx_add'),
                 ),
             ),
         );
@@ -713,6 +720,45 @@ class SettingAction extends CommonAction{
         $id = $_GET['id'];
         $this->list=D('account_detail')->where(array('id'=>$id))->find();
         $this->adminDisplay('manageZhanghu_add');
+    }
+
+    //收费类型
+    public function shoufeilx(){
+        $list = M('shoufeilx')->order('id desc')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay('shoufeilx');
+    }
+
+    //添加收费类型，修改
+    public function shoufeilx_add(){
+        if (IS_POST){
+            $id = I('post.id');
+            $data['leixing'] = I('post.leixing');
+            $data['is_jiesuan'] = I('post.is_jiesuan');
+            if (!$data['leixing']){
+                $this->error('请填写收费类型');
+            }
+            if ($id){
+                $res = M('shoufeilx')->where(array('id'=>$id))->save($data);
+                if ($res){
+                    $this->success('添加收费类型成功');
+                }else{
+                    $this->error('添加收费类型失败');
+                }
+            }else{
+                $res = M('shoufeilx')->add($data);
+                if ($res){
+                    $this->success('修改收费类型成功',U('shoufeilx'));
+                }else{
+                    $this->error('修改收费类型失败');
+                }
+            }
+            exit;
+        }
+        $id = I('id');
+        $info =  M('shoufeilx')->where(array('id'=>$id))->find();
+        $this->assign('info',$info);
+        $this->adminDisplay();
     }
 	
 }
