@@ -41,29 +41,67 @@ class CountJysjAction extends CommonAction {
 
     //获得学生人数变动数据
     public function getxsrsbd($qishu,$sid){
+        $arr = array('本月初在册学生人数'=>0,'本月新生人数'=>0,'其他学校转入'=>0,'流失回来学生'=>0,'本月流失学生人数'=>0,'本月退费学生'=>0,'转校学员'=>0,'本月底在册学生人数'=>0);
+        $fmonth = $this->getMonth($qishu);  //获得上月期数
+        $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
+        if(!empty($xyxxb_prev_id)){
+            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
+            $res = M('xyxxb')->field("xuehao")->where($where)->group("xuehao")->select();
+            $arr['本月初在册学生人数'] = count($res);
+        }else{
+            $arr['本月初在册学生人数'] = 0;
+        }
+
+        //本月的时间范围
+        $date = $this->getNextMonthDays($qishu."01");
+        $starttime = strtotime($qishu."01");
+        $endtime = strtotime($date[0]);
+
+        $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
+        if($chushirenshu_def != 0){
+            $arr['本月初在册学生人数'] = $chushirenshu_def;
+        }else{
+            //从上一期经营数据表中查
+//            $id = $this->getQishuId($qishu,$sid,12);
+//            $arr['本月初在册学生人数'] = M('xsrsbdb')->where('suoshudd ='.$id)->getField('renshu');
+            $arr['本月初在册学生人数'] = $arr['本月初在册学生人数']?$arr['本月初在册学生人数']:0;
+        }
+
+        $xyxxb_suoshudd = $this->getQishuId($qishu,$sid,1);
+        $arr['本月新生人数'] = M("xyxxb")->where("suoshudd = $xyxxb_suoshudd and xuehao != '' and UNIX_TIMESTAMP(`baomingrq`) >= $starttime and UNIX_TIMESTAMP(`baomingrq`) < $endtime ")->count();
+        $arr['流失回来学生'] = 0;
+
+        $zrjlb_suoshudd = $this->getQishuId($qishu,$sid,28);    //转入记录表
+        $arr['其他学校转入'] = M("zrjlb")->where("suoshudd = $zrjlb_suoshudd and UNIX_TIMESTAMP(`zhuangxiaosj`) >= $starttime and UNIX_TIMESTAMP(`zhuangxiaosj`) < $endtime ")->count();
+
+        $zcjlb_suoshudd = $this->getQishuId($qishu,$sid,27);    //转出记录表
+        $arr['转校学员'] = M("zcjlb")->where("suoshudd = $zcjlb_suoshudd and UNIX_TIMESTAMP(`zhuangxiaosj`) >= $starttime and UNIX_TIMESTAMP(`zhuangxiaosj`) < $endtime ")->count();
+
+        $arr['本月底在册学生人数'] = $arr['本月初在册学生人数'] + $arr['本月新生人数'] + $arr['其他学校转入'] + $arr['流失回来学生'] - $arr['本月流失学生人数'] - $arr['本月退费学生'] - $arr['转校学员'];
+
+        return $arr;
+    }
+
+    //获得下个月的时间段
+    public function getNextMonthDays($date){
+        $timestamp=strtotime($date);
+        $arr=getdate($timestamp);
+        if($arr['mon'] == 12){
+            $year=$arr['year'] +1;
+            $month=$arr['mon'] -11;
+            $firstday=$year.'-0'.$month.'-01';
+            $lastday=date('Y-m-d',strtotime("$firstday +1 month -1 day"));
+        }else{
+            $firstday=date('Y-m-01',strtotime(date('Y',$timestamp).'-'.(date('m',$timestamp)+1).'-01'));
+            $lastday=date('Y-m-d',strtotime("$firstday +1 month -1 day"));
+        }
+        return array($firstday,$lastday);
+    }
+
+    //获得学生人数变动数据
+    public function getxsrsbd_bak($qishu,$sid){
         // $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
         $arr = array('本月初在册学生人数'=>0,'本月新生人数'=>0,'其他学校转入'=>0,'流失回来学生'=>0,'本月流失学生人数'=>0,'本月退费学生'=>0,'转校学员'=>0,'本月新生人数'=>0,'本月底在册学生人数'=>0);
-        // //本月初在册学生人数，如果初始化数据里又，就从初始化数据里取，否则从上一期里取
-        // $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
-        // if($chushirenshu_def != 0){
-        //     $arr['本月初在册学生人数'] = $chushirenshu_def; //
-        // }else{
-        //     //这里取上一期的数据
-        //     $arr['本月初在册学生人数'] = 0;
-        // }
-        // $total = $arr['本月初在册学生人数'];
-
-
-        //减少明细无误后开启
-        // $fmonth = $this->getMonth($qishu);
-        // $id_fmonth = $this->getQishuId($fmonth,$sid,1);
-        // $id = $this->getQishuId($qishu,$sid,1);
-        // if(!empty($id_fmonth)){
-        //     $res = M('xyxxb')->where('suoshudd ='.$id.' and zhuangtai="在读"')->select();
-        //     $arr['本月初在册学生人数'] = count($res);
-        // }else{
-        //     $arr['本月初在册学生人数'] = 0;
-        // }
 
         $fmonth = $this->getMonth($qishu);
         $id_fmonth = $this->getQishuId($fmonth,$sid,3);
@@ -86,14 +124,11 @@ class CountJysjAction extends CommonAction {
         $total = $arr['本月初在册学生人数'];
 
         //判断新增明细
-        // $xz = new \Admin\Action\CountXzmxAction();
-        // $xzinfo = $xz->getXzmxbData($qishu,$sid);
         $xz_ssid = M('qishu_history')->where("qishu = '".$qishu."' and sid = $sid and tid = 10")->getField('id');   //获得新增明细的所属id
         $xzinfo = array();
         if(!empty($xz_ssid)){
             $xzinfo = M("xzmxb")->where("suoshudd = ".$xz_ssid)->select();
         }
-        $rentou_arr = array();// 貌似没用
         if(!empty($xzinfo)){
             foreach ($xzinfo as $k => $v){
                 if($v['xinzenglx'] == '新生'){
