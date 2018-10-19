@@ -2025,7 +2025,7 @@ class CommonAction extends Action {
                 case 'xyfyyjb':
                     M('')->execute("CREATE TABLE `$niantable` (
                           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                          `xuehao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
+                          `xuehao` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
                           `xingming` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
                           `dianhua` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '电话',
                           `xiaoqu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区',
@@ -2039,14 +2039,15 @@ class CommonAction extends Action {
                           `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
                           `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
-                          KEY `IDX_suoshudd` (`suoshudd`)
+                          KEY `IDX_suoshudd` (`suoshudd`),
+                          KEY `IDX_xuehao` (`xuehao`)
                         ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
                 case 'xyxxb':
                     M('')->execute("CREATE TABLE `$niantable` (
                           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                          `xuehao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
+                          `xuehao` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
                           `xingming` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
                           `xingbie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '性别',
                           `shishengxin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '师生信',
@@ -2092,7 +2093,8 @@ class CommonAction extends Action {
                           KEY `IDX_soushudd` (`suoshudd`),
                           KEY `IDX_zhuangtai` (`zhuangtai`),
                           KEY `IDX_xuehao` (`xuehao`),
-                          KEY `IDX_baomingrq` (`baomingrq`)
+                          KEY `IDX_baomingrq` (`baomingrq`),
+                          KEY `IDX_xuehao` (`xuehao`)
                         ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
