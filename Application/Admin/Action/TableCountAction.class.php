@@ -245,10 +245,10 @@ class TableCountAction extends CommonAction{
 //            $this->assign('list',$data);
 //        }
         
-         dump($list);die;
+//         dump($list);die;
         /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        
+        $this->assign('list',$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
