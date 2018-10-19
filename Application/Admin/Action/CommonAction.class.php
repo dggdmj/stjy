@@ -2093,8 +2093,7 @@ class CommonAction extends Action {
                           KEY `IDX_soushudd` (`suoshudd`),
                           KEY `IDX_zhuangtai` (`zhuangtai`),
                           KEY `IDX_xuehao` (`xuehao`),
-                          KEY `IDX_baomingrq` (`baomingrq`),
-                          KEY `IDX_xuehao` (`xuehao`)
+                          KEY `IDX_baomingrq` (`baomingrq`)
                         ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
