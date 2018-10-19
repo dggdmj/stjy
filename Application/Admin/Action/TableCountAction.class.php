@@ -56,11 +56,7 @@ class TableCountAction extends CommonAction{
                 array('name' => '老带新台账',
                     'url' => url('TableCount/yejilist/tid/32'),
                     'icon' => 'list',
-                ),
-                array('name' => '中心学习卡额度',
-                    'url' => url('TableCount/yejilist/tid/33'),
-                    'icon' => 'list',
-                ),
+                )
             ),
            // 'add' => array(
            //     array('name' => '添加文章',

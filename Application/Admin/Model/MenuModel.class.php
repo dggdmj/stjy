@@ -194,13 +194,7 @@ class MenuModel {
                         'icon' => 'file',
                         'url' => U('/TableCount/yejilist/tid/32'),
                         'order' => 6
-                    ),
-                    array(
-                        'name' => '中心学习卡额度',
-                        'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/33'),
-                        'order' => 6
-                    ),
+                    )
                 )
             );
         $gongzi = array(
