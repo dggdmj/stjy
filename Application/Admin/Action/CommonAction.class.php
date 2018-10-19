@@ -2140,41 +2140,40 @@ class CommonAction extends Action {
                 case 'bjxyxxb':
                     M('')->execute("CREATE TABLE `$niantable` (
                           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                          `xuehao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
-                          `xingming` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
-                          `nianji` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '年级',
-                          `banxing` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班型',
-                          `kemu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '科目',
-                          `kecheng` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '课程',
-                          `banji` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级',
-                          `xiaoqumc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区名称',
-                          `shangkels` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课老师',
-                          `zhujiao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '助教',
-                          `shangkenr` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课内容',
-                          `xueguanshi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学管师',
-                          `banzhuren` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班主任',
-                          `zaizhilx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '在职类型',
-                          `laoshijb` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '老师级别',
-                          `shangkesj` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课时间',
-                          `shangkesc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课时长',
-                          `jingduxs` double(11,2) DEFAULT NULL COMMENT '精读小时',
-                          `fanduxs` double(11,2) DEFAULT NULL COMMENT '泛读小时',
-                          `waijiaoxs` double(11,2) DEFAULT NULL COMMENT '外教小时',
-                          `jingduls` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '精读老师',
-                          `fanduls` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '泛读老师',
-                          `waijiaols` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '外教老师',
-                          `shuliang` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '数量',
-                          `kexiaoje` double(11,2) DEFAULT NULL COMMENT '课消金额',
-                          `shifoucq` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '是否出勤',
-                          `qianfeije` double(11,2) DEFAULT NULL COMMENT '欠费金额',
-                          `zhekouje` double(11,2) DEFAULT NULL COMMENT '折扣金额',
-                          `shoufeirq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收费日期',
-                          `shoujuhao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收据号',
-                          `shoufeixq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收费校区',
+                          `kecheng` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '课程',
+                          `banji` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级',
+                          `xiaoqu` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区',
+                          `shangkesj` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课时间',
+                          `shangkels` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课老师',
+                          `xuehao` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
+                          `xingming` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
+                          `jiaoshi` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '教室',
+                          `banzhuren` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班主任',
+                          `xingbie` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '性别',
+                          `zhaoshengly` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '招生来源',
+                          `qqnum` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'QQ号码',
+                          `nianji` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '年级',
+                          `qiduan` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '期段',
+                          `kechengnj` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '课程年级',
+                          `kemu` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '科目',
+                          `leixing` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '类型',
+                          `nianfen` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '年份',
+                          `dianhua` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '电话',
+                          `guanzhuwx` double(11,2) DEFAULT NULL COMMENT '关注微信',
+                          `shoujuhao` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收据号',
+                          `jiaofeisj` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '交费时间',
+                          `beizhu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+                          `gonglixx` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '公立学校',
+                          `fuqindh` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '父亲电话',
+                          `muqindh` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '母亲电话',
+                          `zaidubj` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '在读班级',
                           `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
                           `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
-                          KEY `IDX_suoshudd` (`suoshudd`)
+                          KEY `IDX_soushudd` (`suoshudd`),
+                          KEY `IDX_xuehao` (`xuehao`) USING BTREE,
+                          KEY `IDX_banji` (`banji`),
+                          KEY `IDX_shoujihao` (`shoujuhao`)
                         ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
                     );
                     break;
@@ -2218,14 +2217,5 @@ class CommonAction extends Action {
                     break;
             }
         }
-    }
-
-    //获取订单id  根据期数，校区，表id
-    public function getOid($qishu,$sid,$tid){
-        $where['qishu'] = $qishu;
-        $where['sid'] = $sid;
-        $where['tid'] = $tid;
-        $oid = M('qishu_history')->where($where)->getField('id');
-        return $oid;
     }
 }

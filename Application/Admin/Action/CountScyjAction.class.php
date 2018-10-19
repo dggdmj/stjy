@@ -12,7 +12,7 @@ class CountScyjAction extends CommonAction {
     public function getScyjbData($qishu='201806',$sid='1'){
         $nianfen = substr($qishu,0,4);
         $tid = 4;//收据记录表的id
-        $suoshuid = $this->getOid($qishu,$sid,$tid);//获取订单id
+        $suoshuid = $this->getQishuId($qishu,$sid,$tid);//获取订单id
         //人事数组
         // $renshi_list = M('renshi as rs')
         //             ->field('rs.xingming')
