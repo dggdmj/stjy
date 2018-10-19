@@ -53,6 +53,10 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/gonglixxlist'),
                     'icon' => 'list',
                 ),
+                array('name' => '分校课程管理',
+                    'url' => url('Setting/fenxiaokcgl'),
+                    'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -890,5 +894,64 @@ class SettingAction extends CommonAction{
         $this->adminDisplay();
     }
 	
+    //分校课程管理
+    public function fenxiaokcgl(){
+        $list = M('school')->field('id,name')->order('id desc')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //分校课程管理导入
+    public function fenxiaokcgl_add(){
+        if(!empty($_FILES)){
+            if (!$_POST['sid']){
+                $this->error('请选择分校');exit;
+            }
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            M('fxkcgl')->where(array('sid'=>$_POST['sid']))->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($i=2;$i<$highestRow;$i++){
+                 $data['chanpinlx'] = $sheet->getCell('A'.$i)->getValue();
+                 $data['sid'] = $_POST['sid'];
+                 $data['daorurq'] = date('Y-m-d H:i:s',time());
+                 if ($data['chanpinlx'] != ''){
+                    M('fxkcgl')->add($data);
+                 }
+                 unset($data);
+            }
+            $this->success('导入成功',U('fenxiaokcgl_add?id='.$_POST['sid']));
+            exit;
+        }
+        $id = I('id');
+        $list = M('fxkcgl')->field('id,chanpinlx')->where(array('sid'=>$id))->select();
+        $fenxiaomc = M('school')->where(array('id'=>$id))->getField('name');
+        $this->assign('fenxiaomc',$fenxiaomc);
+        $this->assign('list',$list);
+        $this->assign('id',$id);
+        $this->adminDisplay();
+    }
 }
 ?>

@@ -20,7 +20,9 @@ class CountZxldxtzAction extends CommonAction {
         $info['nianfen'] = $time_arr['0'].'年';
         $info['yuefen'] = $time_arr['1'].'月';
         $info['shoujuhao'] = $shoujuhao;
-        $info['laohuiyxh'] = M('xyxxb_'.$nian)->where(" shoujuhao='$shoujuhao' and xingming = '".$info['laohuiyxh']."'")->getField('xuehao');
+        if ($info['laohuiyxh']){
+            $info['laohuiyxh'] = M('xyxxb_'.$nian)->where(" shoujuhao='$shoujuhao' and xingming = '".$info['laohuiyxh']."'")->getField('xuehao');
+        }
         return $info;
     }
 

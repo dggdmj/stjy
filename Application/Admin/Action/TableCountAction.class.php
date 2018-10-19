@@ -165,7 +165,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
 	     $data = new \Admin\Action\CountScyjAction();
-        $list = $data->getScyjbData('201810','1');//获得统计数据
+        $list = $data->getScyjData('201810','1');//获得统计数据
 //die;
         /* 实时计算结束 */
 
@@ -187,14 +187,14 @@ class TableCountAction extends CommonAction{
         //         $list[] = $v;
         //     }
         // }
-        array_push($list['list'],$list['heji']);
+        // array_push($list['list'],$list['heji']);
         // // dump($list);
-        // /* 查库结束 */
+        // /* 查库结束 */ 
         // // dump($list);
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
         // $this->assign("kecheng",$kecheng);
-        $this->assign("list",$list['list']);
+        $this->assign("list",$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
     }

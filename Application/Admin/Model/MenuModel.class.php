@@ -355,6 +355,12 @@ class MenuModel {
                         'url' => U('Setting/gonglixxlist'),
                         'order' => 8
                     ),
+                    array(
+                        'name' => '分校课程管理',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/fenxiaokcgl'),
+                        'order' => 8
+                    ),
                 )
             );
         $member = array(
