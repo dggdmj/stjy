@@ -54,13 +54,36 @@ class CountScyjAction extends CommonAction {
             }
         }
 
+        //判断语句
+        $qishu_data['sid'] =$sid;
+        $qishu_data['qishu'] =$qishu;
+        $qishu_data['tid'] =8;
+
+        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
+        if(!$qishu_id){
+            $qishu_data['daorusj'] = date('Y-m-d H:i:s',time());
+            $qishu_id = M('qishu_history')->add($qishu_data);
+        }else{
+            $data = M('scyjb')->where(array('suoshudd'=>$qishu_id))->select();
+            foreach($data as &$val){
+                $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
+                foreach($val['fujiaxx'] as $k=>$v){
+                    $val[$k] = $v;
+                }
+                unset($val['fujiaxx']);
+            }
+             $data = $this->heji($data);
+             return $data;
+        }
+
+        $xxkedb_oid = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>14))->getField('id');
         //从组数组并且计算净人头
         $newList = array();
 
         foreach($renming as $key=>$vo){
 
             $newList[$key]['xingming'] = $vo;
-            $newList[$key]['edu'] = M('xxkedb')->where("suoshudd='$suoshuid' and xingming='$vo'")->getField('edu');
+            $newList[$key]['edu'] = M('xxkedb')->where("suoshudd='$xxkedb_oid' and xingming='$vo'")->getField('edu');
             //定义为0元
             $newList[$key]['jingrentou'] = 0;
             $newList[$key]['yiqims'] = 0;
@@ -230,8 +253,22 @@ class CountScyjAction extends CommonAction {
                         }
                     }
                 }
-
             }
+            
+            //写进数据库
+            $temp = $newList[$key];
+            $fujiaxx = [ 
+                            'liangdianwnpdhy'=>$newList[$key]['liangdianwnpdhy'],
+                            'maiyinsyn'=>$newList[$key]['maiyinsyn'],
+                            'yiniangjhy'=>$newList[$key]['yiniangjhy'],
+                            'jiubayyqms'=>$newList[$key]['jiubayyqms'],
+                            'sannianpdhy'=>$newList[$key]['sannianpdhy']
+                        ];
+            $temp['fujiaxx'] = json_encode($fujiaxx);
+            $temp['suoshudd'] = $qishu_id;
+            unset($temp[$key]['liangdianwnpdhy'],$temp[$key]['maiyinsyn'],$temp[$key]['yiniangjhy'],$temp[$key]['jiubayyqms'],$temp[$key]['sannianpdhy']);
+            M('scyjb')->add($temp);
+
         }
         $data = $this->heji($newList);
         return $data;

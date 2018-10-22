@@ -18,6 +18,9 @@ class CountLsqryyeAction extends CommonAction {
                     ->where(" qh.qishu= $qishu and qh.sid=$sid ")
                     ->select();
 
+        //获取收据记录表的订单id
+        $suoshudd = $this->getQishuId($qishu,$sid,4);
+
         //获取本月最后一天
         $qishu_time = substr($qishu,0,4).'-'.substr($qishu,4,2);
         // 最后一天
@@ -39,30 +42,84 @@ class CountLsqryyeAction extends CommonAction {
         $kbmxb = $this->checkFenbiao($oid,'kbmxb');
         $sjjlb = $this->checkFenbiao($oid,'sjjlb');
 
-        $zonge = M($xyxxb.' as sx')
+        //查营业额
+        $zonge = M($sjjlb.' as ss')
+                    ->join('stjy_'.$xyxxb.' as sx on ss.xuehao=sx.xuehao')
                     ->join('stjy_'.$bjxyxxb.' as sb on sb.xuehao=sx.xuehao')
                     ->join('stjy_'.$kbmxb.' as sk on sk.banjimc=sb.banji')
-                    ->join('stjy_'.$sjjlb.' as ss on ss.xuehao=sx.xuehao')
-                    ->join('stjy_banjibianhao as bb on bb.bianma=sb.banji')
-                    ->field('ss.jiaofeije,sk.jingjiangls')
-                    ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' ")
-                    ->limit(10)
+                    ->field('ss.jiaofeije,sk.jingjiangls,sb.banji,sb.banji')
+                    ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd'")
                     ->select();
 
-        dump($zonge);exit;
-        $where['qishu'] = $qishu;// 获取期数
-        $where['sid'] = $sid;// 获取学校id
-        // 获取收费记录表当前期数的数据
-        $where['tid'] = 4;// 从收据记录表信息表获取信息,它的tid是4
-        $id = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id,也就是bjxyxxb里面的suoshudd的订单号
+        //班级编码
+        $banjibm = M('banjibianhao')->field('jingdujb,bumen')->select();
+        foreach($banjibm as $v){
+            $bumen[ $v['jingdujb'] ] =  $v['bumen'];
+        }
+        //统计营业额
+        foreach($list as &$val){
+            $val['yingyee1'] = 0;
+            $val['yingyee2'] = 0;
+            foreach($zonge as $v){
+                $bianma = substr($v['banji'],0,3);
+                $v['bumen'] = $bumen[ $bianma ];
+                if($v['jingjiangls'] == $val['xingming']){
+                    if($v['bumen'] == '小学部'){
+                        $val['yingyee1'] += $v['jiaofeije'];
+                    }
+                    if($v['bumen'] == '初中部'){
+                        $val['yingyee2'] += $v['jiaofeije'];
+                    }
+                }
+            }
+        }
+        $newList = array();
+        //组成最后的数组
+        foreach($list as $vo){
+            //小学部
+            $data['yuefen'] = $vo['yuefen'];
+            $data['fenxiao'] = $vo['school_name'];
+            $data['laoshi'] = $vo['xingming'];
+            $data['xuexikzed'] = $vo['edu'];
+            $data['shichangbyj'] = $vo['hejiyye'];
+            $data['jiaoxuebxxk'] = $vo['jxbxxk'] > 0 ? $vo['jxbxxk'] : 0;
+            $data['banxing'] = '小学部';
+            $data['yingyee'] = $vo['yingyee1'];
+            $data['yanzheng'] = '-';
+            $data['chuxiancs'] = 1;
+            $newList[] = $data;
+            //初中部
+            $data['yuefen'] = $vo['yuefen'];
+            $data['fenxiao'] = $vo['school_name'];
+            $data['laoshi'] = $vo['xingming'];
+            $data['xuexikzed'] = 0;
+            $data['shichangbyj'] = 0;
+            $data['jiaoxuebxxk'] = 0;
+            $data['banxing'] = '初中部';
+            $data['yingyee'] = $vo['yingyee2'];
+            $data['yanzheng'] = '-';
+            $data['chuxiancs'] = 2;
+            $newList[] = $data;
+        }
+        $newList = $this->heji($newList);
+        return $newList;
+    }
 
-        // ------------以下所有数据都根据suoshudd的id号查询出------------
-        // $heji是每个年级对应的合计数
-        // $data是每个公立学校对应的每个年级的合计数
-        // $res是返回的数据,$res = ['data'=>$data,'heji'=>$heji];
-
-
-        // return $res;
+    //合计
+    public function heji($list=array()){
+        if (!$list){
+            return $list;
+        }
+        $heji = array();
+        foreach($list as $val){
+            foreach($val as $key=>$v){
+                if ($key == 'shichangbyj' || $key == 'jiaoxuebxxk' || $key == 'yingyee'){
+                    $heji[$key] += $v;
+                }
+            }
+        }
+        array_push($list,$heji);
+        return $list;
     }
 
 }

@@ -404,7 +404,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
         $data = new \Admin\Action\CountLsqryyeAction();
-        $list = $data->getYjData(201806,43);//获得统计数据
+        $list = $data->getYjData('201810','1');//获得统计数据
         /* 实时计算结束 */
 
         /* 查库开始 */
