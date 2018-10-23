@@ -20,22 +20,15 @@ class CountXzmxAction extends CommonAction {
 //        $list = M("xyxxb_".$nianfen)->field("xuehao,xingming")->where("suoshudd = $xyxxb_id and xuehao != '' and UNIX_TIMESTAMP(`baomingrq`) >= $starttime and UNIX_TIMESTAMP(`baomingrq`) < $endtime ")->select();
 
         $list = M("xyxxb_".$nianfen)->alias("xx")
-            ->field('xx.xuehao,stjy_bjxyxxb.gonglixx,xx.nianji,xx.xingming,xx.xiaoqu,stjy_bjxyxxb.banji,temp.yejigsr,xx.zhaoshengly,xx.shoujihm,sum(yj.shengyugmsl) as shuliang,yj.danwei,sum(yj.feiyong) as feiyong,stjy_kbmxb.kaibanrq,stjy_kbmxb.jiebanrq,stjy_kbmxb.jingjiangls,stjy_kbmxb.fanduls')
+            ->field('xx.xuehao,xyx.gonglixx,xx.nianji,xx.xingming,xx.xiaoqu,xyx.banji,temp.yejigsr,xx.zhaoshengly,xx.shoujihm,sum(yj.shengyugmsl) as shuliang,yj.danwei,sum(yj.feiyong) as feiyong,mx.kaibanrq,mx.jiebanrq,mx.jingjiangls,mx.fanduls')
             ->join('LEFT JOIN stjy_xyfyyjb_'.$nianfen.' as yj on xx.xuehao=yj.xuehao')
             ->join('LEFT JOIN (select yejigsr,xuehao from stjy_sjjlb_'.$nianfen.' as sj where sj.yejigsr != "") as temp on xx.xuehao=temp.xuehao')
-//            ->join('LEFT JOIN stjy_bjxyxxbb_'.$nianfen.' on xx.xuehao=stjy_bjxyxxb.xuehao')
-//            ->join('LEFT JOIN stjy_kbmxb on stjy_bjxyxxb.banji=stjy_kbmxb.banjimc')
+            ->join('LEFT JOIN stjy_bjxyxxb_'.$nianfen.' as xyx on xx.xuehao=xyx.xuehao')
+            ->join('LEFT JOIN stjy_kbmxb_'.$nianfen.' as mx on xyx.banji=mx.banjimc')
             ->where("xx.suoshudd = $xyxxb_id and xx.xuehao != '' and UNIX_TIMESTAMP(`baomingrq`) >= $starttime and UNIX_TIMESTAMP(`baomingrq`) < $endtime ")
             ->group('xx.xuehao')
             ->select();
-
-//        $arr = array();
-//        foreach ($list as $k=>$v)
-//        {
-//
-//        }
-
-        dump($list);die;
+//        $res = $this->doList($list,$qishu,$sid);
         return $list;
     }
 
