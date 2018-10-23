@@ -75,8 +75,10 @@ class CountLsqryyeAction extends CommonAction {
         }
         $newList = array();
         //组成最后的数组
-        foreach($list as $vo){
+        foreach($list as $ko=>$vo){
+            $ko = $ko*2;
             //小学部
+            $data['xuhao']=$ko;
             $data['yuefen'] = $vo['yuefen'];
             $data['fenxiao'] = $vo['school_name'];
             $data['laoshi'] = $vo['xingming'];
@@ -89,6 +91,7 @@ class CountLsqryyeAction extends CommonAction {
             $data['chuxiancs'] = 1;
             $newList[] = $data;
             //初中部
+            $data['xuhao']=$ko+1;
             $data['yuefen'] = $vo['yuefen'];
             $data['fenxiao'] = $vo['school_name'];
             $data['laoshi'] = $vo['xingming'];

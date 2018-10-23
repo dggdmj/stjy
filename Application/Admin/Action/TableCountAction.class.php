@@ -424,6 +424,25 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
+    //老师确认收入
+    public function lsqrsr_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+
+        /* 实时计算开始 */
+        $data = new \Admin\Action\CountLsqrsrAction();
+        $list = $data->getYjData('201810','1');//获得统计数据
+        /* 实时计算结束 */
+
+        $this->assign('list',$list);
+        
+        // dump($data);
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
+
 
 }
 ?>
