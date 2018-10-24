@@ -2,6 +2,7 @@
 namespace Admin\Action;
 use Think\Action;
 class CountJsmxAction extends CommonAction {
+
     /**
      * 获得统计数据
      *
@@ -10,6 +11,37 @@ class CountJsmxAction extends CommonAction {
      * @return array
      */
     public function getJsmxbData($qishu,$sid){
+        $yuefen = substr($qishu,4,2).'月';
+        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>11))->getField('id');//判断是否有生成历史
+        if ($qishu_id){
+            $list = M('jsmxb')->where(array('suoshudd'=>$qishu_id))->select();
+            return $list;
+        }else{
+            $qishu_id = $this->insertQishuHistory(11,$qishu,$sid);
+        }
+
+        //获取本月最后一天和第一天
+        $qishu_time = substr($qishu,0,4).'-'.substr($qishu,4,2);
+        $lastday = date('Y-m-d', strtotime("$qishu_time +1 month -1 day"));
+        $firstday = date('Y-m-d', strtotime("$qishu_time"));
+        //查订单id
+        $xyxxb_oid = $this->getQishuId($qishu,$sid,1);
+        $xyxxb = $this->checkFenbiao($xyxxb_oid,'xyxxb');
+        $list = M($xyxxb)
+            ->field('xuehao,xingming,xingbie,xiaoqu as fenxiao')
+            ->where("tuixuerq >= '$firstday' and tuixuerq <= '$lastday' ")
+            ->select();
+        foreach($list as $key=>&$val){
+            $val['xuhao'] = $key+1;
+            $val['suoshudd'] = $qishu_id;
+            $val['yuefen'] = $yuefen;
+            M('jsmxb')->add($val);
+        }
+        return $list;
+    }
+
+
+    public function getJsmxbData_bak($qishu,$sid){
         // // 获取上一月的学号数组
         // $fmonth = $this->getMonth($qishu);
         // $fm = $this->getData($fmonth,$sid);

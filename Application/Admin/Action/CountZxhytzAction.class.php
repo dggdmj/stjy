@@ -10,6 +10,13 @@ class CountZxhytzAction extends CommonAction {
      * @return array
      */
     public function getZxhytzData($qishu='201810',$sid='1',$shoujuhao='00340538'){
+        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>31))->getField('id');//判断是否有生成历史
+        if ($qishu_id){
+            $info = M('zxhytz')->where(array('suoshudd'=>$qishu_id,'shoujuhao'=>$shoujuhao))->find();
+            if ($info) return $info;
+        }else{
+            $qishu_id = $this->insertQishuHistory(31,$qishu,$sid);
+        }
         $nian = substr($qishu,0,4);//获取年份
         $oid = $this->getQishuId($qishu,$sid,4);
         //查收据记录表和收支流水
@@ -22,6 +29,8 @@ class CountZxhytzAction extends CommonAction {
         $info['xinlaohy'] = mb_substr($info['beizhu'],0,2);
         $info['shoujuhao'] = $shoujuhao;
         unset($info['beizhu']);
+        $info['suoshudd'] = $qishu_id;
+        M('zxhytz')->add($info);
         return $info;
     }
 

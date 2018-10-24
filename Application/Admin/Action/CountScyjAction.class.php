@@ -10,6 +10,24 @@ class CountScyjAction extends CommonAction {
      * @return array
      */
     public function getScyjData($qishu='201810',$sid='1'){
+
+        //判断语句
+        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
+        if(!$qishu_id){
+            $qishu_id = $this->insertQishuHistory(8,$qishu,$sid);
+        }else{
+            $data = M('scyjb')->where(array('suoshudd'=>$qishu_id))->select();
+            foreach($data as &$val){
+                $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
+                foreach($val['fujiaxx'] as $k=>$v){
+                    $val[$k] = $v;
+                }
+                unset($val['fujiaxx']);
+            }
+            $data = $this->heji($data);
+            return $data;
+        }
+        
         $nianfen = substr($qishu,0,4);
         $tid = 4;//收据记录表的id
         $suoshuid = $this->getQishuId($qishu,$sid,$tid);//获取订单id
@@ -52,28 +70,6 @@ class CountScyjAction extends CommonAction {
             }else{
                 $v['shoufeilx'] = 1;
             }
-        }
-
-        //判断语句
-        $qishu_data['sid'] =$sid;
-        $qishu_data['qishu'] =$qishu;
-        $qishu_data['tid'] =8;
-
-        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
-        if(!$qishu_id){
-            $qishu_data['daorusj'] = date('Y-m-d H:i:s',time());
-            $qishu_id = M('qishu_history')->add($qishu_data);
-        }else{
-            $data = M('scyjb')->where(array('suoshudd'=>$qishu_id))->select();
-            foreach($data as &$val){
-                $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
-                foreach($val['fujiaxx'] as $k=>$v){
-                    $val[$k] = $v;
-                }
-                unset($val['fujiaxx']);
-            }
-             $data = $this->heji($data);
-             return $data;
         }
 
         $xxkedb_oid = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>14))->getField('id');

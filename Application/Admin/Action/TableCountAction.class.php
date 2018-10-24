@@ -255,21 +255,21 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 
         /* 实时计算开始 */
-        // $data = new \Admin\Action\CountJsmxAction();
-        // $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
+        $data = new \Admin\Action\CountJsmxAction();
+        $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
         /* 实时计算结束 */
 
         /* 查库开始 */
-        $id = $this->getQishuId($qishu,$sid,11);
-        if(!empty($id)){
-            $data = M('jsmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
-            $this->assign('list',$data);
-        }
+        // $id = $this->getQishuId($qishu,$sid,11);
+        // if(!empty($id)){
+        //     $data = M('jsmxb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+        //     $this->assign('list',$data);
+        // }
         
         // dump($data);
         /* 查库结束 */
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        
+        $this->assign('list',$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
@@ -282,7 +282,6 @@ class TableCountAction extends CommonAction{
         /* 实时计算开始 */
         // $data = new \Admin\Action\CountJysjAction();
         // $list = $data->getJysjbData($qishu,$sid);//获得统计数据
-        // dump($list);die;
         /* 实时计算结束 */
 
         /* 查库开始 */
@@ -326,6 +325,7 @@ class TableCountAction extends CommonAction{
                 $sjbd['n66'] = $v['heji'];
             }
         }
+        
         // dump($sjbd);
         /* 查库结束 */
         $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区

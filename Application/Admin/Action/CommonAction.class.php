@@ -409,7 +409,7 @@ class CommonAction extends Action {
         // 避免重复操作
         $status_xz = M('sjzb')->where($_GET)->getField('status_xz');
         if($status_xz == 2){
-            die;
+            // die;
         }
         $tablenames = $this->getTabelnames(1,[1,3,4]);// 获取序号和表明对应的一维数组
         $field = implode(',',$tablenames);// 组成筛选条件
@@ -1367,8 +1367,15 @@ class CommonAction extends Action {
     public function ScyjToDb($qishu,$sid){
         // ======================获取市场业绩数据开始======================
         $scyj = new \Admin\Action\CountScyjAction();
-        $scyj_data = $scyj->getScyjbData($qishu,$sid);//获得统计数据
+        $scyj->getScyjData($qishu,$sid);//获得统计数据
+        
+    }
 
+    // 市场业绩数据入库
+    public function ScyjToDb_bak($qishu,$sid){
+        // ======================获取市场业绩数据开始======================
+        $scyj = new \Admin\Action\CountScyjAction();
+        $scyj_data = $scyj->getScyjData($qishu,$sid);//获得统计数据
         // $scyj_temp['tid'] = 8;
         // $scyj_temp['uid'] = $this->getUid();// 获取生成表格的行政uid
         // $scyj_temp['qishu'] = $qishu;
@@ -1472,7 +1479,6 @@ class CommonAction extends Action {
     public function SczylToDb($qishu,$sid){
         $data = new \Admin\Action\CountSczylAction();
         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
-
         // $temp['tid'] = 9;
         // $temp['uid'] = $this->getUid();// 获取生成表格的行政uid
         // $temp['qishu'] = $qishu;
@@ -1486,11 +1492,34 @@ class CommonAction extends Action {
             return false;
         }
         $qishu_id = $this->insertQishuHistory(9,$qishu,$sid);
+       
+        foreach($list as $val){
+            $val['suoshudd'] = $qishu_id;
+            M('sczylb')->add($val);
+        }
+        return true;
+    }
 
+    // 市场占有率数据入库
+    public function SczylToDb_bak($qishu,$sid){
+        $data = new \Admin\Action\CountSczylAction();
+        $list = $data->getSczylbData($qishu,$sid);//获得统计数据
+        // $temp['tid'] = 9;
+        // $temp['uid'] = $this->getUid();// 获取生成表格的行政uid
+        // $temp['qishu'] = $qishu;
+        // $temp['sid'] = $sid;
+        // $temp['filename'] = '';
+        // $qishu_id = M("qishu_history")->add($temp);
+
+        // unset($temp);
+        $res = $this->isInQishuHistory(9,$qishu,$sid);
+        if($res){
+            return false;
+        }
+        $qishu_id = $this->insertQishuHistory(9,$qishu,$sid);
         $list['heji']['gonglixx'] = "合计";
         $list['data'][0] = $list['heji'];
         $new_list = $list['data'];
-        ksort($new_list);
         // dump($new_list);
         $i = 0;
         foreach($new_list as $k=>$v){
@@ -1504,6 +1533,7 @@ class CommonAction extends Action {
                 $temp[$k] = $v;
             }
             $temp['suoshudd'] = $qishu_id;
+            dump($temp);
             M('sczylb')->add($temp);
             unset($temp);
         }
@@ -1515,7 +1545,15 @@ class CommonAction extends Action {
         
         $data = new \Admin\Action\CountXzmxAction();
         $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+        return true;
+    }
+
+    // 新增明细数据入库
+    public function XzmxToDb_bak($qishu,$sid){
         
+        $data = new \Admin\Action\CountXzmxAction();
+        $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+        dump($list);exit;
         $res = $this->isInQishuHistory(10,$qishu,$sid);
         if($res){
             return false;
@@ -1528,7 +1566,6 @@ class CommonAction extends Action {
         }
         // 插入xzmxb
         foreach($list as $k=>$v){
-            $temp['xuhao'] = $k+1;
             $temp['yuefen'] = substr($qishu,4,2).'月';
             $temp['fenxiao'] = $v['xiaoqu'];
             $temp['xinzenglx'] = $v['addtype'];
@@ -1562,6 +1599,13 @@ class CommonAction extends Action {
 
     // 减少明细数据入库
     public function JsmxToDb($qishu,$sid){
+        $data = new \Admin\Action\CountJsmxAction();
+        $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
+        return true;
+    }
+
+    // 减少明细数据入库
+    public function JsmxToDb_bak($qishu,$sid){
         $data = new \Admin\Action\CountJsmxAction();
         $list = $data->getJsmxbData($qishu,$sid);//获得统计数据
         
@@ -1786,16 +1830,33 @@ class CommonAction extends Action {
         // $t4 = microtime(true);
         // 市场业绩数据写入数据库
         $res_scyj = $this->ScyjToDb($qishu,$sid);
-        // 经营数据写入数据库
+        // 经营数据写入数据库(未做)
         // $t5 = microtime(true);
         $res_jsmx = $this->JysjToDb($qishu,$sid);
-        // 退费数据写入数据库
+        // 退费数据写入数据库(未做)
         // $t6 = microtime(true);
-        $res_tf = $this->TfToDb($qishu,$sid);
+        // $res_tf = $this->TfToDb($qishu,$sid);
         // $t7 = microtime(true);
         // echo "各表入库时间：".(($t2-$t1)*1000).'ms--'.(($t3-$t2)*1000).'ms--'.(($t4-$t3)*1000).'ms--'.(($t5-$t4)*1000).'ms--'.(($t6-$t5)*1000).'ms--'.(($t7-$t6)*1000).'ms';
         // echo '总入库时间:'.(($t7-$t1)*1000).'ms';
+        
+        // 老师确认营业额
+        $lsqryye = new \Admin\Action\CountLsqryyeAction();
+        $res_lsyye = $lsqryye->getYjData($qishu,$sid);
+
+        //老师收入
+        $lsqrsr = new \Admin\Action\CountLsqrsrAction();
+        $res_lsqrsr =  $lsqrsr->getYjData($qishu,$sid);
+
+        //中心会员台账
+        $zxhytz = new \Admin\Action\CountZxhytzAction();
+        $res_lsqrsr =  $zxhytz->getZxhytzData($qishu,$sid);
+
+        //老带新台账
+        $zxldxtz = new \Admin\Action\CountZxldxtzAction();
+        $res_zxldxtz = $zxldxtz->getZxldxtzData($qishu,$sid);
         // -----------------------生成数据入库结束-----------------------
+        
     }
 
     public function delScData($qishu,$sid,$tid){
@@ -1940,6 +2001,9 @@ class CommonAction extends Action {
 
     //判断表是否存在，不存在就创建
     public function ifTables($nian='',$table=''){
+        if (!$nian){
+            return false;
+        }
         $niantable = C('DB_PREFIX').$table.'_'.$nian;//分表一年一个表
         $res = M('')->query('show tables like \''.$niantable.'\'');
         //不存在就创建一个表
@@ -2219,5 +2283,14 @@ class CommonAction extends Action {
                     break;
             }
         }
+    }
+
+    //获取所有需要分表的表明
+    public function getFenbiao(){
+        $list = M('table_name')->field('table_name')->where(array('is_fenbiao'=>1))->select();
+        foreach($list as $val){
+            $data[] = $val;
+        }
+        return $val;
     }
 }

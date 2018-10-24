@@ -10,33 +10,40 @@ class CountXzmxAction extends CommonAction {
      * @return array
      */
     public function getXzmxbData($qishu,$sid){
-        //本月的时间范围
-        $nianfen = substr($qishu,0,4);
-        $date = $this->getNextMonthDays($qishu."01");
-        $starttime = strtotime($qishu."01");
-        $endtime = strtotime($date[0]);
-        $xyxxb_id = $this->getQishuId($qishu,$sid,1);
+        $yuefen = substr($qishu,4,2).'月';
+        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>10))->getField('id');//判断是否有生成历史
+        if ($qishu_id){
+            $list = M('xzmxb')->where(array('suoshudd'=>$qishu_id))->select();
+            return $list;
+        }else{
+            $qishu_id = $this->insertQishuHistory(10,$qishu,$sid);
+        }
 
-//        $list = M("xyxxb_".$nianfen)->field("xuehao,xingming")->where("suoshudd = $xyxxb_id and xuehao != '' and UNIX_TIMESTAMP(`baomingrq`) >= $starttime and UNIX_TIMESTAMP(`baomingrq`) < $endtime ")->select();
-
-        $list = M("xyxxb_".$nianfen)->alias("xx")
-            ->field('xx.xuehao,xyx.gonglixx,xx.nianji,xx.xingming,xx.xiaoqu,xyx.banji,temp.yejigsr,xx.zhaoshengly,xx.shoujihm,sum(yj.shengyugmsl) as shuliang,yj.danwei,sum(yj.feiyong) as feiyong,mx.kaibanrq,mx.jiebanrq,mx.jingjiangls,mx.fanduls')
-            ->join('LEFT JOIN stjy_xyfyyjb_'.$nianfen.' as yj on xx.xuehao=yj.xuehao')
-            ->join('LEFT JOIN (select yejigsr,xuehao from stjy_sjjlb_'.$nianfen.' as sj where sj.yejigsr != "") as temp on xx.xuehao=temp.xuehao')
-            ->join('LEFT JOIN stjy_bjxyxxb_'.$nianfen.' as xyx on xx.xuehao=xyx.xuehao')
-            ->join('LEFT JOIN stjy_kbmxb_'.$nianfen.' as mx on xyx.banji=mx.banjimc')
-            ->where("xx.suoshudd = $xyxxb_id and xx.xuehao != '' and UNIX_TIMESTAMP(`baomingrq`) >= $starttime and UNIX_TIMESTAMP(`baomingrq`) < $endtime ")
-            ->group('xx.xuehao')
+        //获取本月最后一天和第一天
+        $qishu_time = substr($qishu,0,4).'-'.substr($qishu,4,2);
+        $lastday = date('Y-m-d', strtotime("$qishu_time +1 month -1 day"));
+        $firstday = date('Y-m-d', strtotime("$qishu_time"));
+        //查订单id
+        $xyxxb_oid = $this->getQishuId($qishu,$sid,1);
+        $xyxxb = $this->checkFenbiao($xyxxb_oid,'xyxxb');
+        $list = M($xyxxb)
+            ->field('xuehao,xingming,xingbie,xiaoqu as fenxiao')
+            ->where("baomingrq >= '$firstday' and baomingrq <= '$lastday' ")
             ->select();
-//        $res = $this->doList($list,$qishu,$sid);
+        foreach($list as $key=>&$val){
+            $val['xuhao'] = $key+1;
+            $val['suoshudd'] = $qishu_id;
+            $val['yuefen'] = $yuefen;
+            M('xzmxb')->add($val);
+        }
         return $list;
     }
 
     public function getXzmxbData_bak($qishu,$sid){
+        $nianfen = '_'.substr($qishu,0,4);
         // 查询本期班级学员信息表里的所有学员
         // $t1 = microtime(true);
         $data_bjxyxxb = $this->getData($qishu,$sid);
-        dump($data_bjxyxxb);die;
         // 如果$data_bjxyxxb为空,基本可以断定是因为数据里面校区和校区设置里面校区名称不一致
         if(empty($data_bjxyxxb)){
             $temp['time_xz'] = date('Y-m-d H:i:s');
@@ -62,7 +69,7 @@ class CountXzmxAction extends CommonAction {
         $where['stjy_sjjlb.xiaoqu'] = $school;
         // $where['temp.laiyuanfx'] = array('in',[$school,'']);
         // $data_temp = M('sjjlb')->join('LEFT JOIN (select * from stjy_xyxxb where stjy_xyxxb.suoshudd ='.$id_xyxxb.') as temp on stjy_sjjlb.xuehao=temp.xuehao')->where($where)->where()->field('stjy_sjjlb.xuehao,stjy_sjjlb.xiaoqu as xiaoqu2,temp.xiaoqu')->select();
-        $data_temp = M('sjjlb')->where($where)->field('stjy_sjjlb.xuehao')->select();
+        $data_temp = M('sjjlb'.$nianfen)->where($where)->field('stjy_sjjlb.xuehao')->select();
         // $t3 = microtime(true);
         // dump($data_temp);die;
         if(!empty($data_temp)){
@@ -106,7 +113,8 @@ class CountXzmxAction extends CommonAction {
             $map['stjy_xyxxb.xuehao'] = array('in',$new);
             $map['stjy_xyxxb.suoshudd'] = M('qishu_history')->where('qishu='.$qishu.' and sid='.$sid.' and tid=1')->getField('id');
             // $map['stjy_bjxyxxb.banji'] = array('neq','');
-            $list = M('xyxxb')->join('LEFT JOIN stjy_xyfyyjb on stjy_xyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb where stjy_sjjlb.yejigsr != "") as temp on stjy_xyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_bjxyxxb on stjy_xyxxb.xuehao=stjy_bjxyxxb.xuehao')->join('LEFT JOIN stjy_kbmxb on stjy_bjxyxxb.banji=stjy_kbmxb.banjimc')->field('stjy_xyxxb.xuehao,stjy_bjxyxxb.gonglixx,stjy_xyxxb.nianji,stjy_xyxxb.xingming,stjy_xyxxb.xiaoqu,stjy_bjxyxxb.banji,temp.yejigsr,stjy_xyxxb.zhaoshengly,stjy_xyxxb.shoujihm,sum(stjy_xyfyyjb.shuliang) as shuliang,stjy_xyfyyjb.danwei,sum(stjy_xyfyyjb.feiyong) as feiyong,stjy_kbmxb.kaibanrq,stjy_kbmxb.jiebanrq,stjy_kbmxb.jingjiangls,stjy_kbmxb.fanduls')->where($map)->group('stjy_xyxxb.xuehao')->select();
+            $list = M('xyxxb'.$nianfen.' as stjy_xyxxb')->join('LEFT JOIN stjy_xyfyyjb'.$nianfen.' as stjy_xyxxb on stjy_xyxxb.xuehao=stjy_xyfyyjb.xuehao')->join('LEFT JOIN (select * from stjy_sjjlb_'.$nianfen.' where stjy_sjjlb'.$nianfen.'.yejigsr != "") as temp on stjy_xyxxb.xuehao=temp.xuehao')->join('LEFT JOIN stjy_bjxyxxb'.$nianfen.' as stjy_bjxyxxb on stjy_xyxxb.xuehao=stjy_bjxyxxb.xuehao')->join('LEFT JOIN stjy_kbmxb'.$nianfen.' as stjy_kbmxb on stjy_bjxyxxb.banji=stjy_kbmxb.banjimc')->field('stjy_xyxxb.xuehao,stjy_bjxyxxb.gonglixx,stjy_xyxxb.nianji,stjy_xyxxb.xingming,stjy_xyxxb.xiaoqu,stjy_bjxyxxb.banji,temp.yejigsr,stjy_xyxxb.zhaoshengly,stjy_xyxxb.shoujihm,sum(stjy_xyfyyjb.shuliang) as shuliang,stjy_xyfyyjb.danwei,sum(stjy_xyfyyjb.feiyong) as feiyong,stjy_kbmxb.kaibanrq,stjy_kbmxb.jiebanrq,stjy_kbmxb.jingjiangls,stjy_kbmxb.fanduls')->where($map)->group('stjy_xyxxb.xuehao')->select();
+            dump($list);exit;
             // $list = M('xyxxb')->join('LEFT JOIN stjy_bjxyxxb on stjy_xyxxb.xuehao=stjy_bjxyxxb.xuehao')->join('LEFT JOIN stjy_kbmxb on stjy_bjxyxxb.banji=stjy_kbmxb.banjimc')->field('stjy_xyxxb.xuehao,stjy_bjxyxxb.gonglixx,stjy_xyxxb.nianji,stjy_xyxxb.xingming,stjy_xyxxb.xiaoqu,stjy_bjxyxxb.banji,stjy_xyxxb.zhaoshengly,stjy_xyxxb.shoujihm,stjy_kbmxb.kaibanrq,stjy_kbmxb.jiebanrq,stjy_kbmxb.jingjiangls,stjy_kbmxb.fanduls')->where($map)->group('stjy_xyxxb.xuehao')->select();
             // $list = M('xyxxb')->where($map)->group('stjy_xyxxb.xuehao')->select();
             // dump($list);die;
@@ -195,6 +203,7 @@ class CountXzmxAction extends CommonAction {
 
     // 获取转学学生数据
     public function getZhuanru($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
         // 获取上一期内非本校的所有在读学员信息
         $fmonth = $this->getMonth($qishu);
         $where['qishu'] = $fmonth;
@@ -207,7 +216,7 @@ class CountXzmxAction extends CommonAction {
                 $ids[] = $v['id'];
             }
             $map['suoshudd'] = array('in',$ids);
-            $stu = M('xyxxb')->field('xuehao')->where($map)->select();
+            $stu = M('xyxxb_'.$nianfen)->field('xuehao')->where($map)->select();
             if(!empty($stu)){
                 foreach($stu as $v){
                     $xueyuan[] = $v['xuehao'];
@@ -223,6 +232,7 @@ class CountXzmxAction extends CommonAction {
 
     // 取得所有分校前3个月内的学生学号
     public function getAll($qishu){
+        $nianfen = substr($qishu,0,4);
         // 获取上一月
         $fmonth = $this->getMonth($qishu);
         // 获取前上二月
@@ -256,6 +266,7 @@ class CountXzmxAction extends CommonAction {
 
     // 取得所有分校前3个月内退学的学生学号
     public function getTuixue($qishu){
+        $nianfen = substr($qishu,0,4);
         // 获取上一月
         $fmonth = $this->getMonth($qishu);
         // 获取前上二月
@@ -274,7 +285,7 @@ class CountXzmxAction extends CommonAction {
             }
             $map2['suoshudd'] = array('in',$ids);
             $map2['zhuangtai'] = '已退学';
-            $stu = M('xyxxb')->field('xuehao')->where($map2)->select();
+            $stu = M('xyxxb_'.$nianfen)->field('xuehao')->where($map2)->select();
             if(!empty($stu)){
                 foreach($stu as $v){
                     $xueyuan[] = $v['xuehao'];

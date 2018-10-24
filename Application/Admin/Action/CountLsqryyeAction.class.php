@@ -10,6 +10,15 @@ class CountLsqryyeAction extends CommonAction {
      * @return array
      */
     public function getYjData($qishu,$sid){
+        
+        //判断语句
+        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>29))->getField('id');//判断是否有生成历史
+        if ($qishu_id){
+            $newList = M('lsqryye')->where(array('suoshudd'=>$qishu_id))->select();
+            $newList = $this->heji($newList);
+            return $newList;
+        }
+        $qishu_id = $this->insertQishuHistory(29,$qishu,$sid);
         //老师营业额  先查所有的老师  人事表
         $list = M('renshi as rs')
                     ->join('stjy_scyjb as ss on rs.xingming=ss.xingming')
@@ -23,8 +32,7 @@ class CountLsqryyeAction extends CommonAction {
 
         //获取本月最后一天
         $qishu_time = substr($qishu,0,4).'-'.substr($qishu,4,2);
-        // 最后一天
-        $lastday = date('Y-m-d', strtotime("$qishu +1 month -1 day"));   
+        $lastday = date('Y-m-d', strtotime("$qishu_time +1 month -1 day"));   
         //获取校名
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $oid = $list['0']['id'] ? $list['0']['id'] : 0;//获取订单id
@@ -78,7 +86,7 @@ class CountLsqryyeAction extends CommonAction {
         foreach($list as $ko=>$vo){
             $ko = $ko*2;
             //小学部
-            $data['xuhao']=$ko;
+            $data['xuhao']=$ko+1;
             $data['yuefen'] = $vo['yuefen'];
             $data['fenxiao'] = $vo['school_name'];
             $data['laoshi'] = $vo['xingming'];
@@ -89,9 +97,11 @@ class CountLsqryyeAction extends CommonAction {
             $data['yingyee'] = $vo['yingyee1'];
             $data['yanzheng'] = '-';
             $data['chuxiancs'] = 1;
+            $data['suoshudd'] = $qishu_id;
             $newList[] = $data;
+            M('lsqryye')->add($data);
             //初中部
-            $data['xuhao']=$ko+1;
+            $data['xuhao']=$ko+2;
             $data['yuefen'] = $vo['yuefen'];
             $data['fenxiao'] = $vo['school_name'];
             $data['laoshi'] = $vo['xingming'];
@@ -102,6 +112,8 @@ class CountLsqryyeAction extends CommonAction {
             $data['yingyee'] = $vo['yingyee2'];
             $data['yanzheng'] = '-';
             $data['chuxiancs'] = 2;
+            $data['suoshudd'] = $qishu_id;
+            M('lsqryye')->add($data);
             $newList[] = $data;
         }
         $newList = $this->heji($newList);

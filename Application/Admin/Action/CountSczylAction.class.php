@@ -11,10 +11,9 @@ class CountSczylAction extends CommonAction {
      */
     public function getSczylbData($qishu,$sid){
         $id = $this->getQishuId($qishu,$sid,1);
-
+        $xyxxb = $this->checkFenbiao($id,'xyxxb');//判断是否是分表
         $where = 'suoshudd ='.$id.' and xuehao != "" and jiuduxx != "" and (zhuangtai = "在读" or zhuangtai = "休学")';// 下面$arr获取数据的查询条件
-        $schools = M('xyxxb')->field('jiuduxx,nianji,count(*) as count')->where($where)->group('jiuduxx,nianji')->select();
-
+        $schools = M($xyxxb)->field('jiuduxx,nianji,count(*) as count')->where($where)->group('jiuduxx,nianji')->select();
         //获取分校公立学校规模数
         $guimo = M("gonglixx")->where("sid = $sid")->select();
         $guimo_arr = array();
@@ -47,7 +46,6 @@ class CountSczylAction extends CommonAction {
                     break;
             }
         }
-
         $arr = array();
         $i = 1;
         foreach ($data as $k=>$v){
@@ -71,7 +69,6 @@ class CountSczylAction extends CommonAction {
             }
             $i++;
         }
-
         return $arr;
     }
 
@@ -88,15 +85,16 @@ class CountSczylAction extends CommonAction {
 
         // $heji
         unset($where);
+        $bjxyxxb = $this->checkFenbiao($id,'bjxyxxb');//判断是否是分表
         $where = 'suoshudd ='.$id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';// 下面$arr获取数据的查询条件
-        $arr = M('bjxyxxb')->field('count(*) as count,nianji')->where($where)->group('nianji')->select();
+        $arr = M($bjxyxxb)->field('count(*) as count,nianji')->where($where)->group('nianji')->select();
         $heji = $this->getHeji($arr);
 
         // $data
-        $schools = M('bjxyxxb')->field('gonglixx')->where($where)->group('gonglixx')->select();// 得出所有公立学校的数组
+        $schools = M($bjxyxxb)->field('gonglixx')->where($where)->group('gonglixx')->select();// 得出所有公立学校的数组
 
         foreach($schools as $k=>$v){
-            $temp = M('bjxyxxb')->field('count(*) as count,nianji,gonglixx')->where('gonglixx ="'.$v['gonglixx'].'" and suoshudd ='.$id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")')->group('nianji')->select();
+            $temp = M($bjxyxxb)->field('count(*) as count,nianji,gonglixx')->where('gonglixx ="'.$v['gonglixx'].'" and suoshudd ='.$id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")')->group('nianji')->select();
             $youeryuan = 0;
             $count = 0;
             foreach($temp as $v1){

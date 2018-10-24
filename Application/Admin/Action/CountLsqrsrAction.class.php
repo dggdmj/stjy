@@ -10,6 +10,14 @@ class CountLsqrsrAction extends CommonAction {
      * @return array
      */
     public function getYjData($qishu,$sid){
+        //判断语句
+        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>30))->getField('id');//判断是否有生成历史
+        if ($qishu_id){
+            $newList = M('lsqrsr')->where(array('suoshudd'=>$qishu_id))->select();
+            $newList = $this->heji($newList);
+            return $newList;
+        }
+        $qishu_id = $this->insertQishuHistory(30,$qishu,$sid);
         $yuefen = substr($qishu,4,2).'月';
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         // 获取开班明细的订单id
@@ -73,6 +81,7 @@ class CountLsqrsrAction extends CommonAction {
             $newList[$k]['shoukexs'] = 0;
             $newList[$k]['zongrencxs'] = 0;
             $newList[$k]['querensr'] = 0;
+            $newList[$k]['suoshudd'] = $qishu_id;
             //初中部
             $newList[$k+1]['xuhao'] = $k+2;
             $newList[$k+1]['yuefen'] = $yuefen;
@@ -84,6 +93,7 @@ class CountLsqrsrAction extends CommonAction {
             $newList[$k+1]['shoukexs'] = 0;
             $newList[$k+1]['zongrencxs'] = 0;
             $newList[$k+1]['querensr'] = 0;
+            $newList[$k+1]['suoshudd'] = $qishu_id;
             foreach($list as $val){
                 if ($val['bumen'] == '小学部'){
                     //计算授课小时
@@ -151,8 +161,8 @@ class CountLsqrsrAction extends CommonAction {
                     }
                 }
             }
-
-
+            M('lsqrsr')->add($newList[$k]);
+            M('lsqrsr')->add($newList[$k+1]);
         }
         $newList = $this->heji($newList);
         return $newList;
