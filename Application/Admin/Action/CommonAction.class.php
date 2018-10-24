@@ -1878,9 +1878,9 @@ class CommonAction extends Action {
                 // return true;
 
             }else{
-                $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
-
-                M($tbnames[$tid])->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
+                // $tbnames = $this->getTabelnames(1,[2]);// 获取tid和表名一一对应的数据
+                $tbnames = M('table_name')->where(array('id'=>$tid))->getField('table_name');
+                M($tbnames)->where('suoshudd ='.$id)->delete();// 删除对应表格里面的数据
             }
 
             
@@ -1907,6 +1907,14 @@ class CommonAction extends Action {
         $res_jysj = $this->delScData($qishu,$sid,12);
         // 删除退费数据
         $res_tf = $this->delScData($qishu,$sid,13);
+        // 删除老师确认营业额
+        $res_tf = $this->delScData($qishu,$sid,29);
+        // 删除老师确认收入
+        $res_tf = $this->delScData($qishu,$sid,30);
+        // 删除中心会员台账
+        $res_tf = $this->delScData($qishu,$sid,31);
+        // 删除老带新台账
+        $res_tf = $this->delScData($qishu,$sid,32);
         // -----------------------生成数据从库删除结束-----------------------
     }
 
