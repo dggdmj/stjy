@@ -41,12 +41,13 @@ class CountJysjAction extends CommonAction {
 
     //获得学生人数变动数据
     public function getxsrsbd($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
         $arr = array('本月初在册学生人数'=>0,'本月新生人数'=>0,'其他学校转入'=>0,'流失回来学生'=>0,'本月流失学生人数'=>0,'本月退费学生'=>0,'转校学员'=>0,'本月底在册学生人数'=>0);
         $fmonth = $this->getMonth($qishu);  //获得上月期数
         $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
         if(!empty($xyxxb_prev_id)){
             $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
-            $res = M('xyxxb')->field("xuehao")->where($where)->group("xuehao")->select();
+            $res = M('xyxxb_'.$nianfen)->field("xuehao")->where($where)->group("xuehao")->select();
             $arr['本月初在册学生人数'] = count($res);
         }else{
             $arr['本月初在册学生人数'] = 0;
@@ -93,7 +94,7 @@ class CountJysjAction extends CommonAction {
         $id = $this->getQishuId($qishu,$sid,3);// 貌似没用    
         if(!empty($id_fmonth)){
             $where = 'suoshudd ='.$id_fmonth.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
-            $res = M('bjxyxxb')->where($where)->select();
+            $res = M('bjxyxxb' )->where($where)->select();
             $res = $this->getXuehao($res);
             $res = array_flip(array_flip($res));// 去重复学号,解决一学生多报班的情况
             $arr['本月初在册学生人数'] = count($res);
@@ -164,8 +165,9 @@ class CountJysjAction extends CommonAction {
 
     //获得开课时段和班级数统计
     public function getkksd($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
         $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
-        $list = M("bjxxb")->where("suoshudd = ".$suoshudd)->select();
+        $list = M("bjxxb_".$nianfen)->where("suoshudd = ".$suoshudd)->select();
         //根据课程名称判断时间段
         $arr = array();
         foreach ($list as $k=>$v){
@@ -195,6 +197,7 @@ class CountJysjAction extends CommonAction {
     }
 
     public function getzaice($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
         $where['qishu'] = $qishu;// 获取期数
         $where['sid'] = $sid;// 获取学校id
         $where['tid'] = 3;// 从班级学员信息表获取信息,它的tid是3
@@ -212,7 +215,7 @@ class CountJysjAction extends CommonAction {
             'chusan'=>'初二以上',
             'heji'=>'合计'
         );
-        $list = M('bjxyxxb')->where("suoshudd = ".$id)->select();
+        $list = M('bjxyxxb_'.$nianfen )->where("suoshudd = ".$id)->select();
         $arr = array();
         foreach ($list as $k => $v){
             //根据班级班号确定级别
@@ -336,9 +339,10 @@ class CountJysjAction extends CommonAction {
 
     //获得班级部门数据班级部门数据
     public function getbjbmsj($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
         $ssid = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
         //获得班级信息表的数据
-        $bjxx_list = M("bjxxb")->where("suoshudd = $ssid")->select();
+        $bjxx_list = M("bjxxb_".$nianfen)->where("suoshudd = $ssid")->select();
         $bumen_arr = $this->getBumenarr();
         $bumen_count = array();
         foreach ($bumen_arr as $key =>$b){
@@ -391,9 +395,10 @@ class CountJysjAction extends CommonAction {
 
     //返回各班型在读人数统计数据
     public function getgbxzdrstj($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
         $ssid = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =3")->getField("id");
         //获得班级学员信息表的数据
-        $bjxyxxb = M("bjxyxxb")->where("suoshudd = $ssid")->select();
+        $bjxyxxb = M("bjxyxxb_".$nianfen)->where("suoshudd = $ssid")->select();
         $bumen_arr = $this->getBumenarr();
         $kecheng_arr = $this->getKechengarr();
         $bumen_count = array();
@@ -405,7 +410,7 @@ class CountJysjAction extends CommonAction {
         $banjibianhao_arr = array();
 
         $bjxxb_suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid = 2")->getField("id");
-        $bjxxb = M("bjxxb")->where("suoshudd = ".$bjxxb_suoshudd)->select();
+        $bjxxb = M("bjxxb_".$nianfen)->where("suoshudd = ".$bjxxb_suoshudd)->select();
 
         foreach ($banjibianhao as $k=>$v){
             $banjibianhao_arr[$v["jingdujb"]] = $v['banxing'];
