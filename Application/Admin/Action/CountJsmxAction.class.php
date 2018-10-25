@@ -28,13 +28,28 @@ class CountJsmxAction extends CommonAction {
         $xyxxb_oid = $this->getQishuId($qishu,$sid,1);
         $xyxxb = $this->checkFenbiao($xyxxb_oid,'xyxxb');
         $list = M($xyxxb)
-            ->field('xuehao,xingming,xingbie,xiaoqu as fenxiao')
-            ->where("tuixuerq >= '$firstday' and tuixuerq <= '$lastday' ")
+            ->field('xuehao,xingming,xingbie,xiaoqu as fenxiao,zhuangtai')
+            ->where(" zhuangtai = '已退学' and suoshudd='$xyxxb_oid' and tuixuerq>='$firstday' and tuixuerq <= $lastday")
             ->select();
+        $zhuanchu_id = $this->getQishuId($qishu,$sid,27);
+        $zhuanchu = M('zcjlb')->field('xuehao')->where("suoshudd = '$zhuanchu_id' and zhuangxiaosj >= '$firstday' and zhuangxiaosj <= '$lastday'")->select();
+        $zhuanchu = $this->quchongjian($zhuanchu);
+
+        $tuifei_id = $this->getQishuId($qishu,$sid,13);
+        $tuifei = M('tfb')->field('xuehao')->where("suoshudd = '$tuifei_id' ")->select();
+        $tuifei = $this->quchongjian($tuifei);
         foreach($list as $key=>&$val){
             $val['xuhao'] = $key+1;
             $val['suoshudd'] = $qishu_id;
             $val['yuefen'] = $yuefen;
+            $val['xinzenglx'] = '退学';
+            //判断是不是转入的
+            if (in_array($val['xuehao'],$zhuanchu)){
+                $val['xinzenglx'] = '转出';
+            }
+            if (in_array($val['xuehao'],$tuifei)){
+                $val['xinzenglx'] = '退费';
+            }
             M('jsmxb')->add($val);
         }
         return $list;

@@ -18,22 +18,57 @@ class CountXzmxAction extends CommonAction {
         }else{
             $qishu_id = $this->insertQishuHistory(10,$qishu,$sid);
         }
+        //获取学员信息表的订单id
+        $xyxxb_oid = $this->getQishuId($qishu,$sid,1);
+
+        //获取转入记录的订单号
+         $zrjl_oid = $this->getQishuId($qishu,$sid,28);
 
         //获取本月最后一天和第一天
         $qishu_time = substr($qishu,0,4).'-'.substr($qishu,4,2);
         $lastday = date('Y-m-d', strtotime("$qishu_time +1 month -1 day"));
         $firstday = date('Y-m-d', strtotime("$qishu_time"));
-        //查订单id
-        $xyxxb_oid = $this->getQishuId($qishu,$sid,1);
         $xyxxb = $this->checkFenbiao($xyxxb_oid,'xyxxb');
-        $list = M($xyxxb)
-            ->field('xuehao,xingming,xingbie,xiaoqu as fenxiao')
-            ->where("baomingrq >= '$firstday' and baomingrq <= '$lastday' ")
-            ->select();
+        //新生
+        $list = M($xyxxb)->field('xuehao,xingming,xingbie,xiaoqu as fenxiao,zhuangtai')->where("baomingrq >= '$firstday' and baomingrq <= '$lastday' and suoshudd ='$xyxxb_oid'")->select();
+        //转入
+        $zhuangru = M('zrjlb')
+                ->field('xuehao')
+                ->where(" zhuangxiaosj >= '$firstday' and zhuangxiaosj <= '$lastday' and suoshudd = '$zrjl_oid'")
+                ->select();
+        $zhuangru = $this->quchongjian($zhuangru);
+
+        //查上个月退学的
+        // 获取上个月的期数
+        $last_qishu = date('Ym',strtotime("$qishu_time -1 month"));
+        $last_oid = $this->getQishuId($last_qishu,$sid,1);
+        $liushi = M($xyxxb)->field('xuehao')->where("suoshudd ='$last_oid' and zhuangtai = '已退学'")->select();
+        $liushi = $this->quchongjian($liushi);
+
+        $zhuanchu_id = $this->getQishuId($qishu,$sid,27);
+        $shouju_id = $this->getQishuId($qishu,$sid,4);
+        $shouju = M('sjjlb as sj')->field('zc.xuehao,zc.xingming,zc.xingbie,zc.zhuanchuxq')->join('RIGHT JOIN stjy_zcjlb as zc on zc.xuehao=sj.xuehao')->where("sj.suoshudd='$shouju_id' and zc.suoshudd='$zhuanchu_id'")->select();
+        $xyList = M($xyxxb)->field('xuehao')->where("suoshudd = '$xyxxb_oid'")->select();
+        $xyList = $this->quchongjian($xinzeng);
+
+        foreach($shouju as $v){
+            if (!in_array($v['xuehao'],$xyList)){
+                $list[] = $v;
+            }
+        }
+
         foreach($list as $key=>&$val){
             $val['xuhao'] = $key+1;
             $val['suoshudd'] = $qishu_id;
             $val['yuefen'] = $yuefen;
+            $val['xinzenglx'] = '新增';
+            //判断是不是转入的
+            if (in_array($val['xuehao'],$zhuangru)){
+                $val['xinzenglx'] = '转入';
+            }
+            if (in_array($val['xuehao'],$liushi)){
+                $val['xinzenglx'] = '流失回来';
+            }
             M('xzmxb')->add($val);
         }
         return $list;
