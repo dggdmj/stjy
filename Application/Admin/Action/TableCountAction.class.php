@@ -165,7 +165,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
 	     $data = new \Admin\Action\CountScyjAction();
-        $list = $data->getScyjData('201810','1');//获得统计数据
+        $list = $data->getScyjData($qishu,'1');//获得统计数据
 //die;
         /* 实时计算结束 */
 
@@ -206,7 +206,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
          $data = new \Admin\Action\CountSczylAction();
-         $list = $data->getSczylbData(201808,15);//获得统计数据
+         $list = $data->getSczylbData($qishu,15);//获得统计数据
 //         dump($list);die;
         /* 实时计算结束 */
 
@@ -231,7 +231,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
          $data = new \Admin\Action\CountXzmxAction();
-         $list = $data->getXzmxbData(201808,15);//获得统计数据
+         $list = $data->getXzmxbData($qishu,15);//获得统计数据
         /* 实时计算结束 */
 
         /* 查库开始 */
@@ -404,7 +404,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
         $data = new \Admin\Action\CountLsqryyeAction();
-        $list = $data->getYjData('201810','1');//获得统计数据
+        $list = $data->getYjData($qishu,'1');//获得统计数据
         /* 实时计算结束 */
 
         /* 查库开始 */
@@ -431,7 +431,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
         $data = new \Admin\Action\CountLsqrsrAction();
-        $list = $data->getYjData('201810','1');//获得统计数据
+        $list = $data->getYjData($qishu,'1');//获得统计数据
         /* 实时计算结束 */
 
         $this->assign('list',$list);
