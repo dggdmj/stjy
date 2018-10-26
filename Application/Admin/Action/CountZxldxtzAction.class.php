@@ -12,8 +12,8 @@ class CountZxldxtzAction extends CommonAction {
     public function getZxldxtzData($qishu='201810',$sid='1',$shoujuhao='00340425'){
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>32))->getField('id');//判断是否有生成历史
         if ($qishu_id){
-            $info = M('zxldxtz')->where(array('suoshudd'=>$qishu_id,'xinshengsjh'=>$shoujuhao))->find();
-            if ($info) return $info;
+            $info = M('zxldxtz')->where(array('suoshudd'=>$qishu_id,'xinshengsjh'=>$shoujuhao))->select();
+            if ($info) {return $info;}
         }else{
             $qishu_id = $this->insertQishuHistory(32,$qishu,$sid);
         }

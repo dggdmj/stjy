@@ -165,7 +165,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
 	     $data = new \Admin\Action\CountScyjAction();
-        $list = $data->getScyjData($qishu,'1');//获得统计数据
+        $list = $data->getScyjData($qishu,$sid);//获得统计数据
 //die;
         /* 实时计算结束 */
 
@@ -206,7 +206,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
          $data = new \Admin\Action\CountSczylAction();
-         $list = $data->getSczylbData($qishu,15);//获得统计数据
+         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
 //         dump($list);die;
         /* 实时计算结束 */
 
@@ -231,7 +231,7 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
          $data = new \Admin\Action\CountXzmxAction();
-         $list = $data->getXzmxbData($qishu,15);//获得统计数据
+         $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
         /* 实时计算结束 */
 
         /* 查库开始 */
@@ -431,7 +431,45 @@ class TableCountAction extends CommonAction{
 
         /* 实时计算开始 */
         $data = new \Admin\Action\CountLsqrsrAction();
-        $list = $data->getYjData($qishu,'1');//获得统计数据
+        $list = $data->getYjData($qishu,$sid);//获得统计数据
+        /* 实时计算结束 */
+
+        $this->assign('list',$list);
+        
+        // dump($data);
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
+
+    //中心会员台账
+    public function zxhytz_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+
+        /* 实时计算开始 */
+        $data = new \Admin\Action\CountZxhytzAction();
+        $list = $data->getZxhytzData($qishu,$sid);//获得统计数据
+        /* 实时计算结束 */
+
+        $this->assign('list',$list);
+        
+        // dump($data);
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
+
+    //老带新台账
+    public function zxldxtz_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+
+        /* 实时计算开始 */
+        $data = new \Admin\Action\CountZxldxtzAction();
+        $list = $data->getZxldxtzData($qishu,$sid);//获得统计数据
         /* 实时计算结束 */
 
         $this->assign('list',$list);

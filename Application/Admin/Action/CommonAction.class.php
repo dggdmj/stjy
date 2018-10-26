@@ -2051,7 +2051,7 @@ class CommonAction extends Action {
                           `jiaofeirq` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '交费日期',
                           `shoujuhao` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收据号',
                           `fapiaohao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发票号',
-                          `xuehao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
+                          `xuehao` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
                           `xingming` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
                           `shoujihao` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手机号码',
                           `gonglixx` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '公立学校',
@@ -2225,7 +2225,7 @@ class CommonAction extends Action {
                           `banji` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级',
                           `xiaoqu` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区',
                           `shangkesj` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课时间',
-                          `shangkels` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课老师',
+                          `shangkels` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课老师',
                           `xuehao` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
                           `xingming` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
                           `jiaoshi` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '教室',
@@ -2252,7 +2252,7 @@ class CommonAction extends Action {
                           `daorusj` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),
                           KEY `IDX_soushudd` (`suoshudd`),
-                          KEY `IDX_xuehao` (`xuehao`) USING BTREE,
+                          KEY `IDX_xuehao` (`xuehao`),
                           KEY `IDX_banji` (`banji`),
                           KEY `IDX_shoujihao` (`shoujuhao`)
                         ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
