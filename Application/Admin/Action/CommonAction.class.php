@@ -649,6 +649,86 @@ class CommonAction extends Action {
         fclose($file);
     }
 
+    //导出表格
+    public function downloadScb_new($objPHPExcel,$info,$filename,$data){
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $template = __ROOT__.'Public/template/template_scyj.xlsx';          //使用模板
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        // dump($info);die;
+        $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
+
+        $result = $this->getComment('scyjb');
+        $result = array_flip($result);
+        dump($result);exit;
+        // dump($kecheng);
+        // die;
+
+        // 字段补充
+        $z = 7;
+        // dump(\PHPExcel_Cell::stringFromColumnIndex($z));
+        // die;
+        foreach($kecheng as $v){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2',$v);
+            $z++;
+        }
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','合计营业额');
+        $z++;
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','会员老带新营业额');
+        $z++;
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','签名');
+
+        $highestColumn = $objActSheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
+        $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+        // 获取所有字段
+        for($i=0;$i<$colsNum;$i++){// 从第2行获取所有字段
+            $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+
+            // 如果取出的obj,则转为string
+            if(is_object($cell_val)){
+                $cell_val= $cell_val->__toString();
+            }
+            // echo $cell_val.'<br>';
+            if(!empty(trim($cell_val))){// 如果有必要,其他获取字段也要加这个条件
+                $ziduan[] = trim($cell_val);
+            }
+
+        }
+        
+        $comment = array_flip($this->getComment('scyjb'));
+        // dump($comment);die;
+        $i = 3;// 行从3开始
+
+        foreach ($data as $row) {
+            $j = 0;// 列从0开始,即从A开始
+            foreach($row as $k=>$v){
+                foreach($ziduan as $key=>$val){
+                    if(explode('(',$val)[0] == $k || explode('(',$val)[0] == $comment[$k]){
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($key).$i,$v);
+                    }
+                }
+                $j++;
+            }
+            $i++;
+        }
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");;
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+    }
+
     // 下载生成表格
     public function downloadScb(){
         $tid = $_GET['tid'];
@@ -661,8 +741,9 @@ class CommonAction extends Action {
         $filename = $qishu.'-'.$info['school'].'-'.$tbnames_cn[$tid];
         switch($tid){
             case 8:
-                $data = new \Admin\Action\CountXzmxAction();
-                $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+                $data = $this->ScyjToDb($qishu,$sid);
+                $this->downloadScb_new($objPHPExcel,$info,$filename,$data);
+                exit;
             break;
             case 9:
                 $start_row = 6;
@@ -701,7 +782,6 @@ class CommonAction extends Action {
                 // dump($data);die;
             break;
         }
-        
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
     }
 
@@ -1423,8 +1503,8 @@ class CommonAction extends Action {
     public function ScyjToDb($qishu,$sid){
         // ======================获取市场业绩数据开始======================
         $scyj = new \Admin\Action\CountScyjAction();
-        $scyj->getScyjData($qishu,$sid);//获得统计数据
-        
+        $data = $scyj->getScyjData($qishu,$sid);//获得统计数据
+        return $data;
     }
 
     // 市场业绩数据入库
@@ -2283,7 +2363,7 @@ class CommonAction extends Action {
                           `banji` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级',
                           `xiaoqu` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区',
                           `shangkesj` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课时间',
-                          `shangkels` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课老师',
+                          `shangkels` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课老师',
                           `xuehao` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学号',
                           `xingming` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '姓名',
                           `jiaoshi` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '教室',

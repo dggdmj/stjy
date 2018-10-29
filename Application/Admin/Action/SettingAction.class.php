@@ -57,6 +57,10 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/fenxiaokcgl'),
                     'icon' => 'list',
                 ),
+                array('name' => '收据产品类型',
+                    'url' => url('Setting/shoujucplx'),
+                    'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -897,6 +901,68 @@ class SettingAction extends CommonAction{
     //分校课程管理
     public function fenxiaokcgl(){
         $list = M('school')->field('id,name')->order('id desc')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //清空分校课程管理
+    public function fenxiaokcgl_delete(){
+        $sid = I('sid');
+        M('fxkcgl')->where(array('sid'=>$sid))->delete();
+        $this->success('删除成功');
+    }
+
+    //清空收据产品类型表
+    public function shoujucplx_delete(){
+        M('sjcplx')->where("1=1")->delete();
+       $this->success('删除成功');
+    }
+
+    //收据产品类型
+    public function shoujucplx(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            M('sjcplx')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($i=2;$i<$highestRow;$i++){
+                 $data['xiangmu'] = $sheet->getCell('A'.$i)->getValue();
+                 $data['miaoshu'] = $sheet->getCell('B'.$i)->getValue();
+                 $data['shifouqy'] = $sheet->getCell('C'.$i)->getValue();
+                 $data['shifouhytzlx'] = $sheet->getCell('D'.$i)->getValue();
+                 $data['shifouhytzlx'] = $data['shifouhytzlx'] == '是' ? '1' : '2';
+                 $data['daorusj'] = date('Y-m-d H:i:s',time());
+                 if ($data['xiangmu'] != ''){
+                    M('sjcplx')->add($data);
+                 }
+                 unset($data);
+            }
+            $this->success('导入成功',U('shoujucplx'));
+            exit;
+        }
+        $list = M('sjcplx')->order('id')->select();
         $this->assign('list',$list);
         $this->adminDisplay();
     }

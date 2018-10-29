@@ -361,6 +361,12 @@ class MenuModel {
                         'url' => U('Setting/fenxiaokcgl'),
                         'order' => 8
                     ),
+                    array(
+                        'name' => '收据产品类型',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/shoujucplx'),
+                        'order' => 8
+                    ),
                 )
             );
         $member = array(
