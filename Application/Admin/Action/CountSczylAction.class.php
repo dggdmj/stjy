@@ -13,7 +13,7 @@ class CountSczylAction extends CommonAction {
         $id = $this->getQishuId($qishu,$sid,1);
         $xyxxb = $this->checkFenbiao($id,'xyxxb');//判断是否是分表
         $where = 'suoshudd ='.$id.' and xuehao != "" and jiuduxx != "" and (zhuangtai = "在读" or zhuangtai = "休学")';// 下面$arr获取数据的查询条件
-        $schools = M($xyxxb)->field('jiuduxx,nianji,count(*) as count')->where($where)->group('jiuduxx,nianji')->select();
+        $schools = M($xyxxb)->field('jiuduxx,nianji,count(*) as count')->where($where)->group('jiuduxx,nianji')->order('id')->select();
         //获取分校公立学校规模数
         $guimo = M("gonglixx")->where("sid = $sid")->select();
         $guimo_arr = array();

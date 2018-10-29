@@ -9,7 +9,7 @@ class CountZxhytzAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getZxhytzData($qishu='201810',$sid='1',$shoujuhao='00340538'){
+    public function getZxhytzData($qishu='',$sid='',$shoujuhao=''){
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>31))->getField('id');//判断是否有生成历史
         if ($qishu_id){
             $info = M('zxhytz')->where(array('suoshudd'=>$qishu_id,'shoujuhao'=>$shoujuhao))->select();

@@ -13,13 +13,16 @@ class CountXzmxAction extends CommonAction {
         $yuefen = substr($qishu,4,2).'月';
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>10))->getField('id');//判断是否有生成历史
         if ($qishu_id){
-            $list = M('xzmxb')->where(array('suoshudd'=>$qishu_id))->select();
+            $list = M('xzmxb')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
             return $list;
         }else{
             $qishu_id = $this->insertQishuHistory(10,$qishu,$sid);
         }
         //获取学员信息表的订单id
         $xyxxb_oid = $this->getQishuId($qishu,$sid,1);
+
+        //获取学员信息表的订单id
+        $sjjlb_oid = $this->getQishuId($qishu,$sid,4);
 
         //获取转入记录的订单号
          $zrjl_oid = $this->getQishuId($qishu,$sid,28);
@@ -29,6 +32,7 @@ class CountXzmxAction extends CommonAction {
         $lastday = date('Y-m-d', strtotime("$qishu_time +1 month -1 day"));
         $firstday = date('Y-m-d', strtotime("$qishu_time"));
         $xyxxb = $this->checkFenbiao($xyxxb_oid,'xyxxb');
+        $sjjlb = $this->checkFenbiao($xyxxb_oid,'sjjlb');
         //新生
         $list = M($xyxxb)->field('xuehao,xingming,xingbie,xiaoqu as fenxiao,zhuangtai')->where("baomingrq >= '$firstday' and baomingrq <= '$lastday' and suoshudd ='$xyxxb_oid'")->select();
         //转入
@@ -47,7 +51,7 @@ class CountXzmxAction extends CommonAction {
 
         $zhuanchu_id = $this->getQishuId($qishu,$sid,27);
         $shouju_id = $this->getQishuId($qishu,$sid,4);
-        $shouju = M('sjjlb as sj')->field('zc.xuehao,zc.xingming,zc.xingbie,zc.zhuanchuxq')->join('RIGHT JOIN stjy_zcjlb as zc on zc.xuehao=sj.xuehao')->where("sj.suoshudd='$shouju_id' and zc.suoshudd='$zhuanchu_id'")->select();
+        $shouju = M($sjjlb.' as sj')->field('zc.xuehao,zc.xingming,zc.xingbie,zc.zhuanchuxq as fenxiao')->join('RIGHT JOIN stjy_zcjlb as zc on zc.xuehao=sj.xuehao')->where("sj.suoshudd='$shouju_id' and zc.suoshudd='$zhuanchu_id'")->select();
         $xyList = M($xyxxb)->field('xuehao')->where("suoshudd = '$xyxxb_oid'")->select();
         $xyList = $this->quchongjian($xinzeng);
 

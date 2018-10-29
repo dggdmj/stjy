@@ -219,7 +219,7 @@ class TableImportAction extends CommonAction{
         //判断是否在分表里面获取返回的表名
         $tablename_fenbiao = $this->checkFenbiao($id,$tablename);
         $list = M($tablename_fenbiao)->field('id',true)->where("suoshudd = ".$id)->select();
-        $tbnames = array_flip(array_diff($this->getComment($tablename),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
+        $tbnames = array_flip(array_diff($this->getComment($tablename_fenbiao),array('id','suoshudd','daorusj')));// array_diff第二个参数的数组里面写入不需要显示的字段
         $this->assign('list',$list);// 赋值数据集
         $this->assign('tbnames',$tbnames);// 赋值数据集
         $this->adminDisplay();
@@ -263,8 +263,7 @@ class TableImportAction extends CommonAction{
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
             // dump($_POST);die;
             // 获取对应数据库里面注释(与excel字段相同)和字段名拼接的数组
-            $newTemp = $this->getComment($tablename);// 如['学号'=>'xuehao',...]
-            // dump($newTemp);die;
+            
             $tablenames = $this->getTabelnames(2,[1,3,4]);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
 
             $tid = $_POST["tid"];  //表名对应的序号
@@ -338,12 +337,12 @@ class TableImportAction extends CommonAction{
             }
            
             $qishu_id = M("qishu_history")->add($_POST);
-
+            //判断是否是分表
+            $new_tablename = $this->checkFenbiao($qishu_id,$tablename);
             // excel文档超大对应设置
             if($_FILES['excel']['size']>307200){
                 ini_set('memory_limit', '512M');
             }
-
 
 
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
@@ -355,14 +354,13 @@ class TableImportAction extends CommonAction{
             $highestRow = $sheet->getHighestRow(); // 取得最高行数,则总行数
             $highestColumn = $sheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
-
             if($tid == 15){
                 $excel_data = $this->getExcelData2($objPHPExcel,$highestRow,$colsNum,$qishu_id);
             }else{
                 // 获取excel里面的所有字段
                 $ziduan = $this->getExcelZiduan($objPHPExcel,$colsNum);
                 // 检测必须列
-                $cha = $this->checkBixu($tablename,$ziduan);
+                $cha = $this->checkBixu($new_tablename,$ziduan);
                 
                 if(!empty($cha)){
                     $notice = implode(',',$cha);
@@ -380,6 +378,8 @@ class TableImportAction extends CommonAction{
                     // --------------删除操作执行结束--------------
                     $this->error('缺少必须列'.$notice);
                 }
+                
+                $newTemp = $this->getComment($new_tablename);// 如['学号'=>'xuehao',...]
                 // dump($cha);die;
                 // 获取excel里面除字段以外的数据
                 $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$qishu_id,$ziduan,$newTemp);
@@ -390,47 +390,46 @@ class TableImportAction extends CommonAction{
             // $res = M($tablename)->addAll($excel_data);
             
             //获取分表年份表名
-            $table = $this->checkFenbiao($qishu_id,$_POST['table_name']);
             foreach($excel_data as $v){
-                M($table)->add($v);
+                M($new_tablename)->add($v);
             }
 
             // 位置不能移动,要等班级学员信息表执行完才有其$id_bjxyxxb
             // 校验导入表格
             // *****完成之后要加删除原导入数据
-            switch ($_POST['tid']) {
-                case 1:
-                    $res = $this->checkXyxxb($_POST);
-                    if($res == 'error'){
-                        return 'error';
-                    }
-                break;
-                case 2:
-                    $res = $this->checkBjxxb($_POST);
-                    if($res == 'error'){
-                        return 'error';
-                    }
-                break;
-                case 3:
-                    $res = $this->checkBjxyxxb($_POST);
-                    if($res == 'error'){
-                        return 'error';
-                    }
-                break;
-                case 4:
-                    $res = $this->checkSjjlb($_POST);
-                    if($res == 'error'){
-                        return 'error';
-                    }
-                break;
-                case 24:
-                    $res = $this->checkSjmxb($_POST);
-                    if($res == 'error'){
-                        return 'error';
-                    }
-                break;
+            // switch ($_POST['tid']) {
+            //     case 1:
+            //         $res = $this->checkXyxxb($_POST);
+            //         if($res == 'error'){
+            //             return 'error';
+            //         }
+            //     break;
+            //     case 2:
+            //         $res = $this->checkBjxxb($_POST);
+            //         if($res == 'error'){
+            //             return 'error';
+            //         }
+            //     break;
+            //     case 3:
+            //         $res = $this->checkBjxyxxb($_POST);
+            //         if($res == 'error'){
+            //             return 'error';
+            //         }
+            //     break;
+            //     case 4:
+            //         $res = $this->checkSjjlb($_POST);
+            //         if($res == 'error'){
+            //             return 'error';
+            //         }
+            //     break;
+            //     case 24:
+            //         $res = $this->checkSjmxb($_POST);
+            //         if($res == 'error'){
+            //             return 'error';
+            //         }
+            //     break;
                 
-            }
+            // }
 
             $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
         }else{
@@ -493,8 +492,9 @@ class TableImportAction extends CommonAction{
             }
 
             $qishu_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],13);
-            
-
+            if (!$qishu_id){
+                $qishu_id = $this->insertQishuHistory(13,$_POST['qishu'],$_POST['sid']);
+            }
             // excel文档超大对应设置
             if($_FILES['excel']['size']>307200){
                 ini_set('memory_limit', '512M');

@@ -13,7 +13,7 @@ class CountLsqrsrAction extends CommonAction {
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>30))->getField('id');//判断是否有生成历史
         if ($qishu_id){
-            $newList = M('lsqrsr')->where(array('suoshudd'=>$qishu_id))->select();
+            $newList = M('lsqrsr')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
             $newList = $this->heji($newList);
             return $newList;
         }

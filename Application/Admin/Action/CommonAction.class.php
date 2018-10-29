@@ -656,6 +656,62 @@ class CommonAction extends Action {
         $sid = $_GET['sid'];
         $id = M('qishu_history')->where($_GET)->getField('id');
         $info = $this->getInfo($qishu,$sid);
+        $tbnames = $this->getTabelnames(1,[2]);
+        $tbnames_cn = $this->getTabelnames(2,[2]);
+        $filename = $qishu.'-'.$info['school'].'-'.$tbnames_cn[$tid];
+        switch($tid){
+            case 8:
+                $data = new \Admin\Action\CountXzmxAction();
+                $list = $data->getXzmxbData($qishu,$sid);//获得统计数据
+            break;
+            case 9:
+                $start_row = 6;
+                $data = M($tbnames[$tid])->field('xuhao,gonglixx,youeryuan,yinianji,ernianji,sannianji,sinianji,wunianji,liunianji,chuyi,chuer,chuerys,heji,xuexiaogms,zhanyoulv')->where('suoshudd ='.$id)->order('xuhao')->select();
+            break;
+            case 10:
+                $start_row = 2;
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,xinzenglx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,shengyukc,yucunxfje,lianxidh,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                }else{
+                    $data = array();
+                }
+                
+            break;
+            case 11:
+                $start_row = 2;
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                }else{
+                    $data = array();
+                }
+                // dump($data);die;
+            break;
+            case 12:
+                $this->exportExcel2($objPHPExcel,$id,$info,$filename);
+                die;
+            break;
+            case 13:
+                $start_row = 3;
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
+                }else{
+                    $data = array();
+                }
+                
+                // dump($data);die;
+            break;
+        }
+        
+        $this->exportExcel($tid,$start_row,$data,$filename,$info);
+    }
+
+    // 下载生成表格
+    public function downloadScb_bak(){
+        $tid = $_GET['tid'];
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+        $id = M('qishu_history')->where($_GET)->getField('id');
+        $info = $this->getInfo($qishu,$sid);
         // if(empty($id)){
         //     $this->error('error');
         // }
@@ -1821,6 +1877,7 @@ class CommonAction extends Action {
         // 市场占有率数据写入数据库
         // $t1 = microtime(true);
         $res_sczyl = $this->SczylToDb($qishu,$sid);
+        
         // $t2 = microtime(true);
         // 新增明细数据写入数据库
         $res_xzmx = $this->XzmxToDb($qishu,$sid);
@@ -1857,6 +1914,7 @@ class CommonAction extends Action {
         $res_zxldxtz = $zxldxtz->getZxldxtzData($qishu,$sid);
         // -----------------------生成数据入库结束-----------------------
         
+
     }
 
     public function delScData($qishu,$sid,$tid){

@@ -9,14 +9,14 @@ class CountScyjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getScyjData($qishu='201810',$sid='1'){
+    public function getScyjData($qishu='',$sid=''){
 
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
         if(!$qishu_id){
             $qishu_id = $this->insertQishuHistory(8,$qishu,$sid);
         }else{
-            $data = M('scyjb')->where(array('suoshudd'=>$qishu_id))->select();
+            $data = M('scyjb')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
             foreach($data as &$val){
                 $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
                 foreach($val['fujiaxx'] as $k=>$v){
@@ -262,6 +262,7 @@ class CountScyjAction extends CommonAction {
                         ];
             $temp['fujiaxx'] = json_encode($fujiaxx);
             $temp['suoshudd'] = $qishu_id;
+            $temp['xuhao'] = $key+1;
             unset($temp[$key]['liangdianwnpdhy'],$temp[$key]['maiyinsyn'],$temp[$key]['yiniangjhy'],$temp[$key]['jiubayyqms'],$temp[$key]['sannianpdhy']);
             M('scyjb')->add($temp);
 

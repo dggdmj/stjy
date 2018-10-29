@@ -10,11 +10,11 @@ class CountJsmxAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getJsmxbData($qishu,$sid){
+    public function getJsmxbData($qishu='201808',$sid='1'){
         $yuefen = substr($qishu,4,2).'月';
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>11))->getField('id');//判断是否有生成历史
         if ($qishu_id){
-            $list = M('jsmxb')->where(array('suoshudd'=>$qishu_id))->select();
+            $list = M('jsmxb')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
             return $list;
         }else{
             $qishu_id = $this->insertQishuHistory(11,$qishu,$sid);
@@ -29,7 +29,7 @@ class CountJsmxAction extends CommonAction {
         $xyxxb = $this->checkFenbiao($xyxxb_oid,'xyxxb');
         $list = M($xyxxb)
             ->field('xuehao,xingming,xingbie,xiaoqu as fenxiao,zhuangtai')
-            ->where(" zhuangtai = '已退学' and suoshudd='$xyxxb_oid' and tuixuerq>='$firstday' and tuixuerq <= $lastday")
+            ->where(" zhuangtai = '已退学' and suoshudd='$xyxxb_oid' and tuixuerq>='$firstday' and tuixuerq <= '$lastday'")
             ->select();
         $zhuanchu_id = $this->getQishuId($qishu,$sid,27);
         $zhuanchu = M('zcjlb')->field('xuehao')->where("suoshudd = '$zhuanchu_id' and zhuangxiaosj >= '$firstday' and zhuangxiaosj <= '$lastday'")->select();
@@ -42,13 +42,13 @@ class CountJsmxAction extends CommonAction {
             $val['xuhao'] = $key+1;
             $val['suoshudd'] = $qishu_id;
             $val['yuefen'] = $yuefen;
-            $val['xinzenglx'] = '退学';
+            $val['jianshaolx'] = '退学';
             //判断是不是转入的
             if (in_array($val['xuehao'],$zhuanchu)){
-                $val['xinzenglx'] = '转出';
+                $val['jianshaolx'] = '转出';
             }
             if (in_array($val['xuehao'],$tuifei)){
-                $val['xinzenglx'] = '退费';
+                $val['jianshaolx'] = '退费';
             }
             M('jsmxb')->add($val);
         }

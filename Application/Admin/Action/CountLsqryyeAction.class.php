@@ -14,7 +14,7 @@ class CountLsqryyeAction extends CommonAction {
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>29))->getField('id');//判断是否有生成历史
         if ($qishu_id){
-            $newList = M('lsqryye')->where(array('suoshudd'=>$qishu_id))->select();
+            $newList = M('lsqryye')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
             $newList = $this->heji($newList);
             return $newList;
         }
