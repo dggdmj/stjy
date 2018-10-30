@@ -49,6 +49,12 @@ class LoginAction extends Action {
     		'loginip' => get_client_ip(),
     	);
     	M('admin')->save($data);
+
+        //修改登录校区默认选第一个校区
+        $school_id = M('admin')->where(array('id'=>$user['id']))->getField('school_id');
+        $school_id = explode(',',$school_id);
+        session('sid',$school_id['0']);
+
     	session(C('USER_AUTH_KEY'), $user['id']);
         session('username', $user['username']);
     	session('logintime', date('Y-m-d H:i:s', $data['logintime']));

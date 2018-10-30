@@ -12,52 +12,52 @@ class TableCountAction extends CommonAction{
         $data = array('info' => array('name' => '校管家表格计算',
             'description' => ' 查看数据总表',
         ),
-            'menu' => array(
-                array('name' => '业绩总表',
-                    'url' => url('TableCount/index'),
-                    'icon' => 'list',
-                ),
-                array('name' => '市场业绩表',
-                    'url' => url('TableCount/yejilist/tid/8'),
-                    'icon' => 'list',
-                ),
-                array('name' => '市场占有率',
-                    'url' => url('TableCount/yejilist/tid/9'),
-                    'icon' => 'list',
-                ),
-                array('name' => '新增明细',
-                    'url' => url('TableCount/yejilist/tid/10'),
-                    'icon' => 'list',
-                ),
-                array('name' => '减少明细',
-                    'url' => url('TableCount/yejilist/tid/11'),
-                    'icon' => 'list',
-                ),
-                array('name' => '经营数据表',
-                    'url' => url('TableCount/yejilist/tid/12'),
-                    'icon' => 'list',
-                ),
-                array('name' => '退费表',
-                    'url' => url('TableCount/yejilist/tid/13'),
-                    'icon' => 'list',
-                ),
-                array('name' => '老师确认营业额',
-                    'url' => url('TableCount/yejilist/tid/29'),
-                    'icon' => 'list',
-                ),
-                array('name' => '老师确认收入',
-                    'url' => url('TableCount/yejilist/tid/30'),
-                    'icon' => 'list',
-                ),
-                array('name' => '中心会员台账',
-                    'url' => url('TableCount/yejilist/tid/31'),
-                    'icon' => 'list',
-                ),
-                array('name' => '老带新台账',
-                    'url' => url('TableCount/yejilist/tid/32'),
-                    'icon' => 'list',
-                )
-            ),
+            // 'menu' => array(
+            //     array('name' => '业绩总表',
+            //         'url' => url('TableCount/index'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '市场业绩表',
+            //         'url' => url('TableCount/yejilist/tid/8'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '市场占有率',
+            //         'url' => url('TableCount/yejilist/tid/9'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '新增明细',
+            //         'url' => url('TableCount/yejilist/tid/10'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '减少明细',
+            //         'url' => url('TableCount/yejilist/tid/11'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '经营数据表',
+            //         'url' => url('TableCount/yejilist/tid/12'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '退费表',
+            //         'url' => url('TableCount/yejilist/tid/13'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '老师确认营业额',
+            //         'url' => url('TableCount/yejilist/tid/29'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '老师确认收入',
+            //         'url' => url('TableCount/yejilist/tid/30'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '中心会员台账',
+            //         'url' => url('TableCount/yejilist/tid/31'),
+            //         'icon' => 'list',
+            //     ),
+            //     array('name' => '老带新台账',
+            //         'url' => url('TableCount/yejilist/tid/32'),
+            //         'icon' => 'list',
+            //     )
+            // ),
            // 'add' => array(
            //     array('name' => '添加文章',
            //         'url' => url('Article/article'),
@@ -199,6 +199,87 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
+    //市场业绩表
+    public function scyjb(){
+        $sid = session('sid');
+
+        /***************************获取两个时间段之间的月份***************************/
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        if (!$start_time || !$end_time){
+            //期数不选默认选最近的
+            $qishu = M('qishu_history')->where(array('sid'=>array('in',$sid),'tid'=>8))->order('daorusj')->getField('qishu');
+            if (!$qishu){
+                $this->adminDisplay();exit;
+            }
+            $start_time = substr($qishu,0,4).'-'.substr($qishu,4,2);
+            $end_time = $start_time;
+        }
+        $s = new \DateTime($start_time);
+        $e = new \DateTime($end_time);
+        /**************************************************************************/
+
+        // 时间间距 这里设置的是一个月
+        $interval = \DateInterval::createFromDateString('1 month');
+        $period   = new \DatePeriod($s, $interval, $e);
+        $i = 0;
+        $qishu = array();
+        foreach($period as $k=>$dt){
+            $qishu[$i] = $dt->format("Ym");
+            $i++;
+        }
+        $qishu[$i] = str_replace('-','',$end_time);
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 8;
+
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+
+        $where['suoshudd'] = array('in',$qishu_id);
+        $data = M('scyjb')->where($where)->order('id')->select();
+
+        foreach($data as &$val){
+            $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+            $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
+            $val['fenxiao'] = $school[ $val['suoshudd'] ];
+            $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
+            foreach($val['fujiaxx'] as $k=>$v){
+                $val[$k] = $v;
+            }
+            unset($val['fujiaxx']);
+        }
+
+        $scyjb = new \Admin\Action\CountScyjAction();
+        $list = $scyjb->heji($data);
+        
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
 	//市场占有率表详情
 	public function sczylb_xq(){
         $qishu = $_GET['qishu'];
@@ -223,6 +304,25 @@ class TableCountAction extends CommonAction{
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
+
+    //市场占有率表详情
+    public function sczylb(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+
+        /* 实时计算开始 */
+        $data = new \Admin\Action\CountSczylAction();
+        $list = $data->getSczylbData($qishu,$sid);//获得统计数据
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+
+
+
+        $this->assign("list",$list);
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
+
+
 
 	//新增明细表详情
 	public function xzmxb_xq(){

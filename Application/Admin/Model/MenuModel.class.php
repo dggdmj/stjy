@@ -138,7 +138,7 @@ class MenuModel {
                     array(
                         'name' => '市场业绩表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/8'),
+                        'url' => U('/TableCount/scyjb'),
                         'order' => 1
                     ),
                     array(

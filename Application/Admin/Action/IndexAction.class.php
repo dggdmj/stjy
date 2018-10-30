@@ -26,8 +26,11 @@ class IndexAction extends CommonAction {
         // dump($menuList);exit;
         $this->assign('menuList',json_encode($menuList));
 
-        $school = M("school")->field("id,name,subname")->where("isuse = 1")->select();
+        $school_id = M('admin')->where(array('id'=>session('uid')))->getField('school_id');
+        $school_id = explode(',',$school_id);
+        $school = M("school")->field("id,name,subname")->where(array('id'=>array('in',$school_id),'isuse'=>1))->select();
         $this->assign('school',$school);
+        $this->assign('school_id',$school_id);
         // 进入首页
         $this->display();
     }
@@ -50,6 +53,14 @@ class IndexAction extends CommonAction {
         $this->totalViewer = M("log")->count();
 
         $this->adminDisplay();
+    }
+
+    //切换分校
+    public function qihuan(){
+        $sid = I('sid');
+        $sid = implode(',',$sid);
+        session('sid',$sid);
+        $this->success('切换成功',U('index/index'));
     }
     
 }

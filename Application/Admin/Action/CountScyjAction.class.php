@@ -9,7 +9,7 @@ class CountScyjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getScyjData($qishu='201808',$sid='1'){
+    public function getScyjData($qishu='',$sid=''){
 
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
@@ -299,6 +299,11 @@ class CountScyjAction extends CommonAction {
             }
         }
         $heji['xuhao'] = '';
+        $heji['nianfen'] = '';
+        $heji['yuefen'] = '';
+        $heji['fenxiao'] = '';
+        $heji['zhiwei'] = '';
+        $heji['ruzhirq'] = '';
         array_push($list,$heji);
         return $list;
     }
