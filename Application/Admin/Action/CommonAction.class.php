@@ -650,7 +650,7 @@ class CommonAction extends Action {
     }
 
     //导出表格
-    public function downloadScb_new($objPHPExcel,$info,$filename,$data){
+    public function downloadScb_scyjb($objPHPExcel,$info,$filename,$data){
         vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
         $template = __ROOT__.'Public/template/template_scyj.xlsx';          //使用模板
         $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
@@ -663,28 +663,34 @@ class CommonAction extends Action {
         $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
 
         $result = $this->getComment('scyjb');
+        //获取所有的字段描述
         $result = array_flip($result);
-        dump($result);exit;
-        // dump($kecheng);
-        // die;
 
         // 字段补充
-        $z = 7;
-        // dump(\PHPExcel_Cell::stringFromColumnIndex($z));
-        // die;
-        foreach($kecheng as $v){
+        $z = 0;
+        unset($result['id'],$result['suoshudd'],$result['daorusj'],$result['fujiaxx'],$result['qianming'],$result['hejiyye'],$result['huiyuanldxyye']);
+
+        $result['liangdianwnpdhy'] = '2.5年拼单会员';
+        $result['maiyinsyn'] = '买1年送1年';
+        $result['xiaoxuelnpd'] = '小学2年拼单（每人1年）';
+        $result['youeryngjhy'] = '幼儿-1年国际会员';
+        $result['jiubayyqms'] = '98元1期秒杀';
+        $result['sannianpdhy'] = '3年拼单会员';
+        $result['hejiyye'] = '合计营业额';
+        $result['huiyuanldxyye'] = '会员老带新营业额';
+        $result['qianming'] = '签名';
+        foreach($result as $k=>$v){
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2',$v);
+            $arr[ $z ] = $k;
             $z++;
         }
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','合计营业额');
-        $z++;
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','会员老带新营业额');
-        $z++;
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','签名');
+        /*********************------------表头设置完毕------------**********************/
+
 
         $highestColumn = $objActSheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
         $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
-        // 获取所有字段
+
+        // 获取所有字段47
         for($i=0;$i<$colsNum;$i++){// 从第2行获取所有字段
             $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
 
@@ -696,22 +702,13 @@ class CommonAction extends Action {
             if(!empty(trim($cell_val))){// 如果有必要,其他获取字段也要加这个条件
                 $ziduan[] = trim($cell_val);
             }
-
         }
         
-        $comment = array_flip($this->getComment('scyjb'));
-        // dump($comment);die;
-        $i = 3;// 行从3开始
-
-        foreach ($data as $row) {
-            $j = 0;// 列从0开始,即从A开始
-            foreach($row as $k=>$v){
-                foreach($ziduan as $key=>$val){
-                    if(explode('(',$val)[0] == $k || explode('(',$val)[0] == $comment[$k]){
-                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($key).$i,$v);
-                    }
-                }
-                $j++;
+        //输出值
+        $i = 3;
+        foreach($data as $key=>$val){
+            foreach($arr as $ko=>$vo){
+                 $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($ko).$i,$val[ $vo ]);
             }
             $i++;
         }
@@ -742,7 +739,7 @@ class CommonAction extends Action {
         switch($tid){
             case 8:
                 $data = $this->ScyjToDb($qishu,$sid);
-                $this->downloadScb_new($objPHPExcel,$info,$filename,$data);
+                $this->downloadScb_scyjb($objPHPExcel,$info,$filename,$data);
                 exit;
             break;
             case 9:
@@ -752,7 +749,7 @@ class CommonAction extends Action {
             case 10:
                 $start_row = 2;
                 if(!empty($id)){
-                    $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,xinzenglx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,shengyukc,yucunxfje,lianxidh,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                    $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,xinzenglx,xuehao,xingming')->where('suoshudd ='.$id)->order('xuhao')->select();
                 }else{
                     $data = array();
                 }
@@ -761,7 +758,7 @@ class CommonAction extends Action {
             case 11:
                 $start_row = 2;
                 if(!empty($id)){
-                    $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming,suoshubm,banjibh,jingduls,fanduls,kaibanrq,jiebanrq,liushitfyy,tingduxqjkc,shengyukc,yucunxfje,lianxidh,yujifdsj,zhaoshenggw,zhaoshengly,jiuduxx,jiuduxxnj')->where('suoshudd ='.$id)->order('xuhao')->select();
+                    $data = M($tbnames[$tid])->field('xuhao,yuefen,fenxiao,jianshaolx,xuehao,xingming')->where('suoshudd ='.$id)->order('xuhao')->select();
                 }else{
                     $data = array();
                 }
@@ -778,8 +775,38 @@ class CommonAction extends Action {
                 }else{
                     $data = array();
                 }
-                
-                // dump($data);die;
+            break;
+            case 29:
+                $start_row = 3;
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id')->select();
+                }else{
+                    $data = array();
+                }
+            break;
+            case 30:
+                $start_row = 3;
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id')->select();
+                }else{
+                    $data = array();
+                }
+            break;
+            case 31:
+                $start_row = 2;
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id')->select();
+                }else{
+                    $data = array();
+                }
+            break;
+            case 32:
+                $start_row = 2;
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id')->select();
+                }else{
+                    $data = array();
+                }
             break;
         }
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
@@ -1198,6 +1225,18 @@ class CommonAction extends Action {
             case 13:
                 $template = __ROOT__.'Public/template/template_tf.xlsx';          //使用模板
             break;
+            case 29:
+                $template = __ROOT__.'Public/template/template_lsyye.xlsx';          //使用模板
+            break;
+            case 30:
+                $template = __ROOT__.'Public/template/template_lsqrsr.xlsx';          //使用模板
+            break;
+            case 31:
+                $template = __ROOT__.'Public/template/template_zxhytz.xlsx';          //使用模板
+            break;
+            case 32:
+                $template = __ROOT__.'Public/template/template_zxldxtz.xlsx';          //使用模板
+            break;
         }
 
         $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
@@ -1213,6 +1252,12 @@ class CommonAction extends Action {
             // break;
             case 9:
                 $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场占有率统计表');          //使用模板
+            break;
+            case 29:
+                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'老师营业额表');          //使用模板
+            break;
+            case 30:
+                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'老师确认收入表');          //使用模板
             break;
         }
         // $objActSheet->setCellValue('坐标','值');

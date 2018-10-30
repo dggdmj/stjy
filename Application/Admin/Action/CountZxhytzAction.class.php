@@ -34,7 +34,7 @@ class CountZxhytzAction extends CommonAction {
         $list = M('sjjlb_'.$nian.' as sj')
                 ->join('LEFT JOIN stjy_szlsb as sz on sz.shoujuhao=sj.shoujuhao')
                 ->field('sj.chanpinlx as leixing,sj.shoujuhao,sj.xuehao,sj.xingming,sj.beizhu,sj.jiaofeirq,sj.xiaoqu as fenxiao,sz.shouru as jiaofeije')
-                ->where("sj.suoshudd = '$sjjlb_oid' ")
+                ->where("sj.suoshudd = '$sjjlb_oid' and sj.shoukuanzh != '老带新返现' and sj.shoukuanzh != '结转学费'")
                 ->group('sj.shoujuhao')
                 ->select();
         $xuhao = 1;

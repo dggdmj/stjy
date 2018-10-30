@@ -182,6 +182,7 @@ class CountLsqrsrAction extends CommonAction {
             }
         }
         $heji['laoshi'] = '小计';
+        $heji['xuhao'] = '';
         array_push($list,$heji);
         return $list;
     }

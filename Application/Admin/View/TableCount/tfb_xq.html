@@ -11,7 +11,8 @@
                     <th rowspan="2">退费类型</th>
                     <th rowspan="2">学号</th>
                     <th rowspan="2">学生姓名</th>
-                    <th rowspan="2">4次课前/后</th>
+                    <th rowspan="2">年级</th>
+                    <th rowspan="2">是否学习卡结算</th>
                     <th rowspan="2">结算类型</th>
                     <th rowspan="2">班级编号</th>
                     <th rowspan="2">本次退费课程的缴费时间</th>
@@ -28,46 +29,34 @@
                     <th rowspan="2">银行账号</th>
                     <th rowspan="2">退费原因</th>
                     <th rowspan="2">电话确认</th>
-                    <th colspan="3">精读老师</th>
-                    <th colspan="3">泛读老师</th>
-                    <th colspan="3">教学组长(精读)</th>
-                    <th colspan="3">教务主任</th>
-                    <th colspan="3">教学副校长</th>
-                    <th colspan="4">课程顾问/招生主任</th>
-                    <th colspan="3">招生副校长</th>
-                    <th colspan="3">店长总监</th>
-                    <th colspan="3">区域总监</th>
-                    <th rowspan="2">扣款合计</th>
+                    <th colspan="3">招生顾问/招生主任</th>
+                    <th colspan="2">精读老师</th>
+                    <th colspan="2">泛读老师</th>
+                    <th colspan="2">教务主任</th>
+                    <th colspan="2">招生副校长</th>
+                    <th colspan="2">店长总监(校长）</th>
+                    <th colspan="2">区域教学总监</th>
+                    <th colspan="2"> 区域总监/副总</th>
+                    <th rowspan="2"> 扣款合计</th>
                 </tr>
                 <tr>
-                    <th>姓名</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
-                    <th>姓名</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
-                    <th>姓名</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
-                    <th>姓名</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
-                    <th>姓名</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
-                    <th>姓名</th>
+                    <th>姓名1</th>
                     <th>职位</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
-                    <th>姓名</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
-                    <th>姓名</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
-                    <th>姓名</th>
-                    <th>应扣金额</th>
-                    <th>确认</th>
+                    <th>应扣金额1</th>
+                    <th>姓名2</th>
+                    <th>应扣金额2</th>
+                    <th>姓名3</th>
+                    <th> 应扣金额3 </th>
+                    <th>姓名4</th>
+                    <th>应扣金额4</th>
+                    <th>姓名5</th>
+                    <th>应扣金额5</th>
+                    <th>姓名6</th>
+                    <th> 应扣金额6 </th>
+                    <th>姓名7</th>
+                    <th> 应扣金额7 </th>
+                    <th> 姓名8 </th>
+                    <th> 应扣金额8 </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -79,7 +68,8 @@
                             <td>{$v['tuifeilx']}</td>
                             <td>{$v['xuehao']}</td>
                             <td>{$v['xingming']}</td>
-                            <td>{$v['sicikqh']}</td>
+                            <td>{$v['nianji']}</td>
+                            <td>{$v['shifouxxkjs']}</td>
                             <td>{$v['jiesuanlx']}</td>
                             <td>{$v['banjibh']}</td>
                             <td>{$v['bencitfkcdjfsj']}</td>
@@ -96,34 +86,23 @@
                             <td>{$v['yinhangzh']}</td>
                             <td>{$v['tuifeiyy']}</td>
                             <td>{$v['dianhuaqr']}</td>
+                            <td>{$v['zhaoshenggwxm']}</td>
+                            <td>{$v['zhaoshenggwzw']}</td>
+                            <td>{$v['zhaoshenggwykje']}</td>
                             <td>{$v['jingdulsxm']}</td>
                             <td>{$v['jingdulsykje']}</td>
-                            <td>{$v['jingdulsqr']}</td>
                             <td>{$v['fandulsxm']}</td>
                             <td>{$v['fandulsykje']}</td>
-                            <td>{$v['fandulsqr']}</td>
-                            <td>{$v['jiaoxuezzxm']}</td>
-                            <td>{$v['jiaoxuezzykje']}</td>
-                            <td>{$v['jiaoxuezzqr']}</td>
                             <td>{$v['jiaowuzrxm']}</td>
                             <td>{$v['jiaowuzrykje']}</td>
-                            <td>{$v['jiaowuzrqr']}</td>
-                            <td>{$v['jiaoxuefxzxm']}</td>
-                            <td>{$v['jiaoxuefxzykje']}</td>
-                            <td>{$v['jiaoxuefxzqr']}</td>
-                            <td>{$v['zhaoshengzrxm']}</td>
-                            <td>{$v['zhiwei']}</td>
-                            <td>{$v['zhaoshengzrykje']}</td>
-                            <td>{$v['zhaoshengzrqr']}</td>
                             <td>{$v['zhaoshengfxzxm']}</td>
-                            <td>{$v['zhaoshengfxzykje']}</td>
-                            <td>{$v['zhaoshengfxzqr']}</td>
-                            <td>{$v['dianzhangzjxm']}</td>
-                            <td>{$v['dianzhangzjykje']}</td>
-                            <td>{$v['dianzhangzjqr']}</td>
+                            <td>{$v['zhaoshengfxzje']}</td>
+                            <td>{$v['dianzhangzjxzxm']}</td>
+                            <td>{$v['dianzhangzjxzje']}</td>
+                            <td>{$v['quyujxzjxm']}</td>
+                            <td>{$v['quyujxzjje']}</td>
                             <td>{$v['quyuzjxm']}</td>
                             <td>{$v['quyuzjykje']}</td>
-                            <td>{$v['quyuzjqr']}</td>
                             <td>{$v['koukuanhj']}</td>
                         </tr>
                     </foreach>

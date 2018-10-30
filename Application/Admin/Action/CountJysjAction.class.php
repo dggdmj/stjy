@@ -148,7 +148,7 @@ class CountJysjAction extends CommonAction {
                     $arr['本月流失学生人数'] += 1;
                     $total -= 1;
                 }
-                if($v['jianshaolx'] == '退费'){
+                if($v['jianshaolx'] == '退费' || strpos($v['jianshaolx'],'转费') != false){
                     $arr['本月退费学生'] += 1;
                     $total -= 1;
                 }

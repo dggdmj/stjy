@@ -133,6 +133,7 @@ class CountLsqryyeAction extends CommonAction {
                 }
             }
         }
+        $heji['xuhao'] = '';
         array_push($list,$heji);
         return $list;
     }

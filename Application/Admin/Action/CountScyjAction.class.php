@@ -9,7 +9,7 @@ class CountScyjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getScyjData($qishu='',$sid=''){
+    public function getScyjData($qishu='201808',$sid='1'){
 
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
@@ -25,7 +25,7 @@ class CountScyjAction extends CommonAction {
                 unset($val['fujiaxx']);
             }
             $data = $this->heji($data);
-            return $data;
+            return $data; 
         }
         
         $nianfen = substr($qishu,0,4);
@@ -119,20 +119,20 @@ class CountScyjAction extends CommonAction {
             $newList[$key]['liangdianwnpdhy'] = 0;
             $newList[$key]['maiyinsyn'] = 0;
             $newList[$key]['xiaoxuelnpd'] = 0;
-            $newList[$key]['yiniangjhy'] = 0;
+            $newList[$key]['youeryngjhy'] = 0;
             $newList[$key]['jiubayyqms'] = 0;
             $newList[$key]['sannianpdhy'] = 0;
 
             foreach($list as $v){
                 if ($vo == $v['yejigsr'] && $v['shoufeilx'] == 1){
-                    //净人头
+                                        //净人头
                     $newList[$key]['jingrentou'] += $v['jingrentou'];
                     $heji['jingrentou'] += $v['jingrentou'];
                     //合计营业额
-                    $newList[$key]['hejiyye'] += $v['shouru'];
                     //会员老带新营业额
                     $newList[$key]['huiyunaldxtz'] = 0;
                     if ($v['zhanghu'] != '结转学费' && $v['zhanghu'] != '老带新返现'){
+                        $newList[$key]['hejiyye'] += $v['shouru'];
                         switch ($v['chanpinlx']){
                             case '1期秒杀':
                                 $newList[$key]['yiqims'] += $v['shouru'];
@@ -238,7 +238,7 @@ class CountScyjAction extends CommonAction {
                                 $newList[$key]['xiaoxuelnpd'] += $v['shouru'];
                                 break;
                             case '幼儿-1年国际会员':
-                                $newList[$key]['yiniangjhy'] += $v['shouru'];
+                                $newList[$key]['youeryngjhy'] += $v['shouru'];
                                 break;
                             case '98元1期秒杀':
                                 $newList[$key]['jiubayyqms'] += $v['shouru'];
@@ -246,6 +246,8 @@ class CountScyjAction extends CommonAction {
                             case '3年拼单会员':
                                 $newList[$key]['sannianpdhy'] += $v['shouru'];
                                 break;
+                            default:
+                                $newList[$key]['hejiyye'] -= $v['shouru'];
                         }
                     }
                 }
@@ -256,14 +258,15 @@ class CountScyjAction extends CommonAction {
             $fujiaxx = [ 
                             'liangdianwnpdhy'=>$newList[$key]['liangdianwnpdhy'],
                             'maiyinsyn'=>$newList[$key]['maiyinsyn'],
-                            'yiniangjhy'=>$newList[$key]['yiniangjhy'],
+                            'xiaoxuelnpd'=>$newList[$key]['xiaoxuelnpd'],
+                            'youeryngjhy'=>$newList[$key]['youeryngjhy'],
                             'jiubayyqms'=>$newList[$key]['jiubayyqms'],
                             'sannianpdhy'=>$newList[$key]['sannianpdhy']
                         ];
             $temp['fujiaxx'] = json_encode($fujiaxx);
             $temp['suoshudd'] = $qishu_id;
             $temp['xuhao'] = $key+1;
-            unset($temp[$key]['liangdianwnpdhy'],$temp[$key]['maiyinsyn'],$temp[$key]['yiniangjhy'],$temp[$key]['jiubayyqms'],$temp[$key]['sannianpdhy']);
+            unset($temp[$key]['liangdianwnpdhy'],$temp[$key]['maiyinsyn'],$temp[$key]['youeryngjhy'],$temp[$key]['jiubayyqms'],$temp[$key]['sannianpdhy']);
             M('scyjb')->add($temp);
 
         }
@@ -295,6 +298,7 @@ class CountScyjAction extends CommonAction {
                 }
             }
         }
+        $heji['xuhao'] = '';
         array_push($list,$heji);
         return $list;
     }
