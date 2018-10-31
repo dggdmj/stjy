@@ -74,7 +74,8 @@ class TableCountAction extends CommonAction{
         $temp = M('admin')->where('username ="'.$username.'"')->find();// 获取admin表的数据
         $uid = $temp['id'];// 获取用户id
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
-        $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        $sid = session('sid');
+        $school_id = explode(",",$sid);// 获取用户当前校区
         if($rid == 3 || $rid == 2 || $rid == 1){
             $map['status_xzjl'] = array('neq',3);// 查询条件
         }elseif($rid == 4){
@@ -199,26 +200,15 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    //市场业绩表
-    public function scyjb(){
-        $sid = session('sid');
-
-        /***************************获取两个时间段之间的月份***************************/
-        $start_time = I('start_time');
-        $end_time = I('end_time');
-        if (!$start_time || !$end_time){
-            //期数不选默认选最近的
-            $qishu = M('qishu_history')->where(array('sid'=>array('in',$sid),'tid'=>8))->order('daorusj')->getField('qishu');
-            if (!$qishu){
-                $this->adminDisplay();exit;
-            }
-            $start_time = substr($qishu,0,4).'-'.substr($qishu,4,2);
-            $end_time = $start_time;
-        }
+    /*
+        根据两个时间段算出中间有几个时间月
+        $start_time开始时间
+        $end_time结束时间
+        $tid表id
+     */
+    public function getMonth($start_time='',$end_time=''){
         $s = new \DateTime($start_time);
         $e = new \DateTime($end_time);
-        /**************************************************************************/
-
         // 时间间距 这里设置的是一个月
         $interval = \DateInterval::createFromDateString('1 month');
         $period   = new \DatePeriod($s, $interval, $e);
@@ -229,6 +219,40 @@ class TableCountAction extends CommonAction{
             $i++;
         }
         $qishu[$i] = str_replace('-','',$end_time);
+        return $qishu;
+    }
+
+    //判断开始时间和结束时间有没有传过来没有就取最新的
+    public function seTime($start_time='',$end_time='',$tid=''){
+        $sid = session('sid');
+        if (!$start_time || !$end_time){
+            //期数不选默认选最近的
+            $qishu = M('qishu_history')->where(array('sid'=>array('in',$sid),'tid'=>$tid))->order('daorusj')->getField('qishu');
+            if (!$qishu){
+                $this->adminDisplay();exit;
+            }
+            $start_time = substr($qishu,0,4).'-'.substr($qishu,4,2);
+            $end_time = $start_time;
+        }
+        $data['start_time'] = $start_time;
+        $data['end_time'] = $end_time;
+        return $data;
+    }
+
+    //市场业绩表
+    public function scyjb(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,8);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_tim,$end_time);
+        /**************************************************************************/
+
         //获取与当前登录账号所属的学校的所有的学校名字
         $school = M('school as ss')
                     ->join('stjy_qishu_history as qh on qh.sid=ss.id')
@@ -248,31 +272,28 @@ class TableCountAction extends CommonAction{
         $map['sid'] = array('in',$sid);
         $map['qishu'] = array('in',$qishu);
         $map['tid'] = 8;
-
         $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
-        
         //获取订单id数组
         foreach($qishu_arr as $k=>$v){
             $qishu_id[] = $k;
         }
-
-        $where['suoshudd'] = array('in',$qishu_id);
-        $data = M('scyjb')->where($where)->order('id')->select();
-
-        foreach($data as &$val){
-            $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
-            $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
-            $val['fenxiao'] = $school[ $val['suoshudd'] ];
-            $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
-            foreach($val['fujiaxx'] as $k=>$v){
-                $val[$k] = $v;
+        if ($qishu_id){
+            //查询市场业绩表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $data = M('scyjb')->where($where)->order('id')->select();
+            foreach($data as &$val){
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+                $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
+                $val['fenxiao'] = $school[ $val['suoshudd'] ];
+                $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
+                foreach($val['fujiaxx'] as $k=>$v){
+                    $val[$k] = $v;
+                }
+                unset($val['fujiaxx']);
             }
-            unset($val['fujiaxx']);
+            $scyjb = new \Admin\Action\CountScyjAction();
+            $list = $scyjb->heji($data);
         }
-
-        $scyjb = new \Admin\Action\CountScyjAction();
-        $list = $scyjb->heji($data);
-        
         $this->assign('start_time',$start_time);
         $this->assign('end_time',$end_time);
         $this->assign('school_name',$school_name);
@@ -280,23 +301,14 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
+
 	//市场占有率表详情
 	public function sczylb_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
 
-        /* 实时计算开始 */
-         $data = new \Admin\Action\CountSczylAction();
-         $list = $data->getSczylbData($qishu,$sid);//获得统计数据
-//         dump($list);die;
-        /* 实时计算结束 */
-
-        /* 查库开始 */
-//        $id = $this->getQishuId($qishu,$sid,9);
-//        $data = M('sczylb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('xuhao')->select();
-//        $data[0]['xuhao'] = '';
-        // dump($data);
-        /* 查库结束 */
+        $qishu_id = $this->getQishuId($qishu,$sid,9);
+        $list = M('sczylb')->where(array('suoshudd'=>$qishu_id))->select();
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // $this->assign("data",$list['data']);
         // $this->assign("heji",$list['heji']);
@@ -307,18 +319,54 @@ class TableCountAction extends CommonAction{
 
     //市场占有率表详情
     public function sczylb(){
-        $qishu = $_GET['qishu'];
-        $sid = $_GET['sid'];
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,9);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_time,$end_time);
+        /**************************************************************************/
 
-        /* 实时计算开始 */
-        $data = new \Admin\Action\CountSczylAction();
-        $list = $data->getSczylbData($qishu,$sid);//获得统计数据
-        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
 
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
 
+        $school_name = implode(',',$school_name);
 
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 9;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询新增明细表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('sczylb')->where($where)->order('id')->select();
+            foreach($list as &$val){
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+                $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
+            }
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
         $this->assign("list",$list);
-        $this->assign('arr',$arr);
         $this->adminDisplay();
     }
 
@@ -348,6 +396,113 @@ class TableCountAction extends CommonAction{
         $this->assign('arr',$arr);
         $this->adminDisplay();
 	}
+
+    //新增明细表
+    public function xzmxb(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,10);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_time,$end_time);
+        /**************************************************************************/
+
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 10;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询新增明细表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('xzmxb')->where($where)->order('id')->select();
+            foreach($list as &$val){
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+                $val['fenxiao'] = $school[ $val['suoshudd'] ];
+            }
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
+    //新增明细表
+    public function jsmxb(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,11);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_time,$end_time);
+        /**************************************************************************/
+
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 11;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询新增明细表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('jsmxb')->where($where)->order('id')->select();
+            foreach($list as &$val){
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+                $val['fenxiao'] = $school[ $val['suoshudd'] ];
+            }
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
 
 	//减少明细表详情
 	public function jsmxb_xq(){
@@ -478,6 +633,57 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
+    //老师确认收入
+    public function tfb(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,13);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_tim,$end_time);
+        /**************************************************************************/
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 13;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询市场业绩表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('tfb')->where($where)->order('id')->select();
+            foreach($list as &$val){
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+            }
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
 	public function savebeizhu(){
 	    $data[$_POST['name']] = $_POST['value'];
         $data['sid'] = $where['sid'] = $_POST['sid'];
@@ -525,6 +731,57 @@ class TableCountAction extends CommonAction{
     }
 
     //老师确认收入
+    public function lsqryye(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,29);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_tim,$end_time);
+        /**************************************************************************/
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 29;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询市场业绩表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('lsqryye')->where($where)->order('id')->select();
+            foreach($list as &$val){
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+            }
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
+    //老师确认收入
     public function lsqrsr_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
@@ -540,6 +797,59 @@ class TableCountAction extends CommonAction{
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         
         $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
+
+    //老师确认收入
+    public function lsqrsr(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,30);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_tim,$end_time);
+        /**************************************************************************/
+
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 30;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询市场业绩表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('lsqrsr')->where($where)->order('id')->select();
+            foreach($list as &$val){
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+            }
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
         $this->adminDisplay();
     }
 
@@ -562,6 +872,56 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
+    //中心老带新台账
+    public function zxhytz(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,31);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_tim,$end_time);
+        /**************************************************************************/
+
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 31;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询市场业绩表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('zxhytz')->where($where)->order('id')->select();
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
     //老带新台账
     public function zxldxtz_xq(){
         $qishu = $_GET['qishu'];
@@ -578,6 +938,56 @@ class TableCountAction extends CommonAction{
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         
         $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
+
+    //中心老带新台账
+    public function zxldxtz(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,32);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonth($start_tim,$end_time);
+        /**************************************************************************/
+
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 32;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询市场业绩表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('zxldxtz')->where($where)->order('id')->select();
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
         $this->adminDisplay();
     }
 

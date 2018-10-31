@@ -95,7 +95,8 @@ class TableImportAction extends CommonAction{
         $temp = M('admin')->where('username ="'.$username.'"')->find();
         $uid = $temp['id'];
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
-        $school_id = explode(",",$temp['school_id']);
+        $sid = session('sid');
+        $school_id = explode(",",$sid);
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
         $keywords = I('keywords','');
@@ -181,7 +182,8 @@ class TableImportAction extends CommonAction{
         $temp = M('admin')->where('username ="'.$username.'"')->find();
         $uid = $temp['id'];
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');
-        $school_id = explode(",",$temp['school_id']);
+        $sid = session('sid');
+        $school_id = explode(",",$sid);
         $map['sid'] = array('in',$school_id);// 查询条件
 
         //搜索和时间选择

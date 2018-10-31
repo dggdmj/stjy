@@ -144,19 +144,19 @@ class MenuModel {
                     array(
                         'name' => '市场占有率表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/9'),
+                        'url' => U('/TableCount/sczylb'),
                         'order' => 2
                     ),
                     array(
                         'name' => '新增明细表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/10'),
+                        'url' => U('/TableCount/xzmxb'),
                         'order' => 3
                     ),
                     array(
                         'name' => '减少明细表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/11'),
+                        'url' => U('/TableCount/jsmxb'),
                         'order' => 4
                     ),
                     array(
@@ -168,31 +168,31 @@ class MenuModel {
                     array(
                         'name' => '退费表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/13'),
+                        'url' => U('/TableCount/tfb'),
                         'order' => 6
                     ),
                     array(
                         'name' => '老师确认营业额',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/29'),
+                        'url' => U('/TableCount/lsqryye'),
                         'order' => 6
                     ),
                     array(
                         'name' => '老师确认收入',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/30'),
+                        'url' => U('/TableCount/lsqrsr'),
                         'order' => 6
                     ),
                     array(
                         'name' => '中心会员台账',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/31'),
+                        'url' => U('/TableCount/zxhytz'),
                         'order' => 6
                     ),
                     array(
                         'name' => '老带新台账',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/32'),
+                        'url' => U('/TableCount/zxldxtz'),
                         'order' => 6
                     )
                 )

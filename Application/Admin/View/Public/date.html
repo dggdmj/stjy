@@ -1,16 +1,18 @@
 <div class="table-tools clearfix">
-    <div class="form-inline">
-        <div class="form-group">
-            <div class="field">
-                时间从：<input type="text" class="input datetimepicker" size="30" name="start_time" value="{$start_time}" autocomplete="off">
-                    到
-                <input type="text" class="input datetimepicker" size="30" name="end_time" value="{$end_time}" autocomplete="off">
+    <form method="get" action="">
+        <div class="form-inline">
+            <div class="form-group">
+                <div class="field">
+                    时间从：<input type="text" class="input datetimepicker" size="30" name="start_time" value="{$start_time}" autocomplete="off">
+                        到
+                    <input type="text" class="input datetimepicker" size="30" name="end_time" value="{$end_time}" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-button">
+                <input type="submit" name="search" class="button bg-blue button-small" value="查询">
             </div>
         </div>
-        <div class="form-button">
-            <input type="submit" name="search" class="button bg-blue button-small" value="查询">
-        </div>
-    </div>
+    </form>
 </div>
 <script type="text/javascript">
     $(function (){

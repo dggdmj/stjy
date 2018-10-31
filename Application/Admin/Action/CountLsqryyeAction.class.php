@@ -9,8 +9,7 @@ class CountLsqryyeAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu,$sid){
-        
+    public function getYjData($qishu='',$sid=''){
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>29))->getField('id');//判断是否有生成历史
         if ($qishu_id){
@@ -26,7 +25,6 @@ class CountLsqryyeAction extends CommonAction {
                     ->field('rs.id,rs.xingming,ss.edu,qh.qishu,qh.sid,ss.hejiyye,qh.id')
                     ->where(" qh.qishu= $qishu and qh.sid=$sid ")
                     ->select();
-
         //获取收据记录表的订单id
         $suoshudd = $this->getQishuId($qishu,$sid,4);
 

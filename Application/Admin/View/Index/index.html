@@ -70,7 +70,7 @@
                         <volist name = "school" id = "vo">
                             <div class="field">
                                 <label>
-                                    <input name="sid[]" value="{$vo.id}" type="checkbox" <php>if(in_array($vo['id'],$school_id)){echo 'checked="true"';}</php> > {$vo.name}
+                                    <input name="sid[]" value="{$vo.id}" type="checkbox" <php>if(in_array($vo['id'],$sid)){echo 'checked="true"';}</php> > {$vo.name}
                                 </label>
                             </div>
                         </volist>
