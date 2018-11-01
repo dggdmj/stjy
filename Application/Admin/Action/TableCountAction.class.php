@@ -200,27 +200,7 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    /*
-        根据两个时间段算出中间有几个时间月
-        $start_time开始时间
-        $end_time结束时间
-        $tid表id
-     */
-    public function getMonth($start_time='',$end_time=''){
-        $s = new \DateTime($start_time);
-        $e = new \DateTime($end_time);
-        // 时间间距 这里设置的是一个月
-        $interval = \DateInterval::createFromDateString('1 month');
-        $period   = new \DatePeriod($s, $interval, $e);
-        $i = 0;
-        $qishu = array();
-        foreach($period as $k=>$dt){
-            $qishu[$i] = $dt->format("Ym");
-            $i++;
-        }
-        $qishu[$i] = str_replace('-','',$end_time);
-        return $qishu;
-    }
+    
 
     //判断开始时间和结束时间有没有传过来没有就取最新的
     public function seTime($start_time='',$end_time='',$tid=''){
@@ -250,7 +230,7 @@ class TableCountAction extends CommonAction{
 
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_tim,$end_time);
+        $qishu = $this->getMonths($start_tim,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -327,7 +307,7 @@ class TableCountAction extends CommonAction{
         $end_time = $data_time['end_time'];
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_time,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -370,6 +350,72 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
+    //老师标准收入
+    public function lsbzsr(){
+        //获取时间段 没有就取最近的
+        $start_time = I('start_time');
+        $end_time = I('end_time');
+        $data_time = $this->seTime($start_time,$end_time,33);
+        $start_time = $data_time['start_time'];
+        $end_time = $data_time['end_time'];
+        $sid = session('sid');
+        /***************************获取两个时间段之间的月份***************************/
+        $qishu = $this->getMonths($start_time,$end_time);
+        /**************************************************************************/
+
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 33;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+        if ($qishu_id){
+            //查询新增明细表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('lsbzsr')->where($where)->order('id')->select();
+            foreach($list as &$val){
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+            }
+        }
+        $this->assign('start_time',$start_time);
+        $this->assign('end_time',$end_time);
+        $this->assign('school_name',$school_name);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
+    //老师标准收入详情
+    public function lsbzsr_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+
+        /* 实时计算开始 */
+        $data = new \Admin\Action\CountLsbzsrAction();
+        $list = $data->getLsbzsrData($qishu,$sid);//获得统计数据
+        
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        $this->assign('list',$list);
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
 
 
 	//新增明细表详情
@@ -407,7 +453,7 @@ class TableCountAction extends CommonAction{
         $end_time = $data_time['end_time'];
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_time,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -460,7 +506,7 @@ class TableCountAction extends CommonAction{
         $end_time = $data_time['end_time'];
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_time,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -643,7 +689,7 @@ class TableCountAction extends CommonAction{
         $end_time = $data_time['end_time'];
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_tim,$end_time);
+        $qishu = $this->getMonths($start_tim,$end_time);
         /**************************************************************************/
         //获取与当前登录账号所属的学校的所有的学校名字
         $school = M('school as ss')
@@ -740,7 +786,7 @@ class TableCountAction extends CommonAction{
         $end_time = $data_time['end_time'];
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_tim,$end_time);
+        $qishu = $this->getMonths($start_tim,$end_time);
         /**************************************************************************/
         //获取与当前登录账号所属的学校的所有的学校名字
         $school = M('school as ss')
@@ -811,7 +857,7 @@ class TableCountAction extends CommonAction{
 
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_tim,$end_time);
+        $qishu = $this->getMonths($start_tim,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -883,7 +929,7 @@ class TableCountAction extends CommonAction{
 
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_tim,$end_time);
+        $qishu = $this->getMonths($start_tim,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -952,7 +998,7 @@ class TableCountAction extends CommonAction{
 
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonth($start_tim,$end_time);
+        $qishu = $this->getMonths($start_tim,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字

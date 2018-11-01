@@ -175,25 +175,31 @@ class MenuModel {
                         'name' => '老师确认营业额',
                         'icon' => 'file',
                         'url' => U('/TableCount/lsqryye'),
-                        'order' => 6
+                        'order' => 7
                     ),
                     array(
                         'name' => '老师确认收入',
                         'icon' => 'file',
                         'url' => U('/TableCount/lsqrsr'),
-                        'order' => 6
+                        'order' => 8
                     ),
                     array(
                         'name' => '中心会员台账',
                         'icon' => 'file',
                         'url' => U('/TableCount/zxhytz'),
-                        'order' => 6
+                        'order' => 9
                     ),
                     array(
                         'name' => '老带新台账',
                         'icon' => 'file',
                         'url' => U('/TableCount/zxldxtz'),
-                        'order' => 6
+                        'order' => 10
+                    ),
+                    array(
+                        'name' => '老师标准收入',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/lsbzsr'),
+                        'order' => 11
                     )
                 )
             );
@@ -359,13 +365,19 @@ class MenuModel {
                         'name' => '分校课程管理',
                         'icon' => 'puzzle-piece',
                         'url' => U('Setting/fenxiaokcgl'),
-                        'order' => 8
+                        'order' => 9
                     ),
                     array(
                         'name' => '收据产品类型',
                         'icon' => 'puzzle-piece',
                         'url' => U('Setting/shoujucplx'),
-                        'order' => 8
+                        'order' => 10
+                    ),
+                    array(
+                        'name' => '各区域标准单价',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/gequybzdj'),
+                        'order' => 11
                     ),
                 )
             );

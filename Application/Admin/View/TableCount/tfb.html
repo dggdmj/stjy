@@ -114,6 +114,37 @@
         </div>
     </div>
 </form>
+<script>
+    function download(){
+        var data = new Array();
+        var filename = $('caption').html();
+        $('tr').each(function(k,v){
+            data[k] = new Array();
+            // $(v).find('th').each(function(kh,vh){
+            //     data[k][kh] = $(vh).html();
+            // })
+            $(v).find('td').each(function(kd,vd){
+                data[k][kd] = $(vd).html();
+            })
+            
+        })
+        //吧数组转对象
+        var json=[];
+        data.forEach(function(item){
+            var temp={};
+            item.forEach(function(value,index){
+                temp[index]=value;
+            });
+            json.push(temp);
+        })
+        // 把对象串型化
+        var json = JSON.stringify(data);
+        var input = '<input type="hidden" name="jsons" value=\''+json+'\' /><input type="hidden" name="tid" value="13" /><input type="hidden" name="filename" value=\''+filename+'\' />';
+        var form_=$("<form id='uss' action='{:U('Download/download')}' method='post'>"+input+"</form>"); //定义一个form表单
+        $('body').append(form_); //将表单放置在web中
+        form_.submit(); //表单提交 
+    }
+</script>
 <style>
     body {
         overflow-x: scroll;

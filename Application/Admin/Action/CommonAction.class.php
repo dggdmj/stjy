@@ -1237,6 +1237,9 @@ class CommonAction extends Action {
             case 32:
                 $template = __ROOT__.'Public/template/template_zxldxtz.xlsx';          //使用模板
             break;
+            case 33:
+                $template = __ROOT__.'Public/template/template_lsbzsr.xlsx';          //使用模板
+            break;
         }
 
         $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
@@ -1258,6 +1261,9 @@ class CommonAction extends Action {
             break;
             case 30:
                 $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'老师确认收入表');          //使用模板
+            break;
+            case 33:
+                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'老师标准收入表');          //使用模板
             break;
         }
         // $objActSheet->setCellValue('坐标','值');
@@ -2037,6 +2043,10 @@ class CommonAction extends Action {
         //老带新台账
         $zxldxtz = new \Admin\Action\CountZxldxtzAction();
         $res_zxldxtz = $zxldxtz->getZxldxtzData($qishu,$sid);
+
+        //老师标准收入
+        $zxhytz = new \Admin\Action\CountLsbzsrAction();
+        $res_lsbzsr =  $zxhytz->getLsbzsrData($qishu,$sid);
         // -----------------------生成数据入库结束-----------------------
         
 
@@ -2098,6 +2108,8 @@ class CommonAction extends Action {
         $res_tf = $this->delScData($qishu,$sid,31);
         // 删除老带新台账
         $res_tf = $this->delScData($qishu,$sid,32);
+        //删除老师收入
+        $res_tf = $this->delScData($qishu,$sid,33);
         // -----------------------生成数据从库删除结束-----------------------
     }
 
@@ -2510,6 +2522,28 @@ class CommonAction extends Action {
         $sid = M('qishu_history')->where(array('id'=>$id))->getField('sid');
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         return $school;
+    }
+
+    /*
+        根据两个时间段算出中间有几个时间月
+        $start_time开始时间
+        $end_time结束时间
+        $tid表id
+     */
+    public function getMonths($start_time='',$end_time=''){
+        $s = new \DateTime($start_time);
+        $e = new \DateTime($end_time);
+        // 时间间距 这里设置的是一个月
+        $interval = \DateInterval::createFromDateString('1 month');
+        $period   = new \DatePeriod($s, $interval, $e);
+        $i = 0;
+        $qishu = array();
+        foreach($period as $k=>$dt){
+            $qishu[$i] = $dt->format("Ym");
+            $i++;
+        }
+        $qishu[$i] = str_replace('-','',$end_time);
+        return $qishu;
     }
 
 }
