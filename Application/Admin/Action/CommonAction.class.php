@@ -429,7 +429,7 @@ class CommonAction extends Action {
         }else{
             $gongjijin = 0;
         }
-        $need = 26 + $shebao + $gongjijin;
+        $need = 28 + $shebao + $gongjijin;
         // 若所有表格导入再进行操作
         $count = 0;
         $i = 1;

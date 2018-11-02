@@ -1076,5 +1076,51 @@ class SettingAction extends CommonAction{
         $this->assign('id',$id);
         $this->adminDisplay();
     }
+
+    //物品清单
+    public function wupinqd(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            M('wupinqd')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($i=2;$i<$highestRow;$i++){
+                $data['mingcheng'] = $sheet->getCell('A'.$i)->getValue();
+                $data['leibie'] = $sheet->getCell('B'.$i)->getValue();
+                $data['leixing'] = $sheet->getCell('C'.$i)->getValue();
+                if ($data['mingcheng'] != ''){
+                    M('wupinqd')->add($data);
+                }
+                unset($data);
+            }
+            $this->success('导入成功',U('wupinqd'));
+            exit;
+        }
+        $list = M('wupinqd')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
 }
 ?>

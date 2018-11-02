@@ -363,7 +363,6 @@ class TableImportAction extends CommonAction{
                 $ziduan = $this->getExcelZiduan($objPHPExcel,$colsNum);
                 // 检测必须列
                 $cha = $this->checkBixu($new_tablename,$ziduan);
-                
                 if(!empty($cha)){
                     $notice = implode(',',$cha);
 
@@ -390,7 +389,6 @@ class TableImportAction extends CommonAction{
 //             die;
             // 将获取数组插入到数据库相应的表里面
             // $res = M($tablename)->addAll($excel_data);
-            
             //获取分表年份表名
             foreach($excel_data as $v){
                 M($new_tablename)->add($v);
@@ -920,6 +918,11 @@ class TableImportAction extends CommonAction{
                     break;
                     case 16:
                         if($v == '证件号'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                    case 34:
+                        if($v == '日期'){
                             $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
                         }
                     break;
@@ -1770,7 +1773,7 @@ class TableImportAction extends CommonAction{
            $count += $v;
            $i++;
         }
-        if($count == 13){
+        if($count == 14){
             // 删除此行在sjzb的记录
             M('sjzb')->where($_GET)->delete();
 

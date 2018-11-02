@@ -122,6 +122,12 @@ class MenuModel {
                         'url' => U('/TableImport/tableList/tid/16'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '进出库明细导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/34'),
+                        'order' => 1
+                    ),
                 )
             );
         $order = array(
@@ -200,7 +206,13 @@ class MenuModel {
                         'icon' => 'file',
                         'url' => U('/TableCount/lsbzsr'),
                         'order' => 11
-                    )
+                    ),
+                    array(
+                        'name' => '收入情况一览表',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/shouruqkylb'),
+                        'order' => 12
+                    ),
                 )
             );
         $gongzi = array(
@@ -378,6 +390,12 @@ class MenuModel {
                         'icon' => 'puzzle-piece',
                         'url' => U('Setting/gequybzdj'),
                         'order' => 11
+                    ),
+                    array(
+                        'name' => '物品清单表',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/wupinqd'),
+                        'order' => 12
                     ),
                 )
             );

@@ -125,7 +125,8 @@ class TableCountAction extends CommonAction{
         $temp = M('admin')->where('username ="'.$username.'"')->find();// 获取admin表的数据
         $uid = $temp['id'];// 获取用户id
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
-        $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        // $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        $school_id = session('sid');
         if($rid == 3 || $rid == 2 || $rid == 1){
             $map['stjy_sjzb.status_xzjl'] = array('neq',3);// 查询条件
         }elseif($rid == 4){
@@ -594,9 +595,8 @@ class TableCountAction extends CommonAction{
         $data_zcxsxqztb = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
         $data_bjzysjb = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
         $data_gbxzdrstjb = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
-        $data_xsrsbd = M('xsrsbdb')->field('id,suoshudd,daorusj,xuhao',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();
-        
-        $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();
+        $data_xsrsbd = M('xsrsbdb')->field('id,suoshudd,daorusj,xuhao',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();    
+        $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();   
         // dump($data_gbxzdrstjb);
         $sjbd = [];
         foreach($data_bjzysjb as $v){
@@ -1034,6 +1034,38 @@ class TableCountAction extends CommonAction{
         $this->assign('end_time',$end_time);
         $this->assign('school_name',$school_name);
         $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
+    //收入情况一览表
+    public function shouruqkylb(){
+        $sid = session();
+        $map['sj.status_xz'] = 2;
+        $map['sj.sid'] = array('in',$sid);
+        $list = M('sjzb as sj')
+                ->join('stjy_school as ss on ss.id=sj.sid')
+                ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
+                ->where($map)
+                ->select();
+        foreach($list as &$val){
+            $val['name'] = '收入情况一览表';
+            $val['table_name'] = 'srqkylb';
+        }
+        $this->assign("list",$list);
+        $this->adminDisplay('shouruqkylb');
+    }
+
+    //收入情况一览表详情
+    public function srqkylb_xq(){
+        $qishu = I('qishu');
+        $sid = I('sid');
+        $data = new \Admin\Action\CountSrqkylbAction();
+        $info = $data->getSrqkylbData($qishu,$sid);
+        $base = array();
+        $base['riqi'] = substr($qishu,0,4).'年'.substr($qishu,4,2).'月';
+        $base['school_name'] = M('school')->where(array('id'=>$sid))->getField('name');
+        $this->assign("base",$base);
+        $this->assign("info",$info);
         $this->adminDisplay();
     }
 
