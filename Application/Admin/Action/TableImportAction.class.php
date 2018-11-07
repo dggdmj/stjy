@@ -234,7 +234,8 @@ class TableImportAction extends CommonAction{
         $qishu = M('qishu')->where('isuse = 1')->order('id desc')->select();// 期数
         $school = M('school')->where('isuse = 1')->select();// 可用校区
         $temp = M('admin')->where('username ="'.$_SESSION['username'].'"')->find();
-        $suoshuxq = $temp['school_id'];// 操作人的所属校区
+        // $suoshuxq = $temp['school_id'];// 操作人的所属校区
+        $suoshuxq = session('sid');
         $nicename =  $temp['nicename'];// 操作人昵称
         $suoshuxq = explode(',', $suoshuxq);
         foreach($suoshuxq as $v){

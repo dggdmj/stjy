@@ -388,14 +388,21 @@ class TableCountAction extends CommonAction{
         foreach($qishu_arr as $k=>$v){
             $qishu_id[] = $k;
         }
+        $heji = array();
         if ($qishu_id){
             //查询新增明细表
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('lsbzsr')->where($where)->order('id')->select();
             foreach($list as &$val){
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+                $heji['shoukexs'] += $val['shoukexs'];
+                $heji['zongrencxs'] += $val['zongrencxs'];
+                $heji['biaozhunsr'] += $val['biaozhunsr'];
             }
-        }
+            $heji['laoshi'] = '小计';
+            array_push($list,$heji);
+        } 
+
         $this->assign('start_time',$start_time);
         $this->assign('end_time',$end_time);
         $this->assign('school_name',$school_name);
@@ -679,7 +686,7 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
 	}
 
-    //老师确认收入
+    //退费表
     public function tfb(){
         //获取时间段 没有就取最近的
         $start_time = I('start_time');
@@ -776,7 +783,7 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    //老师确认收入
+    //老师确认营业额
     public function lsqryye(){
         //获取时间段 没有就取最近的
         $start_time = I('start_time');
@@ -827,7 +834,7 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    //老师确认收入
+    //老师确认收入详情
     public function lsqrsr_xq(){
         $qishu = $_GET['qishu'];
         $sid = $_GET['sid'];
@@ -1039,7 +1046,7 @@ class TableCountAction extends CommonAction{
 
     //收入情况一览表
     public function shouruqkylb(){
-        $sid = session();
+        $sid = session('sid');
         $map['sj.status_xz'] = 2;
         $map['sj.sid'] = array('in',$sid);
         $list = M('sjzb as sj')

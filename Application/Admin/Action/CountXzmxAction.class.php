@@ -9,7 +9,7 @@ class CountXzmxAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getXzmxbData($qishu,$sid){
+    public function getXzmxbData($qishu='201808',$sid='1'){
         $yuefen = substr($qishu,4,2).'月';
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>10))->getField('id');//判断是否有生成历史
         if ($qishu_id){
@@ -34,7 +34,7 @@ class CountXzmxAction extends CommonAction {
         $xyxxb = $this->checkFenbiao($xyxxb_oid,'xyxxb');
         $sjjlb = $this->checkFenbiao($xyxxb_oid,'sjjlb');
         //新生
-        $list = M($xyxxb)->field('xuehao,xingming,xingbie,xiaoqu as fenxiao,zhuangtai')->where("baomingrq >= '$firstday' and baomingrq <= '$lastday' and suoshudd ='$xyxxb_oid'")->select();
+        $list = M($xyxxb)->field('xuehao,xingming,xingbie,xiaoqu as fenxiao,zhuangtai')->where("baomingrq >= '$firstday' and baomingrq <= '$lastday' and suoshudd ='$xyxxb_oid'")->group('xuehao')->select();
         //转入
         $zhuangru = M('zrjlb')
                 ->field('xuehao')
@@ -51,7 +51,7 @@ class CountXzmxAction extends CommonAction {
 
         $zhuanchu_id = $this->getQishuId($qishu,$sid,27);
         $shouju_id = $this->getQishuId($qishu,$sid,4);
-        $shouju = M($sjjlb.' as sj')->field('zc.xuehao,zc.xingming,zc.xingbie,zc.zhuanchuxq as fenxiao')->join('RIGHT JOIN stjy_zcjlb as zc on zc.xuehao=sj.xuehao')->where("sj.suoshudd='$shouju_id' and zc.suoshudd='$zhuanchu_id'")->select();
+        $shouju = M($sjjlb.' as sj')->field('zc.xuehao,zc.xingming,zc.xingbie,zc.zhuanchuxq as fenxiao')->join('RIGHT JOIN stjy_zcjlb as zc on zc.xuehao=sj.xuehao')->where("sj.suoshudd='$shouju_id' and zc.suoshudd='$zhuanchu_id'")->group('zc.xuehao')->select();
         $xyList = M($xyxxb)->field('xuehao')->where("suoshudd = '$xyxxb_oid'")->select();
         $xyList = $this->quchongjian($xinzeng);
 

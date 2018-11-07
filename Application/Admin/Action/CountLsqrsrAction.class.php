@@ -9,8 +9,8 @@ class CountLsqrsrAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu,$sid){
-        //判断语句
+    public function getYjData($qishu='201808',$sid='1'){
+        // 判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>30))->getField('id');//判断是否有生成历史
         if ($qishu_id){
             $newList = M('lsqrsr')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
@@ -41,10 +41,13 @@ class CountLsqrsrAction extends CommonAction {
         }
 
         //定义老师数组
-        $laoshi = array(); 
+        $laoshi = array();
+        $rycb = M('rycb')->field('xingming')->where(array('xiaoqu'=>$school_name))->select(); 
+        foreach($rycb as $val){
+            $laoshi[] = $val['xingming'];
+        }
         //定义出现次数
         $banjisj = array();
-
         foreach($list as &$val){
             $val['jingdujb'] = substr($val['banji'],0,3);
             $val['bumen'] = $bumen[ $val['jingdujb'] ];
@@ -54,15 +57,6 @@ class CountLsqrsrAction extends CommonAction {
             }else{
                 $val['chuxiancs'] = 1;
                 $banjisj[] = $val['banjisj'];
-            }
-            if(!in_array($val['jingjiangls'],$laoshi)){
-                $laoshi[] = $val['jingjiangls'];
-            }
-            if(!in_array($val['fanduls'],$laoshi)){
-                $laoshi[] = $val['fanduls'];
-            }
-            if(!in_array($val['waijiaols'],$laoshi)){
-                $laoshi[] = $val['waijiaols'];
             }
         }
 

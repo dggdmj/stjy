@@ -305,6 +305,12 @@ class MenuModel {
                         'url' => U('Renshi/qianzhenglx'),
                         'order' => 6
                     ),
+                    array(
+                        'name' => '人员列表',
+                        'icon' => 'user',
+                        'url' => U('Renshi/renyuan_list'),
+                        'order' => 6
+                    ),
                 ),
 
             );

@@ -45,6 +45,10 @@ class RenshiAction extends CommonAction{
                     'url' => url('Renshi/qianzhenglx'),
                     'icon' => 'list',
                 ),
+                array('name' => '人员列表',
+                    'url' => url('Renshi/renyuan_list'),
+                    'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加人事',
@@ -564,5 +568,79 @@ class RenshiAction extends CommonAction{
             $this->ajaxreturn($arr);
         }
     }
+
+    //人员列表
+    public function renyuan_list(){
+        $field = $this->getComment('rycb');
+        $arr = array();
+        foreach($field as $key=>$val){
+            if ($val != 'id' && $val != 'daorusj'){
+                $arr[] = $key;
+            }
+        }
+        $list = M('rycb')->field('id,daorusj',true)->order('id')->select();
+        array_unshift($list,$arr);
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //清空人员列表
+    public function renyuan_delete(){
+        M('rycb')->where("1=1")->delete();
+        $this->success('成功清除人员列表');
+    }
+
+    //人员列表导入
+    public function renyuan_add(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 8145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/renshi/',
+                'subName' => array('date', 'Ymd'),
+            );
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            $data['wenjianmc'] = $info['excel']['name'];
+            $data['lujing'] = $info['excel']['savepath'].$info['excel']['savename'];
+            $data['caozuoren'] = session('username');
+            M('renyuan_log')->add($data);
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            $colsNum = 66;
+            $rycb = M('')->query("select COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_rycb'");
+            $zhiduan = array();
+            foreach($rycb as $val){
+                if ($val['column_name'] != 'id' && $val['column_name'] != 'daorusj'){
+                    $zhiduan[] = $val['column_name'];
+                }
+            }
+            for($i=2;$i<$highestRow+1;$i++){
+                for($j=0;$j<$colsNum;$j++){
+                    $cell[ $zhiduan[$j] ] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getValue();
+                }
+                if ($cell['xingming']){
+                    M('rycb')->add( $cell );
+                }
+            }
+            $this->success('导入成功',U('renyuan_list')); 
+            exit;
+        }
+    }
+
 }
 ?>

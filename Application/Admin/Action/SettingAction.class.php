@@ -928,6 +928,12 @@ class SettingAction extends CommonAction{
        $this->success('删除成功');
     }
 
+    //清空物品订单
+    public function wupinqd_delete(){
+        M('wupinqd')->where("1=1")->delete();
+       $this->success('删除成功');
+    }
+
     //收据产品类型
     public function shoujucplx(){
         if(!empty($_FILES)){
@@ -977,7 +983,7 @@ class SettingAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    //收据产品类型
+    //各区域标准单价
     public function gequybzdj(){
         if(!empty($_FILES)){
             //上传表格并导入数据

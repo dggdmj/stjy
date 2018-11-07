@@ -67,12 +67,38 @@ class CountSrqkylbAction extends CommonAction {
         if (!$xyxxb_id){
             return array();
         }
+
+        //如果这个学生当月转入记录有但班级花名册里没有这个学生的信息，那就是当月转入的学生但是还没有进班AZ为是，AX列状态变为未进班
+        $weijinban = array();
+        $nian = substr($qishu,0,4);
+        $zrjlb_id = $this->getQishuId($qishu,$sid,28);
+        $list = M('zrjlb as zr')
+                ->join('stjy_bjxyxxb_'.$nian.' as bj on bj.xuehao=zr.xuehao')
+                ->field('zr.xuehao,bj.id')
+                ->where("zr.suoshudd='$zrjlb_id'")
+                ->select();
+        foreach($list as $val){
+            if (!$val['id']){
+                $weijinban[] = $val['xuehao'];
+            }
+        }
+
         $xyxxb = $this->checkFenbiao($xyxxb_id,'xyxxb');
-        $xyxxb_list = M($xyxxb)->field('zhuangtai,shoucixfrq')->where("suoshudd='$xyxxb_id' and ( zhuangtai='在读' or zhuangtai='休学' ) ")->select();
+        $xyxxb_list = M($xyxxb.' as xy')
+                        ->field('zhuangtai,shoucixfrq,xuehao')
+                        ->where("suoshudd='$xyxxb_id' and ( zhuangtai='在读' or zhuangtai='休学' ) ")
+                        ->select();
+
         $info['tingkers'] = 0;
         $info['jinban'] = 0;
         $info['weijinban'] = 0;
+        $xuehao = array();
         foreach($xyxxb_list as $val){
+            $xuehao[] = $val['xuehao'];
+            if (in_array($val['xuehao'],$weijinban)){
+                $info['weijinban']+=1;
+                continue;
+            }
             if ($val['zhuangtai'] == '休学'){
                 $info['tingkers']+=1;
             }else{
@@ -81,6 +107,12 @@ class CountSrqkylbAction extends CommonAction {
                 }else{
                     $info['weijinban']+=1;
                 }
+            }
+        }
+        //如果这个人不在学员信息表也统计进未进班
+        foreach($weijinban as $v){
+            if (!in_array($v,$xuehao)){
+                $info['weijinban']+=1;
             }
         }
         return $info;

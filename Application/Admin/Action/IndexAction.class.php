@@ -29,10 +29,17 @@ class IndexAction extends CommonAction {
         //获取当前角色拥有的所有校区id
         $school_id = M('admin')->where(array('id'=>session('uid')))->getField('school_id');
         $school = M("school")->field("id,name,subname")->where(array('id'=>array('in',$school_id),'isuse'=>1))->select();
-
+        $sid = session('sid');
+        $school_name = M('school')->field('name')->where(array('id'=>array('in',$sid)))->select();
+        $xuexiao = array();
+        foreach($school_name as $val){
+            $xuexiao[] = $val['name'];
+        }
+        $xuexiao = implode(',',$xuexiao);
         $sid = session('sid');
         $sid = explode(',',$sid);
         $this->assign('school',$school);
+        $this->assign('xuexiao',$xuexiao);
         $this->assign('sid',$sid);
         // 进入首页
         $this->display();

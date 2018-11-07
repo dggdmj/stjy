@@ -31,17 +31,13 @@ class CountScyjAction extends CommonAction {
         $nianfen = substr($qishu,0,4);
         $tid = 4;//收据记录表的id
         $suoshuid = $this->getQishuId($qishu,$sid,$tid);//获取订单id
-        //人事数组
-        // $renshi_list = M('renshi as rs')
-        //             ->field('rs.xingming')
-        //             // ->join('')
-        //             ->where("rs.bumen='市场部'")
-        //             ->select();
-        // foreach($shoufeilx as $v){
-        //     $renshi_arr = $v;
-        // }
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
 
-        $renming = array();
+        // $renming = array();
+        $rycb = M('rycb')->field('xingming,zhiwu as zhiwei,ruzhirq')->where(array('xiaoqu'=>$school_name))->select(); 
+        // foreach($rycb as $val){
+        //     $renming[] = $val['xingming'];
+        // }
 
         $Model = M();
         //查询出所有数据
@@ -62,9 +58,9 @@ class CountScyjAction extends CommonAction {
         //过滤归属人并判断是否是结算1结算  2不结算
         foreach($list as &$v){
             $v['yejigsr'] = $this->getJingrentou($v['yejigsr']);
-            if (!in_array($v['yejigsr'],$renming)){
-                $renming[] = $v['yejigsr'];
-            }
+            // if (!in_array($v['yejigsr'],$renming)){
+            //     $renming[] = $v['yejigsr'];
+            // }
             if (in_array($v['shoujulx'],$shoufeilx)){
                 $v['shoufeilx'] = 1;
             }else{
@@ -76,10 +72,12 @@ class CountScyjAction extends CommonAction {
         //从组数组并且计算净人头
         $newList = array();
 
-        foreach($renming as $key=>$vo){
+        foreach($rycb as $key=>$vo){
 
-            $newList[$key]['xingming'] = $vo;
-            $newList[$key]['edu'] = M('xxkedb')->where("suoshudd='$xxkedb_oid' and xingming='$vo'")->getField('edu');
+            $newList[$key]['xingming'] = $vo['xingming'];
+            $newList[$key]['zhiwei'] = $vo['zhiwei'];
+            $newList[$key]['ruzhirq'] = $vo['ruzhirq'];
+            $newList[$key]['edu'] = M('xxkedb')->where("suoshudd='$xxkedb_oid' and xingming='".$vo['xingming']."'")->getField('edu');
             //定义为0元
             $newList[$key]['jingrentou'] = 0;
             $newList[$key]['yiqims'] = 0;

@@ -9,8 +9,8 @@ class CountLsqryyeAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu='',$sid=''){
-        //判断语句
+    public function getYjData($qishu='201808',$sid='1'){
+        // 判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>29))->getField('id');//判断是否有生成历史
         if ($qishu_id){
             $newList = M('lsqryye')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
@@ -18,12 +18,14 @@ class CountLsqryyeAction extends CommonAction {
             return $newList;
         }
         $qishu_id = $this->insertQishuHistory(29,$qishu,$sid);
+        $scyjb_id = $this->getQishuId($qishu,$sid,8);
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         //老师营业额  先查所有的老师  人事表
-        $list = M('renshi as rs')
-                    ->join('stjy_scyjb as ss on rs.xingming=ss.xingming')
-                    ->join('stjy_qishu_history as qh on qh.id=ss.suoshudd')
-                    ->field('rs.id,rs.xingming,ss.edu,qh.qishu,qh.sid,ss.hejiyye,qh.id')
-                    ->where(" qh.qishu= $qishu and qh.sid=$sid ")
+        $list = M('rycb as rs')
+                    ->join('LEFT JOIN stjy_scyjb as ss on rs.xingming=ss.xingming')
+                    ->field('rs.xingming,ss.edu,ss.hejiyye')
+                    ->group('rs.xingming')
+                    ->where("rs.xiaoqu='$school_name'")
                     ->select();
         //获取收据记录表的订单id
         $suoshudd = $this->getQishuId($qishu,$sid,4);
@@ -33,26 +35,22 @@ class CountLsqryyeAction extends CommonAction {
         $lastday = date('Y-m-d', strtotime("$qishu_time +1 month -1 day"));   
         //获取校名
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
-        $oid = $list['0']['id'] ? $list['0']['id'] : 0;//获取订单id
-
 
         foreach($list as &$val){
             $val['yuefen'] = (int)substr($qishu,4,2).'月';
             $val['school_name'] = $school_name;
             $val['jxbxxk'] = (int)($val['edu'] - $val['hejiyye']);
+            $val['fenxiao'] = $school_name;
         }
         $ls_day_last = date('Y-m-d', strtotime("$lastday -60 day"));
-        //判断是否是分表
-        $xyxxb = $this->checkFenbiao($oid,'xyxxb');
-        $bjxyxxb = $this->checkFenbiao($oid,'bjxyxxb');
-        $kbmxb = $this->checkFenbiao($oid,'kbmxb');
-        $sjjlb = $this->checkFenbiao($oid,'sjjlb');
+        
+        $nian = substr($qishu,0,4);
 
         //查营业额
-        $zonge = M($sjjlb.' as ss')
-                    ->join('stjy_'.$xyxxb.' as sx on ss.xuehao=sx.xuehao')
-                    ->join('stjy_'.$bjxyxxb.' as sb on sb.xuehao=sx.xuehao')
-                    ->join('stjy_'.$kbmxb.' as sk on sk.banjimc=sb.banji')
+        $zonge = M('sjjlb_'.$nian.' as ss')
+                    ->join('stjy_xyxxb_'.$nian.' as sx on ss.xuehao=sx.xuehao')
+                    ->join('stjy_bjxyxxb_'.$nian.' as sb on sb.xuehao=sx.xuehao')
+                    ->join('stjy_kbmxb_'.$nian.' as sk on sk.banjimc=sb.banji')
                     ->field('ss.jiaofeije,sk.jingjiangls,sb.banji,sb.banji')
                     ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd'")
                     ->select();

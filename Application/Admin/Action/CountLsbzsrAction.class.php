@@ -11,8 +11,15 @@ class CountLsbzsrAction extends CommonAction {
      */
     public function getLsbzsrData($qishu='',$sid=''){
         $lsbzsr_id = $this->getQishuId($qishu,$sid,33);
-        if ($lsbzsr){
-            $list = M('lsbzsr')->where(array('suoshudd'=>$lsbzsr))->select();
+        if ($lsbzsr_id){
+            $list = M('lsbzsr')->where(array('suoshudd'=>$lsbzsr_id))->order('id')->select();
+            foreach($list as $val){
+                $heji['shoukexs'] += $val['shoukexs'];
+                $heji['zongrencxs'] += $val['zongrencxs'];
+                $heji['biaozhunsr'] += $val['biaozhunsr'];
+            }
+            $heji['laoshi'] = '小计';
+            array_push($list,$heji);
             return $list;
         }
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
@@ -25,7 +32,7 @@ class CountLsbzsrAction extends CommonAction {
         foreach($list as $key=>&$val){
             $val['suoshudd'] = $qishu_id;
             $val['xuhao'] = $key+1;
-            $val['biaozhunsr'] = $danjia*$val['shoukexs'];
+            $val['biaozhunsr'] = $danjia*$val['zongrencxs'];
             $val['qianming'] = '';
             M('lsbzsr')->add($val);
         }

@@ -18,6 +18,10 @@
     <script type="text/javascript" src="__PUBLIC__/js/respond.js"></script>
 
 </head>
+<style>
+    .right{float: right;}
+    .dd{display: block;height: 20px}
+</style>
 <body>
 
     <div class="one-head clearfix">
@@ -37,7 +41,7 @@
             </ul>
             <ul class="nav nav-navicon nav-menu nav-inline admin-nav nav-tool">
                <!--<li> <a href="http://www.ddmall.com.cn/" target="_blank" class="icon-home"></a></li>-->
-                <li> <a class=" dialogs" href="javascript:void(0)" data-toggle="click" data-target="#mydialog" data-mask="1" data-width="30%">[切换分校]</a></li>
+                <li> <a class=" dialogs right" href="javascript:void(0)" data-toggle="click" data-target="#mydialog" data-mask="1" data-width="30%"><span class="right dd">[切换分校]</span><span class="right dd" style="text-align: right;margin-right: 5px;max-width: 300px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{$xuexiao}</span></a></li>
                 <li> <a href="{:U('/AdminUser/edit')}" target="one-iframe" class="icon-user"></a></li>
                 <li> <a href="{:U('/Login/logout')}" class="one-logout bg-red icon-power-off"></a></li>
             </ul>

@@ -31,10 +31,10 @@
                         <th width="80">进出库明细</th>
                         <th width="80">社保明细</th>
                         <th width="80">公积金明细</th>
-                        <th width="80">操作</th>
-                        <!-- <if condition="$rid eq 2 or $rid eq 3"> -->
                         <!-- <th width="80">操作</th> -->
-                        <!-- </if> -->
+                        <if condition="$rid eq 2 or $rid eq 3">
+                        <th width="80">操作</th>
+                        </if>
                         <!-- <th width="80">行政状态</th>
                         <th width="80">行政经理状态</th> -->
                         <th width="80">行操作</th>
@@ -100,6 +100,7 @@
 
                             </if>
                             <!--下面的if是这里的-->
+                            <if condition="$rid eq 2 or $rid eq 3">
                                 <if condition="$v.status_xz neq 2">
                                     <td>
                                         <a class="button bg-green button-small js-sub" title="通知行政经理" alt="通知行政经理" target2="__MODULE__/Common/create/qishu/{$v.qishu}/sid/{$v.sid}" target3="__MODULE__/Common/waitNum/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">通知行政经理</a>
@@ -115,8 +116,8 @@
                                         </td>
                                     </if>
                                 </if>
-                            <!--<if condition="$rid eq 2 or $rid eq 3">-->
-                            <!--</if>-->
+                            
+                            </if>
                             <!-- <td>
                                 <if condition="$v.status_xz eq 1">
                                 无
