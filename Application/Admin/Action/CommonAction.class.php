@@ -407,15 +407,14 @@ class CommonAction extends Action {
     // 生成业绩表
     public function create(){
         // 避免重复操作
-        $status_xz = M('sjzb')->where($_GET)->getField('status_xz');
+        // $status_xz = M('sjzb')->where($_GET)->getField('status_xz');
         if($status_xz == 2){
-            // die;
+            die;
         }
         $tablenames = $this->getTabelnames(1,[1,3,4]);// 获取序号和表明对应的一维数组
         $field = implode(',',$tablenames);// 组成筛选条件
+        $field = str_replace(',xfljs','',$field);
         $data = M('sjzb')->field($field)->where($_GET)->find();// 获取表格导入情况
-
-
 
         // 查询学校是否需要上传社保明细表和公积金明细表
         $data2 = M('school')->field('isshebao,isgongjijin')->where('id = '.$_GET['sid'])->find();
@@ -807,6 +806,14 @@ class CommonAction extends Action {
                 }else{
                     $data = array();
                 }
+            break;
+            case 37:
+                $xfl = new \Admin\Action\DownloadAction();
+                $xfl->download_xfl($qishu,$sid);
+            break;
+            case 38:
+                $xfl = new \Admin\Action\DownloadAction();
+                $xfl->download_zhl($qishu,$sid);
             break;
         }
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
@@ -2018,10 +2025,10 @@ class CommonAction extends Action {
         // $t4 = microtime(true);
         // 市场业绩数据写入数据库
         $res_scyj = $this->ScyjToDb($qishu,$sid);
-        // 经营数据写入数据库(未做)
+        // 经营数据写入数据库
         // $t5 = microtime(true);
         $res_jsmx = $this->JysjToDb($qishu,$sid);
-        // 退费数据写入数据库(未做)
+        // 退费数据写入数据库
         // $t6 = microtime(true);
         // $res_tf = $this->TfToDb($qishu,$sid);
         // $t7 = microtime(true);
@@ -2045,8 +2052,16 @@ class CommonAction extends Action {
         $res_zxldxtz = $zxldxtz->getZxldxtzData($qishu,$sid);
 
         //老师标准收入
-        $zxhytz = new \Admin\Action\CountLsbzsrAction();
-        $res_lsbzsr =  $zxhytz->getLsbzsrData($qishu,$sid);
+        $lsbzsr = new \Admin\Action\CountLsbzsrAction();
+        $res_lsbzsr =  $lsbzsr->getLsbzsrData($qishu,$sid);
+
+        //续费率
+        $xfl = new \Admin\Action\CountXflAction();
+        $res_xfl =  $xfl->getXflData($qishu,$sid);
+
+        //转化率
+        $zhl = new \Admin\Action\CountZhlAction();
+        $res_zhl =  $zhl->getZhlData($qishu,$sid);
         // -----------------------生成数据入库结束-----------------------
         
 
@@ -2110,6 +2125,12 @@ class CommonAction extends Action {
         $res_tf = $this->delScData($qishu,$sid,32);
         //删除老师收入
         $res_tf = $this->delScData($qishu,$sid,33);
+        //删除考核表
+        $res_tf = $this->delScData($qishu,$sid,35);
+        //删除续费率
+        $res_tf = $this->delScData($qishu,$sid,37);
+        //删除转化率
+        $res_tf = $this->delScData($qishu,$sid,38);
         // -----------------------生成数据从库删除结束-----------------------
     }
 
@@ -2332,6 +2353,7 @@ class CommonAction extends Action {
                           `qingjiacs` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '请假次数',
                           `zhaoshengly` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '招生来源',
                           `laiyuanfx` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '来源分校',
+                          `zuijinsksj` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '最近上课时间',
                           `baomingrq` char(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '报名日期',
                           `xiuxuerq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '休学日期',
                           `tuixueriqi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退学日期',

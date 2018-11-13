@@ -168,7 +168,6 @@ class TableImportAction extends CommonAction{
     }
     
     public function index_xq(){
-        // dump($_GET);
         $data = M('sjzb')->field('id,sid,xyxxb,bjxxb,bjxyxxb,sjjlb,kxmxb,kbmxb,xyfyyjb,xxkedb,sbmxb,gjjmxb',true)->where($_GET)->find();
         $data['school'] = M('school')->where('id ='.$_GET['sid'])->getField('name');
         // dump($data);
@@ -270,7 +269,6 @@ class TableImportAction extends CommonAction{
             $tablenames = $this->getTabelnames(2,[1,3,4]);// common控制器的方法,默认获取表明首字母拼音,2获取中文名
 
             $tid = $_POST["tid"];  //表名对应的序号
-
             $num = count(explode(explode('表',$tablenames[$tid])[0],$name));// 判断上传表格是否正确的条件,如果上传表名含有需要上传表格名的关键字段,即num>=2,若<2就是非正确的上传表名
 
             // $_POST['suoshufx'] = M('school')->where('id ='.$_POST['suoshufx'])->getField('name');//所属校区
@@ -924,6 +922,11 @@ class TableImportAction extends CommonAction{
                     break;
                     case 34:
                         if($v == '日期'){
+                            $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
+                        }
+                    break;
+                     case 36:
+                        if($v == '学号'){
                             $col = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($k).$j)->getValue();
                         }
                     break;

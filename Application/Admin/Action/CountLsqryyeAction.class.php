@@ -48,13 +48,12 @@ class CountLsqryyeAction extends CommonAction {
 
         //查营业额
         $zonge = M('sjjlb_'.$nian.' as ss')
-                    ->join('stjy_xyxxb_'.$nian.' as sx on ss.xuehao=sx.xuehao')
-                    ->join('stjy_bjxyxxb_'.$nian.' as sb on sb.xuehao=sx.xuehao')
-                    ->join('stjy_kbmxb_'.$nian.' as sk on sk.banjimc=sb.banji')
-                    ->field('ss.jiaofeije,sk.jingjiangls,sb.banji,sb.banji')
+                    ->join('LEFT JOIN stjy_xyxxb_'.$nian.' as sx on ss.xuehao=sx.xuehao')
+                    ->join('LEFT JOIN stjy_bjxyxxb_'.$nian.' as sb on sb.xuehao=sx.xuehao')
+                    ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as sk on sk.banjimc=sb.banji')
+                    ->field('ss.xuehao,ss.jiaofeije,sk.jingjiangls,sb.banji')
                     ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd'")
                     ->select();
-
         //班级编码
         $banjibm = M('banjibianhao')->field('jingdujb,bumen')->select();
         foreach($banjibm as $v){

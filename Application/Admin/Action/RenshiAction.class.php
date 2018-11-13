@@ -606,6 +606,7 @@ class RenshiAction extends CommonAction{
             if (!$info = $upload->upload()) {
                 $this->error($upload->getError());
             }
+            M('rycb')->where('1=1')->delete();
             $data['wenjianmc'] = $info['excel']['name'];
             $data['lujing'] = $info['excel']['savepath'].$info['excel']['savename'];
             $data['caozuoren'] = session('username');
@@ -631,7 +632,26 @@ class RenshiAction extends CommonAction{
             }
             for($i=2;$i<$highestRow+1;$i++){
                 for($j=0;$j<$colsNum;$j++){
-                    $cell[ $zhiduan[$j] ] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getValue();
+                    $tmp = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($j).$i);
+                    $cell[ $zhiduan[$j] ] = $tmp->getValue();
+                     // 自动识别单元格为日期格式
+                    if($tmp->getDataType()==\PHPExcel_Cell_DataType::TYPE_NUMERIC){
+                        $cellstyleformat=$objPHPExcel->getActiveSheet()->getStyle( $tmp->getCoordinate() )->getNumberFormat();
+                        $formatcode=$cellstyleformat->getFormatCode();
+                        if (preg_match('/^([$[A-Z]*-[0-9A-F]*])*[hmsdy]/i', $formatcode)) {
+                            $cell[ $zhiduan[$j] ]=gmdate("Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($value));
+                        }else{
+                            $cell[ $zhiduan[$j] ]= \PHPExcel_Style_NumberFormat::toFormattedString($value,$formatcode);
+                            $val_arr = explode(',',$value);
+                            $val = '';
+                            if(count($val_arr)>=2){
+                                foreach($val_arr as $v){
+                                    $val.=$v;
+                                }
+                                $cell[ $zhiduan[$j] ] = (double)$val;
+                            }
+                        }
+                    }
                 }
                 if ($cell['xingming']){
                     M('rycb')->add( $cell );

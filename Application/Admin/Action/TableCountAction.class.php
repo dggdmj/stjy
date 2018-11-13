@@ -153,7 +153,6 @@ class TableCountAction extends CommonAction{
             $temp = M('table_name')->where('id = '.$_GET['tid'])->find();
             $list[$k]['table_name'] = $temp['table_name'];
             $list[$k]['name'] = $temp['name'];
-
         }
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
@@ -196,6 +195,33 @@ class TableCountAction extends CommonAction{
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
         // $this->assign("kecheng",$kecheng);
+        $this->assign("list",$list);
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
+
+    //续费率
+    public function xfl_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+        $xfl_id =$this->getQishuId($qishu,$sid,37);
+        $list['data1'] = M('xfl')->where("suoshudd='$xfl_id' and type=1")->order('xuhao')->select();
+        $list['data2'] = M('xfl')->where("suoshudd='$xfl_id' and type=2")->order('xuhao')->select();
+        $list['data3'] = M('xfl')->where("suoshudd='$xfl_id' and type=3")->order('xuhao,xiaoji desc,id')->select();
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
+        $this->assign("list",$list);
+        $this->assign('arr',$arr);
+        $this->adminDisplay();
+    }
+    //转化率
+    public function zhl_xq(){
+        $qishu = $_GET['qishu'];
+        $sid = $_GET['sid'];
+        $zhl_id =$this->getQishuId($qishu,$sid,38);
+        $list['data1'] = M('zhl')->where("suoshudd='$zhl_id' and type=1")->order('xuhao')->select();
+        $list['data2'] = M('zhl')->where("suoshudd='$zhl_id' and type=2")->order('xuhao')->select();
+        $list['data3'] = M('zhl')->where("suoshudd='$zhl_id' and type=3")->order('xuhao,xiaoji desc,id')->select();
+        $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign("list",$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
@@ -290,6 +316,15 @@ class TableCountAction extends CommonAction{
 
         $qishu_id = $this->getQishuId($qishu,$sid,9);
         $list = M('sczylb')->where(array('suoshudd'=>$qishu_id))->select();
+        $heji = array();
+        foreach($list as $key=>$val){
+            foreach($val as $k=>$v){
+                $heji[ $k ] += $v;
+            }
+        }
+        $heji['xuhao'] = '';
+        $heji['gonglixx'] = '合计';
+        array_push($list,$heji);
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // $this->assign("data",$list['data']);
         // $this->assign("heji",$list['heji']);
@@ -335,6 +370,7 @@ class TableCountAction extends CommonAction{
         foreach($qishu_arr as $k=>$v){
             $qishu_id[] = $k;
         }
+        $heji = array();
         if ($qishu_id){
             //查询新增明细表
             $where['suoshudd'] = array('in',$qishu_id);
@@ -342,8 +378,17 @@ class TableCountAction extends CommonAction{
             foreach($list as &$val){
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
                 $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
+                foreach($val as $k=>$v){
+                    $heji[ $k ] += $v;
+                }
             }
         }
+        $heji['xuhao'] = '';
+        $heji['nianfen'] = '';
+        $heji['yuefen'] = '';
+        $heji['gonglixx'] = '合计';
+        array_push($list,$heji);
+
         $this->assign('start_time',$start_time);
         $this->assign('end_time',$end_time);
         $this->assign('school_name',$school_name);

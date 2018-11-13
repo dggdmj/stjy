@@ -37,21 +37,21 @@ class CountXzmxAction extends CommonAction {
         $list = M($xyxxb)->field('xuehao,xingming,xingbie,xiaoqu as fenxiao,zhuangtai')->where("baomingrq >= '$firstday' and baomingrq <= '$lastday' and suoshudd ='$xyxxb_oid'")->group('xuehao')->select();
         //转入
         $zhuangru = M('zrjlb')
-                ->field('xuehao')
+                ->field('xuehao,xingming,zhuanruxq')
                 ->where(" zhuangxiaosj >= '$firstday' and zhuangxiaosj <= '$lastday' and suoshudd = '$zrjl_oid'")
                 ->select();
-        $zhuangru = $this->quchongjian($zhuangru);
 
         //查上个月退学的
         // 获取上个月的期数
         $last_qishu = date('Ym',strtotime("$qishu_time -1 month"));
         $last_oid = $this->getQishuId($last_qishu,$sid,1);
-        $liushi = M($xyxxb)->field('xuehao')->where("suoshudd ='$last_oid' and zhuangtai = '已退学'")->select();
-        $liushi = $this->quchongjian($liushi);
+        $liushi = M($xyxxb)->field('xuehao,xingming,laiyuanfx')->where("suoshudd ='$last_oid' and zhuangtai = '已退学'")->select();
 
         $zhuanchu_id = $this->getQishuId($qishu,$sid,27);
         $shouju_id = $this->getQishuId($qishu,$sid,4);
-        $shouju = M($sjjlb.' as sj')->field('zc.xuehao,zc.xingming,zc.xingbie,zc.zhuanchuxq as fenxiao')->join('RIGHT JOIN stjy_zcjlb as zc on zc.xuehao=sj.xuehao')->where("sj.suoshudd='$shouju_id' and zc.suoshudd='$zhuanchu_id'")->group('zc.xuehao')->select();
+
+        $shouju = M($sjjlb.' as sj')->field('zc.xuehao,zc.xingming,zc.xingbie,zc.zhuanchuxq as fenxiao')->join('RIGHT JOIN stjy_zcjlb as zc on zc.xuehao=sj.xuehao')->where("sj.suoshudd='$shouju_id' and zc.suoshudd='$zhuanchu_id' and sj.jiaofeirq >= '$firstday' and sj.jiaofeirq <= '$lastday' and zc.zhuangxiaosj >= '$firstday' and zc.zhuangxiaosj <= '$lastday'")->group('zc.xuehao')->select();
+
         $xyList = M($xyxxb)->field('xuehao')->where("suoshudd = '$xyxxb_oid'")->select();
         $xyList = $this->quchongjian($xinzeng);
 
@@ -60,9 +60,11 @@ class CountXzmxAction extends CommonAction {
                 $list[] = $v;
             }
         }
-
+        $i = 1;
+        $array = array();
         foreach($list as $key=>&$val){
-            $val['xuhao'] = $key+1;
+            $array[] = $val['xuehao'];
+            $val['xuhao'] = $i;
             $val['suoshudd'] = $qishu_id;
             $val['yuefen'] = $yuefen;
             $val['xinzenglx'] = '新增';
@@ -74,6 +76,37 @@ class CountXzmxAction extends CommonAction {
                 $val['xinzenglx'] = '流失回来';
             }
             M('xzmxb')->add($val);
+            $i ++;
+        }
+        //转入
+        foreach($zhuangru as $vv){
+            if (!in_array($vv,$array)){
+                $temp = array();
+                $temp['xuehao'] = $vv['xuehao'];
+                $temp['xingming'] = $vv['xingming'];
+                $temp['fenxiao'] = $vv['zhuanruxq'];
+                $temp['xuhao'] = $i;
+                $temp['suoshudd'] = $qishu_id;
+                $temp['yuefen'] = $yuefen;
+                $temp['xinzenglx'] = '转入';
+                M('xzmxb')->add($temp);
+                $i ++;
+            }
+        }
+        //流失回来
+        foreach($liushi as $vl){
+            if (!in_array($vl,$array)){
+               $temp = array();
+                $temp['xuehao'] = $vl['xuehao'];
+                $temp['xingming'] = $vl['xingming'];
+                $temp['fenxiao'] = $vl['laiyuanfx'];
+                $temp['xuhao'] = $i;
+                $temp['suoshudd'] = $qishu_id;
+                $temp['yuefen'] = $yuefen;
+                $temp['xinzenglx'] = '流失回来';
+                M('xzmxb')->add($temp);
+                $i ++;
+            }
         }
         return $list;
     }

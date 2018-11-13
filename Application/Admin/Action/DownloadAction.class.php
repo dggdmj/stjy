@@ -159,5 +159,135 @@ class DownloadAction extends CommonAction {
         $objWriter->save('php://output');
 
     }
+
+    //续费率下载
+    public function download_xfl($qishu,$sid){
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $data = new \Admin\Action\CountSrqkylbAction();
+        $info = $data->getSrqkylbData($qishu,$sid);
+
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.$school_name.'续费率明细汇总表';
+        $template = __ROOT__.'Public/template/template_xfl.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        $objActSheet->setCellValue('A1',$filename); 
+
+        $xfl_id =$this->getQishuId($qishu,$sid,37);
+        $list['data1'] = M('xfl')->field('id,type,xiaoji,daorusj,suoshudd',true)->where("suoshudd='$xfl_id' and type=1")->order('xuhao')->select();
+        $list['data2'] = M('xfl')->field('id,type,xiaoji,daorusj,suoshudd',true)->where("suoshudd='$xfl_id' and type=2")->order('xuhao')->select();
+        $list['data3'] = M('xfl')->field('id,type,xiaoji,daorusj,suoshudd',true)->where("suoshudd='$xfl_id' and type=3")->order('xuhao,xiaoji desc,id')->select();
+        $i = 3;//从3开始
+        foreach($list['data1'] as $val){
+            $p = 0;
+            foreach($val as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($p).$i,$v);$p++;
+            }
+            $i++;
+        }
+        $i = 9;
+        foreach($list['data2'] as $val){
+            $p = 0;
+            foreach($val as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($p).$i,$v);$p++;
+            }
+            $i++;
+        }
+        $i = 15;
+        foreach($list['data3'] as $key=>$val){
+            $p = 0;
+            if($key % 7 == 0){
+                $tmp = $i + 6;
+                $objPHPExcel->getActiveSheet()->mergeCells("A".$i.":A"."$tmp");
+                // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($p).$i.':'.$tmp,$xuhao);
+            }
+            foreach($val as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($p).$i,$v);$p++;
+            }
+            $i++;
+        }
+        // 写入数值
+        // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+
+    }
+
+    //转换率下载
+    public function download_zhl($qishu,$sid){
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $data = new \Admin\Action\CountSrqkylbAction();
+        $info = $data->getSrqkylbData($qishu,$sid);
+
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.$school_name.'转换率秒杀明细';
+        $template = __ROOT__.'Public/template/template_xfl.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        $objActSheet->setCellValue('A1',$filename); 
+
+        $zhl_id =$this->getQishuId($qishu,$sid,38);
+        $list['data1'] = M('zhl')->field('id,type,xiaoji,daorusj,suoshudd',true)->where("suoshudd='$zhl_id' and type=1")->order('xuhao')->select();
+        $list['data2'] = M('zhl')->field('id,type,xiaoji,daorusj,suoshudd',true)->where("suoshudd='$zhl_id' and type=2")->order('xuhao')->select();
+        $list['data3'] = M('zhl')->field('id,type,xiaoji,daorusj,suoshudd',true)->where("suoshudd='$zhl_id' and type=3")->order('xuhao,xiaoji desc,id')->select();
+        $i = 3;//从3开始
+        foreach($list['data1'] as $val){
+            $p = 0;
+            foreach($val as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($p).$i,$v);$p++;
+            }
+            $i++;
+        }
+        $i = 9;
+        foreach($list['data2'] as $val){
+            $p = 0;
+            foreach($val as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($p).$i,$v);$p++;
+            }
+            $i++;
+        }
+        $i = 15;
+        foreach($list['data3'] as $key=>$val){
+            $p = 0;
+            if($key % 7 == 0){
+                $tmp = $i + 6;
+                $objPHPExcel->getActiveSheet()->mergeCells("A".$i.":A"."$tmp");
+                // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($p).$i.':'.$tmp,$xuhao);
+            }
+            foreach($val as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($p).$i,$v);$p++;
+            }
+            $i++;
+        }
+        // 写入数值
+        // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+
+    }
     
 }

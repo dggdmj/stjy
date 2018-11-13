@@ -1128,5 +1128,73 @@ class SettingAction extends CommonAction{
         $this->assign('list',$list);
         $this->adminDisplay();
     }
+
+    //课程管理
+    public function kechenggl2(){
+        $list = M('kechenggl')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //课程管理导入
+    public function kechenggl2_add(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            M('kechenggl')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($i=2;$i<$highestRow;$i++){
+                $data['kechengmc'] = $sheet->getCell('A'.$i)->getValue();
+                $data['danjia'] = $sheet->getCell('B'.$i)->getValue();
+                $data['danwei'] = $sheet->getCell('C'.$i)->getValue();
+                $data['nianji'] = $sheet->getCell('D'.$i)->getValue();
+                $data['kemu'] = $sheet->getCell('E'.$i)->getValue();
+                $data['nianfen'] = $sheet->getCell('F'.$i)->getValue();
+                $data['qiduan'] = $sheet->getCell('G'.$i)->getValue();
+                $data['leixing'] = $sheet->getCell('H'.$i)->getValue();
+                $data['banxing'] = $sheet->getCell('I'.$i)->getValue();
+                $data['yiduiy'] = $sheet->getCell('J'.$i)->getValue();
+                $data['anqisf'] = $sheet->getCell('K'.$i)->getValue();
+                $data['yitingy'] = $sheet->getCell('L'.$i)->getValue();
+                $data['shouquan'] = $sheet->getCell('M'.$i)->getValue();
+                $data['kecheng'] = $sheet->getCell('N'.$i)->getValue();
+                $data['shifoujs'] = $sheet->getCell('O'.$i)->getValue();
+                if ($data['kechengmc'] != ''){
+                    M('kechenggl')->add($data);
+                }
+                unset($data);
+            }
+            $this->success('导入成功',U('kechenggl2'));
+            exit;
+        }
+    }
+
+    //清空课程管理
+    public function kechenggl_delete(){
+        M('kechenggl')->where("1=1")->delete();
+        $this->success('成功清空课程管理',U('kechenggl2'));
+    }
 }
 ?>

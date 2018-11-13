@@ -1,7 +1,7 @@
 <?php
 namespace Admin\Action;
 use Think\Action;
-class CountXflAction extends CommonAction {
+class CountZhlAction extends CommonAction {
     /**
      * 获得统计数据
      *
@@ -9,7 +9,7 @@ class CountXflAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getXflData($qishu='201808',$sid='1'){
+    public function getZhlData($qishu='201808',$sid='1'){
         $xufei = $this->xufei($qishu,$sid);
         $nian = substr($qishu,0,4);
         $last_day = substr($qishu,0,4).'-'.substr($qishu,4,2);
@@ -41,8 +41,7 @@ class CountXflAction extends CommonAction {
         $data['xiaoxuebu']['xinzengxxrs'] = 0;
         $data['chuzhongbu']['xinzengxxrs'] = 0;
         $data['chuerxxq']['xinzengxxrs'] = 0;
-        $qishu_id = $this->insertQishuHistory(35,$qishu,$sid);//考核表订单id
-        $xfl_suoshudd = $this->insertQishuHistory(37,$qishu,$sid);
+        $xfl_suoshudd = $this->insertQishuHistory(38,$qishu,$sid);
 
         //获取续费率计算的数组
         $xfljs_id = $this->getQishuId($qishu,$sid,36);
@@ -55,8 +54,8 @@ class CountXflAction extends CommonAction {
         //计算是否已考核
         $sy_qishu = date('Ym',strtotime(substr($qishu,0,4)).'-'.substr($qishu,4,2));//上个月
         $qy_qishu = date('Ym',strtotime(substr($qishu,0,4)).'-'.substr($qishu,4,2));//上上个月
-        $sy_suoshudd = $this->getQishuId($sy_qishu,$sid,35);
-        $qy_suoshudd = $this->getQishuId($qy_qishu,$sid,35);
+        $sy_suoshudd = $this->getQishuId($qishu,$sid,35);
+        $qy_suoshudd = $this->getQishuId($qishu,$sid,35);
         $where = '1=1';
         if ($sy_qishu && !$sy_qishu){
             $where .= " and suoshudd='$sy_suoshudd'";
@@ -80,7 +79,7 @@ class CountXflAction extends CommonAction {
                 $val['bumen'] = $banji[ $val['banji'] ];
                 $val['shuliang'] = $val['shengyugmsl'] + $val['shengyuzssl'];
                 //判断不是本月透视并且不是本月新增秒杀
-                if (($val['shifoujs'] != '是' || $val['shuliang'] > 16 || ($val['feiyong'] / $val['shuliang'] > 117) || !($val['feiyong'] / $val['shuliang'] > 0)) && !in_array($val['xuehao'],$xzms) && !in_array($val['xuehao'],$xfl_arr)){
+                if ( ($val['shifoujs'] == '是' && $val['shuliang'] < 16 && ($val['feiyong'] / $val['shuliang'] < 117)  && ($val['feiyong'] / $val['shuliang'] > 0)) || in_array($val['xuehao'],$xzms) && !in_array($val['xuehao'],$xfl_arr)){
                     if ($val['bumen'] == '小学部'){
                         //续费学生人数
                         if ($val['shoucijfrq'] < $last_day && in_array($val['xuehao'],$xufei)){
@@ -98,11 +97,11 @@ class CountXflAction extends CommonAction {
                         if(($val['zuijinsksj'] > $last_day) && !( $val['shuliang'] > 0) || ( ($val['shuliang'] > 0 ) && ($val['tuixueriqi'] > $last_day) ) ){
                             $data['xiaoxuebu']['shengyukcxydyldxs'] += 1;
                             //记录考核表
-                            $khb['xuehao'] = $val['xuehao'];
-                            $khb['bumen'] = '小学部';
-                            $khb['suoshudd'] = $qishu_id;
-                            $khb['type'] = 1;
-                            M('khb')->add($khb);
+                            // $khb['xuehao'] = $val['xuehao'];
+                            // $khb['bumen'] = '小学部';
+                            // $khb['suoshudd'] = $qishu_id;
+                            // $khb['type'] = 1;
+                            // M('khb')->add($khb);
                             //精读老师
                             if ($vo['xingming'] == $val['jingjiangls']){
                                 $temp['xx_jd']['shengyukcxydyldxs'] +=1;
@@ -156,11 +155,11 @@ class CountXflAction extends CommonAction {
                         if(($val['zuijinsksj'] > $last_day) && !( $val['shuliang'] > 0) || ( ($val['shuliang'] > 0 ) && ($val['tuixueriqi'] > $last_day) ) ){
                             $data['chuzhongbu']['shengyukcxydyldxs'] += 1;
                             //记录考核表
-                            $khb['xuehao'] = $val['xuehao'];
-                            $khb['bumen'] = '初中部';
-                            $khb['suoshudd'] = $qishu_id;
-                            $khb['type'] = 1;
-                            M('khb')->add($khb);
+                            // $khb['xuehao'] = $val['xuehao'];
+                            // $khb['bumen'] = '初中部';
+                            // $khb['suoshudd'] = $qishu_id;
+                            // $khb['type'] = 1;
+                            // M('khb')->add($khb);
                             //精读老师
                             if ($vo['xingming'] == $val['jingjiangls']){
                                 $temp['cz_jd']['shengyukcxydyldxs'] +=1;
@@ -212,11 +211,11 @@ class CountXflAction extends CommonAction {
                         if(($val['zuijinsksj'] > $last_day) && !( $val['shuliang'] > 0) || ( ($val['shuliang'] > 0 ) && ($val['tuixueriqi'] > $last_day) ) ){
                             $data['chuerxxq']['shengyukcxydyldxs'] += 1;
                             //记录考核表
-                            $khb['xuehao'] = $val['xuehao'];
-                            $khb['bumen'] = '初二下学期';
-                            $khb['suoshudd'] = $qishu_id;
-                            $khb['type'] = 1;
-                            M('khb')->add($khb);
+                            // $khb['xuehao'] = $val['xuehao'];
+                            // $khb['bumen'] = '初二下学期';
+                            // $khb['suoshudd'] = $qishu_id;
+                            // $khb['type'] = 1;
+                            // M('khb')->add($khb);
                             //精读老师
                             if ($vo['xingming'] == $val['jingjiangls']){
                                 $temp['xx_jd']['shengyukcxydyldxs'] +=1;
@@ -270,7 +269,7 @@ class CountXflAction extends CommonAction {
             $temp['xx_jd']['fenxiao'] = $school_name;
             $temp['xx_jd']['type'] = 3;
             $temp['xx_jd']['suoshudd'] = $xfl_suoshudd;
-            M('xfl')->add($temp['xx_jd']);
+            M('zhl')->add($temp['xx_jd']);
 
             //小学泛读
             $temp['xx_fd']['xuhao'] = $num;
@@ -288,7 +287,7 @@ class CountXflAction extends CommonAction {
             $temp['xx_fd']['fenxiao'] = $school_name;
             $temp['xx_fd']['type'] = 3;
             $temp['xx_fd']['suoshudd'] = $xfl_suoshudd;
-            M('xfl')->add($temp['xx_fd']);
+            M('zhl')->add($temp['xx_fd']);
 
             //初中精读
             $temp['cz_jd']['xuhao'] = $num;
@@ -306,7 +305,7 @@ class CountXflAction extends CommonAction {
             $temp['cz_jd']['fenxiao'] = $school_name;
             $temp['cz_jd']['type'] = 3;
             $temp['cz_jd']['suoshudd'] = $xfl_suoshudd;
-            M('xfl')->add($temp['cz_jd']);
+            M('zhl')->add($temp['cz_jd']);
 
             //初中泛读
             $temp['cz_fd']['xuhao'] = $num;
@@ -324,7 +323,7 @@ class CountXflAction extends CommonAction {
             $temp['cz_fd']['fenxiao'] = $school_name;
             $temp['cz_fd']['type'] = 3;
             $temp['cz_fd']['suoshudd'] = $xfl_suoshudd;
-            M('xfl')->add($temp['cz_fd']);
+            M('zhl')->add($temp['cz_fd']);
 
             //初二下学期精读
             $temp['ce_jd']['xuhao'] = $num;
@@ -342,7 +341,7 @@ class CountXflAction extends CommonAction {
             $temp['ce_jd']['fenxiao'] = $school_name;
             $temp['ce_jd']['type'] = 3;
             $temp['ce_jd']['suoshudd'] = $xfl_suoshudd;
-            M('xfl')->add($temp['ce_jd']);
+            M('zhl')->add($temp['ce_jd']);
 
             // 初二下学期泛读
             $temp['ce_fd']['xuhao'] = $num;
@@ -360,7 +359,7 @@ class CountXflAction extends CommonAction {
             $temp['ce_fd']['fenxiao'] = $school_name;
             $temp['ce_fd']['type'] = 3;
             $temp['ce_fd']['suoshudd'] = $xfl_suoshudd;
-            M('xfl')->add($temp['ce_fd']);
+            M('zhl')->add($temp['ce_fd']);
 
             //小计
             $temp['xiaoji']['xuhao'] = $num;$num++;
@@ -383,7 +382,7 @@ class CountXflAction extends CommonAction {
             $temp['xiaoji']['type'] = 3;
             $temp['xiaoji']['xiaoji'] = 1;
             $temp['xiaoji']['suoshudd'] = $xfl_suoshudd;
-            M('xfl')->add($temp['xiaoji']);
+            M('zhl')->add($temp['xiaoji']);
 
             //小学部-精读
             $heji['xx_jd']['xufeixsrs'] += $temp['xx_jd']['xufeixsrs'];
@@ -443,7 +442,7 @@ class CountXflAction extends CommonAction {
         }else{
             $heji['xx_jd']['xufeilv'] = (round(is_nan($heji['xx_jd']['xufeixsrs'] / $heji['xx_jd']['fenmu']) ? 0 : $heji['xx_jd']['xufeixsrs'] / $heji['xx_jd']['fenmu'] ,4) * 100 ).'%';
         }
-        M('xfl')->add($heji['xx_jd']);
+        M('zhl')->add($heji['xx_jd']);
 
         //小学部-泛读
         $heji['xx_fd']['xuhao'] = 3; 
@@ -459,7 +458,7 @@ class CountXflAction extends CommonAction {
         }else{
             $heji['xx_fd']['xufeilv'] = (round(is_nan($heji['xx_fd']['xufeixsrs'] / $heji['xx_fd']['fenmu']) ? 0 : $heji['xx_fd']['xufeixsrs'] / $heji['xx_fd']['fenmu'] ,4) * 100 ).'%';
         }
-        M('xfl')->add($heji['xx_fd']);
+        M('zhl')->add($heji['xx_fd']);
 
         //初中部-精读
         $heji['cz_jd']['xuhao'] = 4; 
@@ -475,7 +474,7 @@ class CountXflAction extends CommonAction {
         }else{
             $heji['cz_jd']['xufeilv'] = (round(is_nan($heji['cz_jd']['xufeixsrs'] / $heji['cz_jd']['fenmu']) ? 0 : $heji['cz_jd']['xufeixsrs'] / $heji['cz_jd']['fenmu'] ,4) * 100 ).'%';
         }
-        M('xfl')->add($heji['cz_jd']);
+        M('zhl')->add($heji['cz_jd']);
 
         //初中部-泛读
         $heji['cz_fd']['xuhao'] = 5; 
@@ -491,7 +490,7 @@ class CountXflAction extends CommonAction {
         }else{
             $heji['cz_fd']['xufeilv'] = (round(is_nan($heji['cz_fd']['xufeixsrs'] / $heji['cz_fd']['fenmu']) ? 0 : $heji['cz_fd']['xufeixsrs'] / $heji['cz_fd']['fenmu'] ,4) * 100 ).'%';
         }
-        M('xfl')->add($heji['cz_fd']);
+        M('zhl')->add($heji['cz_fd']);
 
         //初二部-精读
         $heji['ce_jd']['xuhao'] = 6; 
@@ -507,7 +506,7 @@ class CountXflAction extends CommonAction {
         }else{
             $heji['ce_jd']['xufeilv'] = (round(is_nan($heji['ce_jd']['xufeixsrs'] / $heji['ce_jd']['fenmu']) ? 0 : $heji['ce_jd']['xufeixsrs'] / $heji['ce_jd']['fenmu'] ,4) * 100 ).'%';
         }
-        M('xfl')->add($heji['ce_jd']);
+        M('zhl')->add($heji['ce_jd']);
 
         //初二部-泛读
         $heji['ce_fd']['xuhao'] = 7; 
@@ -523,7 +522,7 @@ class CountXflAction extends CommonAction {
         }else{
             $heji['ce_fd']['xufeilv'] = (round(is_nan($heji['ce_fd']['xufeixsrs'] / $heji['ce_fd']['fenmu']) ? 0 : $heji['ce_fd']['xufeixsrs'] / $heji['ce_fd']['fenmu'] ,4) * 100 ).'%';
         }
-        M('xfl')->add($heji['ce_fd']);
+        M('zhl')->add($heji['ce_fd']);
 
         //小计
         $heji['xiaoji']['xuhao'] = 1;
@@ -544,8 +543,9 @@ class CountXflAction extends CommonAction {
         $heji['xiaoji']['yuefen'] = substr($qishu,4,2).'月';
         $heji['xiaoji']['fenxiao'] = $school_name;
         $heji['xiaoji']['type'] = 2;
+        $heji['xiaoji']['xiaoji'] = 1;
         $heji['xiaoji']['suoshudd'] = $xfl_suoshudd;
-        M('xfl')->add($heji['xiaoji']);
+        M('zhl')->add($heji['xiaoji']);
 
 
         //顶头合计
@@ -571,7 +571,7 @@ class CountXflAction extends CommonAction {
         $newdata['yuefen'] = substr($qishu,4,2).'月';
         $newdata['fenxiao'] = $school_name;
         $newdata['suoshudd'] = $xfl_suoshudd;
-        M('xfl')->add($newdata);
+        M('zhl')->add($newdata);
 
         $newdata['xuhao'] = 3;
         $newdata['type'] = 1;
@@ -587,11 +587,11 @@ class CountXflAction extends CommonAction {
         }else{
             $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],2) * 100 ).'%';
         }
-        M('xfl')->add($newdata);
+        M('zhl')->add($newdata);
 
-        $newdata['xuhao'] = 4;
+        $newdata['xuhao'] = 3;
         $newdata['type'] = 1;
-        $newdata['banxing'] = '初二下学期';
+        $newdata['banxing'] = '初中部';
         $newdata['xufeixsrs'] = $data['chuerxxq']['xufeixsrs'];
         $newdata['shengyukcxydyldxs'] = $data['chuerxxq']['shengyukcxydyldxs'];
         $newdata['tuifeixsrs'] = $tuifei['chuerxxq'];
@@ -603,7 +603,7 @@ class CountXflAction extends CommonAction {
         }else{
             $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],2) * 100 ).'%';
         }
-        M('xfl')->add($newdata);
+        M('zhl')->add($newdata);
 
         $newdata['xuhao'] = 1;
         $newdata['type'] = 1;
@@ -619,7 +619,7 @@ class CountXflAction extends CommonAction {
         }else{
             $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],2) * 100 ).'%';
         }
-        M('xfl')->add($newdata);
+        M('zhl')->add($newdata);
         return true;
     }
 

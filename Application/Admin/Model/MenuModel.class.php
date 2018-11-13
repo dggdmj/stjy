@@ -128,6 +128,13 @@ class MenuModel {
                         'url' => U('/TableImport/tableList/tid/34'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '续费率计算',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/36'),
+                        'order' => 1
+                    ),
+
                 )
             );
         $order = array(
@@ -212,6 +219,18 @@ class MenuModel {
                         'icon' => 'file',
                         'url' => U('/TableCount/shouruqkylb'),
                         'order' => 12
+                    ),
+                    array(
+                        'name' => '续费率',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/yejilist/tid/37'),
+                        'order' => 13
+                    ),
+                    array(
+                        'name' => '转化率',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/yejilist/tid/38'),
+                        'order' => 14
                     ),
                 )
             );
@@ -401,6 +420,12 @@ class MenuModel {
                         'name' => '物品清单表',
                         'icon' => 'puzzle-piece',
                         'url' => U('Setting/wupinqd'),
+                        'order' => 12
+                    ),
+                    array(
+                        'name' => '课程管理2',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/kechenggl2'),
                         'order' => 12
                     ),
                 )
