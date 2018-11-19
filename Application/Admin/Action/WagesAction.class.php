@@ -116,7 +116,7 @@ class WagesAction extends CommonAction{
         $map['sid'] = array('in',$school_id);
         $data = M('sjzb'); // 实例化对象
         $count = $data->where($map)->count();// 查询满足要求的总记录数
-
+dump($count);exit;
 
         // $map['sid'] = array('in',$school_id);// 查询条件
         // $data = M('sjzb'); // 实例化对象

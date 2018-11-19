@@ -428,6 +428,18 @@ class MenuModel {
                         'url' => U('Setting/kechenggl2'),
                         'order' => 12
                     ),
+                    array(
+                        'name' => '阿米巴标准',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/ambbz'),
+                        'order' => 12
+                    ),
+                    array(
+                        'name' => '中心名称',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/zxmc'),
+                        'order' => 12
+                    ),
                 )
             );
         $member = array(

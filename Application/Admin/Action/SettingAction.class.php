@@ -1196,5 +1196,130 @@ class SettingAction extends CommonAction{
         M('kechenggl')->where("1=1")->delete();
         $this->success('成功清空课程管理',U('kechenggl2'));
     }
+
+    //阿米巴标准
+    public function ambbz(){
+        $list = M('ambbz')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //阿米巴标准导入
+    public function ambbz_add(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            M('ambbz')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)getCalculatedValue
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($j=3;$j<$highestRow+1;$j++){
+                if ($j < 13){
+                    $data['gangwei'] = $sheet->getCell('A'.'3')->getValue();
+                }else{
+                    $data['gangwei'] = $sheet->getCell('A'.$j)->getValue();
+                }
+                $data['xuhao'] = $sheet->getCell('B'.$j)->getValue();
+                $data['amibnr'] = $sheet->getCell('C'.$j)->getValue();
+                $data['danwei'] = $sheet->getCell('D'.$j)->getValue();
+                $data['danjia'] = $sheet->getCell('E'.$j)->getCalculatedValue();
+                $data['alei'] = $sheet->getCell('F'.$j)->getCalculatedValue();
+                $data['a_lei'] = $sheet->getCell('G'.$j)->getCalculatedValue();
+                $data['blei'] = $sheet->getCell('H'.$j)->getCalculatedValue();
+                $data['clei'] = $sheet->getCell('I'.$j)->getCalculatedValue();
+                $data['dlei'] = $sheet->getCell('J'.$j)->getCalculatedValue();
+                $data['miaoshu'] = $sheet->getCell('K'.$j)->getValue();
+                if ($data['gangwei']){
+                    M('ambbz')->add($data);
+                }
+                unset($data);
+            }
+            $this->success('导入成功',U('ambbz'));
+            exit;
+        }
+    }
+
+    //清空阿米巴标准
+    public function ambbz_delete(){
+        M('ambbz')->where("1=1")->delete();
+        $this->success('成功清空阿米巴标准',U('ambbz'));
+    }
+
+    //中心名称
+    public function zxmc(){
+        $list = M('zxmc')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //中心名称导入
+    public function zxmc_add(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());exit;
+            }
+            M('zxmc')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)getCalculatedValue
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($j=2;$j<$highestRow+1;$j++){
+                $data['quyu'] = $sheet->getCell('A'.$j)->getValue();
+                $data['zhongxin'] = $sheet->getCell('B'.$j)->getValue();
+                $data['fuzezj'] = $sheet->getCell('C'.$j)->getValue();
+                $data['jibie'] = $sheet->getCell('D'.$j)->getValue();
+                if ($data['quyu']){
+                    M('zxmc')->add($data);
+                }
+                unset($data);
+            }
+            $this->success('导入成功',U('zxmc'));
+            exit;
+        }
+    }
+
+    //清空中心名称
+    public function zxmc_delete(){
+        M('zxmc')->where("1=1")->delete();
+        $this->success('成功清空中心名称',U('zxmc'));
+    }
 }
 ?>

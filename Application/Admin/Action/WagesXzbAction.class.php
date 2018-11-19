@@ -38,7 +38,81 @@ class WagesXzbAction extends WagesCommonAction{
         return $data;
     }
 
+    //工资
     public function index(){
+        //期数
+        $qishu = $_GET['qishu']?$_GET['qishu']:'201709';
+        //学校id
+        $yuefen = substr($qishu,4,2).'月';
+        $ambbz = M('ambbz')->getField('gangwei,danjia');
+        $sid = $_GET['sid']?$_GET['sid']:1;
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj')->where(array('xiaoqu'=>$school_name))->select();
+        foreach($list as $key=>&$val){
+            $val['xuhao'] = $key+1;
+            $val['yuefen'] = $yuefen;
+            $val['fenxiao'] = $school_name;
+            $val['gongzuonx'] = intval(( time() - strtotime($val['ruzhisj']) ) / (365 * 24 * 60 * 60));
+            $val['yingchuqts'] = 30;// 应出勤天数 (写死)
+            $val['shijicqts'] = 30;// 实际出勤天数 (写死)
+            $val['jibengz'] = '';
+            $val['zhengjianbl'] = '';
+            $val['yuangongxc'] = '';
+            $val['peixun'] = '';
+            $val['biaogesjkz'] = '';
+            $val['qita'] = '';
+            $val['xiaoji'] = '';//小计
+
+            $val['xuexiaomz'] = '';
+            $val['zaidurs'] = '';
+            $val['shoufeije'] = '';
+            $val['zaizhiyy'] = '';
+            $val['chukuts'] = '';
+
+            $val['xueshengfwgl'] = '';
+            $val['yuangongfwgl'] = '';
+            $val['weishengaqgl'] = '';
+            $val['yuangongzp'] = '';
+            $val['chenggongzp'] = '';
+            $val['shoufeifc'] = '';
+            $val['zhengjianwh'] = '';
+            $val['gongzhanggl'] = '';
+            $val['ziliaowjbg'] = '';
+            $val['qita2'] = '';
+            $val['xiaoji2'] = '';
+            $val['xueshengfwglcw'] = '';
+            $val['yuangongfwglcw'] = '';
+            $val['cangkuglcw'] = '';
+            $val['shouruhdlrcw'] = '';
+            $val['zhifushcw'] = '';
+            $val['xitongwhcw'] = '';
+            $val['fenxiaocjcwdjcw'] = '';
+            $val['zichanglcw'] = '';
+            $val['qita3'] = '';
+            $val['xiaoji3'] = '';
+            $val['suzhizjkj'] = '';
+
+            $val['qitakf'] = '';
+            $val['fudonghj'] = '';
+            $val['yueduyffzj'] = '';
+            $val['gongjij'] = '';
+            $val['gerensb'] = '';
+            $val['gerensds'] = '';
+            $val['yuedusfzj'] = '';
+        }
+        $data = array();
+        $data['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
+        $this->assign('data',$data);
+        $this->assign('school_name',$school_name);
+        $this->assign('nianyue',substr($qishu,0,4).'年'.substr($qishu,4,2).'月');
+        $this->assign('qishu',$qishu);
+        $this->assign('sid',$sid);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+        
+    }
+
+    public function index_bak(){
         //期数
         $qishu = $_GET['qishu']?$_GET['qishu']:'201709';
         //学校id

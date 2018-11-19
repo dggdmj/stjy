@@ -22,7 +22,7 @@ class CountZhlAction extends CommonAction {
                 ->join('LEFT JOIN stjy_xyfyyjb_'.$nian.' as yj on yj.xuehao=xy.xuehao')
                 ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as kb on kb.banjimc=bj.banji')
                 ->join('LEFT JOIN stjy_kechenggl as kc on kc.kechengmc=yj.kechengmc')
-                ->field('xy.xuehao,xy.xingming,xy.shoucijfrq,xy.banji,bj.banji,xy.shoucijfrq,yj.shengyugmsl,yj.shengyuzssl,xy.zuijinsksj,xy.tuixuerq,xy.xiuxuerq,kc.shifoujs,yj.feiyong,kb.jingjiangls,kb.fanduls')
+                ->field('xy.xuehao,xy.xingming,bj.banji,xy.shoucijfrq,yj.shengyugmsl,yj.shengyuzssl,xy.zuijinsksj,xy.tuixuerq,xy.xiuxuerq,kc.shifoujs,yj.feiyong,kb.jingjiangls,kb.fanduls')
                 ->where("xy.suoshudd='$xyxxb_id'")
                 ->group('xy.xuehao')
                 ->select();
