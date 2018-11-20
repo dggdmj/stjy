@@ -41,75 +41,130 @@ class WagesXzbAction extends WagesCommonAction{
     //工资
     public function index(){
         //期数
-        $qishu = $_GET['qishu']?$_GET['qishu']:'201709';
+        $qishu = $_GET['qishu']?$_GET['qishu']:'201808';
         //学校id
+        $sid = $_GET['sid']?$_GET['sid']:1;
+        $suoshudd = $this->getQishuId($qishu,$sid,17);
         $yuefen = substr($qishu,4,2).'月';
         $ambbz = M('ambbz')->getField('gangwei,danjia');
-        $sid = $_GET['sid']?$_GET['sid']:1;
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
-        $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj')->where(array('xiaoqu'=>$school_name))->select();
-        foreach($list as $key=>&$val){
-            $val['xuhao'] = $key+1;
-            $val['yuefen'] = $yuefen;
-            $val['fenxiao'] = $school_name;
-            $val['gongzuonx'] = intval(( time() - strtotime($val['ruzhisj']) ) / (365 * 24 * 60 * 60));
-            $val['yingchuqts'] = 30;// 应出勤天数 (写死)
-            $val['shijicqts'] = 30;// 实际出勤天数 (写死)
-            $val['jibengz'] = '';
-            $val['zhengjianbl'] = '';
-            $val['yuangongxc'] = '';
-            $val['peixun'] = '';
-            $val['biaogesjkz'] = '';
-            $val['qita'] = '';
-            $val['xiaoji'] = '';//小计
+        $heji = array();//合计
+        $fujia = array();//附加表
+        $fujia_id = $this->getQishuId($qishu,$sid,39);
+        if ($suoshudd){
+            $list = M('xzbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
+            $heji = $list[ count($list) - 1];
+            unset($list[ count($list) - 1]);
+            $fujia = M('fjb')->where("suoshudd='$fujia_id'")->getField('field,value');
+        }else{
+            //实时计算
+            $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj')->where(array('xiaoqu'=>$school_name,'bumen'=>'行政部'))->select();
+            foreach($list as $key=>&$val){
+                $val['xuhao'] = $key+1;
+                $val['yuefen'] = $yuefen;
+                $val['fenxiao'] = $school_name;
+                $val['gongzuonx'] = intval(( time() - strtotime($val['ruzhisj']) ) / (365 * 24 * 60 * 60));
+                $val['yingchuqts'] = 30;// 应出勤天数 (写死)
+                $val['shijicqts'] = 30;// 实际出勤天数 (写死)
+                $val['jibengz'] = '';
+                $val['zhengjianbl'] = '';
+                $val['yuangongxc'] = '';
+                $val['peixun'] = '';
+                $val['biaogesjkz'] = '';
+                $val['qita'] = '';
+                $val['xiaoji'] = '';//小计
 
-            $val['xuexiaomz'] = '';
-            $val['zaidurs'] = '';
-            $val['shoufeije'] = '';
-            $val['zaizhiyy'] = '';
-            $val['chukuts'] = '';
+                $val['xuexiaomz'] = '';
+                $val['zaidurs'] = '';
+                $val['shoufeije'] = '';
+                $val['zaizhiyy'] = '';
+                $val['chukuts'] = '';
 
-            $val['xueshengfwgl'] = '';
-            $val['yuangongfwgl'] = '';
-            $val['weishengaqgl'] = '';
-            $val['yuangongzp'] = '';
-            $val['chenggongzp'] = '';
-            $val['shoufeifc'] = '';
-            $val['zhengjianwh'] = '';
-            $val['gongzhanggl'] = '';
-            $val['ziliaowjbg'] = '';
-            $val['qita2'] = '';
-            $val['xiaoji2'] = '';
-            $val['xueshengfwglcw'] = '';
-            $val['yuangongfwglcw'] = '';
-            $val['cangkuglcw'] = '';
-            $val['shouruhdlrcw'] = '';
-            $val['zhifushcw'] = '';
-            $val['xitongwhcw'] = '';
-            $val['fenxiaocjcwdjcw'] = '';
-            $val['zichanglcw'] = '';
-            $val['qita3'] = '';
-            $val['xiaoji3'] = '';
-            $val['suzhizjkj'] = '';
+                $val['xueshengfwgl'] = '';
+                $val['yuangongfwgl'] = '';
+                $val['weishengaqgl'] = '';
+                $val['yuangongzp'] = '';
+                $val['chenggongzp'] = '';
+                $val['shoufeifc'] = '';
+                $val['zhengjianwh'] = '';
+                $val['gongzhanggl'] = '';
+                $val['ziliaowjbg'] = '';
+                $val['qita2'] = '';
+                $val['xiaoji2'] = '';
+                $val['xueshengfwglcw'] = '';
+                $val['yuangongfwglcw'] = '';
+                $val['cangkuglcw'] = '';
+                $val['shouruhdlrcw'] = '';
+                $val['zhifushcw'] = '';
+                $val['xitongwhcw'] = '';
+                $val['fenxiaocjcwdjcw'] = '';
+                $val['zichanglcw'] = '';
+                $val['qita3'] = '';
+                $val['xiaoji3'] = '';
+                $val['suzhizjkj'] = '';
 
-            $val['qitakf'] = '';
-            $val['fudonghj'] = '';
-            $val['yueduyffzj'] = '';
-            $val['gongjij'] = '';
-            $val['gerensb'] = '';
-            $val['gerensds'] = '';
-            $val['yuedusfzj'] = '';
+                $val['qitakf'] = '';
+                $val['fudonghj'] = '';
+                $val['yueduyffzj'] = '';
+                $val['gongjij'] = '';
+                $val['gerensb'] = '';
+                $val['gerensds'] = '';
+                $val['yuedusfzj'] = '';
+            }
+            $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
         }
-        $data = array();
-        $data['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
-        $this->assign('data',$data);
+        $this->assign('ambbz',$ambbz);
+        $this->assign('fujia',$fujia);
+        $this->assign('heji',$heji);
         $this->assign('school_name',$school_name);
         $this->assign('nianyue',substr($qishu,0,4).'年'.substr($qishu,4,2).'月');
         $this->assign('qishu',$qishu);
         $this->assign('sid',$sid);
         $this->assign("list",$list);
         $this->adminDisplay();
-        
+    }
+
+    //保存数据
+    public function saves(){
+        $data = json_decode($_POST['jsons']);
+        $qishu = $_POST['qishu'];
+        $sid = $_POST['sid'];
+        $suoshudd = $this->getQishuId($qishu,$sid,17);
+        if (!$suoshudd){
+            $suoshudd = $this->insertQishuHistory(17,$qishu,$sid);
+        }
+        $fujia = $_POST;
+        unset($fujia['sid'],$fujia['qishu'],$fujia['jsons']);
+        $fujia_id = $this->getQishuId($qishu,$sid,39);
+        if (!$fujia_id){
+            $fujia_id = $this->insertQishuHistory(39,$qishu,$sid);
+        }
+        foreach($fujia as $key=>$val){
+            $tmp = array();
+            $tmp['field'] = $key;
+            $tmp['value'] = $val;
+            $tmp['suoshudd'] = $fujia_id;
+            M('fjb')->add($tmp);
+        }
+        $list = array();
+        $field = M('')->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_xzbgz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj'");
+        foreach($data as $key=>$val){
+            $j=0;
+            if ($val['0'] == '合计'){
+                for($i=0;$i<12;$i++){
+                    unset($field[$i]);
+                }
+                $list[ $key ]['xingming'] = '合计';
+                $j=1;
+            }
+            foreach($field as $kk=>$vv){
+                $list[ $key ][ $vv['column_name'] ] = $val[$j];
+                $j++;
+            }
+            $list[$key]['suoshudd'] = $suoshudd;
+            M('xzbgz')->add($list[$key]);
+        }
+        $this->ajaxReturn(1);
     }
 
     public function index_bak(){
