@@ -57,7 +57,12 @@ class WagesScbAction extends WagesCommonAction{
             $fujia = M('fjb')->where("suoshudd='$fujia_id'")->getField('field,value');
         }else{
             //实时计算
-            $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj,erjibm')->where(array('xiaoqu'=>$school_name,'bumen'=>'市场部'))->select();
+            $list = M('rycb as rs')
+                    ->field('rs.bumen,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.xingming,rs.ruzhirq as ruzhisj,rs.erjibm,yj.edu,yj.jingrentou,yj.yiqims,yj.jiubayyqms')
+                    ->join('stjy_scyjb as yj on yj.xingming=rs.xingming')
+                    ->where(array('rs.xiaoqu'=>$school_name,'rs.bumen'=>'市场部'))
+                    ->select();
+
             foreach($list as $key=>&$val){
                 $val['xuhao'] = $key+1;
                 $val['yuefen'] = $yuefen;
@@ -65,6 +70,7 @@ class WagesScbAction extends WagesCommonAction{
                 $val['gongzuonx'] = intval(( time() - strtotime($val['ruzhisj']) ) / (365 * 24 * 60 * 60));
                 $val['yingchuqts'] = 30;// 应出勤天数 (写死)
                 $val['shijicqts'] = 30;// 实际出勤天数 (写死)
+                $val['xuexikbj'] = '';//学习卡本金（补逻辑）
             }
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
         }

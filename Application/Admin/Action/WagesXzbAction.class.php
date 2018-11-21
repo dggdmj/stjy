@@ -111,7 +111,10 @@ class WagesXzbAction extends WagesCommonAction{
                 $val['gerensds'] = '';
                 $val['yuedusfzj'] = '';
             }
+            $jysjb_id = $this->getQishuId($qishu,$sid,12);
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
+            $fujia['xuexiaomz'] = M('school')->where(array('id'=>$sid))->getField('mianji');
+            $fujia['zaidurs'] = M('xsrsbdb')->where(array('suoshudd'=>$jysjb_id,'xiangmu'=>'本月底在册学生人数'))->getField('renshu');
         }
         $this->assign('ambbz',$ambbz);
         $this->assign('fujia',$fujia);
@@ -139,6 +142,7 @@ class WagesXzbAction extends WagesCommonAction{
         if (!$fujia_id){
             $fujia_id = $this->insertQishuHistory(39,$qishu,$sid);
         }
+        M('fjb')->where("suoshudd='$fujia_id'")->delete();
         foreach($fujia as $key=>$val){
             $tmp = array();
             $tmp['field'] = $key;
@@ -146,6 +150,7 @@ class WagesXzbAction extends WagesCommonAction{
             $tmp['suoshudd'] = $fujia_id;
             M('fjb')->add($tmp);
         }
+        M('xzbgz')->where("suoshudd='$suoshudd'")->delete();
         $list = array();
         $field = M('')->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_xzbgz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj'");
         foreach($data as $key=>$val){
@@ -162,7 +167,9 @@ class WagesXzbAction extends WagesCommonAction{
                 $j++;
             }
             $list[$key]['suoshudd'] = $suoshudd;
-            M('xzbgz')->add($list[$key]);
+            if ($list[$key]['xingming']){
+                M('xzbgz')->add($list[$key]);
+            }
         }
         $this->ajaxReturn(1);
     }

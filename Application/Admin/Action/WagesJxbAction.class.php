@@ -62,14 +62,22 @@ class WagesJxbAction extends WagesCommonAction{
             $fujia = M('fjb')->where("suoshudd='$fujia_id'")->getField('field,value');
         }else{
             //实时计算
-            $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj,erjibm')->where(array('xiaoqu'=>$school_name,'bumen'=>'教学部'))->select();
+            $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj,erjibm,diyixlbysj')->where(array('xiaoqu'=>$school_name,'bumen'=>'教学部'))->select();
             foreach($list as $key=>&$val){
                 $val['xuhao'] = $key+1;
                 $val['yuefen'] = $yuefen;
                 $val['fenxiao'] = $school_name;
-                $val['gongzuonx'] = intval(( time() - strtotime($val['ruzhisj']) ) / (365 * 24 * 60 * 60));
+                $val['rushutqnxzd'] = round(( strtotime($val['ruzhisj'] - strtotime($val['diyixlbysj']) ) / 365 * 0.8,1);
+                $val['gongzuonx'] = 3;//找逻辑
                 $val['yingchuqts'] = 30;// 应出勤天数 (写死)
                 $val['shijicqts'] = 30;// 实际出勤天数 (写死)
+                if ($val['zhiwei'] == '教务主任'){
+                    $val['amibtzbl'] = 0;
+                }else if($val['xiaoshis'] > 8){
+                    $val['amibtzbl'] = 0;
+                }else{
+                    $val['amibtzbl'] = '-2%';
+                }
             }
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
         }
