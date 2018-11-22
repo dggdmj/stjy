@@ -2536,16 +2536,6 @@ class CommonAction extends Action {
         return $array;
     }
 
-    //根据订单id获取学校名字
-    public function getSchoolName($id=''){
-        if (!$id){
-            return '';
-        }
-        $sid = M('qishu_history')->where(array('id'=>$id))->getField('sid');
-        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
-        return $school;
-    }
-
     /*
         根据两个时间段算出中间有几个时间月
         $start_time开始时间

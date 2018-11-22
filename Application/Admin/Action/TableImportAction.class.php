@@ -1777,7 +1777,7 @@ class TableImportAction extends CommonAction{
            $count += $v;
            $i++;
         }
-        if($count == 14){
+        if($count == 15){
             // 删除此行在sjzb的记录
             M('sjzb')->where($_GET)->delete();
 

@@ -25,7 +25,7 @@ class CountScyjAction extends CommonAction {
                 unset($val['fujiaxx']);
             }
             $data = $this->heji($data);
-            return $data; 
+            return $data;
         }
         
         $nianfen = substr($qishu,0,4);
@@ -55,15 +55,15 @@ class CountScyjAction extends CommonAction {
         }
 
         //过滤归属人并判断是否是结算1结算  2不结算
-        foreach($list as &$v){
-            $v['yejigsr'] = $this->getJingrentou($v['yejigsr']);
+        foreach($list as $k=>$v){
+            $list[$k]['yejigsr'] = $this->getJingrentou($v['yejigsr']);
             // if (!in_array($v['yejigsr'],$renming)){
             //     $renming[] = $v['yejigsr'];
             // }
             if (in_array($v['shoujulx'],$shoufeilx)){
-                $v['shoufeilx'] = 1;
+                $list[$k]['shoufeilx'] = 1;
             }else{
-                $v['shoufeilx'] = 1;
+                $list[$k]['shoufeilx'] = 1;
             }
         }
 
@@ -121,13 +121,14 @@ class CountScyjAction extends CommonAction {
             $newList[$key]['youeryngjhy'] = 0;
             $newList[$key]['jiubayyqms'] = 0;
             $newList[$key]['sannianpdhy'] = 0;
-            foreach($list as $v){
+            foreach($list as $k=>$v){
                 if ($v['chanpinlx'] != '国际领袖课程' && $v['chanpinlx'] != '国内领袖课程' && $v['chanpinlx'] != '教材费'){
                     if(strtotime($v['jiaofeirq']) - strtotime($v['shoucijfrq']) > $yinian){
                         $v['chanpinlx'] = '老生续费';
                     }
                 }
                 if ($vo['xingming'] == $v['yejigsr'] && $v['shoufeilx'] == 1){
+
                                         //净人头
                     $newList[$key]['jingrentou'] += $v['jingrentou'];
                     $heji['jingrentou'] += $v['jingrentou'];
@@ -255,7 +256,6 @@ class CountScyjAction extends CommonAction {
                     }
                 }
             }
-            
             //写进数据库
             $temp = $newList[$key];
             $fujiaxx = [ 

@@ -35,7 +35,7 @@ class CountLsbzsrAction extends CommonAction {
         $cqmxb_id = $this->getQishuId($qishu,$sid,25);
         $cqmxb = M('cqmxb as cq')
                     ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as kb on kb.banjimc=cq.banji')
-                    ->field('kb.jingjiangls,kb.fanduls,kb.waijiaols,jingjiangxs,fanduxs,waijiaoxs')
+                    ->field('kb.jingjiangls,kb.fanduls,kb.waijiaols,kb.jingjiangxs,kb.fanduxs,kb.waijiaoxs')
                     ->where("cq.suoshudd = '$cqmxb_id' and cq.chuqin='√'")
                     ->select();
         foreach($list as $key=>&$val){

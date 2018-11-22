@@ -15,7 +15,7 @@ class CountJysjAction extends CommonAction {
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
         $arr_kksd = $this->getkksd($qishu,$sid);   //获得开课时段和班级数统计
         $arr_bjbmsj = $this->getbjbmsj($qishu,$sid);   //获得班级部门数据
-        $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
+//        $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
         $arr_xsrsbd = $this->getxsrsbd($qishu,$sid);   //获得学生人数变动数据
         $arr_beizhu = $this->getbeizhu($qishu,$sid);   //获得备注信息
 
@@ -24,7 +24,7 @@ class CountJysjAction extends CommonAction {
         $arr['zaice'] = $arr_zaice;
         $arr['kecheng']  = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
         $arr['bjbmsj'] = $arr_bjbmsj;
-        $arr['gbxzdrstj'] = $arr_gbxzdrstj;
+//        $arr['gbxzdrstj'] = $arr_gbxzdrstj;
         $arr['xsrsbd'] = $arr_xsrsbd;
         $arr['beizhu'] = $arr_beizhu;
         $arr['qishu'] = $qishu;
@@ -47,9 +47,11 @@ class CountJysjAction extends CommonAction {
         $fmonth = $this->getMonth($qishu);  //获得上月期数
         $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
         if(!empty($xyxxb_prev_id)){
-            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
-            $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->count();
-            $arr['本月初在册学生人数'] = $res;
+//            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
+            $where = 'suoshudd ='.$xyxxb_prev_id.' and (zhuangtai = "在读" or zhuangtai = "休学")';
+            $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->field("id")->select();
+            $r = count($res);
+            $arr['本月初在册学生人数'] = $r;
         }else{
             $arr['本月初在册学生人数'] = 0;
         }
@@ -60,19 +62,19 @@ class CountJysjAction extends CommonAction {
         $starttime = strtotime($qishu."01");
         $endtime = strtotime($date[0]);
 
-        $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
-        if($chushirenshu_def != 0){
-            $arr['本月初在册学生人数'] = $chushirenshu_def;
-        }else{
-            $arr['本月初在册学生人数'] = $arr['本月初在册学生人数']?$arr['本月初在册学生人数']:0;
-        }
+//        $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
+//        if($chushirenshu_def != 0){
+//            $arr['本月初在册学生人数'] = $chushirenshu_def;
+//        }else{
+//            $arr['本月初在册学生人数'] = $arr['本月初在册学生人数']?$arr['本月初在册学生人数']:0;
+//        }
 
         $xzmxb_id = $this->getQishuId($qishu,$sid,10); //新增
         $arr['本月新生人数'] = M('xzmxb')->where("suoshudd='$xzmxb_id' and xinzenglx='新增'")->count();
         $arr['流失回来学生'] = M('xzmxb')->where("suoshudd='$xzmxb_id' and xinzenglx='流失回来'")->count();
         $arr['其他学校转入'] = M('xzmxb')->where("suoshudd='$xzmxb_id' and xinzenglx='转入'")->count();
         $jsmxb_id = $this->getQishuId($qishu,$sid,11);    //减少
-        $arr['本月流失学生人数'] = M('jsmxb')->where("suoshudd='$jsmxb_id' and jianshaolx='退学'")->count();
+        $arr['本月流失学生人数'] = M('jsmxb')->where("suoshudd='$jsmxb_id' and jianshaolx='流失'")->count();
         $arr['转校学员'] = M('jsmxb')->where("suoshudd='$jsmxb_id' and jianshaolx='转出'")->count();
         $arr['本月退费学生'] = M('jsmxb')->where("suoshudd='$jsmxb_id' and jianshaolx='退费'")->count();
 
@@ -89,8 +91,9 @@ class CountJysjAction extends CommonAction {
         $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
         if(!empty($xyxxb_prev_id)){
             $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
-            $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->count();
-            $arr['本月初在册学生人数'] = $res;
+            $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->field("id")->select();
+            $r = count($res);
+            $arr['本月初在册学生人数'] = $r;
         }else{
             $arr['本月初在册学生人数'] = 0;
         }

@@ -9,7 +9,7 @@ class CountXzmxAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getXzmxbData($qishu='201808',$sid='1'){
+    public function getXzmxbData($qishu='201810',$sid='15'){
         $yuefen = substr($qishu,4,2).'月';
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>10))->getField('id');//判断是否有生成历史
         if ($qishu_id){
@@ -40,7 +40,6 @@ class CountXzmxAction extends CommonAction {
                 ->field('xuehao,xingming,zhuanruxq')
                 ->where(" zhuangxiaosj >= '$firstday' and zhuangxiaosj <= '$lastday' and suoshudd = '$zrjl_oid'")
                 ->select();
-
         //查上个月退学的
         // 获取上个月的期数
         $last_qishu = date('Ym',strtotime("$qishu_time -1 month"));
@@ -53,7 +52,7 @@ class CountXzmxAction extends CommonAction {
         $shouju = M($sjjlb.' as sj')->field('zc.xuehao,zc.xingming,zc.xingbie,zc.zhuanchuxq as fenxiao')->join('RIGHT JOIN stjy_zcjlb as zc on zc.xuehao=sj.xuehao')->where("sj.suoshudd='$shouju_id' and zc.suoshudd='$zhuanchu_id' and sj.jiaofeirq >= '$firstday' and sj.jiaofeirq <= '$lastday' and zc.zhuangxiaosj >= '$firstday' and zc.zhuangxiaosj <= '$lastday'")->group('zc.xuehao')->select();
 
         $xyList = M($xyxxb)->field('xuehao')->where("suoshudd = '$xyxxb_oid'")->select();
-        $xyList = $this->quchongjian($xinzeng);
+        $xyList = $this->quchongjian($xyList);
 
         foreach($shouju as $v){
             if (!in_array($v['xuehao'],$xyList)){
@@ -62,25 +61,31 @@ class CountXzmxAction extends CommonAction {
         }
         $i = 1;
         $array = array();
-        foreach($list as $key=>&$val){
+
+        $zhuanru_arr = array();
+        foreach ($zhuangru as $tmp){
+            if(!in_array($tmp['xuehao'],$zhuanru_arr))
+                $zhuanru_arr[] = $tmp['xuehao'];
+        }
+        foreach($list as $key=>$val){
             $array[] = $val['xuehao'];
-            $val['xuhao'] = $i;
-            $val['suoshudd'] = $qishu_id;
-            $val['yuefen'] = $yuefen;
-            $val['xinzenglx'] = '新增';
+            $list[$key]['xuhao'] = $i;
+            $list[$key]['suoshudd'] = $qishu_id;
+            $list[$key]['yuefen'] = $yuefen;
+            $list[$key]['xinzenglx'] = '新增';
             //判断是不是转入的
-            if (in_array($val['xuehao'],$zhuangru)){
-                $val['xinzenglx'] = '转入';
+            if (in_array($val['xuehao'],$zhuanru_arr)){
+                $list[$key]['xinzenglx'] = '转入';
             }
             if (in_array($val['xuehao'],$liushi)){
-                $val['xinzenglx'] = '流失回来';
+                $list[$key]['xinzenglx'] = '流失回来';
             }
-            M('xzmxb')->add($val);
+            M('xzmxb')->add($list[$key]);
             $i ++;
         }
         //转入
         foreach($zhuangru as $vv){
-            if (!in_array($vv,$array)){
+            if (!in_array($vv['xuehao'],$array)){
                 $temp = array();
                 $temp['xuehao'] = $vv['xuehao'];
                 $temp['xingming'] = $vv['xingming'];
@@ -94,20 +99,20 @@ class CountXzmxAction extends CommonAction {
             }
         }
         //流失回来
-        foreach($liushi as $vl){
-            if (!in_array($vl,$array)){
-               $temp = array();
-                $temp['xuehao'] = $vl['xuehao'];
-                $temp['xingming'] = $vl['xingming'];
-                $temp['fenxiao'] = $vl['laiyuanfx'];
-                $temp['xuhao'] = $i;
-                $temp['suoshudd'] = $qishu_id;
-                $temp['yuefen'] = $yuefen;
-                $temp['xinzenglx'] = '流失回来';
-                M('xzmxb')->add($temp);
-                $i ++;
-            }
-        }
+//        foreach($liushi as $vl){
+//            if (!in_array($vl,$array)){
+//               $temp = array();
+//                $temp['xuehao'] = $vl['xuehao'];
+//                $temp['xingming'] = $vl['xingming'];
+//                $temp['fenxiao'] = $vl['laiyuanfx'];
+//                $temp['xuhao'] = $i;
+//                $temp['suoshudd'] = $qishu_id;
+//                $temp['yuefen'] = $yuefen;
+//                $temp['xinzenglx'] = '流失回来';
+//                M('xzmxb')->add($temp);
+//                $i ++;
+//            }
+//        }
         return $list;
     }
 
