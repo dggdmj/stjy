@@ -43,7 +43,121 @@ class WagesZjAction extends WagesCommonAction{
         return $data;
     }
 
+    //工资
     public function index(){
+        //期数
+        $qishu = $_GET['qishu']?$_GET['qishu']:'201808';
+        //学校id
+        $sid = $_GET['sid']?$_GET['sid']:1;
+        $suoshudd = $this->getQishuId($qishu,$sid,20);
+        $yuefen = substr($qishu,4,2).'月';
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $heji = array();//合计
+        $fujia = array();//附加表
+        $fujia_id = $this->getQishuId($qishu,$sid,39);
+        if ($suoshudd){
+            $list = M('zjgz')->where("suoshudd='$suoshudd'")->order('id')->select();
+            $heji = $list[ count($list) - 1];
+            unset($list[ count($list) - 1]);
+            $fujia = M('fjb')->where("suoshudd='$fujia_id'")->getField('field,value');
+        }else{
+            //实时计算
+            $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq')->where("xiaoqu='$school_name' and ( zhiwu like '%总监%' or zhiwu like '%校长%' ) ")->select();
+            $fuzeren = array();
+            foreach($list as $v){
+                $fuzeren[] = $v['xingming'];
+            }
+            if($fuzeren){
+                $zxf = M('zxf')->where(array('fuzeren'=>array('in',$fuzeren),'fenxiao'=>$school_name,'_logic'=>'or'))->field('benyuezcsr,neibuxfzr,neibuxfzc,zhichuxj,fuzeren,fenxiao')->select();
+            }
+            foreach($list as $key=>$val){
+                foreach($zxf as $vv){
+                    if($vv['fuzeren'] == $val['xingming']){
+                         $list[$key]['shouru'] += $vv['benyuezcsr'];
+                         $list[$key]['shouru'] += $vv['neibuxfzr'];
+                    }
+                    if($vv['fenxiao'] == $school_name){
+                         $list[$key]['zhichu'] += $vv['zhichuxj'];
+                         $list[$key]['zhichu'] += $vv['neibuxfzc'];
+                    }
+                }
+
+                $list[$key]['xuhao'] = $key+1;
+                $list[$key]['yuefen'] = $yuefen;
+                $list[$key]['fenxiao'] = $school_name;
+                $list[$key]['xianjinje'] = $list[$key]['shouru'] - $list[$key]['zhichu'];
+                $list[$key]['suzhijj'] = '-20';
+                $list[$key]['shifkyq'] = '';
+                $list[$key]['jingxianjlfc'] = '';
+                $list[$key]['lirunfc'] = '';
+                $list[$key]['shangyuemzjzdxysl'] = '';
+                $list[$key]['benyuemzjzdxysl'] = '';
+                $list[$key]['benyuegmbh'] = '';
+                $list[$key]['guimojlfc'] = '';
+                $list[$key]['tuifeikhfc'] = '';
+                $list[$key]['zhouyinsdbkhfc'] = '';
+                
+            }
+            $jysjb_id = $this->getQishuId($qishu,$sid,12);
+            $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
+            $fujia['xuexiaomz'] = M('school')->where(array('id'=>$sid))->getField('mianji');
+            $fujia['zaidurs'] = M('xsrsbdb')->where(array('suoshudd'=>$jysjb_id,'xiangmu'=>'本月底在册学生人数'))->getField('renshu');
+        }
+        $this->assign('ambbz',$ambbz);
+        $this->assign('fujia',$fujia);
+        $this->assign('heji',$heji);
+        $this->assign('school_name',$school_name);
+        $this->assign('nianyue',substr($qishu,0,4).'年'.substr($qishu,4,2).'月');
+        $this->assign('qishu',$qishu);
+        $this->assign('sid',$sid);
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
+    //保存数据
+    public function saves(){
+        $data = json_decode($_POST['jsons']);
+        $qishu = $_POST['qishu'];
+        $sid = $_POST['sid'];
+        $suoshudd = $this->getQishuId($qishu,$sid,20);
+        if (!$suoshudd){
+            $suoshudd = $this->insertQishuHistory(20,$qishu,$sid);
+        }
+        $fujia = $_POST;
+        unset($fujia['sid'],$fujia['qishu'],$fujia['jsons']);
+        M('fjb')->where("suoshudd='$suoshudd'")->delete();
+        foreach($fujia as $key=>$val){
+            $tmp = array();
+            $tmp['field'] = $key;
+            $tmp['value'] = $val;
+            $tmp['suoshudd'] = $suoshudd;
+            M('fjb')->add($tmp);
+        }
+        M('zjgz')->where("suoshudd='$suoshudd'")->delete();
+        $list = array();
+        $field = M('')->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_zjgz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj'");
+        foreach($data as $key=>$val){
+            $j=0;
+            if ($val['0'] == '合计'){
+                for($i=0;$i<12;$i++){
+                    unset($field[$i]);
+                }
+                $list[ $key ]['fenxiao'] = '合计';
+                $j=1;
+            }
+            foreach($field as $kk=>$vv){
+                $list[ $key ][ $vv['column_name'] ] = $val[$j];
+                $j++;
+            }
+            $list[$key]['suoshudd'] = $suoshudd;
+            if ($list[$key]['fenxiao']){
+                M('zjgz')->add($list[$key]);
+            }
+        }
+        $this->ajaxReturn(1);
+    }
+
+    public function index_bak(){
         //期数
         $qishu = $_GET['qishu']?$_GET['qishu']:'201709';
         //学校id

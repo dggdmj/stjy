@@ -607,11 +607,16 @@ class RenshiAction extends CommonAction{
                 $this->error($upload->getError());
             }
             M('rycb')->where('1=1')->delete();
-            $data['wenjianmc'] = $info['excel']['name'];
-            $data['lujing'] = $info['excel']['savepath'].$info['excel']['savename'];
-            $data['caozuoren'] = session('username');
-            M('renyuan_log')->add($data);
+            // $data['wenjianmc'] = $info['excel']['name'];
+            // $data['lujing'] = $info['excel']['savepath'].$info['excel']['savename'];
+            // $data['caozuoren'] = session('username');
+            // M('renyuan_log')->add($data);
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'rycb';
+            M('file')->add($arr);
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
 
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);

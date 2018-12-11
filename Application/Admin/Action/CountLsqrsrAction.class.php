@@ -9,7 +9,7 @@ class CountLsqrsrAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu='201808',$sid='1'){
+    public function getYjData($qishu='201810',$sid='15'){
         // 判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>30))->getField('id');//判断是否有生成历史
         if ($qishu_id){
@@ -19,21 +19,22 @@ class CountLsqrsrAction extends CommonAction {
         }
         $qishu_id = $this->insertQishuHistory(30,$qishu,$sid);
         $yuefen = substr($qishu,4,2).'月';
+        $nian = substr($qishu,0,4);
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         // 获取开班明细的订单id
         $kb_oid = $this->getQishuId($qishu,$sid,6);
         // 获取课消明细的订单id
         $kx_oid = $this->getQishuId($qishu,$sid,5);
         //判断是否有分表
-        $kbmxb = $this->checkFenbiao($kb_oid,'kbmxb');
+        // $kbmxb = $this->checkFenbiao($kb_oid,'kbmxb');
         $kxmxb = $this->checkFenbiao($kx_oid,'kxmxb');
 
-        $list = M($kbmxb.' as kb')
-                    ->join('stjy_'.$kxmxb.' as kx on kx.banji=kb.banjimc')
-                    ->field('kb.jingjiangxs,kb.fanduxs,kb.waijiaoxs,kb.jingjiangls,kb.fanduls,kb.waijiaols,kx.banji,kx.kexiaoje,kx.shangkesj')
-                    ->where("kb.suoshudd = '$kb_oid' and kx.suoshudd = '$kx_oid'")
-                    ->select();
-
+        $list = M($kxmxb.' as kx')
+                ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as kb on kb.banjimc=kx.banji')
+                ->field('kb.jingjiangxs as jingduxs,kb.fanduxs,kb.waijiaoxs,kx.shangkels as jingduls,kx.banji,kx.kexiaoje,kx.shangkesj,kx.zhujiao')
+                ->where("kx.suoshudd = '$kx_oid'")
+                ->order('kx.id')
+                ->select();
         //班级编码
         $banjibm = M('banjibianhao')->field('jingdujb,bumen')->select();
         foreach($banjibm as $v){
@@ -42,25 +43,40 @@ class CountLsqrsrAction extends CommonAction {
 
         //定义老师数组
         $laoshi = array();
-        $rycb = M('rycb')->field('xingming')->where(array('xiaoqu'=>$school_name))->select(); 
-        foreach($rycb as $val){
-            $laoshi[] = $val['xingming'];
-        }
+       
         //定义出现次数
         $banjisj = array();
-        foreach($list as &$val){
-            $val['jingdujb'] = substr($val['banji'],0,3);
-            $val['bumen'] = $bumen[ $val['jingdujb'] ];
-            $val['banjisj'] = $val['banji'].$val['shangkesj'];
-            if(in_array($val['banjisj'],$banjisj)){
-                $val['chuxiancs'] = 2;
+        foreach($list as $key=>$val){
+            $tmp = explode(',', $list[$key]['zhujiao']);
+            if (mb_strlen($tmp['0'],'utf-8') > mb_strlen($tmp['1'],'utf-8')){
+                $list[$key]['waijiaols'] = $tmp['0'];
+                $list[$key]['fanduls'] = $tmp['1'];
             }else{
-                $val['chuxiancs'] = 1;
-                $banjisj[] = $val['banjisj'];
+                $list[$key]['waijiaols'] = $tmp['1'];
+                $list[$key]['fanduls'] = $tmp['0'];
+            }
+            $list[$key]['banji'] = ucwords( $list[$key]['banji']);
+            $list[$key]['jingdujb'] = substr( $list[$key]['banji'],0,3);
+            $list[$key]['bumen'] = $bumen[  $list[$key]['jingdujb'] ];
+            $list[$key]['banjisj'] =  $list[$key]['banji']. $list[$key]['shangkesj'];
+            if(in_array( $list[$key]['banjisj'],$banjisj)){
+                $list[$key]['chuxiancs'] = 2;
+            }else{
+                $list[$key]['chuxiancs'] = 1;
+                $banjisj[] =  $list[$key]['banjisj'];
+            }
+            if (!in_array( $list[$key]['jingduls'],$laoshi) &&   $list[$key]['jingduls'] != '' &&  $list[$key]['jingduls'] != '无'){
+                $laoshi[] =  $list[$key]['jingduls'];
+            }
+            if (!in_array( $list[$key]['fanduls'],$laoshi) &&   $list[$key]['fanduls'] != '' &&  $list[$key]['fanduls'] != '无'){
+                $laoshi[] =  $list[$key]['fanduls'];
+            }
+            if (!in_array( $list[$key]['waijiaols'],$laoshi) &&   $list[$key]['waijiaols'] != '' &&  $list[$key]['waijiaols'] != '无'){
+                $laoshi[] =  $list[$key]['waijiaols'];
             }
         }
-
         $newList = array();
+        $shumu = array();
         //组装数组
         foreach($laoshi as $k=>$v){
             //小学部
@@ -88,13 +104,15 @@ class CountLsqrsrAction extends CommonAction {
             $newList[$k+1]['zongrencxs'] = 0;
             $newList[$k+1]['querensr'] = 0;
             $newList[$k+1]['suoshudd'] = $qishu_id;
+
             foreach($list as $val){
+
                 if ($val['bumen'] == '小学部'){
                     //计算授课小时
                     if($val['chuxiancs'] == 1){
                         //精讲
-                        if($val['jingjiangls'] == $v){
-                            $newList[$k]['shoukexs'] += $val['jingjiangxs'];
+                        if($val['jingduls'] == $v){
+                            $newList[$k]['shoukexs'] += $val['jingduxs'];
                         }
                         //泛读
                         if($val['fanduls'] == $v){
@@ -107,26 +125,26 @@ class CountLsqrsrAction extends CommonAction {
                     }
 
                     //计算总人次小时数
-                    if($val['jingjiangls'] == $v){
-                        $newList[$k]['zongrencxs'] += $val['jingjiangxs'];
-                        $newList[$k]['querensr'] += round($val['jingjiangxs']/($val['jingjiangxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],2);
+                    if($val['jingduls'] == $v){
+                        $newList[$k]['zongrencxs'] += $val['jingduxs'];
+                        $newList[$k]['querensr'] += number_format($val['jingduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                     //泛读
                     if($val['fanduls'] == $v){
                         $newList[$k]['zongrencxs'] += $val['fanduxs'];
-                        $newList[$k]['querensr'] += round($val['jingjiangxs']/($val['jingjiangxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],2);
+                        $newList[$k]['querensr'] += number_format($val['fanduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                     //外教
                     if($val['waijiaols'] == $v){
                         $newList[$k]['zongrencxs'] += $val['waijiaoxs'];
-                        $newList[$k]['querensr'] += round($val['jingjiangxs']/($val['jingjiangxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],2);
+                        $newList[$k]['querensr'] += number_format($val['waijiaoxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                 }else if($val['bumen'] == '初中部'){
                     //计算授课小时
                     if($val['chuxiancs'] == 1){
                         //精讲
-                        if($val['jingjiangls'] == $v){
-                            $newList[$k+1]['shoukexs'] += $val['jingjiangxs'];
+                        if($val['jingduls'] == $v){
+                            $newList[$k+1]['shoukexs'] += $val['jingduxs'];
                         }
                         //泛读
                         if($val['fanduls'] == $v){
@@ -139,22 +157,24 @@ class CountLsqrsrAction extends CommonAction {
                     }
 
                     //计算总人次小时数
-                    if($val['jingjiangls'] == $v){
-                        $newList[$k+1]['zongrencxs'] += $val['jingjiangxs'];
-                        $newList[$k+1]['querensr'] += round($val['jingjiangxs']/($val['jingjiangxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],2);
+                    if($val['jingduls'] == $v){
+                        $newList[$k+1]['zongrencxs'] += $val['jingduxs'];
+                        $newList[$k+1]['querensr'] += number_format($val['jingduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
+
                     }
                     //泛读
                     if($val['fanduls'] == $v){
                         $newList[$k+1]['zongrencxs'] += $val['fanduxs'];
-                        $newList[$k+1]['querensr'] += round($val['jingjiangxs']/($val['jingjiangxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],2);
+                        $newList[$k+1]['querensr'] += number_format($val['fanduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                     //外教
                     if($val['waijiaols'] == $v){
                         $newList[$k+1]['zongrencxs'] += $val['waijiaoxs'];
-                        $newList[$k+1]['querensr'] += round($val['jingjiangxs']/($val['jingjiangxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],2);
+                        $newList[$k+1]['querensr'] += number_format($val['waijiaoxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                 }
             }
+
             M('lsqrsr')->add($newList[$k]);
             M('lsqrsr')->add($newList[$k+1]);
         }

@@ -27,6 +27,7 @@ class CountJsmxAction extends CommonAction {
         //查订单id
         $xyxxb_oid = $this->getQishuId($qishu,$sid,1);
         $xyxxb = $this->checkFenbiao($xyxxb_oid,'xyxxb');
+        $school_name = M("school")->where("id = ".$sid)->getField("name");
         $list = M($xyxxb)
             ->field('xuehao,xingming,xingbie,xiaoqu as fenxiao,zhuangtai,tuixuerq')
             ->where(" zhuangtai = '已退学' and suoshudd='$xyxxb_oid' and tuixuerq>='$firstday' and tuixuerq <= '$lastday'")
@@ -46,11 +47,12 @@ class CountJsmxAction extends CommonAction {
         $xuhao = 1;
         //储存写进过得学号
         $array = array();
-        foreach($list as $key=>&$val){
+        foreach($list as $key=>$val){
             $val['xuhao'] =  $xuhao;
+            $val['fenxiao'] =  $school_name;
             $val['suoshudd'] = $qishu_id;
             $val['yuefen'] = $yuefen;
-            $val['jianshaolx'] = '退学';
+            $val['jianshaolx'] = '流失';
             //判断是不是转入的
             if (in_array($val['xuehao'],$zhuanchu)){
                 $val['jianshaolx'] = '转出';
@@ -66,6 +68,7 @@ class CountJsmxAction extends CommonAction {
         // 转出
         foreach($zhuanchus as $vo){
             if (!in_array($vo['xuehao'],$array)){
+                $vo['fenxiao'] =  $school_name;
                 $vo['xuhao'] = $xuhao;
                 $vo['suoshudd'] = $qishu_id;
                 $vo['yuefen'] = $yuefen;
@@ -79,6 +82,7 @@ class CountJsmxAction extends CommonAction {
         // 退费
         foreach($tuifei as $vv){
             if (!in_array($vv['xuehao'],$array)){
+                $vv['fenxiao'] =  $school_name;
                 $vv['xuhao'] = $xuhao;
                 $vv['suoshudd'] = $qishu_id;
                 $vv['yuefen'] = $yuefen;

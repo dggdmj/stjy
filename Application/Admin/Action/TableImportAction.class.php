@@ -482,13 +482,13 @@ class TableImportAction extends CommonAction{
             }
 
             // 判断该是否已锁定
-            $map['qishu'] = $_POST['qishu'];
-            $map['sid'] = $_POST['sid'];
-            $status_xzjl = M('sjzb')->where($map)->getField('status_xzjl');
-            if($status_xzjl == 2){
-                unlink($file_name);// 删除excel文档
-                $this->error('上传功能已锁定,请解锁后继续','',10);
-            }
+            // $map['qishu'] = $_POST['qishu'];
+            // $map['sid'] = $_POST['sid'];
+            // $status_xzjl = M('sjzb')->where($map)->getField('status_xzjl');
+            // if($status_xzjl == 2){
+            //     unlink($file_name);// 删除excel文档
+            //     $this->error('上传功能已锁定,请解锁后继续','',10);
+            // }
 
             $qishu_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],13);
             if (!$qishu_id){
@@ -514,10 +514,10 @@ class TableImportAction extends CommonAction{
             
             
             $excel_data = $this->getTuifeiExcelData($objPHPExcel,$highestRow,$colsNum,$qishu_id,$sid);
-            if(!$excel_data){
-                 unlink($file_name);
-                 $this->error("尚未进行扣款设置",'',10);
-            }
+            // if(!$excel_data){
+            //      unlink($file_name);
+            //      $this->error("尚未进行扣款设置",'',10);
+            // }
             // unlink($file_name);
             // dump($excel_data);
             // die;
@@ -525,7 +525,6 @@ class TableImportAction extends CommonAction{
             /* 可能要加个校验的方法 */
 
             // 将获取数组插入到数据库相应的表里面
-            
             foreach($excel_data as $v){
                 $where['xuehao'] = $v['xuehao'];
                 $where['xuhao'] = $v['xuhao'];
@@ -1625,10 +1624,10 @@ class TableImportAction extends CommonAction{
                     break;
                 }
             }
-            $koukuan = M('koukuan')->where('sid ='.$sid)->find();
-            if(empty($koukuan)){
-                return false;
-            }
+            // $koukuan = M('koukuan')->where('sid ='.$sid)->find();
+            // if(empty($koukuan)){
+            //     return false;
+            // }
 
             $data['suoshudd'] = $qishu_id;  //所属订单id
             $data['daorusj'] = date('Y-m-d H:i:s');
@@ -1777,7 +1776,7 @@ class TableImportAction extends CommonAction{
            $count += $v;
            $i++;
         }
-        if($count == 14){
+        if($count == 15){
             // 删除此行在sjzb的记录
             M('sjzb')->where($_GET)->delete();
 

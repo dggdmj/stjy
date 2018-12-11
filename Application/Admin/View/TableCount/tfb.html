@@ -7,7 +7,6 @@
                 <thead>
                 <tr>
                     <th rowspan="2">序号</th>
-                    <th rowspan="2">年份</th>
                     <th rowspan="2">月份</th>
                     <th rowspan="2">分校</th>
                     <th rowspan="2">退费类型</th>
@@ -65,8 +64,7 @@
                     <foreach name='list' item='v' key='k'>
                         <tr>
                             <td>{$v['xuhao']}</td>
-                            <td>{$v['nianfen']}</td>
-                            <td>{$v['yuefen']}</td>
+                            <td>{$v['nianfen']}{$v['yuefen']}</td>
                             <td>{$v['fenxiao']}</td>
                             <td>{$v['tuifeilx']}</td>
                             <td>{$v['xuehao']}</td>

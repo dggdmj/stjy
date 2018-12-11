@@ -9,7 +9,7 @@ class CountLsbzsrAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getLsbzsrData($qishu='201808',$sid='1'){
+    public function getLsbzsrData($qishu='201810',$sid='15'){
         $lsbzsr_id = $this->getQishuId($qishu,$sid,33);
         if ($lsbzsr_id){
             $list = M('lsbzsr')->where(array('suoshudd'=>$lsbzsr_id))->order('id')->select();
@@ -33,28 +33,66 @@ class CountLsbzsrAction extends CommonAction {
 
         //出勤明细表
         $cqmxb_id = $this->getQishuId($qishu,$sid,25);
-        $cqmxb = M('cqmxb as cq')
-                    ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as kb on kb.banjimc=cq.banji')
-                    ->field('kb.jingjiangls,kb.fanduls,kb.waijiaols,jingjiangxs,fanduxs,waijiaoxs')
-                    ->where("cq.suoshudd = '$cqmxb_id' and cq.chuqin='√'")
+        // $kxmxb_id = $this->getQishuId($qishu,$sid,5);
+
+        // $cqmxb = M('cqmxb as cq')
+        //             ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as kb on kb.banjimc=cq.banji')
+        //             ->field('kb.jingjiangxs,kb.fanduxs,kb.waijiaoxs,cq.banji,cq.shangkesj')
+        //             ->where("cq.suoshudd = '$cqmxb_id' and cq.chuqin='√'")
+        //             ->select();
+         $cqmxb = M('cqmxb')
+                    ->field('jingduls,fanduls,waijiaols,jingduxs,fanduxs,waijiaoxs,banji,xuehao')
+                    ->where("suoshudd = '$cqmxb_id' and chuqin='√'")
                     ->select();
+        $banji = array();
+        // foreach($cqmxb as $vo){
+        //     $banji[] = $vo['banji'];
+        // }
+        // $where['banji'] = array('in',$banji);
+        // $where['suoshudd'] = $kxmxb_id;
+        // if ($banji){
+        //     $kxmxb = M('kxmxb_'.$nian)->field('banji,shangkels,zhujiao,shangkesj')->where($where)->order('id')->select();
+        // }else{
+        //     $kxmxb = array();
+        // }
+        // foreach ($cqmxb as $key => $value) {
+        //     $cqmxb[$key]['shangkesj'] = mb_substr($value['shangkesj'],0,16,'utf-8');
+        //     foreach($kxmxb as $nm){
+        //         if ($value['banji'].$cqmxb[$key]['shangkesj'] == $nm['banji'].$nm['shangkesj']){
+        //             $cqmxb[$key]['zhujiao'] = $nm['zhujiao'];
+        //             $cqmxb[$key]['jingjiangls'] = $nm['shangkels'];
+        //         }
+        //    }
+        // }
+        $banji = M('banjibianhao')->getField('jingdujb,bumen');
+        // dump($cqmxb);exit;
         foreach($list as $key=>&$val){
             $val['suoshudd'] = $qishu_id;
             $val['xuhao'] = $key+1;
             $val['qianming'] = '';
-            $tmp = 0;
+            $val['zongrencxs'] = 0;
             foreach($cqmxb as $vv){
-                if($val['laoshi'] == $vv['jingjiangls']){
-                    $tmp += $vv['jingjiangxs'];
-                }
-                if($val['laoshi'] == $vv['fanduls']){
-                    $tmp += $vv['fanduxs'];
-                }
-                if($val['laoshi'] == $vv['waijiaols']){
-                    $tmp += $vv['waijiaoxs'];
+                // $tmp = explode(',',$vv['zhujiao']);
+                // if (mb_strlen($tmp['0'],'utf-8') > mb_strlen($tmp['1'],'utf-8')){
+                //     $vv['waijiaols'] = $tmp['0'];
+                //     $vv['fanduls'] = $tmp['1'];
+                // }else{
+                //     $vv['waijiaols'] = $tmp['1'];
+                //     $vv['fanduls'] = $tmp['0'];
+                // }
+                $vv['banji'] = substr($vv['banji'],0,3);
+                if ($val['banxing'] == $banji[ ucwords($vv['banji'] )]){
+                    if($val['laoshi'] == $vv['jingduls']){
+                        $val['zongrencxs'] += $vv['jingduxs'];
+                    }
+                    if($val['laoshi'] == $vv['fanduls']){
+                        $val['zongrencxs'] += $vv['fanduxs'];
+                    }
+                    if($val['laoshi'] == $vv['waijiaols']){
+                        $val['zongrencxs'] += $vv['waijiaoxs'];
+                    }
                 }
             }
-            $val['zongrencxs'] = $tmp;
             $val['biaozhunsr'] = $danjia*$val['zongrencxs'];
             M('lsbzsr')->add($val);
         }

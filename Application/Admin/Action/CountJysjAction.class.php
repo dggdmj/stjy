@@ -9,7 +9,7 @@ class CountJysjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getJysjbData($qishu='201808',$sid='1'){
+    public function getJysjbData($qishu='201810',$sid='15'){
         //获得经营数据汇总表各数据
         $school_info = M("school")->where("id = ".$sid)->find();
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
@@ -18,7 +18,31 @@ class CountJysjAction extends CommonAction {
         $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
         $arr_xsrsbd = $this->getxsrsbd($qishu,$sid);   //获得学生人数变动数据
         $arr_beizhu = $this->getbeizhu($qishu,$sid);   //获得备注信息
+        //数据比对
+        $nian = substr($qishu,0,4);
+        $xyxxb_id = $this->getQishuId($qishu,$sid,1);
+        $bjxyxxb_id = $this->getQishuId($qishu,$sid,3);
 
+        $lastday = date('Y-m-d', strtotime( date('Y-m-d',strtotime(substr($qishu,0,4).'-'.substr($qishu,4,2).'-01')).' +1 month -1 day') );
+        $firstday = substr($qishu,0,4).'-'. substr($qishu,4,2).'-01';
+        $school_name = M('school')->where("id=$sid")->getField('name');
+        // 学员信息表与班级花名册及出勤核对在读人数
+        $data['as'] = M('xyxxb_'.$nian)->where("suoshudd='$xyxxb_id' and shoucixfrq != '' and zhuangtai = '在读' and xiaoqu='$school_name' and  zuijinsksj >= '$firstday' and baomingrq <= '$lastday'")->count();
+        $data['f'] = M('bjxyxxb_'.$nian)->where("suoshudd='$bjxyxxb_id' and xuehao != ''")->count();
+        $data['chayi1'] = $data['as'] - $data['f'];
+        //班级数核对
+        $data['c21'] = $arr_kksd['总计'];
+        $data['c57'] = $arr_bjbmsj['5']['dangyuebjs'];
+        $data['chayi2'] = $data['c21'] - $data['c57'];
+        //在读人数核对
+        $data['f36'] = $arr_zaice['合计']['shijizbrs'];
+        $data['d57'] = $arr_bjbmsj['5']['renshuzj'];
+        $data['chayi3'] = $data['f36'] - $data['d57'];
+        //总人数核对
+        $data['c36'] = $arr_zaice['合计']['zongrenshu'];
+        $data['d46'] = $arr_xsrsbd['本月底在册学生人数'];
+        $data['chayi4'] = $data['c36'] - $data['d46'];
+        
         $arr['school_info'] = $school_info;
         $arr['kksd'] = $arr_kksd;
         $arr['zaice'] = $arr_zaice;
@@ -29,7 +53,9 @@ class CountJysjAction extends CommonAction {
         $arr['beizhu'] = $arr_beizhu;
         $arr['qishu'] = $qishu;
         $arr['sid'] = $sid;
+        $arr['jysj'] = $data;
         return $arr;
+
 
     }
 
@@ -47,9 +73,11 @@ class CountJysjAction extends CommonAction {
         $fmonth = $this->getMonth($qishu);  //获得上月期数
         $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
         if(!empty($xyxxb_prev_id)){
-            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
-            $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->count();
-            $arr['本月初在册学生人数'] = $res;
+//            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
+            $where = 'suoshudd ='.$xyxxb_prev_id.' and (zhuangtai = "在读" or zhuangtai = "休学")';
+            $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->field("id")->select();
+            $r = count($res);
+            $arr['本月初在册学生人数'] = $r;
         }else{
             $arr['本月初在册学生人数'] = 0;
         }
@@ -60,19 +88,19 @@ class CountJysjAction extends CommonAction {
         $starttime = strtotime($qishu."01");
         $endtime = strtotime($date[0]);
 
-        $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
-        if($chushirenshu_def != 0){
-            $arr['本月初在册学生人数'] = $chushirenshu_def;
-        }else{
-            $arr['本月初在册学生人数'] = $arr['本月初在册学生人数']?$arr['本月初在册学生人数']:0;
-        }
+//        $chushirenshu_def = M("school")->where("id = $sid")->getField("xueshengnum");
+//        if($chushirenshu_def != 0){
+//            $arr['本月初在册学生人数'] = $chushirenshu_def;
+//        }else{
+//            $arr['本月初在册学生人数'] = $arr['本月初在册学生人数']?$arr['本月初在册学生人数']:0;
+//        }
 
         $xzmxb_id = $this->getQishuId($qishu,$sid,10); //新增
         $arr['本月新生人数'] = M('xzmxb')->where("suoshudd='$xzmxb_id' and xinzenglx='新增'")->count();
         $arr['流失回来学生'] = M('xzmxb')->where("suoshudd='$xzmxb_id' and xinzenglx='流失回来'")->count();
         $arr['其他学校转入'] = M('xzmxb')->where("suoshudd='$xzmxb_id' and xinzenglx='转入'")->count();
         $jsmxb_id = $this->getQishuId($qishu,$sid,11);    //减少
-        $arr['本月流失学生人数'] = M('jsmxb')->where("suoshudd='$jsmxb_id' and jianshaolx='退学'")->count();
+        $arr['本月流失学生人数'] = M('jsmxb')->where("suoshudd='$jsmxb_id' and jianshaolx='流失'")->count();
         $arr['转校学员'] = M('jsmxb')->where("suoshudd='$jsmxb_id' and jianshaolx='转出'")->count();
         $arr['本月退费学生'] = M('jsmxb')->where("suoshudd='$jsmxb_id' and jianshaolx='退费'")->count();
 
@@ -89,8 +117,9 @@ class CountJysjAction extends CommonAction {
         $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
         if(!empty($xyxxb_prev_id)){
             $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
-            $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->count();
-            $arr['本月初在册学生人数'] = $res;
+            $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->field("id")->select();
+            $r = count($res);
+            $arr['本月初在册学生人数'] = $r;
         }else{
             $arr['本月初在册学生人数'] = 0;
         }
@@ -205,40 +234,114 @@ class CountJysjAction extends CommonAction {
         return $arr;
     }
 
+    //获得班级部门数据班级部门数据
+    public function getbjbmsj($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
+        $suoshudd = $this->getQishuId($qishu,$sid,3);
+        $list = M("bjxyxxb_".$nianfen)->field('banji')->where("suoshudd = ".$suoshudd)->select();
+        $bjbh = M('banjibianhao')->getField('jingdujb,banxing');
+        $banji = array();
+        $data = array();
+        foreach($list as $val){
+            if(strpos($val['banji'],"一")){
+                $val["bumen"] = "一对一";
+            }else{
+                $val['bh'] = substr($val['banji'],0,3);
+                $val['bumen'] = $bjbh[ $val['bh'] ];
+                if(in_array($val['banji'],$banji)){
+                    $val['chuxiancs'] = 2;
+                }else{
+                    $val['chuxiancs'] = 1;
+                    $banji[] = $val['banji'];
+                }
+            }
+            $data[] = $val; 
+        }
+        $bumen = array('幼儿部','小初部','小高部','初中部','一对一');
+        $zongji = array();
+        $zongji['dangyuebjs'] = 0;
+        $zongji['renshuzj'] = 0;
+        $temp = array();
+        $array = array();
+        foreach($bumen as $v){
+            $tmp = array();
+            $tmp['bumen'] = $v;
+            foreach($data as $vo){
+                if($vo['chuxiancs'] == 1 && $vo['bumen'] == $v){
+                    $tmp['dangyuebjs'] += 1;
+                    $zongji['dangyuebjs'] += 1;
+                }
+                if ($vo['bumen'] == $v){
+                    $tmp['renshuzj'] += 1;
+                    $zongji['renshuzj'] += 1;
+                }
+
+                if ($vo['bumen'] == $v && $v == '一对一'){
+                    $temp['renshuzj'] += 1;
+                }
+
+                if($vo['chuxiancs'] == 1 && $vo['bumen'] == $v && $v == '一对一'){
+                    $temp['dangyuebjs'] += 1;
+                }
+            }
+            $tmp['banjibhl'] = $tmp['renshuzj'] / $tmp['dangyuebjs'];
+            $array[] = $tmp;
+        }
+        $zongji['banjibhl'] = ($zongji['renshuzj']-$temp['renshuzj'] ) / ($zongji['dangyuebjs'] - $temp['dangyuebjs']);
+        $zongji['bumen'] = '总计';
+        array_push($array,$zongji);
+        return $array;
+    }
+
     //获得开课时段和班级数统计
     public function getkksd($qishu,$sid){
         $nianfen = substr($qishu,0,4);
-        $suoshudd = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
-        $list = M("bjxxb_".$nianfen)->where("suoshudd = ".$suoshudd)->select();
+        $suoshudd = $this->getQishuId($qishu,$sid,3);
+        $list = M("bjxyxxb_".$nianfen)->field('banji,shangkesj')->where("suoshudd = ".$suoshudd)->select();
         //根据课程名称判断时间段
         $arr = array();
+        $shijianduan = array();
+        $banji = array();
+        $data = array();
         foreach ($list as $k=>$v){
-            if($v["banjimc"] == '未进班' || $v["banjimc"] == '停读'){
-                continue;
-            }
             //如果课程名称中含有字符"一"，返回一对一
-            if(strpos($v['kechengmc'],"一")){
+            if(strpos($v['banji'],"一")){
                 $list[$k]["shijianduan"] = "一对一";
             }else{
                 $list[$k]["day"] = mb_substr($v["shangkesj"],0,2,"utf-8");
-                $list[$k]["shiduan"] = mb_substr($v["shangkesj"],2,2,"utf-8");
-                if((int)$list[$k]["shiduan"] >= 1 && (int)$list[$k]["shiduan"] <= 12){
+                $list[$k]["shangkesj"] = mb_substr($v["shangkesj"],2,2,"utf-8");
+                if((int)$list[$k]["shangkesj"] >= 1 && (int)$list[$k]["shangkesj"] < 12){
                     $list[$k]["shijianduan"] = $list[$k]["day"]."上午";
-                }elseif ((int)$list[$k]["shiduan"] >= 13 && (int)$list[$k]["shiduan"] <= 17){
+                }elseif ((int)$list[$k]["shangkesj"] >= 13 && (int)$list[$k]["shangkesj"] < 18){
                     $list[$k]["shijianduan"] = $list[$k]["day"]."下午";
-                }elseif ((int)$list[$k]["shiduan"] >= 18 && (int)$list[$k]["shiduan"] <= 24){
+                }elseif ((int)$list[$k]["shangkesj"] >= 18 && (int)$list[$k]["shangkesj"] < 24){
                     $list[$k]["shijianduan"] = $list[$k]["day"]."晚上";
                 }
             }
-            if($v['jieyezt'] == '未结业'){
-                $arr[$list[$k]["shijianduan"]] += 1;
-                $arr['总计'] += 1;
+            if(in_array($v['banji'],$banji)){
+                $list[$k]['chuxiancs'] = 2;
+            }else{
+                $banji[] = $v['banji'];
+                $list[$k]['chuxiancs'] = 1;
+            }
+            if ( $list[$k]['chuxiancs'] == 1){
+                if (in_array( $list[$k]["shijianduan"],$shijianduan ) ){
+                    $data[$list[$k]["shijianduan"]] += 1;
+                }else{
+                    $data[$list[$k]["shijianduan"]] = 1;
+                    $shijianduan[] =  $list[$k]["shijianduan"];
+                }
             }
         }
-        return $arr;
+        $tmp = 0;
+        foreach($data as $val){
+            $tmp += $val;
+        }
+        $data['总计'] = $tmp;
+        return $data;
     }
 
-    public function getzaice($qishu,$sid){
+    public function getzaice2($qishu='201808',$sid='1'){
         $nianfen = substr($qishu,0,4);
         $where['qishu'] = $qishu;// 获取期数
         $where['sid'] = $sid;// 获取学校id
@@ -294,8 +397,324 @@ class CountJysjAction extends CommonAction {
                 $data[$v2] = $arr[$v2];
             }
         }
-        // dump($data);die;
-        return $data;
+    }
+
+    public function getzaice($qishu,$sid){
+        $nianfen = substr($qishu,0,4);
+        $where['qishu'] = $qishu;// 获取期数
+        $where['sid'] = $sid;// 获取学校id
+        $where['tid'] = 1;// 从学员信息表获取信息,它的tid是3
+        $id = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id,也就是bjxyxxb里面的suoshudd的订单号
+        $list = M('xyxxb_'.$nianfen )->field('nianji,zhuangtai,shoucixfrq,shifouzxzrdjb')->where("suoshudd = ".$id)->select();
+        $arr = array();
+        foreach ($list as $k => &$v){
+            if ( ($v['shoucixfrq'] == '' && $v['zhuangtai'] == '在读') or ($v['shifouzxzrdjb'] == '是') ){
+                $v['zhuangtai'] = '未进班';
+            }
+            $v['bianhao'] = mb_substr($v['banji'],0,3,'utf-8');
+            switch ($v['nianji']) {
+                case '大班':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['幼儿园']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['幼儿园']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '中班':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['幼儿园']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['幼儿园']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '小班':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['幼儿园']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['幼儿园']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '一年级':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['一年级']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['一年级']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '二年级':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['二年级']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['二年级']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '三年级':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['三年级']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['三年级']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '四年级':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['四年级']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['四年级']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '五年级':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['五年级']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['五年级']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '六年级':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['六年级']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['六年级']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '初一':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['初一']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['初一']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                case '初二':
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['初二']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['初二']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+                default:
+                    if ($v['zhuangtai'] == '未进班'){
+                        $arr['初二以上']['weijinban'] +=1;
+                        $arr['合计']['weijinban'] += 1;
+                    }
+                    if ($v['zhuangtai'] == '休学'){
+                        $arr['初二以上']['tingduyjkfx'] +=1;
+                        $arr['合计']['tingduyjkfx'] += 1;
+                    }
+                    break;
+            }
+        }
+        // dump($list);
+        $where['tid'] = 3;
+        $kecheng_arr = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
+        $bjxyxxb_id = M('qishu_history')->where($where)->getField('id');
+        $bjxyxxb = M('bjxyxxb_'.$nianfen)->field('banji,nianji')->where("suoshudd='$bjxyxxb_id'")->select();
+        foreach($bjxyxxb as $vv){
+            $vv['banji'] = mb_substr($vv['banji'],0,3,'utf-8');
+            if(in_array($vv['banji'],$kecheng_arr)){
+                switch ($vv['nianji']) {
+                    case '大班':
+                        if($vv['banji'] == '一对一'){
+                            $arr['幼儿园']['yiduiyi'] += 1;
+                            $arr['幼儿园']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['幼儿园'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['幼儿园']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '中班':
+                        if($vv['banji'] == '一对一'){
+                            $arr['幼儿园']['yiduiyi'] += 1;
+                            $arr['幼儿园']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{ 
+                            $arr['幼儿园'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['幼儿园']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '小班':
+                        if($vv['banji'] == '一对一'){
+                            $arr['幼儿园']['yiduiyi'] += 1;
+                            $arr['幼儿园']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['幼儿园'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['幼儿园']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '一年级':
+                        if($vv['banji'] == '一对一'){
+                            $arr['一年级']['yiduiyi'] += 1;
+                            $arr['一年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['一年级'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['一年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '二年级':
+                        if($vv['banji'] == '一对一'){
+                            $arr['二年级']['yiduiyi'] += 1;
+                            $arr['二年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['二年级'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['二年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '三年级':
+                        if($vv['banji'] == '一对一'){
+                            $arr['三年级']['yiduiyi'] += 1;
+                            $arr['三年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['三年级'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['三年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '四年级':
+                        if($vv['banji'] == '一对一'){
+                            $arr['四年级']['yiduiyi'] += 1;
+                            $arr['四年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['四年级'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['四年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '五年级':
+                        if($vv['banji'] == '一对一'){
+                            $arr['五年级']['yiduiyi'] += 1;
+                            $arr['五年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['五年级'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['五年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '六年级':
+                        if($vv['banji'] == '一对一'){
+                            $arr['六年级']['yiduiyi'] += 1;
+                            $arr['六年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['六年级'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['六年级']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '初一':
+                        if($vv['banji'] == '一对一'){
+                            $arr['初一']['yiduiyi'] += 1;
+                            $arr['初一']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['初一'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['初一']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    case '初二':
+                        if($vv['banji'] == '一对一'){
+                            $arr['初二']['yiduiyi'] += 1;
+                            $arr['初二']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['初二'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['初二']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                    default:
+                        if($vv['banji'] == '一对一'){
+                            $arr['初二以上']['yiduiyi'] += 1;
+                            $arr['初二以上']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                            $arr['合计']['yiduiyi'] += 1;
+                        }else{
+                            $arr['初二以上'][ $vv['banji'] ] += 1;
+                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['初二以上']['shijizbrs'] += 1;
+                            $arr['合计']['shijizbrs'] += 1;
+                        }
+                        break;
+                }
+            }
+        }
+        $arr['幼儿园']['zongrenshu'] =  $arr['幼儿园']['weijinban'] + $arr['幼儿园']['tingduyjkfx']  + $arr['幼儿园']['shijizbrs'];
+        $arr['一年级']['zongrenshu'] =  $arr['一年级']['weijinban'] + $arr['一年级']['tingduyjkfx']  + $arr['一年级']['shijizbrs'];
+        $arr['二年级']['zongrenshu'] =  $arr['二年级']['weijinban'] + $arr['二年级']['tingduyjkfx']  + $arr['二年级']['shijizbrs'];
+        $arr['三年级']['zongrenshu'] =  $arr['三年级']['weijinban'] + $arr['三年级']['tingduyjkfx']  + $arr['三年级']['shijizbrs'];
+        $arr['四年级']['zongrenshu'] =  $arr['四年级']['weijinban'] + $arr['四年级']['tingduyjkfx']  + $arr['四年级']['shijizbrs'];
+        $arr['五年级']['zongrenshu'] =  $arr['五年级']['weijinban'] + $arr['五年级']['tingduyjkfx']  + $arr['五年级']['shijizbrs'];
+        $arr['六年级']['zongrenshu'] =  $arr['六年级']['weijinban'] + $arr['六年级']['tingduyjkfx']  + $arr['六年级']['shijizbrs'];
+        $arr['初一']['zongrenshu'] =  $arr['初一']['weijinban'] + $arr['初一']['tingduyjkfx']  + $arr['初一']['shijizbrs'];
+        $arr['初二']['zongrenshu'] =  $arr['初二']['weijinban'] + $arr['初二']['tingduyjkfx']  + $arr['初二']['shijizbrs'];
+        $arr['初二以上']['zongrenshu'] =  $arr['初二以上']['weijinban'] + $arr['初二以上']['tingduyjkfx']  + $arr['初二以上']['shijizbrs'];
+        $arr['合计']['zongrenshu'] =  $arr['合计']['weijinban'] + $arr['合计']['tingduyjkfx']  + $arr['合计']['shijizbrs'];
+        return $arr;
     }
 
     public function getZaiceArr($zhuangtai,$zhuangtai_if,$jibie,$jibie_if,$name,$nianji,$arr){
@@ -380,9 +799,9 @@ class CountJysjAction extends CommonAction {
     }
 
     //获得班级部门数据班级部门数据
-    public function getbjbmsj($qishu,$sid){
+    public function getbjbmsj_bak2($qishu,$sid){
         $nianfen = substr($qishu,0,4);
-        $ssid = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =2")->getField("id");
+        $ssid = M("qishu_history")->where("qishu = '".$qishu."' and sid = $sid and tid =3")->getField("id");
         //获得班级信息表的数据
         $bjxx_list = M("bjxxb_".$nianfen)->where("suoshudd = $ssid")->select();
         $bumen_arr = $this->getBumenarr();
@@ -432,6 +851,7 @@ class CountJysjAction extends CommonAction {
         //班级饱和率统计
         $bumen_count["baoguanglv_total"] = round(((float)$bumen_count["rszj_total"] - (float)$bumen_count[4]["rszj"])/((float)$bumen_count["dybjs_total"] - (float)$bumen_count[4]["dybjs"]),2);
        // dump($bumen_count);
+        dump($bumen_count);
         return $bumen_count;
     }
 

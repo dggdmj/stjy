@@ -67,6 +67,7 @@ class CountZhlAction extends CommonAction {
         $heji = array();
         $khb = M('khb')->where($where)->getField('xuehao,bumen');
 
+        $miaosha_sz = M('fxms')->field('shangkekc,danjia')->where("sid='$sid'")->find();
         //获取人事老师名单
         $renshi = M('rycb')->field('id,xingming')->where(array('xiaoqu'=>$school_name))->select();
         $num = 1;
@@ -79,7 +80,7 @@ class CountZhlAction extends CommonAction {
                 $val['bumen'] = $banji[ $val['banji'] ];
                 $val['shuliang'] = $val['shengyugmsl'] + $val['shengyuzssl'];
                 //判断不是本月透视并且不是本月新增秒杀
-                if ( ($val['shifoujs'] == '是' && $val['shuliang'] < 16 && ($val['feiyong'] / $val['shuliang'] < 117)  && ($val['feiyong'] / $val['shuliang'] > 0)) || in_array($val['xuehao'],$xzms) && !in_array($val['xuehao'],$xfl_arr)){
+                if ( ($val['shifoujs'] == '是' && $val['shuliang'] <  $miaosha_sz['shangkekc'] && ($val['feiyong'] / $val['shuliang'] <  $miaosha_sz['danjia'])  && ($val['feiyong'] / $val['shuliang'] > 0)) || in_array($val['xuehao'],$xzms) && !in_array($val['xuehao'],$xfl_arr)){
                     if ($val['bumen'] == '小学部'){
                         //续费学生人数
                         if ($val['shoucijfrq'] < $last_day && in_array($val['xuehao'],$xufei)){

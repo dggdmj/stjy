@@ -254,10 +254,9 @@ class TableCountAction extends CommonAction{
         $data_time = $this->seTime($start_time,$end_time,8);
         $start_time = $data_time['start_time'];
         $end_time = $data_time['end_time'];
-
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonths($start_tim,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -265,7 +264,6 @@ class TableCountAction extends CommonAction{
                     ->join('stjy_qishu_history as qh on qh.sid=ss.id')
                     ->where(array('ss.id'=>array('in',$sid)))
                     ->getField('qh.id,ss.name');
-
         //获取所有学校的中文名字
         foreach($school as $vv){
             if (!in_array($vv,$school_name)){
@@ -288,7 +286,9 @@ class TableCountAction extends CommonAction{
             //查询市场业绩表
             $where['suoshudd'] = array('in',$qishu_id);
             $data = M('scyjb')->where($where)->order('id')->select();
-            foreach($data as &$val){
+            // dump($data);
+            foreach($data as $key=>&$val){
+                $val['xuhao'] = $key+1;
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
                 $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
                 $val['fenxiao'] = $school[ $val['suoshudd'] ];
@@ -315,7 +315,7 @@ class TableCountAction extends CommonAction{
         $sid = $_GET['sid'];
 
         $qishu_id = $this->getQishuId($qishu,$sid,9);
-        $list = M('sczylb')->where(array('suoshudd'=>$qishu_id))->select();
+        $list = M('sczylb')->where(array('suoshudd'=>$qishu_id))->order('xuhao')->select();
         $heji = array();
         foreach($list as $key=>$val){
             foreach($val as $k=>$v){
@@ -335,16 +335,8 @@ class TableCountAction extends CommonAction{
 
     //市场占有率表详情
     public function sczylb(){
-        //获取时间段 没有就取最近的
-        $start_time = I('start_time');
-        $end_time = I('end_time');
-        $data_time = $this->seTime($start_time,$end_time,9);
-        $start_time = $data_time['start_time'];
-        $end_time = $data_time['end_time'];
         $sid = session('sid');
-        /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonths($start_time,$end_time);
-        /**************************************************************************/
+        $qishu = I('qishu');
 
         //获取与当前登录账号所属的学校的所有的学校名字
         $school = M('school as ss')
@@ -358,7 +350,6 @@ class TableCountAction extends CommonAction{
                 $school_name[] = $vv;
             }
         }
-
         $school_name = implode(',',$school_name);
 
         //获取与期数校区相关的所有期数id
@@ -370,25 +361,29 @@ class TableCountAction extends CommonAction{
         foreach($qishu_arr as $k=>$v){
             $qishu_id[] = $k;
         }
+
         $heji = array();
         if ($qishu_id){
             //查询新增明细表
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('sczylb')->where($where)->order('id')->select();
-            foreach($list as &$val){
+            foreach($list as $key=>&$val){
+                $val['xuhao'] = $key+1;
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
                 $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
+                $val['xiaoqu'] = $school[ $val['suoshudd'] ];
                 foreach($val as $k=>$v){
                     $heji[ $k ] += $v;
                 }
             }
         }
+
         $heji['xuhao'] = '';
         $heji['nianfen'] = '';
         $heji['yuefen'] = '';
+        $heji['xiaoqu'] = '';
         $heji['gonglixx'] = '合计';
         array_push($list,$heji);
-
         $this->assign('start_time',$start_time);
         $this->assign('end_time',$end_time);
         $this->assign('school_name',$school_name);
@@ -438,7 +433,8 @@ class TableCountAction extends CommonAction{
             //查询新增明细表
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('lsbzsr')->where($where)->order('id')->select();
-            foreach($list as &$val){
+            foreach($list as $key=>&$val){
+                $val['xuehao'] = $key+1;
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
                 $heji['shoukexs'] += $val['shoukexs'];
                 $heji['zongrencxs'] += $val['zongrencxs'];
@@ -463,7 +459,6 @@ class TableCountAction extends CommonAction{
         /* 实时计算开始 */
         $data = new \Admin\Action\CountLsbzsrAction();
         $list = $data->getLsbzsrData($qishu,$sid);//获得统计数据
-        
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign('list',$list);
         $this->assign('arr',$arr);
@@ -537,7 +532,8 @@ class TableCountAction extends CommonAction{
             //查询新增明细表
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('xzmxb')->where($where)->order('id')->select();
-            foreach($list as &$val){
+            foreach($list as $key=>&$val){
+                $val['xuhao'] = $key+1;
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
                 $val['fenxiao'] = $school[ $val['suoshudd'] ];
             }
@@ -549,7 +545,7 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
-    //新增明细表
+    //减少明细表
     public function jsmxb(){
         //获取时间段 没有就取最近的
         $start_time = I('start_time');
@@ -591,6 +587,7 @@ class TableCountAction extends CommonAction{
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('jsmxb')->where($where)->order('id')->select();
             foreach($list as &$val){
+                $val['xuhao'] = $key+1;
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
                 $val['fenxiao'] = $school[ $val['suoshudd'] ];
             }
@@ -636,7 +633,7 @@ class TableCountAction extends CommonAction{
         /* 实时计算开始 */
         // $data = new \Admin\Action\CountJysjAction();
         // $list = $data->getJysjbData($qishu,$sid);//获得统计数据
-        /* 实时计算结束 */
+        /* 实时计算结束 */ 
 
         /* 查库开始 */
         $info = $this->getInfo($qishu,$sid);
@@ -649,8 +646,10 @@ class TableCountAction extends CommonAction{
         $data_gbxzdrstjb = M('gbxzdrstjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
         $data_xsrsbd = M('xsrsbdb')->field('id,suoshudd,daorusj,xuhao',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();    
         $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();   
+        $jysj = M("jysj")->where("suoshudd = '".$id."'")->find();   
         // dump($data_gbxzdrstjb);
         $sjbd = [];
+        $zcxsxqztb = array();
         foreach($data_bjzysjb as $v){
             if($v['bumen'] == '总计'){
                 $sjbd['c57'] = $v['dangyuebjs'];
@@ -662,35 +661,70 @@ class TableCountAction extends CommonAction{
                 $sjbd['c36'] = $v['zongrenshu'];
                 $sjbd['h36'] = $v['shijizbrs'];
             }
-        }
-        foreach($data_xsrsbd as $v){
-            if($v['xiangmu'] == '本月底在册学生人数'){
-                $sjbd['d46'] = $v['renshu'];
+            if($v['nianji'] == '幼儿园'){
+                $zcxsxqztb['1'] = $v;
+            }
+            if($v['nianji'] == '一年级'){
+                $zcxsxqztb['2'] = $v;
+            }
+            if($v['nianji'] == '二年级'){
+                $zcxsxqztb['3'] = $v;
+            }
+            if($v['nianji'] == '三年级'){
+                $zcxsxqztb['4'] = $v;
+            }
+            if($v['nianji'] == '四年级'){
+                $zcxsxqztb['5'] = $v;
+            }
+            if($v['nianji'] == '五年级'){
+                $zcxsxqztb['6'] = $v;
+            }
+            if($v['nianji'] == '六年级'){
+                $zcxsxqztb['7'] = $v;
+            }
+            if($v['nianji'] == '初一'){
+                $zcxsxqztb['8'] = $v;
+            }
+            if($v['nianji'] == '初二'){
+                $zcxsxqztb['9'] = $v;
+            }
+            if($v['nianji'] == '初二以上'){
+                $zcxsxqztb['10'] = $v;
+            }
+            if($v['nianji'] == '合计'){
+                $zcxsxqztb['11'] = $v;
             }
         }
-        foreach($data_fxkkb as $v){
-            if($v['kaikesjd'] == '总计'){
-                $sjbd['c21'] = $v['banjishu'];
-            }
-        }
-        foreach($data_gbxzdrstjb as $v){
-            if($v['bumen'] == '总计'){
-                $sjbd['n66'] = $v['heji'];
-            }
-        }
+        ksort($zcxsxqztb);
+        // foreach($data_xsrsbd as $v){
+        //     if($v['xiangmu'] == '本月底在册学生人数'){
+        //         $sjbd['d46'] = $v['renshu'];
+        //     }
+        // }
+        // foreach($data_fxkkb as $v){
+        //     if($v['kaikesjd'] == '总计'){
+        //         $sjbd['c21'] = $v['banjishu'];
+        //     }
+        // }
+        // foreach($data_gbxzdrstjb as $v){
+        //     if($v['bumen'] == '总计'){
+        //         $sjbd['n66'] = $v['heji'];
+        //     }
+        // }
         
         // dump($sjbd);
         /* 查库结束 */
         $title = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // $this->assign('list',$list);
         $this->assign('kecheng',$kecheng_arr);
+        $this->assign('jysj',$jysj);
         $this->assign('school',$school_data);
         $this->assign('data1',$data_fxkkb);// 分校开课表
-        $this->assign('data2',$data_zcxsxqztb);// 在册学生学期状态表(国际班课程)
+        $this->assign('data2',$zcxsxqztb);// 在册学生学期状态表(国际班课程)
         $this->assign('data3',$data_bjzysjb);// 班级重要数据
         $this->assign('data4',$data_gbxzdrstjb);// 各班型在读人数统计
         $this->assign('data5',$data_xsrsbd);// 学生人数变动
-        $this->assign('sjbd',$sjbd);// 数据比对
+        // $this->assign('sjbd',$sjbd);// 数据比对
         $this->assign('beizhu',$beizhu);// 备注
         $this->assign('arr',$title);
         $this->assign('qishu',$qishu);
@@ -741,7 +775,7 @@ class TableCountAction extends CommonAction{
         $end_time = $data_time['end_time'];
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonths($start_tim,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
         //获取与当前登录账号所属的学校的所有的学校名字
         $school = M('school as ss')
@@ -772,6 +806,7 @@ class TableCountAction extends CommonAction{
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('tfb')->where($where)->order('id')->select();
             foreach($list as &$val){
+                $val['xuhao'] = $key+1;
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
             }
         }
@@ -838,7 +873,7 @@ class TableCountAction extends CommonAction{
         $end_time = $data_time['end_time'];
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonths($start_tim,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
         //获取与当前登录账号所属的学校的所有的学校名字
         $school = M('school as ss')
@@ -869,6 +904,7 @@ class TableCountAction extends CommonAction{
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('lsqryye')->where($where)->order('id')->select();
             foreach($list as &$val){
+                $val['xuhao'] = $key+1;
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
             }
         }
@@ -909,7 +945,7 @@ class TableCountAction extends CommonAction{
 
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonths($start_tim,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -941,6 +977,7 @@ class TableCountAction extends CommonAction{
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('lsqrsr')->where($where)->order('id')->select();
             foreach($list as &$val){
+                $val['xuhao'] = $key+1;
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
             }
         }
@@ -965,7 +1002,8 @@ class TableCountAction extends CommonAction{
         
         // dump($data);
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        
+        $this->assign('qishu',$qishu);
+        $this->assign('sid',$sid);
         $this->assign('arr',$arr);
         $this->adminDisplay();
     }
@@ -981,7 +1019,7 @@ class TableCountAction extends CommonAction{
 
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonths($start_tim,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -1012,6 +1050,9 @@ class TableCountAction extends CommonAction{
             //查询市场业绩表
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('zxhytz')->where($where)->order('id')->select();
+            foreach($list as $key=>&$val){
+                $val['xuehao'] = $key+1;
+            }
         }
         $this->assign('start_time',$start_time);
         $this->assign('end_time',$end_time);
@@ -1034,7 +1075,8 @@ class TableCountAction extends CommonAction{
         
         // dump($data);
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
-        
+        $this->assign('qishu',$qishu);
+        $this->assign('sid',$sid);
         $this->assign('arr',$arr);
         $this->adminDisplay();
     }
@@ -1050,7 +1092,7 @@ class TableCountAction extends CommonAction{
 
         $sid = session('sid');
         /***************************获取两个时间段之间的月份***************************/
-        $qishu = $this->getMonths($start_tim,$end_time);
+        $qishu = $this->getMonths($start_time,$end_time);
         /**************************************************************************/
 
         //获取与当前登录账号所属的学校的所有的学校名字
@@ -1081,12 +1123,35 @@ class TableCountAction extends CommonAction{
             //查询市场业绩表
             $where['suoshudd'] = array('in',$qishu_id);
             $list = M('zxldxtz')->where($where)->order('id')->select();
+            foreach($list as $key=>&$val){
+                $val['xuehao'] = $key+1;
+            }
         }
         $this->assign('start_time',$start_time);
         $this->assign('end_time',$end_time);
         $this->assign('school_name',$school_name);
         $this->assign("list",$list);
         $this->adminDisplay();
+    }
+
+    //市场占有率表详情
+    public function sczylb_list(){
+        $sid = session('sid');
+        $map['sj.status_xz'] = 2;
+        $map['sj.sid'] = array('in',$sid);
+        $list = M('sjzb as sj')
+                ->join('stjy_school as ss on ss.id=sj.sid')
+                ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
+                ->where($map)
+                ->order('id desc')
+                ->group('qishu')
+                ->select();
+        foreach($list as &$val){
+            $val['name'] = '市场占有率';
+            $val['table_name'] = 'sczylb';
+        }
+        $this->assign("list",$list);
+        $this->adminDisplay('sczylb_list');
     }
 
     //收入情况一览表
@@ -1098,6 +1163,8 @@ class TableCountAction extends CommonAction{
                 ->join('stjy_school as ss on ss.id=sj.sid')
                 ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
                 ->where($map)
+                ->order('id desc')
+                ->group('qishu')
                 ->select();
         foreach($list as &$val){
             $val['name'] = '收入情况一览表';
@@ -1110,14 +1177,146 @@ class TableCountAction extends CommonAction{
     //收入情况一览表详情
     public function srqkylb_xq(){
         $qishu = I('qishu');
-        $sid = I('sid');
-        $data = new \Admin\Action\CountSrqkylbAction();
-        $info = $data->getSrqkylbData($qishu,$sid);
+        $sid = session('sid');
+        $where['qishu'] = $qishu;
+        $where['tid'] = 39;
+        $where['sid'] = array('in',$sid);
+        $list = M('qishu_history')->field('id')->where($where)->select();
+        $suoshudd_arr = array();
+        foreach($list as $val){
+            $suoshudd_arr[] = $val['id'];
+        }
+        if ($suoshudd_arr){
+            $data = M('srylb')->where(array('suoshudd'=>array('in',$suoshudd_arr)))->select();
+        }
+        // $data = new \Admin\Action\CountSrqkylbAction();
+        // $info = $data->getSrqkylbData($qishu,$sid);
         $base = array();
         $base['riqi'] = substr($qishu,0,4).'年'.substr($qishu,4,2).'月';
-        $base['school_name'] = M('school')->where(array('id'=>$sid))->getField('name');
+        $school = M('school')->field('name')->where(array('id'=>array('in',$sid)))->select();
+        foreach($school as $val){
+            $sname[] = $val['name'];
+        }
+        $base['school_name'] = implode(',',$sname);
         $this->assign("base",$base);
-        $this->assign("info",$info);
+        $this->assign("list",$data);
+        $this->adminDisplay();
+    }
+
+    //秒杀清单
+    public function miaosha_list(){
+        $sid = session('sid');
+        $map['sj.status_xz'] = 2;
+        $map['sj.sid'] = array('in',$sid);
+        $list = M('sjzb as sj')
+                ->join('stjy_school as ss on ss.id=sj.sid')
+                ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
+                ->where($map)
+                ->select();
+        foreach($list as &$val){
+            $val['name'] = '秒杀清单';
+            $val['table_name'] = 'miaosha';
+        }
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
+    //秒杀详情
+    public function miaosha_xq(){
+        $sid = I('sid');
+        $qishu = I('qishu');
+        $nian = substr($qishu,0,4);
+        $xyfyyjb_id = $this->getQishuId($qishu,$sid,7);//学员费用预警表
+        $list = M('xyfyyjb_'.$nian)->field('xuehao,xingming,kechengmc,shengyugmsl,shengyuzssl,feiyong')->where("suoshudd='$xyfyyjb_id'")->select();
+        // $kechenggl = M('kechenggl')->getField('kechengmc,shifoujs');
+        $miaosha = M('fxms')->field('shangkekc,danjia')->where("sid='$sid'")->find();
+        $data = array();
+        foreach($list as $key=>$val){
+            // $list[$key]['shifoukc'] = $kechenggl[ $val['kechengmc'] ];
+            $list[$key]['zongshuliang'] = $val['shengyugmsl']+$val['shengyuzssl'];
+            $list[$key]['zongfeiyong'] = $val['feiyong'];
+            $list[$key]['danjia'] = round($val['feiyong'] / $list[$key]['zongshuliang'],2);
+            if ($list[$key]['zongshuliang'] <= $miaosha['shangkekc'] && $list[$key]['danjia'] <= $miaosha['danjia'] && $list[$key]['danjia'] > 0){
+                $list[$key]['shifoums'] = '秒杀';
+                $data[] = $list[$key];
+            }else{
+                $list[$key]['shifoums'] = '';
+            }
+        }
+        $nianyue = substr($qishu,0,4).'年'.substr(4,2).'月';
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $this->assign('list',$data);
+        $this->assign('nianyue',$nianyue);
+        $this->assign('school_name',$school_name);
+        $this->adminDisplay();
+    }
+
+    //学员信息
+    public function xyxx(){
+       $sid = session('sid');
+        $map['sj.status_xz'] = 2;
+        $map['sj.sid'] = array('in',$sid);
+        $list = M('sjzb as sj')
+                ->join('stjy_school as ss on ss.id=sj.sid')
+                ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
+                ->where($map)
+                ->select();
+        foreach($list as &$val){
+            $val['name'] = '学员信息';
+            $val['table_name'] = 'xyxx';
+        }
+        $this->assign("list",$list);
+        $this->adminDisplay();
+    }
+
+    //学员信息表详情
+    public function xyxx_xq(){
+        $qishu = I('qishu');
+        $sid = I('sid');
+        $nian = substr($qishu,0,4);
+        $suoshudd = $this->getQishuId($qishu,$sid,1);//学员费用预警表
+        $list = M('xyxxb_'.$nian)->where("suoshudd='$suoshudd'")->select();
+        foreach($list as $key=>$val){
+            switch ($val['nianji']) {
+                case '小班':
+                    $list[$key]['nianjicfl'] = '幼儿园';
+                    break;
+                case '中班':
+                    $list[$key]['nianjicfl'] = '幼儿园';
+                    break;
+                case '大班':
+                    $list[$key]['nianjicfl'] = '幼儿园';
+                    break;
+                case '一年级':
+                    $list[$key]['nianjicfl'] = '一年级';
+                    break;
+                case '二年级':
+                    $list[$key]['nianjicfl'] = '二年级';
+                    break;
+                case '三年级':
+                    $list[$key]['nianjicfl'] = '三年级';
+                    break;
+                case '四年级':
+                    $list[$key]['nianjicfl'] = '四年级';
+                    break;
+                case '五年级':
+                    $list[$key]['nianjicfl'] = '五年级';
+                    break;
+                case '六年级':
+                    $list[$key]['nianjicfl'] = '六年级';
+                    break;
+                case '初一':
+                    $list[$key]['nianjicfl'] = '初一';
+                    break;
+                case '初二':
+                    $list[$key]['nianjicfl'] = '初二';
+                    break;
+                default:
+                     $list[$key]['nianjicfl'] = '初二以上';
+                    break;
+            }
+        }
+        $this->assign('list',$list);
         $this->adminDisplay();
     }
 

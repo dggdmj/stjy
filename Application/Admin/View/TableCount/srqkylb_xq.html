@@ -49,43 +49,45 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>{$info.xuexiao}</td>
-                        <td>{$info.zaibianrs}</td>
-                        <td>{$info.jinban}</td>
-                        <td>{$info.weijinban}</td>
-                        <td>{$info.tingkers}</td>
-                        <td>{$info.shangkecs}</td>
-                        <td>{$info.yingzongxfrc}</td>
-                        <td>{$info.shijizxfrc}</td>
-                        <td>{$info.pingjunkcdj}</td>
-                        <td>{$info.zongrencxss}</td>
-                        <td>{$info.pingjunxsdj}</td>
-                        <td>{$info.querenxfsr}</td>
-                        <td>{$info.jiaocaifei}</td>
-                        <td>{$info.shijicqzrcxs}</td>
-                        <td>{$info.biaozhunzsr}</td>
-                        <td>{$info.zongshouru}</td>
-                        <td>{$info.xueshengcql}</td>
-                        <td>{$info.shouruhb}</td>
-                        <td>{$info.kecidjhb}</td>
-                        <td>{$info.xiaoshidjhb}</td>
-                        <td>{$info.benyuezddcksr}</td>
-                        <td>{$info.shijiskcs}</td>
-                        <td>{$info.youxiaofkcddcksr}</td>
-                        <td>{$info.shijiskcs2}</td>
-                        <td>{$info.qichu}</td>
-                        <td>{$info.xinsheng}</td>
-                        <td>{$info.liushihl}</td>
-                        <td>{$info.zhuangru}</td>
-                        <td>{$info.liushi}</td>
-                        <td>{$info.tuifei}</td>
-                        <td>{$info.zhuangchu}</td>
-                        <td>{$info.qimo}</td>
-                        <td>{$info.qichuxy}</td>
-                        <td>{$info.qimoxy}</td>
-                    </tr>
+                    <foreach name="list" item="val" key="key">
+                        <tr>
+                            <td>{$key+1}</td>
+                            <td>{$val.xuexiao}</td>
+                            <td>{$val.zaibianrs}</td>
+                            <td>{$val.jinban}</td>
+                            <td>{$val.weijinban}</td>
+                            <td>{$val.tingkers}</td>
+                            <td>{$val.shangkecs}</td>
+                            <td>{$val.yingzongxfrc}</td>
+                            <td>{$val.shijizxfrc}</td>
+                            <td>{$val.pingjunkcdj}</td>
+                            <td>{$val.zongrencxss}</td>
+                            <td>{$val.pingjunxsdj}</td>
+                            <td>{$val.querenxfsr}</td>
+                            <td>{$val.jiaocaifei}</td>
+                            <td>{$val.shijicqzrcxs}</td>
+                            <td>{$val.biaozhunzsr}</td>
+                            <td>{$val.zongshouru}</td>
+                            <td>{$val.xueshengcql}</td>
+                            <td>{$val.shouruhb}</td>
+                            <td>{$val.kecidjhb}</td>
+                            <td>{$val.xiaoshidjhb}</td>
+                            <td>{$val.benyuezddcksr}</td>
+                            <td>{$val.shijiskcs}</td>
+                            <td>{$val.youxiaofkcddcksr}</td>
+                            <td>{$val.shijiskcs2}</td>
+                            <td>{$val.qichu}</td>
+                            <td>{$val.xinsheng}</td>
+                            <td>{$val.liushihl}</td>
+                            <td>{$val.zhuangru}</td>
+                            <td>{$val.liushi}</td>
+                            <td>{$val.tuifei}</td>
+                            <td>{$val.zhuangchu}</td>
+                            <td>{$val.qimo}</td>
+                            <td>{$val.qichuxy}</td>
+                            <td>{$val.qimoxy}</td>
+                        </tr>
+                    </foreach>
                 </tbody>
             </table>
         </div>

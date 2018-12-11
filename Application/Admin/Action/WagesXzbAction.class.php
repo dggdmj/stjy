@@ -50,12 +50,11 @@ class WagesXzbAction extends WagesCommonAction{
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $heji = array();//合计
         $fujia = array();//附加表
-        $fujia_id = $this->getQishuId($qishu,$sid,39);
         if ($suoshudd){
             $list = M('xzbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
             unset($list[ count($list) - 1]);
-            $fujia = M('fjb')->where("suoshudd='$fujia_id'")->getField('field,value');
+            $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
         }else{
             //实时计算
             $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj')->where(array('xiaoqu'=>$school_name,'bumen'=>'行政部'))->select();
@@ -138,16 +137,12 @@ class WagesXzbAction extends WagesCommonAction{
         }
         $fujia = $_POST;
         unset($fujia['sid'],$fujia['qishu'],$fujia['jsons']);
-        $fujia_id = $this->getQishuId($qishu,$sid,39);
-        if (!$fujia_id){
-            $fujia_id = $this->insertQishuHistory(39,$qishu,$sid);
-        }
-        M('fjb')->where("suoshudd='$fujia_id'")->delete();
+        M('fjb')->where("suoshudd='$suoshudd'")->delete();
         foreach($fujia as $key=>$val){
             $tmp = array();
             $tmp['field'] = $key;
             $tmp['value'] = $val;
-            $tmp['suoshudd'] = $fujia_id;
+            $tmp['suoshudd'] = $suoshudd;
             M('fjb')->add($tmp);
         }
         M('xzbgz')->where("suoshudd='$suoshudd'")->delete();

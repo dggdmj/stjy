@@ -26,7 +26,7 @@ class DownloadAction extends CommonAction {
                 $template = __ROOT__.'Public/template/template_jsmx_hz.xlsx';
                 break;
             case '13':
-                $template = __ROOT__.'Public/template/template_tf_hz.xlsx';
+                $template = __ROOT__.'Public/template/template_tf.xlsx';
                 break;
             case '29':
                 $template = __ROOT__.'Public/template/template_lsyye_hz.xlsx';
@@ -95,54 +95,80 @@ class DownloadAction extends CommonAction {
     //收入一览表
     public function download_srylb(){
         $qishu = I('qishu');
-        $sid = I('sid');
+        $sid = session('sid');
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $data = new \Admin\Action\CountSrqkylbAction();
         $info = $data->getSrqkylbData($qishu,$sid);
 
         vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
-        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.$school_name.'收入情况一览表';
+        
         $template = __ROOT__.'Public/template/template_srylb.xlsx';
         $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
         $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
         //接下来就是写数据到表格里面去
         $objActSheet = $objPHPExcel->getActiveSheet();
+        
+
+        $qishu = I('qishu');
+        $sid = session('sid');
+        $where['qishu'] = $qishu;
+        $where['tid'] = 39;
+        $where['sid'] = array('in',$sid);
+        $list = M('qishu_history')->field('id')->where($where)->select();
+        $suoshudd_arr = array();
+        foreach($list as $val){
+            $suoshudd_arr[] = $val['id'];
+        }
+        if ($suoshudd_arr){
+            $data = M('srylb')->where(array('suoshudd'=>array('in',$suoshudd_arr)))->select();
+        }
+        $j = 3;
+        foreach($data as $key=>$val){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).$j,$key+1);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(1).$j,$val['xuexiao']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(2).$j,$val['zaibianrs']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(3).$j,$val['jinban']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(4).$j,$val['weijinban']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(5).$j,$val['tingkers']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(6).$j,$val['shangkecs']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(7).$j,$val['yingzongxfrc']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(8).$j,$val['shijizxfrc']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(9).$j,$val['pingjunkcdj']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(10).$j,$val['zongrencxss']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(11).$j,$val['pingjunxsdj']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(12).$j,$val['querenxfsr']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(13).$j,$val['jiaocaifei']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(14).$j,$val['shijicqzrcxs']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(15).$j,$val['biaozhunzsr']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(16).$j,$val['zongshouru']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(17).$j,$val['xueshengcql']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(18).$j,$val['shouruhb']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(19).$j,$val['kecidjhb']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(20).$j,$val['xiaoshidjhb']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(21).$j,$val['benyuezddcksr']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(22).$j,$val['shijiskcs']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(23).$j,$val['youxiaofkcddcksr']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(24).$j,$val['shijiskcs2']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(25).$j,$val['qichu']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(26).$j,$val['xinsheng']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(27).$j,$val['liushihl']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(28).$j,$val['zhuangru']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(29).$j,$val['liushi']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(30).$j,$val['tuifei']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(31).$j,$val['zhuangchu']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(32).$j,$val['qimo']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(33).$j,$val['qichuxy']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(34).$j,$val['qimoxy']);
+            $j++;
+        }
+
+        $school = M('school')->field('name')->where(array('id'=>array('in',$sid)))->select();
+        foreach($school as $val){
+            $sname[] = $val['name'];
+        }
+        $sname = implode(',',$sname);
+        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.$sname.'收入情况一览表';
         $objActSheet->setCellValue('A1',$filename); 
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).'3',$info['xuhao']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(1).'3',$info['xuexiao']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(2).'3',$info['zaibianrs']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(3).'3',$info['jinban']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(4).'3',$info['weijinban']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(5).'3',$info['tingkers']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(6).'3',$info['shangkecs']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(7).'3',$info['yingzongxfrc']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(8).'3',$info['shijizxfrc']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(9).'3',$info['pingjunkcdj']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(10).'3',$info['zongrencxss']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(11).'3',$info['pingjunxsdj']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(12).'3',$info['querenxfsr']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(13).'3',$info['jiaocaifei']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(14).'3',$info['shijicqzrcxs']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(15).'3',$info['biaozhunzsr']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(16).'3',$info['zongshouru']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(17).'3',$info['xueshengcql']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(18).'3',$info['shouruhb']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(19).'3',$info['kecidjhb']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(20).'3',$info['xiaoshidjhb']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(21).'3',$info['benyuezddcksr']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(22).'3',$info['shijiskcs']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(23).'3',$info['youxiaofkcddcksr']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(24).'3',$info['shijiskcs2']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(25).'3',$info['qichu']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(26).'3',$info['xinsheng']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(27).'3',$info['liushihl']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(28).'3',$info['zhuangru']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(29).'3',$info['liushi']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(30).'3',$info['tuifei']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(31).'3',$info['zhuangchu']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(32).'3',$info['qimo']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(33).'3',$info['qichuxy']);
-        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(34).'3',$info['qimoxy']);
         // 写入数值
         // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
 
@@ -273,6 +299,323 @@ class DownloadAction extends CommonAction {
             }
             $i++;
         }
+        // 写入数值
+        // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+
+    }
+
+    //秒杀清单
+    public function download_ms(){
+        $qishu = I('qishu');
+        $sid = I('sid');
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $nian = substr($qishu,0,4);
+        $xyfyyjb_id = $this->getQishuId($qishu,$sid,7);//学员费用预警表
+        $list = M('xyfyyjb_'.$nian)->field('xuehao,xingming,kechengmc,shengyugmsl,shengyuzssl,feiyong')->where("suoshudd='$xyfyyjb_id'")->select();
+        $miaosha = M('fxms')->field('shangkekc,danjia')->where("sid='$sid'")->find();
+        $data = array();
+        foreach($list as $key=>$val){
+            $list[$key]['zongshuliang'] = $val['shengyugmsl']+$val['shengyuzssl'];
+            $list[$key]['zongfeiyong'] = $val['feiyong'];
+            $list[$key]['danjia'] = round($val['feiyong'] / $list[$key]['zongshuliang'],2);
+            if ($list[$key]['zongshuliang'] <= $miaosha['shangkekc'] && $list[$key]['danjia'] <= $miaosha['danjia'] && $list[$key]['danjia'] > 0){
+                $list[$key]['shifoums'] = '秒杀';
+                $data[] = $list[$key];
+            }else{
+                $list[$key]['shifoums'] = '';
+            }
+        }
+
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.$school_name.'秒杀清单';
+        $template = __ROOT__.'Public/template/template_ms.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        // $objActSheet->setCellValue('A1',$filename); 
+        $i = 2;
+        foreach($data as $val){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).$i,$val['xuehao']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(1).$i,$val['xingming']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(2).$i,$val['zongshuliang']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(3).$i,$val['danjia']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(4).$i,$val['zongfeiyong']);
+            $i++;
+        }
+      
+        // 写入数值
+        // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+
+    }
+
+    //学员信息
+    public function download_xyxx(){
+        $qishu = I('qishu');
+        $sid = I('sid');
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $nian = substr($qishu,0,4);
+        $suoshudd = $this->getQishuId($qishu,$sid,1);//学员费用预警表
+        $list = M('xyxxb_'.$nian)->where("suoshudd='$suoshudd'")->select();
+        foreach($list as $key=>$val){
+            switch ($val['nianji']) {
+                case '小班':
+                    $list[$key]['nianjicfl'] = '幼儿园';
+                    break;
+                case '中班':
+                    $list[$key]['nianjicfl'] = '幼儿园';
+                    break;
+                case '大班':
+                    $list[$key]['nianjicfl'] = '幼儿园';
+                    break;
+                case '一年级':
+                    $list[$key]['nianjicfl'] = '一年级';
+                    break;
+                case '二年级':
+                    $list[$key]['nianjicfl'] = '二年级';
+                    break;
+                case '三年级':
+                    $list[$key]['nianjicfl'] = '三年级';
+                    break;
+                case '四年级':
+                    $list[$key]['nianjicfl'] = '四年级';
+                    break;
+                case '五年级':
+                    $list[$key]['nianjicfl'] = '五年级';
+                    break;
+                case '六年级':
+                    $list[$key]['nianjicfl'] = '六年级';
+                    break;
+                case '初一':
+                    $list[$key]['nianjicfl'] = '初一';
+                    break;
+                case '初二':
+                    $list[$key]['nianjicfl'] = '初二';
+                    break;
+                default:
+                     $list[$key]['nianjicfl'] = '初二以上';
+                    break;
+            }
+        }
+
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.$school_name.'学员信息';
+        $template = __ROOT__.'Public/template/template_xyxx.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        // $objActSheet->setCellValue('A1',$filename); 
+        $i = 2;
+        foreach($list as $val){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).$i,$val['xuehao']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(1).$i,$val['xingming']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(2).$i,$val['xingbie']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(3).$i,$val['jinban']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(4).$i,$val['shishengxzh']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(5).$i,$val['shishengxin']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(6).$i,$val['chushengrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(7).$i,$val['nianling']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(8).$i,$val['shoujihm']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(9).$i,$val['yingwenming']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(10).$i,$val['qingjiacs']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(11).$i,$val['zhaoshengly']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(12).$i,$val['laiyuanfx']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(13).$i,$val['zuijinsksj']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(14).$i,$val['baomingrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(15).$i,$val['xiuxuerq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(16).$i,$val['yujifxrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(17).$i,$val['shijifxrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(18).$i,$val['tuixuerq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(19).$i,$val['huifurxrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(20).$i,$val['xiaoqu']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(21).$i,$val['xueguanshi']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(22).$i,$val['fuqinxm']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(23).$i,$val['fuqindh']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(24).$i,$val['muqinxm']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(25).$i,$val['muqindh']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(26).$i,$val['jiatingzz']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(27).$i,$val['zaidubj']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(28).$i,$val['qq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(29).$i,$val['jiuduxx']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(30).$i,$val['nianji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(31).$i,$val['banji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(32).$i,$val['beizhu']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(33).$i,$val['jifen']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(34).$i,$val['leixing']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(35).$i,$val['zhuangtai']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(36).$i,$val['xiuxueyy']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(37).$i,$val['tuixueyy']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(38).$i,$val['dianziqbye']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(39).$i,$val['qianjiaoje']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(40).$i,$val['shengyuxf']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(41).$i,$val['zhanghuye']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(42).$i,$val['shoucijfrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(43).$i,$val['shoucixfrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(44).$i,$val['shengao']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(45).$i,$val['zuijinsksj']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(46).$i,$val['baomingrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(47).$i,$val['tuixuerq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(48).$i,$val['shoucixfrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(49).$i,$val['nianjicfl']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(50).$i,$val['xiuxuefxrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(51).$i,$val['tuixuehfrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(52).$i,$val['zhuangtai']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(53).$i,$val['shifouycmd']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(54).$i,$val['shifouzxzrdjb']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(55).$i,$val['shifoutfxs']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(56).$i,$val['tuifeiycmdbz']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(57).$i,$val['shengyuxf']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(58).$i,$val['benyuesfysk']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(59).$i,$val['baomingrqsfbyys']);
+            $i++;
+        }
+      
+        // 写入数值
+        // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+
+    }
+
+    //上传表下载
+    public function down_file(){
+        $table_name = I('table');
+        $info = M('file')->where(array('table_name'=>$table_name))->order('add_time desc')->find();
+        $filename = $info['name'];
+        $file_url = $info['path'];
+        if(!file_exists($file_url) || !$info){ //检查文件是否存在
+            $this->error('表格文件不存在，请重新上传');exit;
+        }
+        $arr = explode('.',$file_url);
+        $file_type = $arr[count($arr)-1];
+        $file=fopen($file_url,'r'); //打开文件
+        //输入文件标签
+        header("Content-type: application/octet-stream");
+        header("Accept-Ranges: bytes");
+        header("Accept-Length: ".filesize($file_url));
+        header("Content-Disposition: attachment; filename=".$filename.'.'.$file_type);
+        //输出文件内容
+        echo fread($file,filesize($file_url));
+        fclose($file);
+    }
+
+    //市场占有率汇总下载
+    public function download_sczyl(){
+        $sid = session('sid');
+        $qishu = I('qishu');
+
+        //获取与当前登录账号所属的学校的所有的学校名字
+        $school = M('school as ss')
+                    ->join('stjy_qishu_history as qh on qh.sid=ss.id')
+                    ->where(array('ss.id'=>array('in',$sid)))
+                    ->getField('qh.id,ss.name');
+
+        //获取所有学校的中文名字
+        foreach($school as $vv){
+            if (!in_array($vv,$school_name)){
+                $school_name[] = $vv;
+            }
+        }
+        $school_name = implode(',',$school_name);
+
+        //获取与期数校区相关的所有期数id
+        $map['sid'] = array('in',$sid);
+        $map['qishu'] = array('in',$qishu);
+        $map['tid'] = 9;
+        $qishu_arr = M('qishu_history')->where($map)->getField('id,qishu');
+        //获取订单id数组
+        foreach($qishu_arr as $k=>$v){
+            $qishu_id[] = $k;
+        }
+
+        $heji = array();
+        if ($qishu_id){
+            //查询新增明细表
+            $where['suoshudd'] = array('in',$qishu_id);
+            $list = M('sczylb')->where($where)->order('id')->select();
+            foreach($list as $key=>&$val){
+                $val['xuhao'] = $key+1;
+                $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
+                $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
+                $val['xiaoqu'] = $school[ $val['suoshudd'] ];
+                foreach($val as $k=>$v){
+                    $heji[ $k ] += $v;
+                }
+            }
+        }
+
+        $heji['xuhao'] = '';
+        $heji['nianfen'] = '';
+        $heji['yuefen'] = '';
+        $heji['xiaoqu'] = '';
+        $heji['gonglixx'] = '合计';
+        array_push($list,$heji);
+
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.$school_name.'市场占有率';
+        $template = __ROOT__.'Public/template/template_sczyl_hz.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        // $objActSheet->setCellValue('A1',$filename); 
+        $i = 2;
+        foreach($data as $val){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).$i,$val['xuehao']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(1).$i,$val['nianfen'].$val['yuefen']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(2).$i,$val['xiaoqu']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(3).$i,$val['gonglixx']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(4).$i,$val['youeryuan']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(5).$i,$val['yinianji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(6).$i,$val['ernianji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(7).$i,$val['sannianji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(8).$i,$val['sinianji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(9).$i,$val['wunianji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(10).$i,$val['liunianji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(11).$i,$val['chuyi']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(12).$i,$val['chuer']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(13).$i,$val['chuerys']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(14).$i,$val['heji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(15).$i,$val['xuexiaogms']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(16).$i,$val['zhaoyoulv']);
+            $i++;
+        }
+      
         // 写入数值
         // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
 

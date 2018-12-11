@@ -65,6 +65,10 @@ class SettingAction extends CommonAction{
                     'url' => url('Setting/gequybzdj'),
                     'icon' => 'list',
                 ),
+                array('name' => '分校秒杀设置',
+                    'url' => url('Setting/miaosha'),
+                    'icon' => 'list',
+                ),
             ),
             'add' => array(
                 array('name' => '添加校区',
@@ -259,6 +263,11 @@ class SettingAction extends CommonAction{
             }
 
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'banjibianhao';
+            M('file')->add($arr);
 
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -382,6 +391,11 @@ class SettingAction extends CommonAction{
             }
 
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'gonglixx';
+            M('file')->add($arr);
 
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -526,6 +540,11 @@ class SettingAction extends CommonAction{
             }
 
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'ulist';
+            M('file')->add($arr);
 
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -624,6 +643,11 @@ class SettingAction extends CommonAction{
             }
 
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'gbdmb';
+            M('file')->add($arr);
 
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -953,6 +977,11 @@ class SettingAction extends CommonAction{
             }
             M('sjcplx')->where("1=1")->delete();
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'shoujucplx';
+            M('file')->add($arr);
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
 
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -968,7 +997,11 @@ class SettingAction extends CommonAction{
                  $data['miaoshu'] = $sheet->getCell('B'.$i)->getValue();
                  $data['shifouqy'] = $sheet->getCell('C'.$i)->getValue();
                  $data['shifouhytzlx'] = $sheet->getCell('D'.$i)->getValue();
+                 $data['shifouldx'] = $sheet->getCell('E'.$i)->getValue();
+                 $data['shifouyyejs'] = $sheet->getCell('F'.$i)->getValue();
                  $data['shifouhytzlx'] = $data['shifouhytzlx'] == '是' ? '1' : '2';
+                 $data['shifouldx'] = $data['shifouldx'] == '是' ? '1' : '2';
+                 $data['shifouyyejs'] = $data['shifouyyejs'] == '是' ? '1' : '2';
                  $data['daorusj'] = date('Y-m-d H:i:s',time());
                  if ($data['xiangmu'] != ''){
                     M('sjcplx')->add($data);
@@ -1002,6 +1035,11 @@ class SettingAction extends CommonAction{
             }
             M('gequybzdj')->where("1=1")->delete();
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'gequybzdj';
+            M('file')->add($arr);
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
 
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -1052,6 +1090,11 @@ class SettingAction extends CommonAction{
             }
             M('fxkcgl')->where(array('sid'=>$_POST['sid']))->delete();
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'fenxiaokcgl';
+            M('file')->add($arr);
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
 
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -1102,6 +1145,11 @@ class SettingAction extends CommonAction{
             }
             M('wupinqd')->where("1=1")->delete();
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'wupinqd';
+            M('file')->add($arr);
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
 
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -1155,6 +1203,11 @@ class SettingAction extends CommonAction{
             }
             M('kechenggl')->where("1=1")->delete();
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'kechenggl';
+            M('file')->add($arr);
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
 
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -1223,6 +1276,11 @@ class SettingAction extends CommonAction{
             }
             M('ambbz')->where("1=1")->delete();
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'ambbz';
+            M('file')->add($arr);
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
 
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -1291,6 +1349,11 @@ class SettingAction extends CommonAction{
             }
             M('zxmc')->where("1=1")->delete();
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'zxmc';
+            M('file')->add($arr);
             vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
 
             $inputFileType = \PHPExcel_IOFactory::identify($file_name);
@@ -1320,6 +1383,36 @@ class SettingAction extends CommonAction{
     public function zxmc_delete(){
         M('zxmc')->where("1=1")->delete();
         $this->success('成功清空中心名称',U('zxmc'));
+    }
+
+    //分校秒杀设置
+    public function miaosha(){
+        $list = M('school as xx')
+                ->join('LEFT JOIN stjy_fxms as ms on ms.sid=xx.id')
+                ->field('xx.name,ms.*,xx.id')
+                ->order('xx.id')
+                ->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //添加修改秒杀
+    public function miaosha_add(){
+        if (IS_POST){
+            $sid = I('sid');
+            $info = M('fxms')->where("sid='$sid'")->count();
+            if ($info){
+                M('fxms')->where("sid='$sid'")->save($_POST);
+            }else{
+                M('fxms')->add($_POST);
+            }
+            $this->success('设置成功',U('miaosha'));exit;
+        }
+        $sid = I('sid');
+        $info = M('fxms')->where("sid='$sid'")->find();
+        $info['sid'] = $sid;
+        $this->assign('info',$info);
+        $this->adminDisplay();
     }
 }
 ?>

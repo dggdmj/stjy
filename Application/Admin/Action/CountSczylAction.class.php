@@ -9,10 +9,11 @@ class CountSczylAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getSczylbData($qishu,$sid){
+    public function getSczylbData($qishu='201810',$sid='15'){
         $id = $this->getQishuId($qishu,$sid,1);
         $xyxxb = $this->checkFenbiao($id,'xyxxb');//判断是否是分表
-        $where = 'suoshudd ='.$id.' and xuehao != "" and jiuduxx != "" and (zhuangtai = "在读" or zhuangtai = "休学")';// 下面$arr获取数据的查询条件
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $where = "suoshudd =$id and xuehao != '' and (zhuangtai = '在读' or zhuangtai = '休学') and xiaoqu ='$school_name'";// 下面$arr获取数据的查询条件
         $schools = M($xyxxb)->field('jiuduxx,nianji,count(*) as count')->where($where)->group('jiuduxx,nianji')->order('id')->select();
         //获取分校公立学校规模数
         $guimo = M("gonglixx")->where("sid = $sid")->select();
@@ -23,8 +24,11 @@ class CountSczylAction extends CommonAction {
 
         $data = array();
         $nianji_arr = array("幼儿园"=>"youeryuan","一年级"=>"yinianji","二年级"=>"ernianji","三年级"=>"sannianji","四年级"=>"sinianji","五年级"=>"wunianji","六年级"=>"liunianji","初一"=>"chuyi","初二"=>"chuer","初二以上"=>"chuerys");
-
+        $p = 1;
         foreach($schools as $k=>$v){
+            if ($v['jiuduxx'] == ''){
+                $v['jiuduxx'] = '空'.$p;$p++;
+            }
             switch($v['nianji']){
                 case '小班':
                 case '中班':
@@ -49,6 +53,9 @@ class CountSczylAction extends CommonAction {
         $arr = array();
         $i = 1;
         foreach ($data as $k=>$v){
+            if(mb_substr($k,0,1,'utf-8') == '空'){
+                $k = '';
+            }
             $arr[$i]['xuhao'] = $i;
             $arr[$i]['gonglixx'] = $k;
             $heji = 0;

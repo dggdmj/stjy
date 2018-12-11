@@ -50,16 +50,17 @@ class WagesJxbAction extends WagesCommonAction{
         $sid = $_GET['sid']?$_GET['sid']:1;
         $suoshudd = $this->getQishuId($qishu,$sid,18);
         $yuefen = substr($qishu,4,2).'月';
-        $ambbz = M('ambbz')->getField('gangwei,danjia');
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $heji = array();//合计
-        $fujia = array();//附加表
-        $fujia_id = $this->getQishuId($qishu,$sid,39);
+        $lsqrsr_id = $this->getQishuId($qishu,$sid,30);
+        $lsqryye_id = $this->getQishuId($qishu,$sid,29);
+        $lsqrsr = M('lsqrsr')->field('laoshi,banxing,zongrencxs')->where("suoshudd='$lsqrsr_id'")->select();
+        $lsqryye = M('lsqryye')->field('laoshi,banxing,yingyee')->where("suoshudd='$lsqryye_id'")->select();
         if ($suoshudd){
-            $list = M('xzbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
+            $list = M('jxbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
             unset($list[ count($list) - 1]);
-            $fujia = M('fjb')->where("suoshudd='$fujia_id'")->getField('field,value');
+            $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
         }else{
             //实时计算
             $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj,erjibm,diyixlbysj')->where(array('xiaoqu'=>$school_name,'bumen'=>'教学部'))->select();
@@ -67,8 +68,9 @@ class WagesJxbAction extends WagesCommonAction{
                 $val['xuhao'] = $key+1;
                 $val['yuefen'] = $yuefen;
                 $val['fenxiao'] = $school_name;
-                $val['rushutqnxzd'] = round(( strtotime($val['ruzhisj'] - strtotime($val['diyixlbysj']) ) / 365 * 0.8,1);
-                $val['gongzuonx'] = 3;//找逻辑
+                $val['xuelihyyz8zjnx'] = 1;
+                $val['rushutqnxzd'] = round(( strtotime($val['ruzhisj']) - strtotime($val['diyixlbysj']) ) / 3600 / 24 / 365 * 0.8,1);
+                $val['gongzuonx'] = round(( strtotime(substr($qishu,0,4).'-'.substr($qishu,4,2).'-01'.' +1 month -1 day') - strtotime($val['ruzhisj']) ) / 3600 / 24 / 365 * 0.8+$val['rushutqnxzd'],1)+$val['xuelihyyz8zjnx'];//找逻辑
                 $val['yingchuqts'] = 30;// 应出勤天数 (写死)
                 $val['shijicqts'] = 30;// 实际出勤天数 (写死)
                 if ($val['zhiwei'] == '教务主任'){
@@ -78,6 +80,26 @@ class WagesJxbAction extends WagesCommonAction{
                 }else{
                     $val['amibtzbl'] = '-2%';
                 }
+                foreach($lsqrsr  as $vo){
+                    if ($val['xingming'] == $vo['laoshi']){
+                        if ($vo['banxing'] == '小学部'){
+                            $val['xiaoxueskrcxs'] = $vo['zongrencxs'];
+                        }else if($vo['banxing'] == '初中部'){
+                            $val['chuzhongskrcxs'] = $vo['zongrencxs'];
+                        }
+                    }
+                }
+                foreach($lsqryye  as $vo){
+                    if ($val['xingming'] == $vo['laoshi']){
+                        if ($vo['banxing'] == '小学部'){
+                            $val['xiaoxueyye'] = $vo['yingyee'];
+                        }else if($vo['banxing'] == '初中部'){
+                            $val['chuzhongyye'] = $vo['yingyee'];
+                        }
+                    }
+                }
+                $val['rencixspjdj'] = '53';//补逻辑
+                $val['amibaqrsr'] = ($val['xiaoxueskrcxs'] + $val['chuzhongskrcxs']) * $val['rencixspjdj'];
             }
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
         }
@@ -90,6 +112,50 @@ class WagesJxbAction extends WagesCommonAction{
         $this->assign('sid',$sid);
         $this->assign("list",$list);
         $this->adminDisplay();
+    }
+
+    //市场部提交
+    public function saves(){
+        $data = json_decode($_POST['jsons']);
+        $qishu = $_POST['qishu'];
+        $sid = $_POST['sid'];
+        $suoshudd = $this->getQishuId($qishu,$sid,18);
+        if (!$suoshudd){
+            $suoshudd = $this->insertQishuHistory(18,$qishu,$sid);
+        }
+        $fujia = $_POST;
+        unset($fujia['sid'],$fujia['qishu'],$fujia['jsons']);
+        M('fjb')->where("suoshudd='$suoshudd'")->delete();
+        foreach($fujia as $key=>$val){
+            $tmp = array();
+            $tmp['field'] = $key;
+            $tmp['value'] = $val;
+            $tmp['suoshudd'] = $suoshudd;
+            M('fjb')->add($tmp);
+        }
+        M('jxbgz')->where("suoshudd='$suoshudd'")->delete();
+        $list = array();
+        $field = M('')->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_jxbgz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj'");
+        foreach($data as $key=>$val){
+            $j=0;
+            if ($val['0'] == '合计'){
+                for($i=0;$i<14;$i++){
+                    unset($field[$i]);
+                }
+                $list[ $key ]['fenxiao'] = '合计';
+                $j=1;
+            }
+            foreach($field as $kk=>$vv){
+                $list[ $key ][ $vv['column_name'] ] = $val[$j];
+                $j++;
+            }
+            $list[$key]['suoshudd'] = $suoshudd;
+            if ($list[$key]['fenxiao']){
+                $res = M('jxbgz')->add($list[$key]);
+            }
+        }
+        $this->ajaxReturn(1);
+        // $this->success('保存成功');
     }
 
     public function index_bak(){

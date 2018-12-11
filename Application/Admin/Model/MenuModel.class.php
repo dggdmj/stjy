@@ -157,7 +157,7 @@ class MenuModel {
                     array(
                         'name' => '市场占有率表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/sczylb'),
+                        'url' => U('/TableCount/sczylb_list'),
                         'order' => 2
                     ),
                     array(
@@ -231,6 +231,43 @@ class MenuModel {
                         'icon' => 'file',
                         'url' => U('/TableCount/yejilist/tid/38'),
                         'order' => 14
+                    ),
+                    array(
+                        'name' => '秒杀清单',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/miaosha_list'),
+                        'order' => 14
+                    ),
+                    array(
+                        'name' => '学员信息',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/xyxx'),
+                        'order' => 14
+                    ),
+                )
+            );
+        $gongzisj = array(
+                'name' => '工资数据',
+                'icon' => 'tree',
+                'order' => 1,
+                'menu' => array(
+                    array(
+                        'name' => '考核装修费',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesSj/zxf_xq'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '利润分配表',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesSj/lrfp_xq'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '在读学生',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesSj/zdxs_xq'),
+                        'order' => 1
                     ),
                 )
             );
@@ -440,6 +477,12 @@ class MenuModel {
                         'url' => U('Setting/zxmc'),
                         'order' => 12
                     ),
+                    array(
+                        'name' => '分校秒杀设置',
+                        'icon' => 'puzzle-piece',
+                        'url' => U('Setting/miaosha'),
+                        'order' => 12
+                    ),
                 )
             );
         $member = array(
@@ -536,6 +579,7 @@ class MenuModel {
             'Index' => $index,
             'Content' => $content,
             'Order' => $order,
+            'Gongzisj' => $gongzisj,
             'Gongzi' => $gongzi,
             'Renshi' => $renshi,
             'Function' => $function,

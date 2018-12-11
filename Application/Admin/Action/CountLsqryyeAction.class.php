@@ -45,14 +45,18 @@ class CountLsqryyeAction extends CommonAction {
         $ls_day_last = date('Y-m-d', strtotime("$lastday -60 day"));
         
         $nian = substr($qishu,0,4);
-
+        //秒杀
+         $miaosha = M('fxms')->field('shangkekc,danjia')->where("sid='$sid'")->find();
         //查营业额
         $zonge = M('sjjlb_'.$nian.' as ss')
                     ->join('LEFT JOIN stjy_xyxxb_'.$nian.' as sx on ss.xuehao=sx.xuehao')
                     ->join('LEFT JOIN stjy_bjxyxxb_'.$nian.' as sb on sb.xuehao=sx.xuehao')
                     ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as sk on sk.banjimc=sb.banji')
-                    ->field('ss.xuehao,ss.jiaofeije,sk.jingjiangls,sb.banji')
-                    ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd'")
+                    ->join('LEFT JOIN stjy_sjcplx as cp on cp.xiangmu=ss.chanpinlx')
+                    ->join('LEFT JOIN stjy_sjmxb as mx on ss.shoujuhao=ss.mx.shoujuhao')
+                    ->field('ss.xuehao,ss.jiaofeije,sk.jingjiangls,sb.banji,mx.goumaikc,mx.jiaofeije')
+                    ->where("ss.suoshudd='$suoshudd' and  sx.shoucixfrq != '' and ss.jiaofeirq > sx.shoucixfrq and cp.shifouyyejs=1")
+                    // ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd' and  sx.shoucixfrq != ''")
                     ->select();
         //班级编码
         $banjibm = M('banjibianhao')->field('jingdujb,bumen')->select();
@@ -64,14 +68,19 @@ class CountLsqryyeAction extends CommonAction {
             $val['yingyee1'] = 0;
             $val['yingyee2'] = 0;
             foreach($zonge as $v){
-                $bianma = substr($v['banji'],0,3);
-                $v['bumen'] = $bumen[ $bianma ];
-                if($v['jingjiangls'] == $val['xingming']){
-                    if($v['bumen'] == '小学部'){
-                        $val['yingyee1'] += $v['jiaofeije'];
-                    }
-                    if($v['bumen'] == '初中部'){
-                        $val['yingyee2'] += $v['jiaofeije'];
+                $v['shuliang'] = mb_substr( $v['goumaikc'],0,-1,'utf-8');
+                $v['shuliang'] =  $v['shuliang'] > 0 ? $v['shuliang'] : 0;
+                $v['danjia'] =  $v['jiaofeije'] /  $v['shuliang'];
+                if ( $val['shuliang'] > $miaosha['shangkekc'] ||  $val['danjia'] > $miaosha['danjia']){
+                    $bianma = substr($v['banji'],0,3);
+                    $v['bumen'] = $bumen[ $bianma ];
+                    if($v['jingjiangls'] == $val['xingming']){
+                        if($v['bumen'] == '小学部'){
+                            $val['yingyee1'] += $v['jiaofeije'];
+                        }
+                        if($v['bumen'] == '初中部'){
+                            $val['yingyee2'] += $v['jiaofeije'];
+                        }
                     }
                 }
             }

@@ -6,6 +6,12 @@ class CountSrqkylbAction extends CommonAction {
 
     //市场业绩表汇总
 	public function getSrqkylbData($qishu='',$sid=''){
+        $suoshudd = $this->getQishuId($qishu,$sid,39);
+        if ($suoshudd){
+            $info = M('srylb')->where("suoshudd='$suoshudd'")->find();
+            return $info;
+        }
+        $suoshudd = $this->insertQishuHistory(39,$qishu,$sid);
         //获取学校名字
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         //查出学员信息表所有相关的学员
@@ -58,6 +64,8 @@ class CountSrqkylbAction extends CommonAction {
         $last_xyxxb = $this->getXyxxb($last_time,$sid);
         $info['qichuxy'] = $info['qichu']-$last_xyxxb['tingkers']-$last_xyxxb['jinban']-$last_xyxxb['weijinban'];
         $info['qimoxy'] =  $info['qimo'] - $info['zaibianrs'];
+        $info['suoshudd'] = $suoshudd;
+        M('srylb')->add($info);
         return $info;
     }
 
@@ -67,7 +75,7 @@ class CountSrqkylbAction extends CommonAction {
         if (!$xyxxb_id){
             return array();
         }
-
+        $school_name = M('school')->where("id=$sid")->getField('name');
         //如果这个学生当月转入记录有但班级花名册里没有这个学生的信息，那就是当月转入的学生但是还没有进班AZ为是，AX列状态变为未进班
         $weijinban = array();
         $nian = substr($qishu,0,4);
@@ -86,7 +94,7 @@ class CountSrqkylbAction extends CommonAction {
         $xyxxb = $this->checkFenbiao($xyxxb_id,'xyxxb');
         $xyxxb_list = M($xyxxb.' as xy')
                         ->field('zhuangtai,shoucixfrq,xuehao')
-                        ->where("suoshudd='$xyxxb_id' and ( zhuangtai='在读' or zhuangtai='休学' ) ")
+                        ->where("suoshudd='$xyxxb_id' and ( zhuangtai='在读' or zhuangtai='休学' or zhuangtai='未进班') and xiaoqu='$school_name'")
                         ->select();
 
         $info['tingkers'] = 0;
@@ -101,12 +109,14 @@ class CountSrqkylbAction extends CommonAction {
             }
             if ($val['zhuangtai'] == '休学'){
                 $info['tingkers']+=1;
-            }else{
+            }else if($val['zhuangtai'] == '在读'){
                 if ($val['shoucixfrq']){
                     $info['jinban'] += 1;
                 }else{
                     $info['weijinban']+=1;
                 }
+            }else{
+                $info['weijinban']+=1;
             }
         }
         //如果这个人不在学员信息表也统计进未进班

@@ -4,16 +4,18 @@
             <h1 align="center" style="margin: 10px">{$arr['year']}年{$arr['month']}月{$arr['school']}经营数据汇总表</h1>
             <table class="table table-hover table-bordered table-condensed"  style="width: 400px">
                 <caption align="top">分校情况</caption>
-                <thead>
                 <tr>
-                    <th width="100">分校面积</th>
-                    <th width="100">课室数</th>
+                    <td width="100">月份</td>
+                    <td>{$arr['year']}年{$arr['month']}月</td>
                 </tr>
-                </thead>
+                <tr>
+                    <td width="100">分校面积</td>
+                    <td>{$school['mianji']}</td>
+                </tr>
                 <tbody>
                     <tr>
-                        <td rowspan="10">{$school['mianji']}</td>
-                        <td rowspan="10">{$school['classnum']}</td>
+                        <td width="100">课室数</td>
+                        <td>{$school['classnum']}</td>
                     </tr>
                 </tbody>
             </table>
@@ -40,54 +42,54 @@
                 <caption align="top">数据比对</caption>
                 <tbody>
                     <tr>
-                        <td>当月班级数总计(C57)</td>
-                        <td>当月开班班级数总计(C21)</td>
-                        <td colspan="2">是否相等</td>
-                        <td style="width: 400px">备注</td>
+                        <td>异常名单</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <td>{$sjbd['c57']}</td>
-                        <td>{$sjbd['c21']}</td>
-                        <if condition="$sjbd['c57'] eq $sjbd['c21']">
-                        <td style="color:red;" colspan="2">是</td>
-                        <else />
-                        <td style="color:red;" colspan="2">否</td>
-                        </if>
-                        <td><input type="text" class="input update_even" name="beizhu1" value="{$beizhu['beizhu1']}"></td>
+                        <td rowspan="2">总人数核对</td>
+                        <td>C36</td>
+                        <td>D46</td>
+                        <td>差异</td>
                     </tr>
                     <tr>
-                        <td>在册学生总人数合计(C36)</td>
-                        <td>本月底在册学生人数(D46)</td>
-                        <td colspan="2">是否相等</td>
-                        <td>备注</td>
+                        <td>{$jysj.c36}</td>
+                        <td>{$jysj.d46}</td>
+                        <td>{$jysj.chayi3}</td>
                     </tr>
                     <tr>
-                        <td>{$sjbd['c36']}</td>
-                        <td>{$sjbd['d46']}</td>
-                        <if condition="$sjbd['c36'] eq $sjbd['d46']">
-                        <td style="color:red;" colspan="2">是</td>
-                        <else />
-                        <td style="color:red;" colspan="2">否</td>
-                        </if>
-                        <td><input type="text" class="input update_even" name="beizhu2" value="{$beizhu['beizhu2']}"></td>
+                        <td rowspan="2">学员信息表与班级花名册及出勤核对在读人数</td>
+                        <td>AS列在读</td>
+                        <td>F列学号数</td>
+                        <td>差异</td>
                     </tr>
                     <tr>
-                        <td>在册学生实际在班人数总计(H36)</td>
-                        <td>班级重要数据人数总计的总计(D57)</td>
-                        <td>各班型在读人数统计合计的总计(N66)</td>
-                        <td>是否相等</td>
-                        <td>备注</td>
+                        <td>{$jysj.as}</td>
+                        <td>{$jysj.f}</td>
+                        <td>{$jysj.chayi1}</td>
                     </tr>
                     <tr>
-                        <td>{$sjbd['h36']}</td>
-                        <td>{$sjbd['d57']}</td>
-                        <td>{$sjbd['n66']}</td>
-                        <if condition="($sjbd['h36'] eq $sjbd['d57']) AND ($sjbd['d57'] eq $sjbd['n66'])">
-                        <td style="color:red;">是</td>
-                        <else />
-                        <td style="color:red;">否</td>
-                        </if>
-                        <td><input type="text" class="input update_even" name="beizhu3" value="{$beizhu['beizhu3']}"></td>
+                        <td rowspan="2">在读人数核对</td>
+                        <td>F36</td>
+                        <td>D57</td>
+                        <td>差异</td>
+                    </tr>
+                    <tr>
+                        <td>{$jysj.f36}</td>
+                        <td>{$jysj.d57}</td>
+                        <td>{$jysj.chayi4}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">班级数核对</td>
+                        <td>C21</td>
+                        <td>C57</td>
+                        <td>差异</td>
+                    </tr>
+                    <tr>
+                        <td>{$jysj.c21}</td>
+                        <td>{$jysj.c57}</td>
+                        <td>{$jysj.chayi2}</td>
                     </tr>
                 </tbody>
             </table>
@@ -117,9 +119,7 @@
                     <th>年级</th>
                     <th>总人数</th>
                     <th>未进班</th>
-                    <th>预报名</th>
                     <th>停读(预计可复学)</th>
-                    <th>停读(预计不可复学已结算续费)</th>
                     <th>实际在班人数</th>
                     <volist name="kecheng" id="kc">
                     <th>{$kc}</th>
@@ -132,9 +132,7 @@
                         <td>{$v['nianji']}</td>
                         <td>{$v["zongrenshu"]}</td>
                         <td>{$v["weijinban"]}</td>
-                        <td>{$v['yubaoming']}</td>
                         <td>{$v["tingduyjkfx"]}</td>
-                        <td>{$v["tingduyjbkfx"]}</td>
                         <td>{$v["shijizbrs"]}</td>
                         <volist name="kecheng" id="kc">
                         <if condition="$kc eq '一对一'">
@@ -152,7 +150,7 @@
                 <thead>
                 <tr>
                     <th rowspan="3">部门</th>
-                    <th colspan="4">当月数据</th>
+                    <th colspan="4">当月数据（包含市场部新开班级，不包含停读及进班人数）</th>
                 </tr>
                 <tr>
                     <th>当月班级数</th>
@@ -172,47 +170,6 @@
                             <!-- </notempty> -->
                         </foreach>
 
-                </tbody>
-            </table>
-            <table class="table table-hover table-bordered table-condensed" style="width: 1500px">
-                <caption align="top">各班型在读人数统计</caption>
-                <thead>
-                <tr>
-                    <th>各班型在读人数统计</th>
-                    <th>幼儿班</th>
-                    <th>小学周末白天班</th>
-                    <th>中学班</th>
-                    <th>小学平时1.5小时班</th>
-                    <th>小学平时2小时班</th>
-                    <th>小学平时2.5小时班</th>
-                    <th>小学平时3小时班</th>
-                    <th>周日晚上</th>
-                    <th>周五晚上</th>
-                    <th>周六晚上</th>
-                    <th>一对一</th>
-                    <th>合计</th>
-                </tr>
-                </thead>
-                <tbody>
-                        <foreach name="data4" item="g" key="key">
-                        <tr>
-                            <!-- <td><empty name="g['bumen']">总计<else/>{$g['bumen']}</empty></td> -->
-                            <td>{$g['bumen']}</td>
-                            <td>{$g['youerban']}</td>
-                            <td>{$g['xiaoxuezmbtb']}</td>
-                            <td>{$g['zhongxueban']}</td>
-                            <td>{$g['xiaoxueps1d5']}</td>
-                            <td>{$g['xiaoxueps2']}</td>
-                            <td>{$g['xiaoxueps2d5']}</td>
-                            <td>{$g['xiaoxueps3']}</td>
-                            <td>{$g['zhouriws']}</td>
-                            <td>{$g['zhouwuws']}</td>
-                            <td>{$g['zhouliuws']}</td>
-                            <td>{$g['yiduiyi']}</td>
-                            <!-- <td><empty name="g.bumen">{$g['heji_t']}<else/>{$g['heji']}</empty></td> -->
-                            <td>{$g['heji']}</td>
-                        </tr>
-                        </foreach>
                 </tbody>
             </table>
         </div>
