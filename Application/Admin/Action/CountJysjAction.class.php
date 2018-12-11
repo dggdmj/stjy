@@ -15,7 +15,7 @@ class CountJysjAction extends CommonAction {
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
         $arr_kksd = $this->getkksd($qishu,$sid);   //获得开课时段和班级数统计
         $arr_bjbmsj = $this->getbjbmsj($qishu,$sid);   //获得班级部门数据
-        $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
+//        $arr_gbxzdrstj = $this->getgbxzdrstj($qishu,$sid);   //获得各班型在读人数统计数据
         $arr_xsrsbd = $this->getxsrsbd($qishu,$sid);   //获得学生人数变动数据
         $arr_beizhu = $this->getbeizhu($qishu,$sid);   //获得备注信息
         //数据比对
@@ -48,7 +48,7 @@ class CountJysjAction extends CommonAction {
         $arr['zaice'] = $arr_zaice;
         $arr['kecheng']  = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
         $arr['bjbmsj'] = $arr_bjbmsj;
-        $arr['gbxzdrstj'] = $arr_gbxzdrstj;
+//        $arr['gbxzdrstj'] = $arr_gbxzdrstj;
         $arr['xsrsbd'] = $arr_xsrsbd;
         $arr['beizhu'] = $arr_beizhu;
         $arr['qishu'] = $qishu;
