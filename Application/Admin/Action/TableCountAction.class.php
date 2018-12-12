@@ -1320,6 +1320,61 @@ class TableCountAction extends CommonAction{
         $this->adminDisplay();
     }
 
+    //经营数据表汇总
+    public function jysjbhz(){
+        $sid = session('sid');
+        $map['sj.status_xz'] = 2;
+        $map['sj.sid'] = array('in',$sid);
+        $list = M('sjzb as sj')
+                ->join('stjy_school as ss on ss.id=sj.sid')
+                ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
+                ->where($map)
+                ->order('id desc')
+                ->group('qishu')
+                ->select();
+        foreach($list as &$val){
+            $val['name'] = '经营数据表汇总';
+            $val['table_name'] = 'jysjbhz';
+        }
+        $this->assign("list",$list);
+        $this->adminDisplay('jysjbhz');
+    }
+
+
+    //经营数据表汇总详情
+    public function jysjbhz_xq(){
+        $qishu = I('qishu');
+        $sid = session('sid');
+        $where['qishu'] = $qishu;
+        $where['tid'] = 40;
+        $where['sid'] = array('in',$sid);
+        $list = M('qishu_history')->field('id')->where($where)->select();
+        $suoshudd_arr = array();
+        foreach($list as $val){
+            $suoshudd_arr[] = $val['id'];
+        }
+        if ($suoshudd_arr){
+            $data = M('jysjbhz')->where(array('suoshudd'=>array('in',$suoshudd_arr)))->select();
+        }
+        //获取本月续费率排名和本年续费率排名
+        $benyue_suoshudd = array();
+        $arr = M('qishu_history')->field('id')->where(array('qishu'=>$qishu,'tid'=>40))->select();
+        foreach($arr as $val){
+            $benyue_suoshudd[] = $val['id'];
+        }
+        // $data = new \Admin\Action\CountSrqkylbAction();
+        // $info = $data->getSrqkylbData($qishu,$sid);
+        $base = array();
+        $base['riqi'] = substr($qishu,0,4).'年'.substr($qishu,4,2).'月';
+        $school = M('school')->field('name')->where(array('id'=>array('in',$sid)))->select();
+        foreach($school as $val){
+            $sname[] = $val['name'];
+        }
+        $this->assign("base",$base);
+        $this->assign("list",$data);
+        $this->adminDisplay();
+    }
+
 
 }
 ?>

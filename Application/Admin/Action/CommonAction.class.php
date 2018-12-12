@@ -2252,6 +2252,10 @@ class CommonAction extends Action {
         //收入一览表
         $srylb = new \Admin\Action\CountSrqkylbAction();
         $srylb_list =  $srylb->getSrqkylbData($qishu,$sid);
+
+        //经营数据表汇总
+        $jysjbhz = new \Admin\Action\CountJysjhzAction();
+        $jysjbhz_list =  $jysjbhz->getJysjbhzData($qishu,$sid);
         // -----------------------生成数据入库结束-----------------------
         
 
@@ -2324,6 +2328,8 @@ class CommonAction extends Action {
         $res_tf = $this->delScData($qishu,$sid,38);
         //收入一览表
         $res_tf = $this->delScData($qishu,$sid,39);
+        //经营数据表汇总
+        $res_tf = $this->delScData($qishu,$sid,40);
         // -----------------------生成数据从库删除结束-----------------------
     }
 
@@ -2763,6 +2769,17 @@ class CommonAction extends Action {
         }
         array_multisort($name,$shortType,$short,$arr);
         return $arr;
+    }
+
+    //删除工资表
+    public function restWage(){
+        $qishu = I('qishu');
+        $sid = I('sid');
+        $tid = I('tid');
+        $res = $this->delScData($qishu,$sid,$tid);
+        $suoshudd = $this->getQishuId($qishu,$sid,$tid);
+        M('fjb')->where(array('suoshudd'=>$suoshudd))->delete();
+        $this->ajaxReturn(1);
     }
 
 }

@@ -1,0 +1,74 @@
+<form method="post" id="form" action="#">
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <table id="table" class="table table-hover table-bordered table-condensed">
+                <caption align="top">{$base.riqi}经营数据表汇总</caption>
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>分校</th>
+                    <th>月初</th>
+                    <th>月底</th>
+                    <th>未进班人数</th>
+                    <th>停读</th>
+                    <th>退费 </th>
+                    <th>在读人数</th>
+                    <th>可用教师数量</th>
+                    <th>实际教师数</th>
+                    <th>开班数</th>
+                    <th> 班级饱和率 </th>
+                    <th>教室数量</th>
+                    <th>空缺学位（依据开班数）</th>
+                    <th>教室利用率（按照6个时间段，12人编班）</th>
+                    <th> 平均确认收入单价 </th>
+                    <th>续费前人数</th>
+                    <th>续费后人数</th>
+                    <th>续费率</th>
+                    <th>月度续费排名</th>
+                    <th>年度续费前人数</th>
+                    <th>年度续费后人数</th>
+                    <th>年度续费率</th>
+                    <th>年度续费排名</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <foreach name="list" item="val" key="key">
+                        <tr>
+                            <td>{$key+1}</td>
+                            <td>{$val.fenxiao}</td>
+                            <td>{$val.yuechu}</td>
+                            <td>{$val.yuedi}</td>
+                            <td>{$val.weijinban}</td>
+                            <td>{$val.tingdu}</td>
+                            <td>{$val.tuifei}</td>
+                            <td>{$val.zaidurs}</td>
+                            <td>{$val.keyongjssl}</td>
+                            <td>{$val.shijijss}</td>
+                            <td>{$val.zongrencxss}</td>
+                            <td>{$val.banjibhl}</td>
+                            <td>{$val.jiaoshishu}</td>
+                            <td>{$val.kongquexw}</td>
+                            <td>{$val.jiaoshilyl}</td>
+                            <td>{$val.pingjunqrsrdj}</td>
+                            <td>{$val.xufeiqrs}</td>
+                            <td>{$val.xufeihrs}</td>
+                            <td>{$val.xufeilv}</td>
+                            <td>{$val.yueduxflpm}</td>
+                            <td>{$val.nianduxfqrs}</td>
+                            <td>{$val.nianduxfhrs}</td>
+                            <td>{$val.nianduxfl}</td>
+                            <td>{$val.nianduxflpm}</td>
+                        </tr>
+                    </foreach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<style>
+    body {
+        overflow-x: scroll;
+        background-color: #fff;
+        width: 4000px;
+    }
+</style>

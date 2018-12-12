@@ -17,23 +17,27 @@
                     </tr>
                     <foreach name="list" item="v">
                         <tr>
-                            <td>{$v.qishu}</td>
+                            <td>{$v.qishu}</td> 
                             <td>{$v.name}</td>
                             <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesXzb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
                                 <a href="__MODULE__/WagesCommon/downloadXzb/sid/{$v.sid}/qishu/{$v.qishu}" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
+                                <a class="button bg-red button-small js-sub" title="重新生成" alt="重新生成" target2="__MODULE__/Common/restWage/qishu/{$v.qishu}/sid/{$v.sid}/tid/17" style="cursor:pointer">重新生成</a>
                             </td>
                             <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesJxb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
                                 <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
+                                <a class="button bg-red button-small js-sub" title="重新生成" alt="重新生成" target2="__MODULE__/Common/restWage/qishu/{$v.qishu}/sid/{$v.sid}/tid/18" style="cursor:pointer">重新生成</a>
                             </td>
                             <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesScb/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
                                 <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
+                                <a class="button bg-red button-small js-sub" title="重新生成" alt="重新生成" target2="__MODULE__/Common/restWage/qishu/{$v.qishu}/sid/{$v.sid}/tid/19" style="cursor:pointer">重新生成</a>
                             </td>
                             <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__MODULE__/WagesZj/index/sid/{$v.sid}/qishu/{$v.qishu}"></a>
                                 <a href="" class="button bg-blue button-small icon-download" title="立即下载" alt="立即下载"></a>
+                                <a class="button bg-red button-small js-sub" title="重新生成" alt="重新生成" target2="__MODULE__/Common/restWage/qishu/{$v.qishu}/sid/{$v.sid}/tid/20" style="cursor:pointer">重新生成</a>
                             </td>
                             <!-- <td>
                                 <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href=""></a>
@@ -155,10 +159,13 @@
 				icon: 4,
 			    btn: ['确定','取消'] //按钮
 			}, function(){
-				$.post(subUrl,$("form").serialize(),function(data){
-	                layer.msg(data.info, {icon: 1});
-	                setTimeout("window.location.reload()",1000); // 让提示框停留一会
-
+				$.get(subUrl,function(data){
+                    if (data == 1){
+    	                layer.msg('重新生成成功', {icon: 1});
+    	                setTimeout("window.location.reload()",1000); // 让提示框停留一会
+                    }else{
+                        layer.msg('重新生成失败', {icon: 2});
+                    }
 	            });
 			});
         });

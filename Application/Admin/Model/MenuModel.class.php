@@ -244,6 +244,12 @@ class MenuModel {
                         'url' => U('/TableCount/xyxx'),
                         'order' => 14
                     ),
+                    array(
+                        'name' => '经营数据表汇总',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/jysjbhz'),
+                        'order' => 14
+                    ),
                 )
             );
         $gongzisj = array(
