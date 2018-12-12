@@ -50,6 +50,7 @@ class WagesXzbAction extends WagesCommonAction{
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $heji = array();//合计
         $fujia = array();//附加表
+
         if ($suoshudd){
             $list = M('xzbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
@@ -113,7 +114,11 @@ class WagesXzbAction extends WagesCommonAction{
             $jysjb_id = $this->getQishuId($qishu,$sid,12);
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
             $fujia['xuexiaomz'] = M('school')->where(array('id'=>$sid))->getField('mianji');
-            $fujia['zaidurs'] = M('zcxsxqztb')->where(array('suoshudd'=>$jysjb_id,'nianji'=>'合计'))->getField('renshu');
+            $fujia['zaidurs'] = M('zcxsxqztb')->where(array('suoshudd'=>$jysjb_id,'nianji'=>'合计'))->getField('shijizbrs');
+            $sjjlb_id = $this->getQishuId($qishu,$sid,4);
+//            $fujia['shoufeije'] = M('sjjlb_'.substr($qishu,0,4))->where(array('suoshudd'=>$sjjlb_id,'shoukuanzh != '=>'结转学费','shoukuanzh != '=> null))->sum('jiaofeije');
+            $fujia['shoufeije'] = M('sjjlb_'.substr($qishu,0,4))->where("suoshudd = $sjjlb_id and shoukuanzh != '结转学费'  and shoukuanzh != '老带新返现' and shoukuanzh != ''")->sum('jiaofeije');
+
         }
         $this->assign('ambbz',$ambbz);
         $this->assign('fujia',$fujia);
