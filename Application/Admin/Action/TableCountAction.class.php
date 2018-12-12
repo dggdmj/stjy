@@ -647,7 +647,7 @@ class TableCountAction extends CommonAction{
         $data_xsrsbd = M('xsrsbdb')->field('id,suoshudd,daorusj,xuhao',true)->where('suoshudd ='.$id)->order('xuhao asc')->select();    
         $beizhu = M("jysjb_beizhu")->where("qishu = '".$qishu."' and sid = $sid")->find();   
         $jysj = M("jysj")->where("suoshudd = '".$id."'")->find();   
-        // dump($data_gbxzdrstjb);
+
         $sjbd = [];
         $zcxsxqztb = array();
         foreach($data_bjzysjb as $v){

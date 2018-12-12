@@ -57,7 +57,7 @@ class WagesXzbAction extends WagesCommonAction{
             $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
         }else{
             //实时计算
-            $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj')->where(array('xiaoqu'=>$school_name,'bumen'=>'行政部'))->select();
+            $list = M('rycb')->field('bumen,shenfenzhm,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj')->where(array('xiaoqu'=>$school_name,'bumen'=>'行政部'))->select();
             foreach($list as $key=>&$val){
                 $val['xuhao'] = $key+1;
                 $val['yuefen'] = $yuefen;
@@ -113,7 +113,7 @@ class WagesXzbAction extends WagesCommonAction{
             $jysjb_id = $this->getQishuId($qishu,$sid,12);
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
             $fujia['xuexiaomz'] = M('school')->where(array('id'=>$sid))->getField('mianji');
-            $fujia['zaidurs'] = M('xsrsbdb')->where(array('suoshudd'=>$jysjb_id,'xiangmu'=>'本月底在册学生人数'))->getField('renshu');
+            $fujia['zaidurs'] = M('zcxsxqztb')->where(array('suoshudd'=>$jysjb_id,'nianji'=>'合计'))->getField('renshu');
         }
         $this->assign('ambbz',$ambbz);
         $this->assign('fujia',$fujia);
