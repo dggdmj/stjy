@@ -250,6 +250,12 @@ class MenuModel {
                         'url' => U('/TableCount/jysjbhz'),
                         'order' => 14
                     ),
+                    array(
+                        'name' => '教材费',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/jiaocaifei'),
+                        'order' => 14
+                    ),
                 )
             );
         $gongzisj = array(

@@ -1,0 +1,37 @@
+<form method="post" id="form" action="#">
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <table id="table" class="table table-hover table-bordered table-condensed">
+                <caption align="top">{$base.riqi}教材费汇总</caption>
+                <tbody>
+                    <tr>
+                        <td>序号</td>
+                        <foreach name="list" item="vv" key="kk">
+                                <foreach name="vv" item="v" key="k">
+                                    <td>{$k}</td>
+                                </foreach>
+                                <php>break;</php>
+                        </foreach>
+                    </tr>
+                    <foreach name="list" item="val" key="key">
+                        <tr>
+                            <td>{$key+1}</td>
+                            <foreach name="val" item="vv">
+                                <td>{$vv}</td>
+                            </foreach>
+                        </tr>
+                    </foreach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<style>
+    body {
+        /*overflow-x: scroll;*/
+        background-color: #fff;
+        /*width: 4000px;*/
+    }
+    /*.panel{width: 1200px !important}*/
+    /*td{width: 200px;}*/
+</style>

@@ -587,7 +587,7 @@ class DownloadAction extends CommonAction {
         array_push($list,$heji);
 
         vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
-        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.$school_name.'市场占有率';
+        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.'市场占有率';
         $template = __ROOT__.'Public/template/template_sczyl_hz.xlsx';
         $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
         $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
@@ -613,6 +613,82 @@ class DownloadAction extends CommonAction {
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(14).$i,$val['heji']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(15).$i,$val['xuexiaogms']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(16).$i,$val['zhaoyoulv']);
+            $i++;
+        }
+      
+        // 写入数值
+        // $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+
+    }
+
+    //教材费下载
+    public function download_jcf(){
+        $qishu = I('qishu');
+        $sid = session('sid');
+        $where['qishu'] = $qishu;
+        $where['tid'] = 34;
+        $where['sid'] = array('in',$sid);
+        $list = M('qishu_history')->field('id')->where($where)->select();
+        $suoshudd_arr = array();
+        $first_day = substr($qishu,0,4).'-'.substr($qishu,4,2).'-01';
+        $last_day = date('Y-m-d',strtotime($first_day.' +1 month -1 day'));
+        foreach($list as $val){
+            $suoshudd_arr[] = $val['id'];
+        }
+        $suoshudd_arr = implode(',',$suoshudd_arr);
+        $jckmx = M('jckmx')->field('cangku,mingcheng,jine')->where("suoshudd in ($suoshudd_arr) and (riqi >= '$first_day' and riqi <= '$last_day')")->select();
+        $school = M('school')->field('name')->where(array('id'=>array('in',$sid)))->select();
+        $wupinqd = M('wupinqd')->getField('mingcheng,leixing');
+        $leixing = array();
+        $data = array();
+        $heji = array();
+        $heji['月份'] = '合计';
+        $heji['分校'] = '';
+        foreach($school as $key=>$val){
+            $data[$key]['月份'] = substr($qishu,0,4).'年'.substr($qishu,4,2).'月';
+            $data[$key]['分校'] = $val['name'];
+            foreach($jckmx as $vv){
+                $vv['leixing'] = $wupinqd[ $vv['mingcheng'] ];
+                if ($vv['cangku'] == $val['name'] && in_array($vv['leixing'],$leixing)){
+                    $data[$key][ $vv['leixing'] ] += $vv['jine'];
+                    $heji[ $vv['leixing'] ] += $vv['jine'];
+                }else{
+                    $leixing[] = $vv['leixing'];
+                    $data[$key][ $vv['leixing'] ] = 0;
+                    $heji[ $vv['leixing'] ]  = 0;
+                }
+            }
+        }
+        array_push($data,$heji);
+
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $filename = substr($qishu,0,4).'年'.substr($qishu,4,2).'月'.'教材费';
+        $template = __ROOT__.'Public/template/template_ms.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        // $objActSheet->setCellValue('A1',$filename); 
+        
+        $i = 2;
+        foreach($data as $val){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).$i,$val['xuehao']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(1).$i,$val['xingming']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(2).$i,$val['zongshuliang']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(3).$i,$val['danjia']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(4).$i,$val['zongfeiyong']);
             $i++;
         }
       

@@ -50,7 +50,6 @@ class CountJysjhzAction extends CommonAction {
         $info['xufeiqrs'] = $xfl['fenmu'];
         $info['xufeihrs'] = $xfl['xufeixsrs'];
         $info['xufeilv'] = $xfl['xufeilv'];
-        $info['nianfen'] = substr($qishu,0,4);
         $info['nianduxfqrs'] = $$last_jysjhz['nianduxfqrs'] + $info['xufeiqrs'];
         $info['nianduxfhrs'] = $last_jysjhz['nianduxfhrs'] + $info['xufeihrs'];
         $info['nianduxfl'] = (number_format($info['nianduxfhrs'] / $info['nianduxfqrs'],4) * 100 ).'%';

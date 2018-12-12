@@ -1362,19 +1362,91 @@ class TableCountAction extends CommonAction{
         foreach($arr as $val){
             $benyue_suoshudd[] = $val['id'];
         }
-        // $data = new \Admin\Action\CountSrqkylbAction();
-        // $info = $data->getSrqkylbData($qishu,$sid);
+        if ($benyue_suoshudd){
+            $benyue_hz = M('jysjbhz')->field('xufeilv,nianduxfl')->where(array('suoshudd'=>array('in',$benyue_suoshudd)))->select();
+            foreach($benyue_hz as $val){
+                $benyue_xfl[] = $val['xufeilv'];
+                $niandu_xfl[] = $val['nianduxfl'];
+            }
+        }
+        rsort($benyue_xfl);
         $base = array();
         $base['riqi'] = substr($qishu,0,4).'年'.substr($qishu,4,2).'月';
         $school = M('school')->field('name')->where(array('id'=>array('in',$sid)))->select();
         foreach($school as $val){
             $sname[] = $val['name'];
         }
+        //本月续费率排名
+        foreach($data as &$v){
+            $v['yueduxflpm'] = array_search($v['xufeilv'], $benyue_xfl) + 1;
+            $v['nianduxflpm'] = array_search($v['nianduxfl'], $niandu_xfl) + 1;
+        }
         $this->assign("base",$base);
         $this->assign("list",$data);
         $this->adminDisplay();
     }
 
+    //教材费
+    public function jiaocaifei(){
+        $sid = session('sid');
+        $map['sj.status_xz'] = 2;
+        $map['sj.sid'] = array('in',$sid);
+        $list = M('sjzb as sj')
+                ->join('stjy_school as ss on ss.id=sj.sid')
+                ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
+                ->where($map)
+                ->order('id desc')
+                ->group('qishu')
+                ->select();
+        foreach($list as &$val){
+            $val['name'] = '教材费';
+            $val['table_name'] = 'jiaocaifei';
+        }
+        $this->assign("list",$list);
+        $this->adminDisplay('jiaocaifei');
+    }
 
+    //教材费详情
+    public function jiaocaifei_xq(){
+        $qishu = I('qishu');
+        $sid = session('sid');
+        $where['qishu'] = $qishu;
+        $where['tid'] = 34;
+        $where['sid'] = array('in',$sid);
+        $list = M('qishu_history')->field('id')->where($where)->select();
+        $suoshudd_arr = array();
+        $first_day = substr($qishu,0,4).'-'.substr($qishu,4,2).'-01';
+        $last_day = date('Y-m-d',strtotime($first_day.' +1 month -1 day'));
+        foreach($list as $val){
+            $suoshudd_arr[] = $val['id'];
+        }
+        $suoshudd_arr = implode(',',$suoshudd_arr);
+        $jckmx = M('jckmx')->field('cangku,mingcheng,jine')->where("suoshudd in ($suoshudd_arr) and (riqi >= '$first_day' and riqi <= '$last_day')")->select();
+        $school = M('school')->field('name')->where(array('id'=>array('in',$sid)))->select();
+        $wupinqd = M('wupinqd')->getField('mingcheng,leixing');
+        $leixing = array();
+        $data = array();
+        $heji = array();
+        $heji['月份'] = '合计';
+        $heji['分校'] = '';
+        foreach($school as $key=>$val){
+            $data[$key]['月份'] = substr($qishu,0,4).'年'.substr($qishu,4,2).'月';
+            $data[$key]['分校'] = $val['name'];
+            foreach($jckmx as $vv){
+                $vv['leixing'] = $wupinqd[ $vv['mingcheng'] ];
+                if ($vv['cangku'] == $val['name'] && in_array($vv['leixing'],$leixing)){
+                    $data[$key][ $vv['leixing'] ] += $vv['jine'];
+                    $heji[ $vv['leixing'] ] += $vv['jine'];
+                }else{
+                    $leixing[] = $vv['leixing'];
+                    $data[$key][ $vv['leixing'] ] = 0;
+                    $heji[ $vv['leixing'] ]  = 0;
+                }
+            }
+        }
+        array_push($data,$heji);
+        $this->assign('list',$data);
+        $this->adminDisplay();
+    }
 }
 ?>
