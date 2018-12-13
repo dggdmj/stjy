@@ -46,8 +46,29 @@ class WagesXzbAction extends WagesCommonAction{
         $sid = $_GET['sid']?$_GET['sid']:1;
         $suoshudd = $this->getQishuId($qishu,$sid,17);
         $yuefen = substr($qishu,4,2).'月';
-        $ambbz = M('ambbz')->getField('gangwei,danjia');
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $jibie = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
+        //根据级别取不同的阿米巴
+        switch ($jibie){
+            case "A类":
+                $ambbz = M('ambbz')->getField('gangwei,alei danjia');
+                break;
+            case "A-类":
+                $ambbz = M('ambbz')->getField('gangwei,a_lei danjia');
+                break;
+            case "B类":
+                $ambbz = M('ambbz')->getField('gangwei,blei danjia');
+                break;
+            case "C类":
+                $ambbz = M('ambbz')->getField('gangwei,clei danjia');
+                break;
+            case "D类":
+                $ambbz = M('ambbz')->getField('gangwei,dlei danjia');
+                break;
+            default:
+                $ambbz = M('ambbz')->getField('gangwei,danjia');
+                break;
+        }
         $heji = array();//合计
         $fujia = array();//附加表
 
@@ -112,12 +133,20 @@ class WagesXzbAction extends WagesCommonAction{
                 $val['yuedusfzj'] = '';
             }
             $jysjb_id = $this->getQishuId($qishu,$sid,12);
-            $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
+            $fujia['jibie'] = $jibie;
             $fujia['xuexiaomz'] = M('school')->where(array('id'=>$sid))->getField('mianji');
             $fujia['zaidurs'] = M('zcxsxqztb')->where(array('suoshudd'=>$jysjb_id,'nianji'=>'合计'))->getField('shijizbrs');
             $sjjlb_id = $this->getQishuId($qishu,$sid,4);
-//            $fujia['shoufeije'] = M('sjjlb_'.substr($qishu,0,4))->where(array('suoshudd'=>$sjjlb_id,'shoukuanzh != '=>'结转学费','shoukuanzh != '=> null))->sum('jiaofeije');
             $fujia['shoufeije'] = M('sjjlb_'.substr($qishu,0,4))->where("suoshudd = $sjjlb_id and shoukuanzh != '结转学费'  and shoukuanzh != '老带新返现' and shoukuanzh != ''")->sum('jiaofeije');
+            $ruzhi_istime = strtotime($qishu);
+            $fujia['zaizhiry'] = M('rycb')->where("xiaoqu = '".$school_name."' and UNIX_TIMESTAMP(`ruzhirq`) <= $ruzhi_istime")->count();
+            $jc_list = M("wupinqd")->field("mingcheng")->where("leixing = '教材'")->select();
+            $jc_arr = array();
+            foreach ($jc_list as $tmp){
+                $jc_arr[] = $tmp['mingcheng'];
+            }
+            $jc_id = $this->getQishuId($qishu,$sid,34);
+            $fujia['chukuts'] = abs(M('jckmx')->where(array("mingcheng"=>array('in',$jc_arr),"suoshudd"=>$jc_id))->sum('shuliang'));
 
         }
         $this->assign('ambbz',$ambbz);
