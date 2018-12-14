@@ -62,7 +62,7 @@ class WagesZjAction extends WagesCommonAction{
             $fujia = M('fjb')->where("suoshudd='$fujia_id'")->getField('field,value');
         }else{
             //实时计算
-            $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq')->where("xiaoqu='$school_name' and ( zhiwu like '%总监%' or zhiwu like '%校长%' ) ")->select();
+            $list = M('rycb')->field('bumen,shenfenzhm,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq')->where("xiaoqu='$school_name' and ( zhiwu like '%总监%' or zhiwu like '%校长%' ) ")->select();
             $fuzeren = array();
             foreach($list as $v){
                 $fuzeren[] = $v['xingming'];

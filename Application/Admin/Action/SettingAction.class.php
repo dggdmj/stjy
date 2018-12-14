@@ -104,6 +104,7 @@ class SettingAction extends CommonAction{
 	public function school(){
 		$data = M('school'); // 实例化对象
 		$list = $data->order('id desc')->select();
+		
 		$this->assign('list',$list);// 赋值数据集
 		$this->adminDisplay();
 	}
