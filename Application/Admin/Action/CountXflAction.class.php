@@ -566,7 +566,7 @@ class CountXflAction extends CommonAction {
         if ($newdata['xufeixsrs'] > 0 && $newdata['fenmu'] <= 0){
             $newdata['xufeilv'] = 1;
         }else{
-            $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],2) * 100 ).'%';
+            $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],4) * 100 ).'%';
         }
 
         $newdata['fenxiaofzrqm'] = '';
@@ -587,7 +587,7 @@ class CountXflAction extends CommonAction {
         if ($newdata['xufeixsrs'] > 0 && $newdata['fenmu'] <= 0){
             $newdata['xufeilv'] = 1;
         }else{
-            $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],2) * 100 ).'%';
+            $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],4) * 100 ).'%';
         }
         M('xfl')->add($newdata);
 
@@ -603,7 +603,7 @@ class CountXflAction extends CommonAction {
         if ($newdata['xufeixsrs'] > 0 && $newdata['fenmu'] <= 0){
             $newdata['xufeilv'] = 1;
         }else{
-            $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],2) * 100 ).'%';
+            $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],4) * 100 ).'%';
         }
         M('xfl')->add($newdata);
 
@@ -619,7 +619,7 @@ class CountXflAction extends CommonAction {
         if ($newdata['xufeixsrs'] > 0 && $newdata['fenmu'] <= 0){
             $newdata['xufeilv'] = 1;
         }else{
-            $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],2) * 100 ).'%';
+            $newdata['xufeilv'] = (round(is_nan($newdata['xufeixsrs'] / $newdata['fenmu']) ? 0 : $newdata['xufeixsrs'] / $newdata['fenmu'],4) * 100 ).'%';
         }
         M('xfl')->add($newdata);
         return true;

@@ -9,7 +9,7 @@ class CountLsqryyeAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu='201808',$sid='1'){
+    public function getYjData($qishu='201810',$sid='15'){
         // 判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>29))->getField('id');//判断是否有生成历史
         if ($qishu_id){
@@ -53,8 +53,8 @@ class CountLsqryyeAction extends CommonAction {
                     ->join('LEFT JOIN stjy_bjxyxxb_'.$nian.' as sb on sb.xuehao=sx.xuehao')
                     ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as sk on sk.banjimc=sb.banji')
                     ->join('LEFT JOIN stjy_sjcplx as cp on cp.xiangmu=ss.chanpinlx')
-                    ->join('LEFT JOIN stjy_sjmxb as mx on ss.shoujuhao=ss.mx.shoujuhao')
-                    ->field('ss.xuehao,ss.jiaofeije,sk.jingjiangls,sb.banji,mx.goumaikc,mx.jiaofeije')
+                    ->join('LEFT JOIN stjy_sjmxb as mx on ss.shoujuhao=mx.shoujuhao')
+                    ->field('ss.xuehao,ss.jiaofeije,sk.jingjiangls,sb.banji,mx.goumaikc,mx.jiaofeije as jfje')
                     ->where("ss.suoshudd='$suoshudd' and  sx.shoucixfrq != '' and ss.jiaofeirq > sx.shoucixfrq and cp.shifouyyejs=1")
                     // ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd' and  sx.shoucixfrq != ''")
                     ->select();
@@ -70,7 +70,7 @@ class CountLsqryyeAction extends CommonAction {
             foreach($zonge as $v){
                 $v['shuliang'] = mb_substr( $v['goumaikc'],0,-1,'utf-8');
                 $v['shuliang'] =  $v['shuliang'] > 0 ? $v['shuliang'] : 0;
-                $v['danjia'] =  $v['jiaofeije'] /  $v['shuliang'];
+                $v['danjia'] =  $v['jfje'] /  $v['shuliang'];
                 if ( $val['shuliang'] > $miaosha['shangkekc'] ||  $val['danjia'] > $miaosha['danjia']){
                     $bianma = substr($v['banji'],0,3);
                     $v['bumen'] = $bumen[ $bianma ];

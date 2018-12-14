@@ -213,6 +213,7 @@ class TableCountAction extends CommonAction{
         $this->assign('arr',$arr);
         $this->adminDisplay();
     }
+
     //转化率
     public function zhl_xq(){
         $qishu = $_GET['qishu'];
@@ -1447,6 +1448,155 @@ class TableCountAction extends CommonAction{
         array_push($data,$heji);
         $this->assign('list',$data);
         $this->adminDisplay();
+    }
+
+    //续费率
+    public function xfl(){
+        $sid = session('sid');
+        $map['sj.status_xz'] = 2;
+        $map['sj.sid'] = array('in',$sid);
+        $list = M('sjzb as sj')
+                ->join('stjy_school as ss on ss.id=sj.sid')
+                ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
+                ->where($map)
+                ->order('id desc')
+                ->group('qishu')
+                ->select();
+        $data = array();
+        $nianfen = array();
+        foreach($list as &$val){
+            $tmp = substr($val['qishu'],0,4);
+            if(!in_array($tmp,$nianfen)){
+                $nianfen[] = $tmp;
+            }
+            
+        }
+        foreach($nianfen as $key=>$val){
+            $data[$key]['nian'] = $val;
+            $data[$key]['name'] = '续费率';
+            $data[$key]['table_name'] = 'xfl';
+        }
+        $this->assign("list",$data);
+        $this->adminDisplay('zhl');
+    }
+
+    //转换率
+    public function zhl(){
+        $sid = session('sid');
+        $map['sj.status_xz'] = 2;
+        $map['sj.sid'] = array('in',$sid);
+        $list = M('sjzb as sj')
+                ->join('stjy_school as ss on ss.id=sj.sid')
+                ->field('sj.id,sj.qishu,sj.sid,sj.xingzheng,sj.time_xz,ss.name as school_name')
+                ->where($map)
+                ->order('id desc')
+                ->group('qishu')
+                ->select();
+        $data = array();
+        $nianfen = array();
+        foreach($list as &$val){
+            $tmp = substr($val['qishu'],0,4);
+            if(!in_array($tmp,$nianfen)){
+                $nianfen[] = $tmp;
+            }
+        }
+        foreach($nianfen as $key=>$val){
+            $data[$key]['nian'] = $val;
+            $data[$key]['name'] = '转换率';
+            $data[$key]['table_name'] = 'zhl';
+        }
+        $this->assign("list",$data);
+        $this->adminDisplay('zhl');
+    }
+
+    //续费率汇总
+    public function xfl_hz(){
+        $nian = I('nian');
+        $tid = 37;
+        $sid = session('sid');
+        $where['qh.sid'] = array('in',$sid);
+        $where['qh.tid'] = 37;
+        $where['qh.qishu'] = array('like',"%$nian%");
+        $where['xf.type'] = 1;
+        $where['xf.xuhao'] = 1;
+        $school = M('school')->where(array('id'=>array('in',$sid)))->getField('id,name');
+        $list = M('qishu_history as qh')
+                ->join('LEFT JOIN stjy_xfl as xf on xf.suoshudd=qh.id')
+                ->field('qh.qishu,qh.sid,xf.xufeixsrs,xf.fenmu,xf.xufeilv')
+                ->where($where)
+                ->select();
+        $sid_arr = array();
+        $data = array();
+        foreach($list as $key=>$val){
+            if(!in_array($val['sid'],$sid_arr)){
+                $sid_arr[] = $val['sid'];
+            }
+            $list[$key]['yue'] = substr($val['qishu'],4,2);
+        }
+        foreach($sid_arr as $key=>$val){
+            $data[$key]['xuhao'] = $key + 1;
+            $data[$key]['fenxiao'] = $school[ $val ];
+            $data[$key]['heji_xfq'] = 0;
+            $data[$key]['heji_xfh'] = 0;
+            foreach($list as $vv){
+                if ($vv['sid'] == $val){
+                    $data[$key][ 'xfq'.$vv['yue'] ] = $vv['fenmu'];
+                    $data[$key][ 'xfh'.$vv['yue'] ] = $vv['xufeixsrs'];
+                    $data[$key][ 'xfl'.$vv['yue'] ] = $vv['xufeilv'];
+                    $data[$key]['heji_xfh'] += $vv['xufeixsrs'];
+                    $data[$key]['heji_xfq'] += $vv['fenmu'];
+                }
+            }
+            $data[$key]['heji_xfl'] = (number_format($data[$key]['heji_xfh'] / $data[$key]['heji_xfq'],4) * 100 ).'%';
+        }
+        $this->assign('list',$data);
+        $this->assign('nian',$nian);
+        $this->adminDisplay('xfl_hz');
+    }
+
+    //转换率汇总
+    public function zhl_hz(){
+        $nian = I('nian');
+        $tid = 38;
+        $sid = session('sid');
+        $where['qh.sid'] = array('in',$sid);
+        $where['qh.tid'] = 38;
+        $where['qh.qishu'] = array('like',"%$nian%");
+        $where['xf.type'] = 1;
+        $where['xf.xuhao'] = 1;
+        $school = M('school')->where(array('id'=>array('in',$sid)))->getField('id,name');
+        $list = M('qishu_history as qh')
+                ->join('LEFT JOIN stjy_zhl as xf on xf.suoshudd=qh.id')
+                ->field('qh.qishu,qh.sid,xf.xufeixsrs,xf.fenmu,xf.xufeilv')
+                ->where($where)
+                ->select();
+        $sid_arr = array();
+        $data = array();
+        foreach($list as $key=>$val){
+            if(!in_array($val['sid'],$sid_arr)){
+                $sid_arr[] = $val['sid'];
+            }
+            $list[$key]['yue'] = substr($val['qishu'],4,2);
+        }
+        foreach($sid_arr as $key=>$val){
+            $data[$key]['xuhao'] = $key + 1;
+            $data[$key]['fenxiao'] = $school[ $val ];
+            $data[$key]['heji_xfq'] = 0;
+            $data[$key]['heji_xfh'] = 0;
+            foreach($list as $vv){
+                if ($vv['sid'] == $val){
+                    $data[$key][ 'xfq'.$vv['yue'] ] = $vv['fenmu'];
+                    $data[$key][ 'xfh'.$vv['yue'] ] = $vv['xufeixsrs'];
+                    $data[$key][ 'xfl'.$vv['yue'] ] = $vv['xufeilv'];
+                    $data[$key]['heji_xfh'] += $vv['xufeixsrs'];
+                    $data[$key]['heji_xfq'] += $vv['fenmu'];
+                }
+            }
+            $data[$key]['heji_xfl'] = (number_format($data[$key]['heji_xfh'] / $data[$key]['heji_xfq'],4) * 100 ).'%';
+        }
+        $this->assign('list',$data);
+        $this->assign('nian',$nian);
+        $this->adminDisplay('zhl_hz');
     }
 }
 ?>

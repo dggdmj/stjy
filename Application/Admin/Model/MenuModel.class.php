@@ -175,7 +175,7 @@ class MenuModel {
                     array(
                         'name' => '经营数据表',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/12'),
+                        'url' => U('/TableCount/jysjbhz'),
                         'order' => 5
                     ),
                     array(
@@ -223,13 +223,13 @@ class MenuModel {
                     array(
                         'name' => '续费率',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/37'),
+                        'url' => U('/TableCount/xfl'),
                         'order' => 13
                     ),
                     array(
                         'name' => '转化率',
                         'icon' => 'file',
-                        'url' => U('/TableCount/yejilist/tid/38'),
+                        'url' => U('/TableCount/zhl'),
                         'order' => 14
                     ),
                     array(
@@ -244,12 +244,12 @@ class MenuModel {
                         'url' => U('/TableCount/xyxx'),
                         'order' => 14
                     ),
-                    array(
-                        'name' => '经营数据表汇总',
-                        'icon' => 'file',
-                        'url' => U('/TableCount/jysjbhz'),
-                        'order' => 14
-                    ),
+                    // array(
+                    //     'name' => '经营数据表汇总',
+                    //     'icon' => 'file',
+                    //     'url' => U('/TableCount/jysjbhz'),
+                    //     'order' => 14
+                    // ),
                     array(
                         'name' => '教材费',
                         'icon' => 'file',
@@ -266,19 +266,19 @@ class MenuModel {
                     array(
                         'name' => '考核装修费',
                         'icon' => 'sitemap',
-                        'url' => U('/wagesSj/zxf_xq'),
+                        'url' => U('/wagesSj/wageList/tid/41'),
                         'order' => 1
                     ),
                     array(
                         'name' => '利润分配表',
                         'icon' => 'sitemap',
-                        'url' => U('/wagesSj/lrfp_xq'),
+                        'url' => U('/wagesSj/wageList/tid/42'),
                         'order' => 1
                     ),
                     array(
                         'name' => '在读学生',
                         'icon' => 'sitemap',
-                        'url' => U('/wagesSj/zdxs_xq'),
+                        'url' => U('/wagesSj/wageList/tid/43'),
                         'order' => 1
                     ),
                 )

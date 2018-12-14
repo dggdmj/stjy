@@ -91,7 +91,7 @@ class CommonAction extends Action {
             }
             return $result;
         }
-    }
+    }                   
     // -------------------汉语转拼音代码结束-------------------
 
 	protected function _initialize() {

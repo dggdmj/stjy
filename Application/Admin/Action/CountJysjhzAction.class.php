@@ -45,7 +45,7 @@ class CountJysjhzAction extends CommonAction {
         $info['banjibhl'] = $bjzysj['5']['banjibhl'];
         $info['jiaoshishu'] = $school['classnum'];
         $info['kongquexw'] =  $info['kaibanshu'] * 12 - $info['yuedi'] - $info['weijinban'] - $info['tingdu'];
-        $info['jiaoshilyl'] = $info['yuedi'] / $info['jiao'] / 12 / 6;
+        $info['jiaoshilyl'] = (number_format($info['yuedi'] / $info['jiaoshishu'] / 12 / 6,4) * 100 ).'%';
         $info['pingjunqrsrdj'] = $srylb['pingjunkcdj'];
         $info['xufeiqrs'] = $xfl['fenmu'];
         $info['xufeihrs'] = $xfl['xufeixsrs'];

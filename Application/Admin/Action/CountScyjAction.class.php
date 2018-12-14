@@ -13,21 +13,21 @@ class CountScyjAction extends CommonAction {
 
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
-        if(!$qishu_id){
-            $qishu_id = $this->insertQishuHistory(8,$qishu,$sid);
-        }else{
-            $data = M('scyjb')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
-            foreach($data as &$val){
-                $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
-                foreach($val['fujiaxx'] as $k=>$v){
-                    $val[$k] = $v;
-                }
-                unset($val['fujiaxx']);
-            }
-            $data = $this->heji($data);
-            return $data;
-        }
-        
+        // if(!$qishu_id){
+        //     $qishu_id = $this->insertQishuHistory(8,$qishu,$sid);
+        // }else{
+        //     $data = M('scyjb')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
+        //     foreach($data as &$val){
+        //         $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
+        //         foreach($val['fujiaxx'] as $k=>$v){
+        //             $val[$k] = $v;
+        //         }
+        //         unset($val['fujiaxx']);
+        //     }
+        //     $data = $this->heji($data);
+        //     return $data;
+        // }
+        $test = $this->encode('一起');dump($test);exit;
         $nianfen = substr($qishu,0,4);
         $tid = 4;//收据记录表的id
         $suoshuid = $this->getQishuId($qishu,$sid,$tid);//获取订单id
