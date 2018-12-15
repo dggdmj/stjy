@@ -996,13 +996,16 @@ class SettingAction extends CommonAction{
             for($i=2;$i<$highestRow;$i++){
                  $data['xiangmu'] = $sheet->getCell('A'.$i)->getValue();
                  $data['miaoshu'] = $sheet->getCell('B'.$i)->getValue();
-                 $data['shifouqy'] = $sheet->getCell('C'.$i)->getValue();
-                 $data['shifouhytzlx'] = $sheet->getCell('D'.$i)->getValue();
-                 $data['shifouldx'] = $sheet->getCell('E'.$i)->getValue();
-                 $data['shifouyyejs'] = $sheet->getCell('F'.$i)->getValue();
+                 $data['tichengds'] = $sheet->getCell('C'.$i)->getValue();
+                 $data['shifouqy'] = $sheet->getCell('D'.$i)->getValue();
+                 $data['shifouhytzlx'] = $sheet->getCell('E'.$i)->getValue();
+                 $data['shifouldx'] = $sheet->getCell('F'.$i)->getValue();
+                 $data['shifouyyejs'] = $sheet->getCell('G'.$i)->getValue();
+                 $data['shifoutxyj'] = $sheet->getCell('H'.$i)->getValue();
                  $data['shifouhytzlx'] = $data['shifouhytzlx'] == '是' ? '1' : '2';
                  $data['shifouldx'] = $data['shifouldx'] == '是' ? '1' : '2';
                  $data['shifouyyejs'] = $data['shifouyyejs'] == '是' ? '1' : '2';
+                 $data['shifoutxyj'] = $data['shifoutxyj'] == '是' ? '1' : '2';
                  $data['daorusj'] = date('Y-m-d H:i:s',time());
                  if ($data['xiangmu'] != ''){
                     M('sjcplx')->add($data);

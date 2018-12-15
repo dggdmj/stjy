@@ -665,56 +665,40 @@ class CommonAction extends Action {
         // dump($info);die;
         $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'市场部顾问个人明细表');
 
-        $result = $this->getComment('scyjb');
-        //获取所有的字段描述
-        $result = array_flip($result);
+        $chanpinlx = M('sjcplx')->field('xiangmu')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
+        $sjcplx = array();
+        foreach($chanpinlx as $kk=>$vv){
+            $chanpinlx[$kk]['field'] = $this->encode($vv['xiangmu']);
+        }
 
         // 字段补充
-        $z = 0;
-        unset($result['id'],$result['suoshudd'],$result['daorusj'],$result['fujiaxx'],$result['qianming'],$result['hejiyye'],$result['huiyuanldxyye']);
-
-        $result['liangdianwnpdhy'] = '2.5年拼单会员';
-        $result['maiyinsyn'] = '买1年送1年';
-        $result['xiaoxuelnpd'] = '小学2年拼单（每人1年）';
-        $result['youeryngjhy'] = '幼儿-1年国际会员';
-        $result['jiubayyqms'] = '98元1期秒杀';
-        $result['sannianpdhy'] = '3年拼单会员';
-        $result['hejiyye'] = '合计营业额';
-        $result['huiyuanldxyye'] = '会员老带新营业额';
-        $result['qianming'] = '签名';
-        foreach($result as $k=>$v){
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2',$v);
-            $arr[ $z ] = $k;
+        $z = 7;
+        foreach($chanpinlx as $k=>$v){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2',$v['xiangmu']);
             $z++;
         }
-        /*********************------------表头设置完毕------------**********************/
-
-
-        $highestColumn = $objActSheet->getHighestColumn(); // 取得最高列数,则总列数(英文)
-        $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
-
-        // 获取所有字段47
-        for($i=0;$i<$colsNum;$i++){// 从第2行获取所有字段
-            $cell_val = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
-
-            // 如果取出的obj,则转为string
-            if(is_object($cell_val)){
-                $cell_val= $cell_val->__toString();
-            }
-            // echo $cell_val.'<br>';
-            if(!empty(trim($cell_val))){// 如果有必要,其他获取字段也要加这个条件
-                $ziduan[] = trim($cell_val);
-            }
-        }
-        
-        //输出值
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','合计营业额'); $z++;
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','会员老带新营业额'); $z++;
+        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'2','签名');
         $i = 3;
-        foreach($data as $key=>$val){
-            foreach($arr as $ko=>$vo){
-                 $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($ko).$i,$val[ $vo ]);
+        foreach($data as $val){
+            $h = 0;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['xuhao']);$h++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['xingming']);$h++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['zhiwei']);$h++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['ruzhirq']);$h++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['edu']);$h++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['rentoushu']);$h++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['jingrentou']);$h++;
+            foreach($chanpinlx as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val[ $v['field'] ]);$h++;
             }
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['hejiyye']);$h++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,$val['huiyuanldxyye']);$h++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($h).$i,'-');$h++;
             $i++;
         }
+        /*********************------------表头设置完毕------------**********************/
 
         // 2.接下来当然是下载这个表格了，在浏览器输出就好了
         header("Pragma: public");

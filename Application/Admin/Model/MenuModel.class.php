@@ -411,12 +411,12 @@ class MenuModel {
                         'url' => U('Setting/banjibianhao'),
                         'order' => 4
                     ),
-                    array(
-                        'name' => '课程管理',
-                        'icon' => 'puzzle-piece',
-                        'url' => U('Setting/kecheng'),
-                        'order' => 5
-                    ),
+                    // array(
+                    //     'name' => '课程管理',
+                    //     'icon' => 'puzzle-piece',
+                    //     'url' => U('Setting/kecheng'),
+                    //     'order' => 5
+                    // ),
                     // array(
                     //     'name' => '区域管理',
                     //     'icon' => 'user',
@@ -472,7 +472,7 @@ class MenuModel {
                         'order' => 12
                     ),
                     array(
-                        'name' => '课程管理2',
+                        'name' => '课程管理',
                         'icon' => 'puzzle-piece',
                         'url' => U('Setting/kechenggl2'),
                         'order' => 12

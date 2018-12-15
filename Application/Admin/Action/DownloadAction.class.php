@@ -51,6 +51,23 @@ class DownloadAction extends CommonAction {
         //接下来就是写数据到表格里面去
         $objActSheet = $objPHPExcel->getActiveSheet();
         switch ($tid) {
+            case '8':
+                $chanpinlx = M('sjcplx')->field('xiangmu')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
+                $sjcplx = array();
+                foreach($chanpinlx as $kk=>$vv){
+                    $chanpinlx[$kk]['field'] = $this->encode($vv['xiangmu']);
+                }
+                // 字段补充
+                $z = 9;
+                foreach($chanpinlx as $k=>$v){
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'1',$v['xiangmu']);
+                    $z++;
+                }
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'1','合计营业额'); $z++;
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'1','会员老带新营业额'); $z++;
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).'1','签名');
+                $i = 1;
+                break;
             case '9':
                 $objActSheet->setCellValue('A1',$filename); 
                 $i = 5;

@@ -167,7 +167,11 @@ class TableCountAction extends CommonAction{
         /* 实时计算开始 */
 	     $data = new \Admin\Action\CountScyjAction();
         $list = $data->getScyjData($qishu,$sid);//获得统计数据
-//die;
+        $chanpinlx = M('sjcplx')->field('xiangmu')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
+        $sjcplx = array();
+        foreach($chanpinlx as $kk=>$vv){
+            $chanpinlx[$kk]['field'] = $this->encode($vv['xiangmu']);
+        }
         /* 实时计算结束 */
 
         /* 查库开始 */
@@ -195,6 +199,7 @@ class TableCountAction extends CommonAction{
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         // $kecheng = M("kecheng")->order("paixu asc,id asc")->select();
         // $this->assign("kecheng",$kecheng);
+        $this->assign('chanpinlx',$chanpinlx);// 获取当前期数和校区
         $this->assign("list",$list);
         $this->assign('arr',$arr);
         $this->adminDisplay();
@@ -293,15 +298,21 @@ class TableCountAction extends CommonAction{
                 $val['nianfen'] = substr($qishu_arr[ $val['suoshudd'] ],0,4).'年';
                 $val['yuefen'] = substr($qishu_arr[ $val['suoshudd'] ],4,2).'月';
                 $val['fenxiao'] = $school[ $val['suoshudd'] ];
-                $val['fujiaxx'] = json_decode($val['fujiaxx'],'true');
-                foreach($val['fujiaxx'] as $k=>$v){
+                $val['json'] = json_decode($val['json'],'true');
+                foreach($val['json'] as $k=>$v){
                     $val[$k] = $v;
                 }
-                unset($val['fujiaxx']);
+                unset($val['json']);
             }
             $scyjb = new \Admin\Action\CountScyjAction();
             $list = $scyjb->heji($data);
         }
+        $chanpinlx = M('sjcplx')->field('xiangmu')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
+        $sjcplx = array();
+        foreach($chanpinlx as $kk=>$vv){
+            $chanpinlx[$kk]['field'] = $this->encode($vv['xiangmu']);
+        }
+        $this->assign('chanpinlx',$chanpinlx);
         $this->assign('start_time',$start_time);
         $this->assign('end_time',$end_time);
         $this->assign('school_name',$school_name);
