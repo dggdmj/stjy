@@ -92,7 +92,7 @@ class WagesScbAction extends WagesCommonAction{
             }
             //实时计算
             $list = M('rycb as rs')
-                    ->field('rs.bumen,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.xingming,rs.ruzhirq as ruzhisj,rs.erjibm,rs.ruzhinx as gongzuonx,rs.ruzhirq as ruzhisj,yj.*')
+                    ->field('rs.shenfenzhm,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.xingming,rs.ruzhirq as ruzhisj,rs.erjibm,rs.ruzhinx as gongzuonx,rs.ruzhirq as ruzhisj,yj.*')
                     ->join('stjy_scyjb as yj on yj.xingming=rs.xingming')
                     ->where(array('rs.xiaoqu'=>$school_name))
                     ->select();
@@ -162,7 +162,7 @@ class WagesScbAction extends WagesCommonAction{
             }
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
         }
-        $this->assign('ambbz',$ambbz);
+//        $this->assign('ambbz',$ambbz);
         $this->assign('fujia',$fujia);
         $this->assign('heji',$heji);
         $this->assign('school_name',$school_name);
