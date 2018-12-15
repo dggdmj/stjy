@@ -47,6 +47,8 @@ class WagesZjAction extends WagesCommonAction{
     public function index(){
         //期数
         $qishu = $_GET['qishu']?$_GET['qishu']:'201808';
+        $firstday = substr($qishu,0,4)."-".substr($qishu,4,2)."-01";
+        $lastday = date('Y-m-d', strtotime("$firstday +1 month -1 day"));
         //学校id
         $sid = $_GET['sid']?$_GET['sid']:1;
         $suoshudd = $this->getQishuId($qishu,$sid,20);
@@ -71,6 +73,17 @@ class WagesZjAction extends WagesCommonAction{
                 $zxf = M('zxf')->where(array('fuzeren'=>array('in',$fuzeren),'fenxiao'=>$school_name,'_logic'=>'or'))->field('benyuezcsr,neibuxfzr,neibuxfzc,zhichuxj,fuzeren,fenxiao')->select();
             }
             foreach($list as $key=>$val){
+                if($val['zhiwei'] == '校长'){
+                    $school_kyrq = M("school")->where("xiaozhang = '".$val['xingming']."'")->getField("kaiyekhrq"); //所任职的开业日期
+
+                    if((strtotime($lastday) - strtotime($school_kyrq))/86400 < 195){
+                        $iskyq = 1.8; //只有校长有，是否开业前6个月内1.8倍
+                    }else{
+                        $iskyq = 1;
+                    }
+                }else{
+                    $iskyq = 0;
+                }
                 foreach($zxf as $vv){
                     if($vv['fuzeren'] == $val['xingming']){
                          $list[$key]['shouru'] += $vv['benyuezcsr'];
@@ -87,7 +100,7 @@ class WagesZjAction extends WagesCommonAction{
                 $list[$key]['fenxiao'] = $school_name;
                 $list[$key]['xianjinje'] = $list[$key]['shouru'] - $list[$key]['zhichu'];
                 $list[$key]['suzhijj'] = '-20';
-                $list[$key]['shifkyq'] = '';
+                $list[$key]['shifkyq'] = $iskyq;    //只有校长有，是否开业前6个月内1.8倍
                 $list[$key]['jingxianjlfc'] = '';
                 $list[$key]['lirunfc'] = '';
                 $list[$key]['shangyuemzjzdxysl'] = '';
@@ -103,7 +116,7 @@ class WagesZjAction extends WagesCommonAction{
             $fujia['xuexiaomz'] = M('school')->where(array('id'=>$sid))->getField('mianji');
             $fujia['zaidurs'] = M('xsrsbdb')->where(array('suoshudd'=>$jysjb_id,'xiangmu'=>'本月底在册学生人数'))->getField('renshu');
         }
-        $this->assign('ambbz',$ambbz);
+//        $this->assign('ambbz',$ambbz);
         $this->assign('fujia',$fujia);
         $this->assign('heji',$heji);
         $this->assign('school_name',$school_name);
