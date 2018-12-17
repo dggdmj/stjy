@@ -59,8 +59,9 @@ class WagesZjAction extends WagesCommonAction{
         $fujia_id = $this->getQishuId($qishu,$sid,39);
         $lrfp_id = $this->getQishuId($qishu,$sid,42);//利润分配表所属id
         $lrfp_id = $lrfp_id?$lrfp_id:61398;//测试数据，可以删除
-        $zdxs_id = $this->getQishuId($qishu,$sid,43);//利润分配表所属id
+        $zdxs_id = $this->getQishuId($qishu,$sid,43);
         $zdxs_id = $zdxs_id?$zdxs_id:61400;//测试数据，可以删除
+        $tfb_id = $this->getQishuId($qishu,$sid,13);//退费表所属id
         if ($suoshudd){
             $list = M('zjgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
@@ -89,6 +90,7 @@ class WagesZjAction extends WagesCommonAction{
                     //校长利润分成
                     $sc_name = $sc_list['name'];
                     $list[$key]['lirunfc'] = M("lrfp")->where("fenxiao = '".$sc_name."' and suoshudd = ".$lrfp_id)->getField("xiaozhangfc");
+                    $list[$key]['zhouyinsdbkhfc'] = $this->getZhouyinshou();
                 }else{
                     $iskyq = 0;
 
@@ -100,6 +102,8 @@ class WagesZjAction extends WagesCommonAction{
                     }
                     $sc_str = "('".implode("','",$sc_arr)."')";
                     $list[$key]['lirunfc'] = M("lrfp")->where("fenxiao in $sc_str and suoshudd = ".$lrfp_id)->sum("quyuzj");
+
+                    $list[$key]['zhouyinsdbkhfc'] = 0;
                 }
                 foreach($zxf as $vv){
                     if($vv['fuzeren'] == $val['xingming']){
@@ -133,8 +137,7 @@ class WagesZjAction extends WagesCommonAction{
                 $sc_str = "('".implode("','",$sc_arr)."')";
                 $list[$key]['guimojlfc'] = M("zdxs")->where("zhongxin in $sc_str and suoshudd = ".$zdxs_id)->sum("hesuanjl");
 
-                $list[$key]['tuifeikhfc'] = '';
-                $list[$key]['zhouyinsdbkhfc'] = '';
+                $list[$key]['tuifeikhfc'] = $this->getTuifei($qishu,$sid,13,$val['xingming']);
                 
             }
             $jysjb_id = $this->getQishuId($qishu,$sid,12);
@@ -151,6 +154,10 @@ class WagesZjAction extends WagesCommonAction{
         $this->assign('sid',$sid);
         $this->assign("list",$list);
         $this->adminDisplay();
+    }
+
+    public function getZhouyinshou(){
+
     }
 
     //保存数据
