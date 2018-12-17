@@ -202,6 +202,7 @@ class CommonAction extends Action {
         $where['sid'] = $sid;
         $where['tid'] = $tid;
         $id = M('qishu_history')->where($where)->getField('id');// 获取学员信息表id
+
         return $id;
     }
     // 获取当前操作用户的角色id

@@ -57,6 +57,10 @@ class WagesZjAction extends WagesCommonAction{
         $heji = array();//合计
         $fujia = array();//附加表
         $fujia_id = $this->getQishuId($qishu,$sid,39);
+        $lrfp_id = $this->getQishuId($qishu,$sid,42);//利润分配表所属id
+        $lrfp_id = $lrfp_id?$lrfp_id:61398;//测试数据，可以删除
+        $zdxs_id = $this->getQishuId($qishu,$sid,43);//利润分配表所属id
+        $zdxs_id = $zdxs_id?$zdxs_id:61400;//测试数据，可以删除
         if ($suoshudd){
             $list = M('zjgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
@@ -74,15 +78,28 @@ class WagesZjAction extends WagesCommonAction{
             }
             foreach($list as $key=>$val){
                 if($val['zhiwei'] == '校长'){
-                    $school_kyrq = M("school")->where("xiaozhang = '".$val['xingming']."'")->getField("kaiyekhrq"); //所任职的开业日期
-
+                    $sc_list = M("school")->Field("kaiyekhrq,name")->where("xiaozhang = '".$val['xingming']."'")->find();
+                    $school_kyrq = $sc_list['kaiyekhrq'];
                     if((strtotime($lastday) - strtotime($school_kyrq))/86400 < 195){
                         $iskyq = 1.8; //只有校长有，是否开业前6个月内1.8倍
                     }else{
                         $iskyq = 1;
                     }
+
+                    //校长利润分成
+                    $sc_name = $sc_list['name'];
+                    $list[$key]['lirunfc'] = M("lrfp")->where("fenxiao = '".$sc_name."' and suoshudd = ".$lrfp_id)->getField("xiaozhangfc");
                 }else{
                     $iskyq = 0;
+
+                    //非校长利润分成
+                    $sc_list = M("school")->Field("name")->where("xiaozhang = '".$val['xingming']."' or quyufz = '".$val['xingming']."' or quyuzj = '".$val['xingming']."'")->select();
+                    $sc_arr = array();
+                    foreach ($sc_list as $tmp){
+                        $sc_arr[] = $tmp['name'];
+                    }
+                    $sc_str = "('".implode("','",$sc_arr)."')";
+                    $list[$key]['lirunfc'] = M("lrfp")->where("fenxiao in $sc_str and suoshudd = ".$lrfp_id)->sum("quyuzj");
                 }
                 foreach($zxf as $vv){
                     if($vv['fuzeren'] == $val['xingming']){
@@ -102,11 +119,20 @@ class WagesZjAction extends WagesCommonAction{
                 $list[$key]['suzhijj'] = '-20';
                 $list[$key]['shifkyq'] = $iskyq;    //只有校长有，是否开业前6个月内1.8倍
                 $list[$key]['jingxianjlfc'] = '';
-                $list[$key]['lirunfc'] = '';
+
                 $list[$key]['shangyuemzjzdxysl'] = '';
                 $list[$key]['benyuemzjzdxysl'] = '';
                 $list[$key]['benyuegmbh'] = '';
-                $list[$key]['guimojlfc'] = '';
+
+                //规模奖励分成
+                $sc_list = M("school")->Field("name")->where("xiaozhang = '".$val['xingming']."' or quyufz = '".$val['xingming']."' or quyuzj = '".$val['xingming']."'")->select();
+                $sc_arr = array();
+                foreach ($sc_list as $tmp){
+                    $sc_arr[] = $tmp['name'];
+                }
+                $sc_str = "('".implode("','",$sc_arr)."')";
+                $list[$key]['guimojlfc'] = M("zdxs")->where("zhongxin in $sc_str and suoshudd = ".$zdxs_id)->sum("hesuanjl");
+
                 $list[$key]['tuifeikhfc'] = '';
                 $list[$key]['zhouyinsdbkhfc'] = '';
                 
