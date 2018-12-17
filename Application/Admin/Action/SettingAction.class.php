@@ -293,7 +293,7 @@ class SettingAction extends CommonAction{
             }
 //            dump($ziduan);
             // 从第2行开始,到最后一行
-            for($j=2;$j<=$highestRow;$j++){
+            for($j=2;$j<=$highestRow+1;$j++){
                 for($i=0;$i<count($ziduan);$i++){
                     if(array_key_exists($ziduan[$i], $newTemp)){
                         $temp1 = $ziduan[$i];// 字段名称
@@ -327,7 +327,9 @@ class SettingAction extends CommonAction{
                 }
                 // dump($data);
                 // die;
-                M('banjibianhao')->add($data);
+                if ($data['jingdujb']){
+                    M('banjibianhao')->add($data);
+                }
             }
             $this->success('导入成功！');//获得成功跳转的链接
 
@@ -993,15 +995,16 @@ class SettingAction extends CommonAction{
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
             $highestRow = $sheet->getHighestRow(); // 取得总行数
-            for($i=2;$i<$highestRow;$i++){
+            for($i=2;$i<$highestRow+1;$i++){
                  $data['xiangmu'] = $sheet->getCell('A'.$i)->getValue();
                  $data['miaoshu'] = $sheet->getCell('B'.$i)->getValue();
                  $data['tichengds'] = $sheet->getCell('C'.$i)->getValue();
-                 $data['shifouqy'] = $sheet->getCell('D'.$i)->getValue();
-                 $data['shifouhytzlx'] = $sheet->getCell('E'.$i)->getValue();
-                 $data['shifouldx'] = $sheet->getCell('F'.$i)->getValue();
-                 $data['shifouyyejs'] = $sheet->getCell('G'.$i)->getValue();
-                 $data['shifoutxyj'] = $sheet->getCell('H'.$i)->getValue();
+                 $data['tichengdsfxxk'] = $sheet->getCell('D'.$i)->getValue();
+                 $data['shifouqy'] = $sheet->getCell('E'.$i)->getValue();
+                 $data['shifouhytzlx'] = $sheet->getCell('F'.$i)->getValue();
+                 $data['shifouldx'] = $sheet->getCell('G'.$i)->getValue();
+                 $data['shifouyyejs'] = $sheet->getCell('H'.$i)->getValue();
+                 $data['shifoutxyj'] = $sheet->getCell('I'.$i)->getValue();
                  $data['shifouhytzlx'] = $data['shifouhytzlx'] == '是' ? '1' : '2';
                  $data['shifouldx'] = $data['shifouldx'] == '是' ? '1' : '2';
                  $data['shifouyyejs'] = $data['shifouyyejs'] == '是' ? '1' : '2';
@@ -1054,7 +1057,7 @@ class SettingAction extends CommonAction{
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
             $highestRow = $sheet->getHighestRow(); // 取得总行数
-            for($i=2;$i<$highestRow;$i++){
+            for($i=2;$i<$highestRow+1;$i++){
                 $data['xuexiaomc'] = $sheet->getCell('A'.$i)->getValue();
                 $data['quyu'] = $sheet->getCell('B'.$i)->getValue();
                 $data['jibie'] = $sheet->getCell('C'.$i)->getValue();
@@ -1109,7 +1112,7 @@ class SettingAction extends CommonAction{
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
             $highestRow = $sheet->getHighestRow(); // 取得总行数
-            for($i=2;$i<$highestRow;$i++){
+            for($i=2;$i<$highestRow+1;$i++){
                  $data['chanpinlx'] = $sheet->getCell('A'.$i)->getValue();
                  $data['sid'] = $_POST['sid'];
                  $data['daorurq'] = date('Y-m-d H:i:s',time());
@@ -1164,7 +1167,7 @@ class SettingAction extends CommonAction{
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
             $highestRow = $sheet->getHighestRow(); // 取得总行数
-            for($i=2;$i<$highestRow;$i++){
+            for($i=2;$i<$highestRow+1;$i++){
                 $data['mingcheng'] = $sheet->getCell('A'.$i)->getValue();
                 $data['leibie'] = $sheet->getCell('B'.$i)->getValue();
                 $data['leixing'] = $sheet->getCell('C'.$i)->getValue();
@@ -1222,7 +1225,7 @@ class SettingAction extends CommonAction{
             $highestColumn = $sheet->getHighestColumn(); // 取得总列数
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
             $highestRow = $sheet->getHighestRow(); // 取得总行数
-            for($i=2;$i<$highestRow;$i++){
+            for($i=2;$i<$highestRow+1;$i++){
                 $data['kechengmc'] = $sheet->getCell('A'.$i)->getValue();
                 $data['danjia'] = $sheet->getCell('B'.$i)->getValue();
                 $data['danwei'] = $sheet->getCell('C'.$i)->getValue();
