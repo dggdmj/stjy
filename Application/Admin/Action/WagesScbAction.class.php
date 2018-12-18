@@ -71,7 +71,7 @@ class WagesScbAction extends WagesCommonAction{
             }
             $byms98[$key]['jiaofeiyf'] = substr($byms98[$key]['jiaofeirq'],5,2);
         }
-        $yuefen = substr($qishu,4,2);
+        $yuefen2 = substr($qishu,4,2);
 
         if ($suoshudd){
             $list = M('scbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
@@ -95,40 +95,58 @@ class WagesScbAction extends WagesCommonAction{
                     ->where(array('yj.suoshudd'=>$scyjb_id))
                     ->group('yj.id')
                     ->select();
-            foreach($list as $key=>&$val){
-                $val['xuhao'] = $key+1;
-                $val['yuefen'] = $yuefen;
-                $val['fenxiao'] = $school_name;
-                $val['yingchuqts'] = 30;// 应出勤天数 (写死)
-                $val['shijicqts'] = 30;// 实际出勤天数 (写死)
-                $val['xuexikbj'] = '';//学习卡本金（补逻辑）
-                $val['yiqims'] = 0;
-                $val['xuexikbj'] = $val['xuexikbj'] ? $val['xuexikbj'] : 1;
-                $val['edu'] = $val['edu'] ? $val['edu'] : 1;
-                $val['jiubayyqms'] = 0;
-                $val['yiniangjhyzj'] = 0;
-                $val['yiniangjhyfzj'] = 0;
-                $val['chuangshimfd'] = 0;
-                $val['guoneilxkc'] = 0;
-                $val['guojilxkc'] = 0;
-                $val['laoshengxd'] = 0;
-                $val['json'] = json_decode($val['json'],'true');
-                foreach($val['json'] as $k=>$v){
-                    $val[$k] = $v;
+            foreach($list as $key=>$val){
+                $list[$key]['xuhao'] = $key+1;
+                $list[$key]['yuefen'] = $yuefen;
+                $list[$key]['fenxiao'] = $school_name;
+                $list[$key]['yingchuqts'] = 30;// 应出勤天数 (写死)
+                $list[$key]['shijicqts'] = 30;// 实际出勤天数 (写死)
+                $list[$key]['xuexikbj'] = '';//学习卡本金（补逻辑）
+                $list[$key]['yiqims'] = 0;
+                $list[$key]['xuexikbj'] = $list[$key]['xuexikbj'] ? $list[$key]['xuexikbj'] : 1;
+                $list[$key]['edu'] = $list[$key]['edu'] ? $list[$key]['edu'] : 1;
+                $list[$key]['jiubayyqms'] = 0;
+                $list[$key]['yiniangjhyzj'] = 0;
+                $list[$key]['yiniangjhyfzj'] = 0;
+                $list[$key]['chuangshimfd'] = 0;
+                $list[$key]['guoneilxkc'] = 0;
+                $list[$key]['guojilxkc'] = 0;
+                $list[$key]['laoshengxd'] = 0;
+                $list[$key]['json'] = json_decode($list[$key]['json'],'true');
+                foreach($list[$key]['json'] as $k=>$v){
+                    $list[$key][$k] = $v;
                 }
                 foreach($chanpinlx as $kk=>$vv){
-                    foreach($val as $ko=>$vo){
+                    foreach($list[$key] as $ko=>$vo){
                         if ($vv['field'] == $ko){
                             $chanpinlx[$kk]['hj'] += $vo;
                         }
                     }
                 }
-                unset($val['json']);
+                unset($list[$key]['json']);
 
                 //招生副校长团队秒杀业绩
-                if ($val['zhiwei'] == '招生副校长'){
-                    foreach($byms98 as $val){
-                        
+                if ($list[$key]['zhiwei'] == '招生副校长'){
+                    foreach($byms98 as $vo){
+                        if ($vo['jinbanyf'] == $yuefen2 && $vo['count'] == 1){
+                            $field1 += 1;
+                            if ($vo['xingming'] == $vo['yejigsr']){
+                                $field2 += 1;
+                            }
+                        }
+                        if ($vo['jiaofeiyf'] == $yuefen2 && $vo['count'] == 1){
+                            $field3 += 1;
+                            if ($vo['xingming'] == $vo['yejigsr']){
+                                $field4 += 1;
+                            }
+                        }
+                    }
+                    $list[$key]['zhaoshengxztdmsyj'] = ($field1 - $field2) * 60 * 0.5 + ($field3 - $field4) * 60 * 0.5;
+
+                    if ($list[$key]['hejiyye'] <= 600000){
+                        $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.012;
+                    }else{
+                        $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.015;
                     }
                 }
             }
