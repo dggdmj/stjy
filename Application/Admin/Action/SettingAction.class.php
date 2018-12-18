@@ -1005,10 +1005,12 @@ class SettingAction extends CommonAction{
                  $data['shifouldx'] = $sheet->getCell('G'.$i)->getValue();
                  $data['shifouyyejs'] = $sheet->getCell('H'.$i)->getValue();
                  $data['shifoutxyj'] = $sheet->getCell('I'.$i)->getValue();
+                 $data['shifoucyedjs'] = $sheet->getCell('J'.$i)->getValue();
                  $data['shifouhytzlx'] = $data['shifouhytzlx'] == '是' ? '1' : '2';
                  $data['shifouldx'] = $data['shifouldx'] == '是' ? '1' : '2';
                  $data['shifouyyejs'] = $data['shifouyyejs'] == '是' ? '1' : '2';
                  $data['shifoutxyj'] = $data['shifoutxyj'] == '是' ? '1' : '2';
+                 $data['shifoucyedjs'] = $data['shifoucyedjs'] == '是' ? '1' : '2';
                  $data['daorusj'] = date('Y-m-d H:i:s',time());
                  if ($data['xiangmu'] != ''){
                     M('sjcplx')->add($data);

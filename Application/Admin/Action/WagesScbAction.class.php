@@ -79,10 +79,26 @@ class WagesScbAction extends WagesCommonAction{
             unset($list[ count($list) - 1]);
             $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
         }else{
-            $chanpinlx = M('sjcplx')->field('xiangmu,tichengds,tichengdsfxxk')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
+            $ticheng = array();
+            $data = array();
+            $datas = array();//计算学习卡的
+            $cplx = array();
+            $chanpinlx = M('sjcplx')->field('xiangmu,tichengds,tichengdsfxxk,shifoucyedjs')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
+            //按提成点数从高到低排序
+            $last_names = array_column($chanpinlx,'tichengds');
+            array_multisort($last_names,SORT_DESC,$chanpinlx);
+
             foreach($chanpinlx as $key=>$vv){
                 $chanpinlx[$key]['field'] = $this->encode($vv['xiangmu']);
-                $chanpinlx[$key]['tichengds'] = is_numeric($vv['tichengds']) ? ( $vv['tichengds'] * 100 ).'%' : $vv['tichengds'];
+                // $chanpinlx[$key]['tichengds'] = is_numeric($vv['tichengds']) ? ( $vv['tichengds'] * 100 ).'%' : $vv['tichengds'];
+                if (!in_array($chanpinlx[$key]['tichengds'],$ticheng)){
+                    $cplx[$key]['ticheng'] = $chanpinlx[$key]['tichengds'];
+                    $ticheng[] = $chanpinlx[$key]['tichengds'];
+                    $cplx[$key]['tichengfxxk'] = $vv['tichengdsfxxk'] ? $vv['tichengdsfxxk'] : number_format($vv['tichengds'] * 0.8,2);
+                    $cplx[$key]['tichengds'] = is_numeric($vv['tichengds']) ? ( $vv['tichengds'] * 100 ).'%' : $vv['tichengds'];
+                    $cplx[$key]['tichengdsfxxk'] = is_numeric($cplx[$key]['tichengfxxk']) ? ( $cplx[$key]['tichengfxxk'] * 100 ).'%' : $cplx[$key]['tichengfxxk'];
+                    $cplx[$key]['name'] = $vv['xiangmu'];
+                }
             }
             $scyjb_id = $this->getQishuId($qishu,$sid,8);
             //实时计算
@@ -117,14 +133,13 @@ class WagesScbAction extends WagesCommonAction{
                     $list[$key][$k] = $v;
                 }
                 foreach($chanpinlx as $kk=>$vv){
-                    foreach($list[$key] as $ko=>$vo){
-                        if ($vv['field'] == $ko){
-                            $chanpinlx[$kk]['hj'] += $vo;
-                        }
+                    $tmp = str_replace('.','',$vv['tichengds']);
+                    $data[$key]['field'.$tmp] += $list[$key][$this->encode($vv['xiangmu'])];
+                    if ($vv['shifoucyedjs'] == 1){
+                        $datas[$key]['field'.$tmp] += $list[$key][$this->encode($vv['xiangmu'])];
                     }
                 }
                 unset($list[$key]['json']);
-
                 //招生副校长团队秒杀业绩
                 if ($list[$key]['zhiwei'] == '招生副校长'){
                     foreach($byms98 as $vo){
@@ -149,13 +164,102 @@ class WagesScbAction extends WagesCommonAction{
                         $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.015;
                     }
                 }
+                $list[$key]['miaoshatc'] = 0;
+                $list[$key]['yjs'] = 0;
+                foreach($byms98 as $oo){
+                    if ($vo['jinbanyf'] == $yuefen2 && $vo['count'] == 1 && $vo['xingming'] == $vo['yejigsr'] && $vo['jiaofeiyf'] == $yuefen2){
+                        $list[$key]['yjs'] += 1;
+                        if ($list[$key]['yjs'] > 40){
+                            $list[$key]['miaoshatc'] += 276; 
+                        }else{
+                            $list[$key]['miaoshatc'] += 200; 
+                        }
+                    }
+                }
             }
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
         }
-//        $this->assign('ambbz',$ambbz);
+        //学习卡结算
+        $new_data = array();
+        $new_data2 = array();
+        foreach($datas as $key=>$val){
+            $datas[$key] = array_values($datas[$key]);
+            foreach($datas[$key] as $ko=>$vo){
+                if($ko == 0){
+                    $new_data[$key][$ko] = $vo;
+                }else{
+                    $new_data[$key][$ko] = $new_data[$key][$ko -1] + $vo;
+                }
+                $new_data2[$key][$ko] = $vo;
+            }
+        }
+        $hej2 = array();
+        foreach($data as $val){
+            foreach($val as $kk=>$vv){
+                $heji2[$kk] += $vv; 
+            }
+        }
+        $cplx = array_values($cplx);
+        //学习卡额度计算(***????)
+        foreach($list as $key=>$val){
+            // $val['edu'] = 20000;
+            if ($val['edu'] > $new_data[$key][ count($new_data[$key])-1 ]){
+                for($i=1;$i<count($new_data[$key]);$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+                }
+                $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-2 ]){
+                for($i=1;$i<count($new_data[$key])-1;$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+                }
+                $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i-1]) * $cplx[$i-1]['ticheng'] + ($new_data[$key][$i] - $val['edu']) * $cplx[$i]['ticheng'];
+                $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-3 ]){
+                for($i=1;$i<count($new_data[$key])-2;$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+                }
+                $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
+                $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-4 ]){
+                for($i=1;$i<count($new_data[$key])-3;$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+                }
+                $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
+                $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-5 ]){
+                for($i=1;$i<count($new_data[$key])-4;$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+                }
+                $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
+                $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-6 ]){
+                for($i=1;$i<count($new_data[$key])-5;$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+                }
+                $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
+                $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-7 ]){
+                for($i=1;$i<count($new_data[$key])-6;$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+                }
+                $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
+                $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+                // dump( $new_data[$key][ count($new_data[$key])-7 ]);exit;
+            }else{
+                $zong = (is_nan($val['miaoshatc'] / ( 98 * $val['yjs'] )) ? 0 : $val['miaoshatc'] / ( 98 * $val['yjs'] ) )* $new_data[$key]['0'];
+                if ($zong > 0){
+                    $list[$key]['xuexikjs'] = ($zong - $val['edu']) * 0.8 +  $val['edu'];
+                }else{
+                    $list[$key]['xuexikjs'] = 0;
+                }
+            }
+        }
+        $this->assign('data',$data);
+        $this->assign('cplx',$cplx);
         $this->assign('chanpinlx',$chanpinlx);
         $this->assign('fujia',$fujia);
         $this->assign('heji',$heji);
+        $this->assign('heji2',$heji2);
         $this->assign('school_name',$school_name);
         $this->assign('nianyue',substr($qishu,0,4).'年'.substr($qishu,4,2).'月');
         $this->assign('qishu',$qishu);
