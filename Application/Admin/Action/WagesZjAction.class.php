@@ -79,7 +79,7 @@ class WagesZjAction extends WagesCommonAction{
             }
             foreach($list as $key=>$val){
                 if($val['zhiwei'] == '校长'){
-                    $sc_list = M("school")->Field("kaiyekhrq,name")->where("xiaozhang = '".$val['xingming']."'")->find();
+                    $sc_list = M("school")->Field("id,kaiyekhrq,name")->where("xiaozhang = '".$val['xingming']."'")->find();
                     $school_kyrq = $sc_list['kaiyekhrq'];
                     if((strtotime($lastday) - strtotime($school_kyrq))/86400 < 195){
                         $iskyq = 1.8; //只有校长有，是否开业前6个月内1.8倍
@@ -90,7 +90,7 @@ class WagesZjAction extends WagesCommonAction{
                     //校长利润分成
                     $sc_name = $sc_list['name'];
                     $list[$key]['lirunfc'] = M("lrfp")->where("fenxiao = '".$sc_name."' and suoshudd = ".$lrfp_id)->getField("xiaozhangfc");
-                    $list[$key]['zhouyinsdbkhfc'] = $this->getZhouyinshou();
+                    $list[$key]['zhouyinsdbkhfc'] = $this->getZhouyinshou($qishu,$sc_list['id']);   //管理校区当月收费金额
                 }else{
                     $iskyq = 0;
 
@@ -156,8 +156,78 @@ class WagesZjAction extends WagesCommonAction{
         $this->adminDisplay();
     }
 
-    public function getZhouyinshou(){
+    public function getZhouyinshou($qishu,$sid){
+        $shouju_id = $this->getQishuId($qishu,$sid,4);
+        $nian = substr($qishu,0,4);
+        $jixiao = M("sjjlb_".$nian)->where("shoukuanzh is not null and shoukuanzh not like '%老带新%' and shoukuanzh != '结转学费' and suoshudd = $shouju_id")->sum("jiaofeije");//收据里的实收金额：不包含学习卡收入（银行账户为空白的、老带薪返现、结转学费不取
+        //按月统计大于等于40万就不考核，如果小于40万，按周统计，每周大于等于5万不考核，小于5万每周扣1千元（月末一周如果跨月计为次月第一周）
+        $yeji = 0;
+        if($jixiao < 400000){
+            //按周考核
+            $qishu = '201811';
+            $timestamp=strtotime($qishu."01");
+            $firstday = date("Y-m-01",$timestamp);
+            $lastday = date("Y-m-d",strtotime("$firstday +1 month -1 day"));
+            $tianshu = (strtotime($lastday) - strtotime($firstday))/86400 + 1;
+            //判断第一周是否跨月
+            $da_info = getdate($timestamp);
+            if($da_info['wday'] == 1){
+//                echo "没跨";
+            }else{
+                //如果跨月
+//                echo "跨月了";
+                $wday = $da_info['wday']?$da_info['wday']:7;//星期几
+                $shangyuetianshu = $wday - 1;
+                $benyuetianshu = 7 - $wday;
+                $shangyuelastday = date("Y-m-d",(strtotime($firstday) - 86400));
+                $shangyuefirstday = date("Y-m-d",(strtotime($firstday) - 86400*$shangyuetianshu));
+                $benyuelastday = date("Y-m-d",(strtotime($firstday) + 86400*$benyuetianshu));
+                $shangqi = date("Ym",(strtotime($firstday) - 86400));
+                $shangqi_sjid = $this->getQishuId($shangqi,$sid,4);
+                //统计上月最后一周的周一到月底的业绩
+                $shangyue_jixiao = M("sjjlb_".$nian)->where("shoukuanzh is not null and shoukuanzh not like '%老带新%' and shoukuanzh != '结转学费' and suoshudd = $shangqi_sjid and UNIX_TIMESTAMP(jiaofeirq) >= ".$shangyuefirstday." and UNIX_TIMESTAMP(jiaofeirq) <= ".$shangyuelastday)->sum("jiaofeije");
+                //本月开始到第一周的周日的业绩。
+                $benyue_jixiao = M("sjjlb_".$nian)->where("shoukuanzh is not null and shoukuanzh not like '%老带新%' and shoukuanzh != '结转学费' and suoshudd = $shouju_id and UNIX_TIMESTAMP(jiaofeirq) >= ".$firstday." and UNIX_TIMESTAMP(jiaofeirq) <= ".$shangyuelastday)->sum("jiaofeije");
+                //判断业绩是否达标5万
+                $jixiao = $shangyue_jixiao + $benyue_jixiao;
+                if($jixiao < 50000){
+                    $yeji -= 1000;
+                }
+            }
+            $j = 1;
+            $week_arr = array();
+            $isweek = 0;
+            //获得第一周周一开始，每个完整周的开始时间和结束时间的数组。
+            for($i = 1;$i <= $tianshu;$i++){
+                if($i < 10){
+                    $day = "0".$i;
+                }else{
+                    $day = $i;
+                }
+                $d = getdate(strtotime($qishu.$day));
+                if($d['wday'] == 1){
+                    $isweek = 1;
+                    $week_arr[$j]['start'] = $d[0];
+                }else{
+                    if($isweek == 1 && $d['wday'] == 0){
+                        $isweek = 0;
+                        $week_arr[$j]['end'] = $d[0];
+                        $j++;
+                    }
+                }
+            }
+            foreach ($week_arr as $w){
+                if(!empty($w['end'])){
+                    $jixiao = M("sjjlb_".$nian)->where("shoukuanzh is not null and shoukuanzh not like '%老带新%' and shoukuanzh != '结转学费' and suoshudd = $shouju_id and UNIX_TIMESTAMP(jiaofeirq) >= ".$w['start']." and UNIX_TIMESTAMP(jiaofeirq) <= ".$w['end'])->sum("jiaofeije");
+                    if($jixiao < 50000){
+                        $yeji -= 1000;
+                    }
+                }
+            }
+        }
 
+        //统计业绩
+        return $yeji;
     }
 
     //保存数据
