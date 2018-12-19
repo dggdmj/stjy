@@ -76,7 +76,7 @@ class WagesXzbAction extends WagesCommonAction{
         $fujia = array();//附加表
 
         if ($suoshudd){
-            $list = M('xzbgz')->where("suoshudd='$suoshudd'")->select();
+            $list = M('xzbgz')->where("suoshudd='$suoshudd'")->order('id asc')->select();
             $heji = $list[ count($list) - 1];
             unset($list[ count($list) - 1]);
             $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');

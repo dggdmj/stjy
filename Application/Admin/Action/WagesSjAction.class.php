@@ -149,10 +149,12 @@ class WagesSjAction extends CommonAction{
                         }
                     }
                     $data['suoshudd'] =  $qishu_id;
-                    M('zxf')->add($data);
+                    if($data['fenxiao']){
+                        M('zxf')->add($data);
+                    }
                 }
             }
-            $this->success('导入成功');
+            $this->success('导入成功',U('/wagesSj/wageList/tid/41'));
         }
     }
 
@@ -252,9 +254,11 @@ class WagesSjAction extends CommonAction{
                     $tsp[ $field[$k] ] = $v;
                 }
                 $tsp['suoshudd'] = $qishu_id;
-                M('lrfp')->add($tsp);            
+                if($tsp['fenxiao']){
+                    M('lrfp')->add($tsp);        
+                }    
             }
-            $this->success('导入成功');
+            $this->success('导入成功',U('/wagesSj/wageList/tid/42'));
         }
     }
 
@@ -265,7 +269,7 @@ class WagesSjAction extends CommonAction{
         $this->adminDisplay();
     }
     
-    //利润分成导入
+    //在读学生导入
      public function zdxs_save(){
         if(!empty($_FILES)){
             //上传表格并导入数据
@@ -337,9 +341,11 @@ class WagesSjAction extends CommonAction{
                     }
                 }
                 $tsp['suoshudd'] = $qishu_id;
-                M('zdxs')->add($tsp);            
+                if ($tsp['zhongxin']){
+                    M('zdxs')->add($tsp);    
+                }            
             }
-            $this->success('导入成功');
+            $this->success('导入成功',U('/wagesSj/wageList/tid/43'));
         }
     }
 
@@ -358,6 +364,181 @@ class WagesSjAction extends CommonAction{
         $result['status'] = 1;
         $result['info'] = '删除成功';
         $this->ajaxReturn($result);
+    }
+
+    //一对一补课增值台账
+     public function ydybkzztz_save(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 0,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+            $_POST['uid'] = M('admin')->where('nicename ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            $_POST["filename"] = $file_name;
+            // 查询是否已经存在该表格的导入
+            $_POST["filename"] = $file_name;
+            $where['tid'] = $_POST['tid'];
+            $where['qishu'] = $_POST['qishu'];
+            $where['sid'] = $_POST['sid'];
+            $res = M('qishu_history')->where($where)->find();
+            // 如果已经导入,则导入失败
+            if(!empty($res)){
+                unlink($file_name);// 删除excel文档
+                $this->error('已经存在该表格,请删除后再导入');
+            }
+            $qishu_id = M("qishu_history")->add($_POST);
+
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            //数据库
+            $field = array();
+            $b_field = M()->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_ydybkzztz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj'");
+            $field = array();
+            foreach($b_field as $vo){
+                $field[] = $vo['column_name'];
+            }
+            $list = array();
+            $h = 0;
+            for($j=3;$j<$highestRow+1;$j++){
+                for($i=0;$i<$colsNum;$i++){
+                    $cell =  $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+                    if(substr($cell,0,1) == '='){
+                        $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                    }
+                    $list[$h][] = $cell;
+                }
+                $h++;
+            }
+            $tsp = array();
+            foreach($list as $val){
+                foreach($val as $k=>$v){
+                    if ($field[$k]){
+                        $tsp[ $field[$k] ] = $v;
+                    }
+                }
+                $tsp['suoshudd'] = $qishu_id;
+                if ($tsp['laoshixm']){
+                    $tsp['riqi'] = date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP($tsp['riqi']));
+                    M('ydybkzztz')->add($tsp);   
+                }     
+            }
+            $this->success('导入成功',U('/wagesSj/wageList/tid/45'));
+        }
+    }
+
+    //教务奖励台账
+     public function jwjltz_save(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 0,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+            $_POST['uid'] = M('admin')->where('nicename ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            $_POST["filename"] = $file_name;
+            // 查询是否已经存在该表格的导入
+            $_POST["filename"] = $file_name;
+            $where['tid'] = $_POST['tid'];
+            $where['qishu'] = $_POST['qishu'];
+            $where['sid'] = $_POST['sid'];
+            $res = M('qishu_history')->where($where)->find();
+            // 如果已经导入,则导入失败
+            if(!empty($res)){
+                unlink($file_name);// 删除excel文档
+                $this->error('已经存在该表格,请删除后再导入');
+            }
+            $qishu_id = M("qishu_history")->add($_POST);
+
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            //数据库
+            $field = array();
+            $b_field = M()->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_jwjltz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj'");
+            $field = array();
+            foreach($b_field as $vo){
+                $field[] = $vo['column_name'];
+            }
+
+            $list = array();
+            $h = 0;
+            for($j=3;$j<$highestRow+1;$j++){
+                for($i=0;$i<$colsNum;$i++){
+                    $cell =  $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getValue();
+                    if(substr($cell,0,1) == '='){
+                        $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).$j)->getOldCalculatedValue();
+                    }
+                    $list[$h][] = $cell;
+                }
+                $h++;
+            }
+            $tsp = array();
+            foreach($list as $val){
+                foreach($val as $k=>$v){
+                    if ($field[$k]){
+                        $tsp[ $field[$k] ] = $v;
+                    }
+                }
+                $tsp['suoshudd'] = $qishu_id;
+                if ($tsp['jingduls']){
+                    $tsp['shangjiaogprq'] = date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP($tsp['shangjiaogprq']));
+                    M('jwjltz')->add($tsp);    
+                }        
+            }
+            $this->success('导入成功',U('/wagesSj/wageList/tid/46'));
+        }
+    }
+
+    //一对一补课增值
+    public function ydybkzztz_xq(){
+        $list  = M('ydybkzztz')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //教务奖励台账
+    public function jwjltz_xq(){
+        $list  = M('jwjltz')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
     }
 
 }

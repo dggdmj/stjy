@@ -287,6 +287,18 @@ class MenuModel {
                         'url' => U('/wagesSj/wageList/tid/43'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '一对一补课增值台账',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesSj/wageList/tid/45'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '教务奖励台账',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesSj/wageList/tid/46'),
+                        'order' => 1
+                    ),
                 )
             );
         $gongzi = array(
