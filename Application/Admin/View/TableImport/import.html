@@ -1,7 +1,9 @@
 <if condition="$table_info.id eq 13">
-<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/TableImport/dataUpload2',array('id'=>$article['id']))}">
+    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/TableImport/dataUpload2',array('id'=>$article['id']))}">
+<elseif condition="$table_info['id'] eq '44'" />
+    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/TableImport/qdb_dr')}">
 <else />
-<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/TableImport/dataUpload',array('id'=>$article['id']))}">
+    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/TableImport/dataUpload',array('id'=>$article['id']))}">
 </if>
 	 <div class="panel one-box  active">
         <div class="panel-head">

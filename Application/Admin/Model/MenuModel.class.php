@@ -134,6 +134,12 @@ class MenuModel {
                         'url' => U('/TableImport/tableList/tid/36'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '出勤签到表',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/44'),
+                        'order' => 1
+                    ),
 
                 )
             );
