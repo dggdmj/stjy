@@ -178,6 +178,21 @@ class WagesCommonAction extends CommonAction{
     public function downloadXzb(){
         dump($_GET);
     }
+
+    //获得出勤数据
+    public function getChuqin($qishu,$sid){
+        $chuqin_dd = $this->getQishuId($qishu,$sid,44);
+        if(!$chuqin_dd)
+            return;
+        $chuqin_data = M("qdb")->where("suoshudd = ".$chuqin_dd)->select();
+        $chuqin_arr = array();
+        foreach ($chuqin_data as $tmp){
+            $chuqin_arr[$tmp['xingming']]['name'] = $tmp['xingming'];
+            $chuqin_arr[$tmp['xingming']]['yingchuqts'] = $tmp['yingchuqts'];
+            $chuqin_arr[$tmp['xingming']]['chuqints'] = $tmp['chuqints'];
+        }
+        return $chuqin_arr;
+    }
 }
 
 ?>

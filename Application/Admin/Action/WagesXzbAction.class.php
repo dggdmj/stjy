@@ -48,6 +48,9 @@ class WagesXzbAction extends WagesCommonAction{
         $yuefen = substr($qishu,4,2).'月';
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $jibie = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
+
+        $chuqin_arr = $this->getChuqin($qishu,$sid);
+
         //根据级别取不同的阿米巴
         switch ($jibie){
             case "A类":
@@ -73,7 +76,7 @@ class WagesXzbAction extends WagesCommonAction{
         $fujia = array();//附加表
 
         if ($suoshudd){
-            $list = M('xzbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
+            $list = M('xzbgz')->where("suoshudd='$suoshudd'")->select();
             $heji = $list[ count($list) - 1];
             unset($list[ count($list) - 1]);
             $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
@@ -85,8 +88,8 @@ class WagesXzbAction extends WagesCommonAction{
                 $val['yuefen'] = $yuefen;
                 $val['fenxiao'] = $school_name;
                 $val['gongzuonx'] = intval(( time() - strtotime($val['ruzhisj']) ) / (365 * 24 * 60 * 60));
-                $val['yingchuqts'] = 30;// 应出勤天数 (写死)
-                $val['shijicqts'] = 30;// 实际出勤天数 (写死)
+                $val['yingchuqts'] = $chuqin_arr[$val['xingming']]['yingchuqts']?$chuqin_arr[$val['xingming']]['yingchuqts']:0;// 应出勤天数 (写死)
+                $val['shijicqts'] = $chuqin_arr[$val['xingming']]['chuqints']?$chuqin_arr[$val['xingming']]['chuqints']:0;// 实际出勤天数 (写死)
                 $val['jibengz'] = '';
                 $val['zhengjianbl'] = '';
                 $val['yuangongxc'] = '';
