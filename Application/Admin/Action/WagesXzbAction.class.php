@@ -88,8 +88,8 @@ class WagesXzbAction extends WagesCommonAction{
                 $val['yuefen'] = $yuefen;
                 $val['fenxiao'] = $school_name;
                 $val['gongzuonx'] = intval(( time() - strtotime($val['ruzhisj']) ) / (365 * 24 * 60 * 60));
-                $val['yingchuqts'] = $chuqin_arr[$val['xingming']]['yingchuqts']?$chuqin_arr[$val['xingming']]['yingchuqts']:0;// 应出勤天数 (写死)
-                $val['shijicqts'] = $chuqin_arr[$val['xingming']]['chuqints']?$chuqin_arr[$val['xingming']]['chuqints']:0;// 实际出勤天数 (写死)
+                $val['yingchuqts'] = $chuqin_arr[$val['xingming']]['yingchuqts']?$chuqin_arr[$val['xingming']]['yingchuqts']:0;// 应出勤天数
+                $val['shijicqts'] = $chuqin_arr[$val['xingming']]['chuqints']?$chuqin_arr[$val['xingming']]['chuqints']:0;// 实际出勤天数
                 $val['jibengz'] = '';
                 $val['zhengjianbl'] = '';
                 $val['yuangongxc'] = '';

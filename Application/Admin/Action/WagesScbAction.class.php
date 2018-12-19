@@ -50,6 +50,9 @@ class WagesScbAction extends WagesCommonAction{
         $fujia = array();//附加表
         $sjjlb_id = $this->getQishuId($qishu,$sid,4);
         $nian = substr($qishu,0,4);
+
+        $chuqin_arr = $this->getChuqin($qishu,$sid);
+        
         //本月秒杀清单
         $byms98 = M()->query("select shoujuhao,xuehao,yejigsr,jiaofeirq,count(*) as count from stjy_sjjlb_".$nian." where suoshudd = '$sjjlb_id' and chanpinlx = '98元1期秒杀' and yejigsr != '' group by xuehao ");
         $xuehao = array();
@@ -115,8 +118,8 @@ class WagesScbAction extends WagesCommonAction{
                 $list[$key]['xuhao'] = $key+1;
                 $list[$key]['yuefen'] = $yuefen;
                 $list[$key]['fenxiao'] = $school_name;
-                $list[$key]['yingchuqts'] = 30;// 应出勤天数 (写死)
-                $list[$key]['shijicqts'] = 30;// 实际出勤天数 (写死)
+                $list[$key]['yingchuqts'] = $chuqin_arr[$val['xingming']]['yingchuqts']?$chuqin_arr[$val['xingming']]['yingchuqts']:0;// 应出勤天数
+                $list[$key]['shijicqts'] = $chuqin_arr[$val['xingming']]['chuqints']?$chuqin_arr[$val['xingming']]['chuqints']:0;// 实际出勤天数
                 $list[$key]['xuexikbj'] = '';//学习卡本金（补逻辑）
                 $list[$key]['yiqims'] = 0;
                 $list[$key]['xuexikbj'] = $list[$key]['xuexikbj'] ? $list[$key]['xuexikbj'] : 1;

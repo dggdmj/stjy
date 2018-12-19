@@ -56,6 +56,7 @@ class WagesJxbAction extends WagesCommonAction{
         $lsqryye_id = $this->getQishuId($qishu,$sid,29);
         $lsqrsr = M('lsqrsr')->field('laoshi,banxing,zongrencxs')->where("suoshudd='$lsqrsr_id'")->select();
         $lsqryye = M('lsqryye')->field('laoshi,banxing,yingyee')->where("suoshudd='$lsqryye_id'")->select();
+        $chuqin_arr = $this->getChuqin($qishu,$sid);
         if ($suoshudd){
             $list = M('jxbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
@@ -71,8 +72,8 @@ class WagesJxbAction extends WagesCommonAction{
                 $val['xuelihyyz8zjnx'] = 1;
                 $val['rushutqnxzd'] = round(( strtotime($val['ruzhisj']) - strtotime($val['diyixlbysj']) ) / 3600 / 24 / 365 * 0.8,1);
                 $val['gongzuonx'] = round(( strtotime(substr($qishu,0,4).'-'.substr($qishu,4,2).'-01'.' +1 month -1 day') - strtotime($val['ruzhisj']) ) / 3600 / 24 / 365 * 0.8+$val['rushutqnxzd'],1)+$val['xuelihyyz8zjnx'];//找逻辑
-                $val['yingchuqts'] = 30;// 应出勤天数 (写死)
-                $val['shijicqts'] = 30;// 实际出勤天数 (写死)
+                $val['yingchuqts'] = $chuqin_arr[$val['xingming']]['yingchuqts']?$chuqin_arr[$val['xingming']]['yingchuqts']:0;// 应出勤天数
+                $val['shijicqts'] = $chuqin_arr[$val['xingming']]['chuqints']?$chuqin_arr[$val['xingming']]['chuqints']:0;// 实际出勤天数
                 if ($val['zhiwei'] == '教务主任'){
                     $val['amibtzbl'] = 0;
                 }else if($val['xiaoshis'] > 8){
