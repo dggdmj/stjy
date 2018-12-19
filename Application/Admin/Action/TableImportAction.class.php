@@ -256,6 +256,90 @@ class TableImportAction extends CommonAction{
 		$this->adminDisplay();
 	}
 
+    //签到表导入
+    public function qdb_dr(){
+        header("Content-type: text/html; charset=utf-8");
+        if(!empty($_FILES)){
+            $_POST['uid'] = M('admin')->where('nicename ="'.$_POST['caozuoren'].'"')->getField('id');//操作人
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('csv'),
+                'maxSize' => 0,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());
+            }
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+
+            $_POST["filename"] = $file_name;
+            // 查询是否已经存在该表格的导入
+            $_POST["filename"] = $file_name;
+            $where['tid'] = $_POST['tid'];
+            $where['qishu'] = $_POST['qishu'];
+            $where['sid'] = $_POST['sid'];
+            $res = M('qishu_history')->where($where)->find();
+            // 如果已经导入,则导入失败
+            if(!empty($res)){
+                unlink($file_name);// 删除excel文档
+                $this->error('已经存在该表格,请删除后再导入');
+            }
+            $qishu_id = M("qishu_history")->add($_POST);
+            $file = fopen($file_name,'r'); 
+            while ($data = mb_convert_encoding(fgetcsv($file), "UTF-8", "gb2312")) { //每次读取CSV里面的一行内容
+                // dump($data); //此为一个数组，要获得每一个数据，访问数组下标即可
+                $data_list[] = $data;
+            }
+            fclose($file);
+            for($i=1;$i<count($data_list);$i++){
+                $tmp = array();
+                $tmp['xiaoqu'] = $data_list[$i]['0'];
+                $temp = explode('\\',$tmp['xiaoqu']);
+                $tmp['xiaoqu'] =  $temp['1'];
+                $tmp['xingming'] = $data_list[$i]['3'];
+                $tmp['yingchuqts'] = $data_list[$i]['5'];
+                $tmp['chuqints'] = $data_list[$i]['6'];
+                $tmp['suoshudd'] =  $qishu_id;
+                if ($tmp['xingming']){
+                    M('qdb')->add($tmp);
+                }
+            }
+            $this->success('导入成功！',__CONTROLLER__.'/index');//获得成功跳转的链接
+        }
+    }
+
+    /**
+   * 读取CSV文件
+   * @param string $csv_file csv文件路径
+   * @param int $lines       读取行数
+   * @param int $offset      起始行数
+   * @return array|bool
+   */
+    public function read_csv_lines($csv_file = '', $lines = 0, $offset = 0)
+    {
+        if (!$fp = fopen($csv_file, 'r')) {
+            return false;
+        }
+        $i = $j = 0;
+        while (false !== ($line = fgets($fp))) {
+            if ($i++ < $offset) {
+                continue;
+            }
+            break;
+        }
+        $data = array();
+        while (($j++ < $lines) && !feof($fp)) {
+            $data[] = mb_convert_encoding(fgetcsv($fp),"UTF-8", "gb2312");
+        }
+        fclose($fp);
+        return $data;
+     }
+
     //数据导入
     public function dataUpload() {
         if (!empty($_FILES)) {

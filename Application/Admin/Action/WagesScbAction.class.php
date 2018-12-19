@@ -178,6 +178,7 @@ class WagesScbAction extends WagesCommonAction{
                 }
             }
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
+            $list[$key]['liushijtfjxjs'] = $this->getTuifei($qishu,$sid,13,$val['xingming']);
         }
         //学习卡结算
         $new_data = array();
@@ -202,49 +203,78 @@ class WagesScbAction extends WagesCommonAction{
         $cplx = array_values($cplx);
         //学习卡额度计算(***????)
         foreach($list as $key=>$val){
-            // $val['edu'] = 20000;
-            if ($val['edu'] > $new_data[$key][ count($new_data[$key])-1 ]){
+            $val['edu'] = 40000;
+            if ($val['edu'] > $new_data[$key][ count($new_data[$key])-1 ] && $new_data[$key][ count($new_data[$key])-1 ] != 0){
                 for($i=1;$i<count($new_data[$key]);$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
                 }
                 $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
-            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-2 ]){
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-2 ] && $new_data[$key][ count($new_data[$key])-2 ] != 0){
                 for($i=1;$i<count($new_data[$key])-1;$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
                 }
                 $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i-1]) * $cplx[$i-1]['ticheng'] + ($new_data[$key][$i] - $val['edu']) * $cplx[$i]['ticheng'];
                 $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
-            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-3 ]){
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-3 ]  && $new_data[$key][ count($new_data[$key])-3 ] != 0){
                 for($i=1;$i<count($new_data[$key])-2;$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
                 }
                 $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
                 $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
-            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-4 ]){
+                $i++;
+                for($i=$i;$i<count($new_data[$key]);$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
+                }
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-4 ]  && $new_data[$key][ count($new_data[$key])-4 ] != 0){
                 for($i=1;$i<count($new_data[$key])-3;$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
                 }
                 $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
                 $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
-            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-5 ]){
+                $i++;
+                for($i=$i;$i<count($new_data[$key]);$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
+                }
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-5 ] && $new_data[$key][ count($new_data[$key])-5 ] != 0){
                 for($i=1;$i<count($new_data[$key])-4;$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
                 }
                 $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
                 $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
-            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-6 ]){
+                $i++;
+                for($i=$i;$i<count($new_data[$key]);$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
+                }
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-6 ] && $new_data[$key][ count($new_data[$key])-6 ] != 0){
                 for($i=1;$i<count($new_data[$key])-5;$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
                 }
                 $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
                 $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
-            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-7 ]){
+                $i++;
+                for($i=$i;$i<count($new_data[$key]);$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
+                }
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-7 ] && $new_data[$key][ count($new_data[$key])-7 ] != 0){
                 for($i=1;$i<count($new_data[$key])-6;$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
                 }
                 $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
                 $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
-                // dump( $new_data[$key][ count($new_data[$key])-7 ]);exit;
+                $i++;
+                for($i=$i;$i<count($new_data[$key]);$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
+                }
+            }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-8 ] && $new_data[$key][ count($new_data[$key])-8 ] != 0){
+                for($i=1;$i<count($new_data[$key])-7;$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+                }
+                $list[$key]['xuexikjs'] += ($val['edu'] - $new_data[$key][$i]) * $cplx[$i]['ticheng'] + ($new_data[$key][$i+1] - $val['edu']) * $cplx[$i+1]['ticheng'];
+                $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+                $i++;
+                for($i=$i;$i<count($new_data[$key]);$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
+                }
             }else{
                 $zong = (is_nan($val['miaoshatc'] / ( 98 * $val['yjs'] )) ? 0 : $val['miaoshatc'] / ( 98 * $val['yjs'] ) )* $new_data[$key]['0'];
                 if ($zong > 0){
@@ -252,7 +282,11 @@ class WagesScbAction extends WagesCommonAction{
                 }else{
                     $list[$key]['xuexikjs'] = 0;
                 }
+                for($i=1;$i<count($new_data[$key]);$i++){
+                    $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
+                }
             }
+            // $list[$key]['xuexikjs'] = number_format($list[$key]['xuexikjs'],2);
         }
         $this->assign('data',$data);
         $this->assign('cplx',$cplx);
