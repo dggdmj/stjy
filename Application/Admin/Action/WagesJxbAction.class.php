@@ -63,7 +63,7 @@ class WagesJxbAction extends WagesCommonAction{
             $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
         }else{
             //实时计算
-            $list = M('rycb')->field('bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj,erjibm,diyixlbysj')->where(array('xiaoqu'=>$school_name,'bumen'=>'教学部'))->select();
+            $list = M('rycb')->field('bumen,shenfenzhm,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,xingming,ruzhirq as ruzhisj,erjibm,diyixlbysj')->where(array('xiaoqu'=>$school_name,'bumen'=>'教学部'))->select();
             foreach($list as $key=>&$val){
                 $val['xuhao'] = $key+1;
                 $val['yuefen'] = $yuefen;
