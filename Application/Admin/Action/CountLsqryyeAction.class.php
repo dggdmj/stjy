@@ -25,7 +25,7 @@ class CountLsqryyeAction extends CommonAction {
                     ->join('LEFT JOIN stjy_scyjb as ss on rs.xingming=ss.xingming')
                     ->field('rs.xingming,ss.edu,ss.hejiyye')
                     ->group('rs.xingming')
-                    ->where("rs.xiaoqu='$school_name'")
+                    ->where("rs.xiaoqu='$school_name' and bumen='教学部'")
                     ->select();
         //获取收据记录表的订单id
         $suoshudd = $this->getQishuId($qishu,$sid,4);
@@ -35,7 +35,6 @@ class CountLsqryyeAction extends CommonAction {
         $lastday = date('Y-m-d', strtotime("$qishu_time +1 month -1 day"));   
         //获取校名
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
-
         foreach($list as &$val){
             $val['yuefen'] = (int)substr($qishu,4,2).'月';
             $val['school_name'] = $school_name;
@@ -55,8 +54,8 @@ class CountLsqryyeAction extends CommonAction {
                     ->join('LEFT JOIN stjy_sjcplx as cp on cp.xiangmu=ss.chanpinlx')
                     ->join('LEFT JOIN stjy_sjmxb as mx on ss.shoujuhao=mx.shoujuhao')
                     ->field('ss.xuehao,ss.jiaofeije,sk.jingjiangls,sb.banji,mx.goumaikc,mx.jiaofeije as jfje')
-                    ->where("ss.suoshudd='$suoshudd' and  sx.shoucixfrq != '' and ss.jiaofeirq > sx.shoucixfrq and cp.shifouyyejs=1")
-                    // ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd' and  sx.shoucixfrq != ''")
+                    // ->where("ss.suoshudd='$suoshudd' and  sx.shoucixfrq != '' and ss.jiaofeirq > sx.shoucixfrq and cp.shifouyyejs=1")
+                    ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd' and  sx.shoucixfrq != ''")
                     ->select();
         //班级编码
         $banjibm = M('banjibianhao')->field('jingdujb,bumen')->select();

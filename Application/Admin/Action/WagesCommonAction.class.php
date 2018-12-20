@@ -193,6 +193,157 @@ class WagesCommonAction extends CommonAction{
         }
         return $chuqin_arr;
     }
+
+    //获取老师续费率和续费率人头结算
+    public function getLsxfl($qishu='201812',$sid='15'){
+        $yuefen = substr($qishu,4,2);
+        $nian = substr($qishu,0,4);
+        if ($yuefen == '03'){
+            $suoshudd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'.") and tid=37 and sid=$sid")->select();
+        }elseif($yuefen == '06'){
+            $suoshudd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'.") and tid=37 and sid=$sid")->select();
+        }elseif($yuefen == '09'){
+            $suoshudd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'." or qishu=$nian".'07'." or qishu=$nian".'08'." or qishu=$nian".'09'.") and tid=37 and sid=$sid")->select();
+        }elseif($yuefen == '12'){
+            $suoshudd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'." or qishu=$nian".'07'." or qishu=$nian".'08'." or qishu=$nian".'09'." or qishu=$nian".'10'." or qishu=$nian".'11'." or qishu=$nian".'12'.") and tid=37 and sid=$sid")->select();
+        }else{
+            return array();
+        }
+        $suoshudd_arr = array();
+        foreach($suoshudd as $val){
+            $suoshudd_arr[] = $val['id'];
+        }
+        if ($suoshudd_arr){
+            $where['suoshudd'] = array('in',$suoshudd_arr);
+            $where['laoshimz'] = array('neq','');
+            $list = M('xfl')->field('laoshimz,banxing,leixing,xufeixsrs,fenmu')->where($where)->select();
+        }
+        // dump($list);
+        $laoshi = array();
+        foreach($list as $val){
+            if (!in_array($val['laoshimz'],$laoshi)){
+                $laoshi[] = $val['laoshimz'];
+            }
+        }
+        //获取老师续费率
+        $data = array();
+        foreach($laoshi as $kk=>$vv){
+            foreach ($list as $key => $val) {
+                if($vv == $val['laoshimz'] && $val['banxing'] == '小学部'){
+                    $data[$kk]['xingming'] = $vv;
+                    $data[$kk]['xx_yingxufrs'] += $val['fenmu'];
+                    $data[$kk]['xx_shijixfrs'] += $val['xufeixsrs'];
+                    if($val['leixing'] == '泛读'){
+                         $data[$kk]['xx_fandusjrs'] += $val['xufeixsrs'];
+                         $data[$kk]['xx_fanduyxfrs'] += $val['fenmu'];
+                    }
+                    if($val['leixing'] == '精读'){
+                         $data[$kk]['xx_jingdusjrs'] += $val['xufeixsrs'];
+                         $data[$kk]['xx_jingduyxfrs'] += $val['fenmu'];
+                    } 
+                }
+                if($vv == $val['laoshimz'] && $val['banxing'] == '初中部'){
+                    $data[$kk]['xingming'] = $vv;
+                    $data[$kk]['cz_yingxufrs'] += $val['fenmu'];
+                    $data[$kk]['cz_shijixfrs'] += $val['xufeixsrs'];
+                    if($val['leixing'] == '泛读'){
+                         $data[$kk]['cz_fandusjrs'] += $val['xufeixsrs'];
+                         $data[$kk]['cz_fanduyxfrs'] += $val['fenmu'];
+                    }
+                    if($val['leixing'] == '精读'){
+                         $data[$kk]['cz_jingdusjrs'] += $val['xufeixsrs'];
+                         $data[$kk]['cz_jingduyxfrs'] += $val['fenmu'];
+                    } 
+                }
+            }
+            //小学续费率
+            if ($data[$kk]['xx_yingxufrs'] == 0 && $data[$kk]['xx_shijixfrs'] == 0){
+                $data[$kk]['xx_zonghexfl'] = '60%';
+            }else{
+                $data[$kk]['xx_zonghexfl'] = (number_format($data[$kk]['xx_shijixfrs'] / $data[$kk]['xx_yingxufrs'],4) * 100).'%';
+            }
+            //初中续费率
+            if ($data[$kk]['cz_yingxufrs'] == 0 && $data[$kk]['cz_shijixfrs'] == 0){
+                $data[$kk]['cz_zonghexfl'] = '60%';
+            }else{
+                $data[$kk]['cz_zonghexfl'] = (number_format($data[$kk]['cz_shijixfrs'] / $data[$kk]['cz_yingxufrs'],4) * 100).'%';
+            }
+            // 泛读
+            $data[$kk]['xx_fd_koufars'] = $data[$kk]['xx_fandusjrs'] - $data[$kk]['xx_fanduyxfrs'] * 0.6;
+            $data[$kk]['cz_fd_koufars'] = $data[$kk]['cz_fandusjrs'] - $data[$kk]['cz_fanduyxfrs'] * 0.6;
+            // 精读
+            $data[$kk]['xx_jd_koufars'] = $data[$kk]['xx_jingdusjrs'] - $data[$kk]['xx_jingduyxfrs'] * 0.6;
+            $data[$kk]['cz_jd_koufars'] = $data[$kk]['cz_jingdusjrs'] - $data[$kk]['cz_jingduyxfrs'] * 0.6;
+            //小学精读金额
+            if ($data[$kk]['xx_zonghexfl'] >= '60%'){
+                $data[$kk]['xx_jd_jine'] = 0;
+            }elseif ($data[$kk]['xx_fd_koufars'] >= 0) {
+                $data[$kk]['xx_jd_jine'] = 0;
+            }else{
+                $data[$kk]['xx_jd_jine'] = $data[$kk]['xx_jd_koufars'] * 175;//175先写死的
+            }
+            //小学泛读金额
+            if ($data[$kk]['xx_zonghexfl'] >= '60%'){
+                $data[$kk]['xx_fd_jine'] = 0;
+            }elseif ($data[$kk]['xx_fd_koufars'] >= 0) {
+                $data[$kk]['xx_fd_jine'] = 0;
+            }else{
+                $data[$kk]['xx_fd_jine'] = $data[$kk]['xx_fd_koufars'] * 175;//175先写死的
+            }
+            //初中精读金额
+            if ($data[$kk]['cz_zonghexfl'] >= '60%'){
+                $data[$kk]['cz_jd_jine'] = 0;
+            }elseif ($data[$kk]['cz_jd_koufars'] >= 0) {
+                $data[$kk]['cz_jd_jine'] = 0;
+            }else{
+                $data[$kk]['cz_jd_jine'] = $data[$kk]['xx_jd_koufars'] * 175;//175先写死的
+            }
+            //初中泛读金额
+            if ($data[$kk]['cz_zonghexfl'] >= '60%'){
+                $data[$kk]['cz_fd_jine'] = 0;
+            }elseif ($data[$kk]['cz_fd_koufars'] >= 0) {
+                $data[$kk]['cz_fd_jine'] = 0;
+            }else{
+                $data[$kk]['cz_fd_jine'] = $data[$kk]['xx_fd_koufars'] * 175;//175先写死的
+            }
+            //总扣罚小学
+            if ($data[$kk]['xx_zonghexfl'] >= '60%'){
+                $data[$kk]['zongkoufa'] =  $data[$kk]['xx_jd_jine'] +  $data[$kk]['xx_fd_jine'];
+            }elseif(($data[$kk]['xx_jd_jine'] +  $data[$kk]['xx_fd_jine']) > 0){
+                $data[$kk]['zongkoufa'] = 0;
+            }else{
+                $data[$kk]['zongkoufa'] =  $data[$kk]['xx_jd_jine'] +  $data[$kk]['xx_fd_jine'];
+            }
+            //总扣罚初中
+            if ($data[$kk]['cz_zonghexfl'] >= '50%'){
+                $data[$kk]['zongkoufa'] +=  $data[$kk]['cz_jd_jine'] +  $data[$kk]['cz_fd_jine'];
+            }elseif(($data[$kk]['cz_jd_jine'] +  $data[$kk]['cz_fd_jine']) > 0){
+                $data[$kk]['zongkoufa'] += 0;
+            }else{
+                $data[$kk]['zongkoufa'] +=  $data[$kk]['cz_jd_jine'] +  $data[$kk]['cz_fd_jine'];
+            }
+        }
+        return $data;
+    }
+
+    //获取学习卡额度和营业额
+    public function getYyetcjs($qishu='201812',$sid='15'){
+        $yuefen = substr($qishu,4,2);
+        $nian = substr($qishu,0,4);
+        //第一季度
+        $suoshudd_yjd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'.") and tid=29 and sid=$sid")->select();
+        foreach($suoshudd_yjd as $val){
+            $ssdd_arr[] = $val['id'];
+        }
+        $yjd_list = M('lsqryye')->where(array('suoshudd'=>array('in',$ssdd_arr)))->select();
+        //定义需要返回的数组
+        $data['xuexiked'] = 0
+        $data['xiaoxueyye'] = 0
+        $data['zonghexfl'] = 0
+        foreach($yjd_list as $val){
+
+        }
+    }
 }
 
 ?>

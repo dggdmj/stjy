@@ -513,6 +513,12 @@ class MenuModel {
                         'url' => U('Setting/miaosha'),
                         'order' => 12
                     ),
+                    array(
+                        'name' => '人事列表',
+                        'icon' => 'user',
+                        'url' => U('Renshi/renyuan_list'),
+                        'order' => 6
+                    ),
                 )
             );
         $member = array(
@@ -611,7 +617,7 @@ class MenuModel {
             'Order' => $order,
             'Gongzisj' => $gongzisj,
             'Gongzi' => $gongzi,
-            'Renshi' => $renshi,
+            // 'Renshi' => $renshi,
             'Function' => $function,
             'Member' => $member,
         );
