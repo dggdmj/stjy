@@ -335,11 +335,15 @@ class WagesCommonAction extends CommonAction{
         foreach($suoshudd_yjd as $val){
             $ssdd_arr[] = $val['id'];
         }
-        $yjd_list = M('lsqryye')->where(array('suoshudd'=>array('in',$ssdd_arr)))->select();
+        $list = M('lsqryye')->where(array('suoshudd'=>array('in',$ssdd_arr)))->select();
         //定义需要返回的数组
-        $data['xuexiked'] = 0
-        $data['xiaoxueyye'] = 0
-        $data['zonghexfl'] = 0
+        $laoshi = array();
+        foreach ($list as $val) {
+            // if (in_array($val['']))
+        }
+        $data['xuexiked'] = 0;
+        $data['xx_yye'] = 0;
+        $data['cz_yye'] = 0;
         foreach($yjd_list as $val){
 
         }
