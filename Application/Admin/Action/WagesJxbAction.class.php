@@ -44,6 +44,7 @@ class WagesJxbAction extends WagesCommonAction{
     }
 
     public function index(){
+//        $a = $this->getJxzrData();dump($a);die;   //调试用
         //期数
         $qishu = $_GET['qishu']?$_GET['qishu']:'201808';
         //学校id
@@ -54,9 +55,11 @@ class WagesJxbAction extends WagesCommonAction{
         $heji = array();//合计
         $lsqrsr_id = $this->getQishuId($qishu,$sid,30);
         $lsqryye_id = $this->getQishuId($qishu,$sid,29);
+        $jysjb_id = $this->getQishuId($qishu,$sid,12);
         $lsqrsr = M('lsqrsr')->field('laoshi,banxing,zongrencxs')->where("suoshudd='$lsqrsr_id'")->select();
         $lsqryye = M('lsqryye')->field('laoshi,banxing,yingyee')->where("suoshudd='$lsqryye_id'")->select();
         $chuqin_arr = $this->getChuqin($qishu,$sid);
+        $jichudata = $this->jichudata();    //基础数据
         if ($suoshudd){
             $list = M('jxbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
@@ -69,7 +72,7 @@ class WagesJxbAction extends WagesCommonAction{
                 $val['xuhao'] = $key+1;
                 $val['yuefen'] = $yuefen;
                 $val['fenxiao'] = $school_name;
-                $val['xuelihyyz8zjnx'] = 1;
+                $val['xuelihyyz8zjnx'] = 0;
                 $val['rushutqnxzd'] = round(( strtotime($val['ruzhisj']) - strtotime($val['diyixlbysj']) ) / 3600 / 24 / 365 * 0.8,1);
                 $val['gongzuonx'] = round(( strtotime(substr($qishu,0,4).'-'.substr($qishu,4,2).'-01'.' +1 month -1 day') - strtotime($val['ruzhisj']) ) / 3600 / 24 / 365 * 0.8+$val['rushutqnxzd'],1)+$val['xuelihyyz8zjnx'];//找逻辑
                 $val['yingchuqts'] = $chuqin_arr[$val['xingming']]['yingchuqts']?$chuqin_arr[$val['xingming']]['yingchuqts']:0;// 应出勤天数
@@ -99,6 +102,34 @@ class WagesJxbAction extends WagesCommonAction{
                         }
                     }
                 }
+                //年限加成阿米巴
+                foreach ($jichudata['nianxiandata'] as $tmp){
+                    if($val['gongzuonx'] >= $tmp['nianxian']){
+                        $val['nianxianjcamb'] = $tmp['bili'];
+                    }
+                }
+
+                $val['xiaoxuezh'] = '待补充';
+                $val['chuzhongzh'] = '待补充';
+                if($val['zhiwei'] == "教务主任" || $val['zhiwei'] == "教学组长"){
+                    $val["renzhurzzgwksrq"] = $val['ruzhirq'];
+                    //取本月最后天减去岗位开始日期
+                    $lastday = strtotime($qishu.'01'." +1 month -1 day");
+                    $firstday = strtotime($val["renzhurzzgwksrq"]);
+
+                    $val["renzhurzzrgnx"] = round(($lastday - $firstday)/(86400*365),2);
+                    $val['tuanduisrtcb'] = $this->getTdsrbl($val["renzhurzzrgnx"],$val['zhiwei']);
+                    $val['bumenambpjfc'] = 0;
+                }else{
+                    $val["renzhurzzgwksrq"] = '';
+                    $val["renzhurzzrgnx"] = '';
+                    $val['tuanduisrtcb'] = 0;
+                    $val['bumenambpjfc'] = 0;
+                }
+
+
+                $weijinban = M('zcxsxqztb')->where('suoshudd ='.$jysjb_id." and nianji ='合计'")->getField("weijinban"); //新生未进班班
+                $val['xinshengwjbb'] = $weijinban?$weijinban:0;
                 $val['rencixspjdj'] = '53';//补逻辑
                 $val['amibaqrsr'] = ($val['xiaoxueskrcxs'] + $val['chuzhongskrcxs']) * $val['rencixspjdj'];
             }
@@ -299,5 +330,397 @@ class WagesJxbAction extends WagesCommonAction{
             $this->ajaxReturn(false);
         }
     }
+
+    //基础数据
+    public function jichudata(){
+        $data = array();
+        $data['nianxiandata'] = array(
+            array('nianxian' => 0,"bili"=>0),
+            array('nianxian' => 0.5,"bili"=>0),
+            array('nianxian' => 1,"bili"=>0),
+            array('nianxian' => 2,"bili"=>0.002),
+            array('nianxian' => 3,"bili"=>0.004),
+            array('nianxian' => 4,"bili"=>0.008),
+            array('nianxian' => 9,"bili"=>0.008),
+        );
+
+        $data['xxbzsrtcbdata'] = array(
+            "0" => array('0-9'=>"0.2",'9-11'=>"0.21",'jd6'=>"0.25",'jd3-5'=>"0.24",'jd3'=>"0.22"),
+            "60" => array('0-9'=>"0.24",'9-11'=>"0.24",'jd6'=>"0.28",'jd3-5'=>"0.27",'jd3'=>"0.25"),
+            "1000" => array('0-9'=>"",'9-11'=>"",'jd6'=>"",'jd3-5'=>"",'jd3'=>""),
+        );
+
+        $data['czbzsrtcbdata'] = array(
+            "0" => array('0-9'=>"0.2",'9-11'=>"0.21",'jd6'=>"0.25",'jd3-5'=>"0.24",'jd3'=>"0.22"),
+            "50" => array('0-9'=>"0.24",'9-11'=>"0.24",'jd6'=>"0.28",'jd3-5'=>"0.27",'jd3'=>"0.25"),
+            "1000" => array('0-9'=>"",'9-11'=>"",'jd6'=>"",'jd3-5'=>"",'jd3'=>""),
+        );
+
+        //技能评分
+        $data['jinengpf'] = array(
+            "0" => '-0.05',
+            "60" => '-0.03',
+            "70" => '0',
+            "80" => '0.03',
+            "90" => '0.05',
+            "100" => '-0.05',
+        );
+
+        //团队收入提成比
+        $data['tdsrtcb'] = array(
+            "0" => array("zhuren"=>"0.01","zuzhang"=>"0.011"),
+            "1" => array("zhuren"=>"0.013","zuzhang"=>"0.015"),
+            "2" => array("zhuren"=>"0.017","zuzhang"=>"0.019"),
+            "3" => array("zhuren"=>"0.018","zuzhang"=>"0.021"),
+            "4" => array("zhuren"=>"0.02","zuzhang"=>"0.023"),
+            "5" => array("zhuren"=>"0.021","zuzhang"=>"0.025")
+        );
+
+        //团队阿米巴分成
+        $data['tdambfc'] = array(
+            "0" => array("quyu"=>"广州天河","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "1" => array("quyu"=>"广州越秀","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "2" => array("quyu"=>"广州白云","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "3" => array("quyu"=>"广州海珠","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "4" => array("quyu"=>"广州番禺","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "5" => array("quyu"=>"广州增城","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "6" => array("quyu"=>"广州黄埔","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "7" => array("quyu"=>"广州南沙","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "8" => array("quyu"=>"深圳","leibie"=>"A类","querendj"=>"53.00","guangpanjwjl"=>"1500","yiduiybkzzj"=>"200","zuzhangzyrsjx"=>"200","jiaowuzrfd"=>"4000","zuzhangfd"=>"2000"),
+            "9" => array("quyu"=>"成都","leibie"=>"B类","querendj"=>"42.00","guangpanjwjl"=>"1200","yiduiybkzzj"=>"160","zuzhangzyrsjx"=>"160","jiaowuzrfd"=>"3200","zuzhangfd"=>"1600"),
+            "10" => array("quyu"=>"东莞","leibie"=>"B类","querendj"=>"53.00","guangpanjwjl"=>"1200","yiduiybkzzj"=>"160","zuzhangzyrsjx"=>"160","jiaowuzrfd"=>"3200","zuzhangfd"=>"1600"),
+            "11" => array("quyu"=>"佛山","leibie"=>"B类","querendj"=>"53.00","guangpanjwjl"=>"1200","yiduiybkzzj"=>"160","zuzhangzyrsjx"=>"160","jiaowuzrfd"=>"3200","zuzhangfd"=>"1600"),
+            "12" => array("quyu"=>"郑州","leibie"=>"B类","querendj"=>"53.00","guangpanjwjl"=>"1200","yiduiybkzzj"=>"160","zuzhangzyrsjx"=>"160","jiaowuzrfd"=>"3200","zuzhangfd"=>"1600"),
+            "13" => array("quyu"=>"惠州","leibie"=>"C类","querendj"=>"53.00","guangpanjwjl"=>"900","yiduiybkzzj"=>"120","zuzhangzyrsjx"=>"120","jiaowuzrfd"=>"2400","zuzhangfd"=>"1200"),
+            "14" => array("quyu"=>"肇庆","leibie"=>"C类","querendj"=>"53.00","guangpanjwjl"=>"900","yiduiybkzzj"=>"120","zuzhangzyrsjx"=>"120","jiaowuzrfd"=>"2400","zuzhangfd"=>"1200"),
+            "15" => array("quyu"=>"信阳","leibie"=>"D类","querendj"=>"53.00","guangpanjwjl"=>"600","yiduiybkzzj"=>"80","zuzhangzyrsjx"=>"80","jiaowuzrfd"=>"1600","zuzhangfd"=>"800"),
+        );
+
+        //AB类饱和率
+        $data['ablbhl'] = array(
+            array("leibie"=>0,"bhl"=>"-600"),
+            array("leibie"=>10,"bhl"=>"-300"),
+            array("leibie"=>12,"bhl"=>"0"),
+            array("leibie"=>12,"bhl"=>"300"),
+            array("leibie"=>13,"bhl"=>"600"),
+        );
+        //D类饱和率
+        $data['dlbhl'] = array(
+            array("leibie"=>0,"bhl"=>"-600"),
+            array("leibie"=>16,"bhl"=>"-300"),
+            array("leibie"=>17,"bhl"=>"0"),
+            array("leibie"=>18,"bhl"=>"300"),
+            array("leibie"=>19,"bhl"=>"600"),
+            array("leibie"=>20,"bhl"=>"600"),
+        );
+        //C类饱和率
+        $data['clbhl'] = array(
+            array("leibie"=>0,"bhl"=>"-600"),
+            array("leibie"=>10,"bhl"=>"-300"),
+            array("leibie"=>13,"bhl"=>"0"),
+            array("leibie"=>14,"bhl"=>"300"),
+            array("leibie"=>15,"bhl"=>"600"),
+            array("leibie"=>16,"bhl"=>"600"),
+        );
+
+        return $data;
+    }
+
+    //获得小学标准收入提成比
+    public function getXxbzsrtcb($r = '6.5',$s = '5.5',$xxzh = '0.633'){
+        $jcsj = $this->jichudata();
+        $data = $jcsj['xxbzsrtcbdata'];
+        if($xxzh < 0.6){
+            $j = 0;
+        }elseif ($xxzh >= 0.6 && $xxzh <= 10){
+            $j = 60;
+        }else{
+            $j = 1000;
+        }
+        if($r < 9){
+            $i = '0-9';
+        }else{
+            if($r < 11){
+                $i = '9-11';
+            }else{
+                if($s<3){
+                    $i = 'jd3';
+                }else{
+                    if($s < 6){
+                        $i = 'jd3-5';
+                    }else{
+                        $i = 'jd6';
+                    }
+                }
+            }
+        }
+        return array(
+            "status" => true,
+            "data" => $data[$j][$i]
+        );
+    }
+
+    //初中标准收入提成比
+    public function getCzbzsrtcb($r = '13.3',$s = '10.5',$xxzh = '0.5'){
+        $jcsj = $this->jichudata();
+        $data = $jcsj['czbzsrtcbdata'];
+        if($xxzh < 0.5){
+            $j = 0;
+        }elseif ($xxzh >= 0.5 && $xxzh <= 10){
+            $j = 50;
+        }else{
+            $j = 1000;
+        }
+        if($r < 9){
+            $i = '0-9';
+        }else{
+            if($r < 11){
+                $i = '9-11';
+            }else{
+                if($s<3){
+                    $i = 'jd3';
+                }else{
+                    if($s < 6){
+                        $i = 'jd3-5';
+                    }else{
+                        $i = 'jd6';
+                    }
+                }
+            }
+        }
+        return array(
+            "status" => true,
+            "data" => $data[$j][$i]
+        );
+    }
+
+    //技能评分比例
+    public function getJnpfbl($defen = 85){
+        $jcsj = $this->jichudata();
+        $data = $jcsj['jinengpf'];
+        foreach ($data as $k=>$v){
+            if($defen >= $k){
+                $d = $v;
+            }
+        }
+        return array(
+            "status" => true,
+            "data" => $d
+        );
+    }
+
+    //团队收入提成比
+    public function getTdsrbl($nianxian = "0.3" , $zhiwei = "教务主任"){
+        $jcsj = $this->jichudata();
+        $data = $jcsj['tdsrtcb'];
+        foreach ($data as $k=>$v){
+            if($defen >= $k){
+                if($zhiwei == "教务主任"){
+                    $d = $v['zhuren'];
+                }else{
+                    $d = $v['zuzhang'];
+                }
+            }
+        }
+        return $d;
+    }
+
+    //团队阿米巴分成
+    public function getTdambfc($sname = "番禺喜盈中心",$zhiwei = "教务主任",$tdqrsr = "1000" , $tdsrtcb = "0.02"){
+        $name = mb_substr($sname,0,2);
+        $num = $tdqrsr * $tdsrtcb;
+        $jcsj = $this->jichudata();
+        $data = $jcsj['tdambfc'];
+        $d = array();
+        foreach ($data as $tmp){
+            if(mb_strpos($tmp['quyu'],$name)){
+                $d = $tmp;
+                break;
+            }
+        }
+
+        if(!$d)
+            return array(
+                "status" => false,
+                "data" => "没有数据"
+            );
+
+        $n = 0;
+        if($zhiwei == "教务主任"){
+            if($num < $tmp['jiaowuzrfd']){
+                $n = $num;
+            }else {
+                $n = $tmp['jiaowuzrfd'];
+            }
+        }else{
+            if($num < $tmp['zuzhangfd']){
+                $n = $num;
+            }else {
+                $n = $tmp['zuzhangfd'];
+            }
+        }
+
+        return array(
+            "status" => true,
+            "data" => $n
+        );
+    }
+
+    //获得教学主任相关数据
+    public function getJxzrData($bumenambpjzfc = 0,$qishu = '201810',$sid = "15"){
+        $tid = 12;  //经营数据表
+        $data = array();
+        $suoshudd = $this->getQishuId($qishu,$sid,$tid);
+        $nianfen = substr($qishu,0,4);
+
+        $d = $this->jichudata();
+        $tdambfc = $d['tdambfc'];//团队阿米巴
+
+        //获得饱和率
+        $data_bjzysjb = M('bjzysjb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$suoshudd)->order('id asc')->select();
+        foreach($data_bjzysjb as $v){
+            if($v['bumen'] == '总计'){
+                $bhl = $v['banjibhl'];
+            }
+        }
+        $data['baohelv'] = $bhl?$bhl:0;//饱和率
+
+        //饱和率考核分成
+        $sname = M("school")->where("id = $sid")->getField("name");
+        $name = mb_substr($sname,0,2);
+        $leibie = '';
+        $bhlkhfc = 0;
+        foreach ($tdambfc as $tmp){
+            if(mb_strpos($tmp['quyu'],$name)){
+                $leibie = $tmp['leibie'];
+                break;
+            }
+        }
+        if($leibie == "A类" || $leibie == "B类"){
+            $ablbhl = $d['ablbhl'];//AB类饱和率
+            foreach ($ablbhl as $tmp){
+                if($bhl >= $tmp['leibie']){
+                    $bhlkhfc = $tmp['bhl'];
+                }
+            }
+        }else{
+            if($leibie == "D类"){
+                $dlbhl = $d['dlbhl'];//D类饱和率
+                foreach ($dlbhl as $tmp){
+                    if($bhl >= $tmp['leibie']){
+                        $bhlkhfc = $tmp['bhl'];
+                    }
+                }
+            }elseif ($leibie == "C类"){
+                $clbhl = $d['clbhl'];//C类饱和率
+                foreach ($clbhl as $tmp){
+                    if($bhl >= $tmp['leibie']){
+                        $bhlkhfc = $tmp['bhl'];
+                    }
+                }
+            }
+        }
+        $data['bhlkhfc'] = $bhlkhfc;
+        $bc = $data['symzjzds'] = 0;  //bc上月末正价在读数，学员信息表AJ在读，AW正价生，AX是,AY是筛选出来的数量
+        $bd = $data['ymzjzds'] = 0;      //bd月末正价在读数
+        $be = $data['zjzdgmsbh'] = ($data['ymzjzds'] - $data['symzjzds'])?($data['ymzjzds'] - $data['symzjzds']):17;      //be正价在读规模数变化，先写测试数据
+        //月末正价在读数奖励分成
+        $ymzjzdsjlfc = 0;
+        if($bd <= 200){
+            $ymzjzdsjlfc = $be * 30;
+        }else{
+            if($bd <= 400){
+                if($bc < 200){
+                    $ymzjzdsjlfc = (200 - $bc)*30 + ($bd - 200)*200;
+                }else{
+                    $ymzjzdsjlfc = $be * 200;
+                }
+            }else{
+                if($bd <= 600){
+                    if($bc < 200){
+                        $ymzjzdsjlfc = (200 - $bc)*30 + 200*200 + ($bd - 400)*300;
+                    }else{
+                        if($bc < 400){
+                            $ymzjzdsjlfc = (400 - $bc)*200 + ($bd -400)*300;
+                        }else{
+                            $ymzjzdsjlfc = $be*300;
+                        }
+                    }
+                }else{
+                    if($bc < 200){
+                        $ymzjzdsjlfc = (200 - $bc)*30 + 200 * 300 + ($bd - 600)*400;
+                    }else{
+                        if($bc < 400){
+                            $ymzjzdsjlfc = (400 - $bc)*200 + 200*300 +($bd - 600)*400;
+                        }else{
+                            if($bc < 600){
+                                $ymzjzdsjlfc = (600 - $bc) * 300 + ($bd - 600)*400;
+                            }else{
+                                $ymzjzdsjlfc = $be * 400;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if($leibie == "A类"){
+            $ymzjzdsjlfc = $ymzjzdsjlfc * 1;
+        }elseif($leibie == "B类"){
+            $ymzjzdsjlfc = $ymzjzdsjlfc * 0.8;
+        }elseif($leibie == "D类"){
+            $ymzjzdsjlfc = $ymzjzdsjlfc * 0.4;
+        }else{
+            if($bd <= 200){
+                $ymzjzdsjlfc = $be * 10;
+            }else{
+                if($bd <= 400){
+                    if($bc < 200){
+                        $ymzjzdsjlfc = (200 - $bc)*10 + ($bd - 200)*30;
+                    }else{
+                        $ymzjzdsjlfc = $be * 30;
+                    }
+                }else{
+                    if($bd <= 600){
+                        if($bc < 200){
+                            $ymzjzdsjlfc = (200 - $bc)*10 + 200*30 + ($bd - 400)*40;
+                        }else{
+                            if($bc < 400){
+                                $ymzjzdsjlfc = (400 - $bc)*30 + ($bd - 400)*300;
+                            }else{
+                                $ymzjzdsjlfc = $be*40;
+                            }
+                        }
+                    }else{
+                        if($bc < 200){
+                            $ymzjzdsjlfc = (200 - $bc)*10 + 200 * 30 + ($bd - 600)*50;
+                        }else{
+                            if($bc < 400){
+                                $ymzjzdsjlfc = (400 - $bc)*30 + 200*40 +($bd - 600)*50;
+                            }else{
+                                if($bc < 600){
+                                    $ymzjzdsjlfc = (600 - $bc) * 40 + ($bd - 600)*50;
+                                }else{
+                                    $ymzjzdsjlfc = $be * 50;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if($be >= 0){
+            $ymzjzdsjlfc = $ymzjzdsjlfc;
+        }else{
+            $ymzjzdsjlfc = "-".abs($ymzjzdsjlfc/2);
+        }
+        $data['ymzjzdsjlfc'] = $ymzjzdsjlfc;
+
+
+        return $data;
+    }
+
+
 }
 ?>
