@@ -44,22 +44,36 @@ class WagesJxbAction extends WagesCommonAction{
     }
 
     public function index(){
-//        $a = $this->getJxzrData();dump($a);die;   //调试用
         //期数
         $qishu = $_GET['qishu']?$_GET['qishu']:'201808';
         //学校id
         $sid = $_GET['sid']?$_GET['sid']:1;
         $suoshudd = $this->getQishuId($qishu,$sid,18);
-        $yuefen = substr($qishu,4,2).'月';
+        $yuefen = (int)substr($qishu,4,2).'月';
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $heji = array();//合计
         $lsqrsr_id = $this->getQishuId($qishu,$sid,30);
         $lsqryye_id = $this->getQishuId($qishu,$sid,29);
         $jysjb_id = $this->getQishuId($qishu,$sid,12);
-        $lsqrsr = M('lsqrsr')->field('laoshi,banxing,zongrencxs')->where("suoshudd='$lsqrsr_id'")->select();
+        $lsqrsr = M('lsqrsr')->field('laoshi,banxing,zongrencxs,querensr')->where("suoshudd='$lsqrsr_id'")->select();
         $lsqryye = M('lsqryye')->field('laoshi,banxing,yingyee')->where("suoshudd='$lsqryye_id'")->select();
         $chuqin_arr = $this->getChuqin($qishu,$sid);
         $jichudata = $this->jichudata();    //基础数据
+        //获取本月最后一天
+        $lastday = strtotime(substr($qishu,0,4).'-'.substr($qishu,4,2).'-01'." +1 month -1 day");
+        //获取老师续费率和续费率人头结算
+        $lsxfl = $this->getLsxfl($qishu,$sid);
+        //一对一补课
+        $ydybkzzj_id = $this->getQishuId($qishu,$sid,45);
+        if($ydybkzzj_id){
+            $ydybkzzj = M('ydybkzztz')->field('yuefen,laoshixm,jianglibz')->where("suoshudd=$ydybkzzj_id")->select();
+        }
+        $jwjltz_id = $this->getQishuId($qishu,$sid,46);
+        if($jwjltz_id){
+            $jwjltz = M('jwjltz')->field('yuefen,jingduls,jianglije')->where("suoshudd=$jwjltz_id")->select();
+        }
+        //获取基础数据
+        $base = $this->jichudata();
         if ($suoshudd){
             $list = M('jxbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
@@ -77,6 +91,17 @@ class WagesJxbAction extends WagesCommonAction{
                 $val['gongzuonx'] = round(( strtotime(substr($qishu,0,4).'-'.substr($qishu,4,2).'-01'.' +1 month -1 day') - strtotime($val['ruzhisj']) ) / 3600 / 24 / 365 * 0.8+$val['rushutqnxzd'],1)+$val['xuelihyyz8zjnx'];//找逻辑
                 $val['yingchuqts'] = $chuqin_arr[$val['xingming']]['yingchuqts']?$chuqin_arr[$val['xingming']]['yingchuqts']:0;// 应出勤天数
                 $val['shijicqts'] = $chuqin_arr[$val['xingming']]['chuqints']?$chuqin_arr[$val['xingming']]['chuqints']:0;// 实际出勤天数
+                foreach($lsxfl as $vs){
+                    if($vs['xingming'] == $val['xingming']){
+                        $val['xiaoxuezh'] = $vs['xx_zonghexfl'];
+                        $val['chuzhongzh'] = $vs['cz_zonghexfl'];
+                        $val['xufeilrtkffc'] = $vs['zongkoufa'];
+                    }
+                    if($val['zhiwei'] == '教务主任'){
+                        $val['tuanduixflrtkhfc'] += $vs['zongkoufa'];
+                    }
+                }
+
                 if ($val['zhiwei'] == '教务主任'){
                     $val['amibtzbl'] = 0;
                 }else if($val['xiaoshis'] > 8){
@@ -92,6 +117,19 @@ class WagesJxbAction extends WagesCommonAction{
                             $val['chuzhongskrcxs'] = $vo['zongrencxs'];
                         }
                     }
+                    if ($val['zhiwei'] == "教务主任"){
+                        $val['tuanduiqrsr'] += $vo['querensr'];
+                        if($vo['banxing'] == '小学部'  && $val['xiaoxuezh'] < '60%'){
+                            $val['xx_tuanduiqrsr'] += $vo['querensr'];
+                        }
+                        if($vo['banxing'] == '初中部' && $val['chuzhongzh'] < '50%'){
+                            $val['cz_tuanduiqrsr'] += $vo['querensr'];
+                        }
+                    }
+                }
+                if ($val['zhiwei'] == "教务主任"){
+                    $val['tuanduiqrsr'] = $val['tuanduiqrsr'] -  $val['xx_tuanduiqrsr'] - $val['cz_tuanduiqrsr'];
+                    $val['tuanduiqrsr'] = $val['tuanduiqrsr'] > 0 ? $val['tuanduiqrsr'] : 0;
                 }
                 foreach($lsqryye  as $vo){
                     if ($val['xingming'] == $vo['laoshi']){
@@ -105,33 +143,42 @@ class WagesJxbAction extends WagesCommonAction{
                 //年限加成阿米巴
                 foreach ($jichudata['nianxiandata'] as $tmp){
                     if($val['gongzuonx'] >= $tmp['nianxian']){
-                        $val['nianxianjcamb'] = $tmp['bili'];
+                        $val['nianxianjcamb'] = ( $tmp['bili'] * 100 ).'%';
                     }
                 }
 
-                $val['xiaoxuezh'] = '待补充';
-                $val['chuzhongzh'] = '待补充';
+                $val['xiaoxuezh'] = '0';//补逻辑
+                $val['chuzhongzh'] = '0';//补逻辑
                 if($val['zhiwei'] == "教务主任" || $val['zhiwei'] == "教学组长"){
-                    $val["renzhurzzgwksrq"] = $val['ruzhirq'];
-                    //取本月最后天减去岗位开始日期
-                    $lastday = strtotime($qishu.'01'." +1 month -1 day");
-                    $firstday = strtotime($val["renzhurzzgwksrq"]);
-
-                    $val["renzhurzzrgnx"] = round(($lastday - $firstday)/(86400*365),2);
-                    $val['tuanduisrtcb'] = $this->getTdsrbl($val["renzhurzzrgnx"],$val['zhiwei']);
                     $val['bumenambpjfc'] = 0;
                 }else{
-                    $val["renzhurzzgwksrq"] = '';
-                    $val["renzhurzzrgnx"] = '';
-                    $val['tuanduisrtcb'] = 0;
                     $val['bumenambpjfc'] = 0;
                 }
-
-
+                if($val['zhiwei'] == "教务主任"){
+                    $jxzr = $this->getJxzrData($val['bumenambpjfc'],$qishu,$sid);
+                    $val['baohel'] = $jxzr['baohelv'];
+                    $val['baohelkhfc'] = $jxzr['bhlkhfc'];
+                    $val['shangyuemzjzds'] = $jxzr['symzjzds'];
+                    $val['yuemozjzds'] = $jxzr['ymzjzds'];
+                    $val['zhengjiazdgmbh'] = $jxzr['zjzdgmsbh'];
+                    $val['yuemozjzdsjlfc'] = $jxzr['ymzjzdsjlfc'];
+                }
                 $weijinban = M('zcxsxqztb')->where('suoshudd ='.$jysjb_id." and nianji ='合计'")->getField("weijinban"); //新生未进班班
                 $val['xinshengwjbb'] = $weijinban?$weijinban:0;
-                $val['rencixspjdj'] = '53';//补逻辑
-                $val['amibaqrsr'] = ($val['xiaoxueskrcxs'] + $val['chuzhongskrcxs']) * $val['rencixspjdj'];
+
+                $val['rencixspjdj'] = '';//补逻辑
+
+                // $val['amibaqrsr'] = ($val['xiaoxueskrcxs'] + $val['chuzhongskrcxs']) * $val['rencixspjdj'];
+                foreach($ydybkzzj as $vx){
+                    if ($vx['laoshixm'] == $val['xingming'] && $vx['yuefen'] == $yuefen){
+                        $val['yiduiybkzzjlfc'] += $vx['jianglibz'];
+                    }
+                }
+                foreach($jwjltz as $vx){
+                    if ($vx['jingduls'] == $val['xingming'] && $vx['yuefen'] == $yuefen){
+                        $val['jiaowujlfc'] += $vx['jianglije'];
+                    }
+                }
             }
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
         }
@@ -143,6 +190,7 @@ class WagesJxbAction extends WagesCommonAction{
         $this->assign('qishu',$qishu);
         $this->assign('sid',$sid);
         $this->assign("list",$list);
+        $this->assign('lastday',$lastday);
         $this->adminDisplay();
     }
 
@@ -331,6 +379,20 @@ class WagesJxbAction extends WagesCommonAction{
         }
     }
 
+    //根据区域获取单价
+    public function getDanjia(){
+        $quyu = $_POST['quyu'];
+        $base = $this->jichudata();
+        $data['status'] = 'true';
+        $data['danjia'] = 0;
+        foreach($base['tdambfc'] as $val){
+            if ($val['quyu'] == $quyu){
+                $data['danjia'] = $val['querendj'];
+            }
+        }
+        $this->ajaxReturn($data);
+    }
+
     //基础数据
     public function jichudata(){
         $data = array();
@@ -428,6 +490,9 @@ class WagesJxbAction extends WagesCommonAction{
 
     //获得小学标准收入提成比
     public function getXxbzsrtcb($r = '6.5',$s = '5.5',$xxzh = '0.633'){
+        $r = $_POST['r'];
+        $s = $_POST['s'];
+        $xxzh = $_POST['xxzh'];
         $jcsj = $this->jichudata();
         $data = $jcsj['xxbzsrtcbdata'];
         if($xxzh < 0.6){
@@ -454,10 +519,11 @@ class WagesJxbAction extends WagesCommonAction{
                 }
             }
         }
-        return array(
+        $array= array(
             "status" => true,
             "data" => $data[$j][$i]
         );
+        $this->ajaxReturn($array);
     }
 
     //初中标准收入提成比
@@ -488,14 +554,16 @@ class WagesJxbAction extends WagesCommonAction{
                 }
             }
         }
-        return array(
+        $array= array(
             "status" => true,
             "data" => $data[$j][$i]
         );
+        $this->ajaxReturn($array);
     }
 
     //技能评分比例
     public function getJnpfbl($defen = 85){
+        $defen = I('defen');
         $jcsj = $this->jichudata();
         $data = $jcsj['jinengpf'];
         foreach ($data as $k=>$v){
@@ -503,30 +571,37 @@ class WagesJxbAction extends WagesCommonAction{
                 $d = $v;
             }
         }
-        return array(
+        $array= array(
             "status" => true,
             "data" => $d
         );
+        $this->ajaxReturn($array);
     }
 
     //团队收入提成比
     public function getTdsrbl($nianxian = "0.3" , $zhiwei = "教务主任"){
+        $nianxian = $_POST['nianxian'];
+        $zhiwei = $_POST['zhiwei'];
         $jcsj = $this->jichudata();
         $data = $jcsj['tdsrtcb'];
         foreach ($data as $k=>$v){
-            if($defen >= $k){
-                if($zhiwei == "教务主任"){
-                    $d = $v['zhuren'];
-                }else{
-                    $d = $v['zuzhang'];
-                }
+            if($zhiwei == "教务主任"){
+                $d = $v['zhuren'];
+            }else{
+                $d = $v['zuzhang'];
             }
         }
-        return $d;
+        $d = number_format($d,4);
+        $this->ajaxReturn($d);
+        // return $d;
     }
 
     //团队阿米巴分成
     public function getTdambfc($sname = "番禺喜盈中心",$zhiwei = "教务主任",$tdqrsr = "1000" , $tdsrtcb = "0.02"){
+        $sname = $_POST['sname'];
+        $zhiwei = $_POST['zhiwei'];
+        $tdqrsr = $_POST['tdqrsr'];
+        $tdsrtcb = $_POST['tdsrtcb'];
         $name = mb_substr($sname,0,2);
         $num = $tdqrsr * $tdsrtcb;
         $jcsj = $this->jichudata();
@@ -560,10 +635,11 @@ class WagesJxbAction extends WagesCommonAction{
             }
         }
 
-        return array(
+        $array = array(
             "status" => true,
             "data" => $n
         );
+        $this->ajaxReturn($array);
     }
 
     //获得教学主任相关数据

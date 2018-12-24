@@ -337,6 +337,7 @@ class WagesCommonAction extends CommonAction{
         // }elseif($yuefen == 6){
 
         // }
+        //1-12月的所属订单
         $yi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'01'." and tid=29 and sid=$sid")->getField('id');
         $er_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'02'." and tid=29 and sid=$sid")->getField('id');
         $san_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'03'." and tid=29 and sid=$sid")->getField('id');
