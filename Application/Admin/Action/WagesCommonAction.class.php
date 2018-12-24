@@ -330,23 +330,54 @@ class WagesCommonAction extends CommonAction{
     public function getYyetcjs($qishu='201812',$sid='15'){
         $yuefen = substr($qishu,4,2);
         $nian = substr($qishu,0,4);
+        //一月到12月的数据
+        //根据月份判断查的数据
+        // if ($yuefen == '04' || $yuefen == '05'){
+        //     $suoshudd_yjd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'.") and tid=29 and sid=$sid")->select();
+        // }elseif($yuefen == 6){
+
+        // }
+        $yi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'01'." and tid=29 and sid=$sid")->getField('id');
+        $er_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'02'." and tid=29 and sid=$sid")->getField('id');
+        $san_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'03'." and tid=29 and sid=$sid")->getField('id');
+        $si_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'04'." and tid=29 and sid=$sid")->getField('id');
+        $wu_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'05'." and tid=29 and sid=$sid")->getField('id');
+        $liu_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'06'." and tid=29 and sid=$sid")->getField('id');
+        $qi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'07'." and tid=29 and sid=$sid")->getField('id');
+        $ba_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'08'." and tid=29 and sid=$sid")->getField('id');
+        $jiu_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'09'." and tid=29 and sid=$sid")->getField('id');
+        $shi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'10'." and tid=29 and sid=$sid")->getField('id');
+        $shiyi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'11'." and tid=29 and sid=$sid")->getField('id');
+        $shier_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'12'." and tid=29 and sid=$sid")->getField('id');
+
         //第一季度
-        $suoshudd_yjd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'.") and tid=29 and sid=$sid")->select();
         foreach($suoshudd_yjd as $val){
             $ssdd_arr[] = $val['id'];
         }
-        $list = M('lsqryye')->where(array('suoshudd'=>array('in',$ssdd_arr)))->select();
+        $data = array();
+        if ($ssdd_arr){
+            $list = M('lsqryye')->where(array('suoshudd'=>array('in',$ssdd_arr)))->select();
+        }
         //定义需要返回的数组
         $laoshi = array();
         foreach ($list as $val) {
-            // if (in_array($val['']))
+            if (!in_array($val['laoshi'],$laoshi)){
+                $laoshi[] = $val['laoshi'];
+            }
         }
-        $data['xuexiked'] = 0;
-        $data['xx_yye'] = 0;
-        $data['cz_yye'] = 0;
-        foreach($yjd_list as $val){
+        foreach($laoshi as $key=>$vv){
+            foreach($list as $val){
+                if ($vv == $val['laoshi']){
+                    $data[$key]['laoshi'] = $vv;
+                    $data[$key]['xuexiked'] += $val['xuexikzed'];
+                    if ($val['banxing'] == '小学部'){
+                        $data[$key]['xx_yingyee'] += $val['yingyee'];
+                    }
+                }
 
+            }
         }
+        return array();
     }
 }
 
