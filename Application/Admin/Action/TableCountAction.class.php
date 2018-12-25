@@ -215,7 +215,7 @@ class TableCountAction extends CommonAction{
         $list['data3'] = M('xfl')->where("suoshudd='$xfl_id' and type=3")->order('xuhao,xiaoji desc,id')->select();
         $arr = $this->getInfo($qishu,$sid);// 获取当前期数和校区
         $this->assign("list",$list);
-        $this->assign('arr',$arr);
+        $this->assign('arr',$arr); 
         $this->adminDisplay();
     }
 

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>胡涛工资条</title>
+<LINK href="favicon.ico" type="image/x-icon" rel=icon>
+<LINK href="favicon.ico" type="image/x-icon" rel="shortcut icon">
+    <!-- import css -->
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/pingtu.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/admin.css" />
+
+    <!-- import js -->
+    <script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
+
+</head>
+<style>
+    table{border: solid 1px #ccc;width: 100%}
+    td,th{text-align: center;border-right: solid 1px #ccc;line-height: 2em;}
+    tr{border-bottom:solid 1px #ccc;}
+    h3{margin-top: 2%;margin-bottom: 2%}
+</style>
+<body>
+<div>
+    <center>
+        <h3>{$school_name}-教学部续费率报表</h3>
+        <table>
+            <tr>
+                <th>老师名字</th>
+                <th>班型</th>
+                <th>类型</th>
+                <th>续费学生人数</th>
+                <th>分母</th>
+                <th>转化率</th>
+            </tr>
+            <foreach name="list.data1" item="vv">
+                <tr>
+                    <td>{$vv.laoshimz}</td>
+                    <td>{$vv.banxing}</td>
+                    <td>{$vv.leixing}</td>
+                    <td>{$vv.xufeixsrs}</td>
+                    <td>{$vv.fenmu}</td>
+                    <td>{$vv.xufeilv}</td>
+                </tr>
+            </foreach>
+        </table>
+
+        <table style="margin-top: 1%;">
+            <tr>
+                <th style="width: 15%;">老师名字</th>
+                <th style="width: 28%;">班型</th>
+                <th style="width: 18%;">类型</th>
+                <th style="width: 18%;">续费学生人数</th>
+                <th style="width: 12%;">分母</th>
+                <th>转化率</th>
+            </tr>
+            <foreach name="list.data2" item="vv">
+                <tr>
+                    <td>{$vv.laoshimz}</td>
+                    <td>{$vv.banxing}</td>
+                    <td>{$vv.leixing}</td>
+                    <td>{$vv.xufeixsrs}</td>
+                    <td>{$vv.fenmu}</td>
+                    <td>{$vv.xufeilv}</td>
+                </tr>
+            </foreach>
+            <foreach name="list.data3" item="vv">
+                <tr>
+                    <td>{$vv.laoshimz}</td>
+                    <td>{$vv.banxing}</td>
+                    <td>{$vv.leixing}</td>
+                    <td>{$vv.xufeixsrs}</td>
+                    <td>{$vv.fenmu}</td>
+                    <td>{$vv.xufeilv}</td>
+                </tr>
+            </foreach>
+        </table>
+    </center>
+</div>
+</body>
+</html>

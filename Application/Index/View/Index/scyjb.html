@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>胡涛工资条</title>
+<LINK href="favicon.ico" type="image/x-icon" rel=icon>
+<LINK href="favicon.ico" type="image/x-icon" rel="shortcut icon">
+    <!-- import css -->
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/pingtu.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/admin.css" />
+
+    <!-- import js -->
+    <script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
+
+</head>
+<style>
+    table{border: solid 1px #ccc;width: 100%}
+    td,th{text-align: center;border-right: solid 1px #ccc;line-height: 2em;}
+    tr{border-bottom:solid 1px #ccc;}
+    h3{margin-top: 2%;margin-bottom: 2%}
+</style>
+<body>
+<div>
+    <center>
+        <h3>{$school_name}-市场部业绩报表</h3>
+        <table>
+            <tr>
+                <th>顾问姓名</th>
+                <th>所属分校</th>
+                <th>部门</th>
+                <th>净人头</th>
+                <th>业绩总额</th>
+            </tr>
+            <foreach name="list" item="vv">
+                <tr>
+                    <td>{$vv.xingming}</td>
+                    <td>{$school_name}</td>
+                    <td>{$vv.bumen}</td>
+                    <td>{$vv.jingrentou}</td>
+                    <td>{$vv.hejiyye}</td>
+                </tr>
+            </foreach>
+        </table>
+    </center>
+</div>
+</body>
+</html>

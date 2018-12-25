@@ -106,7 +106,7 @@ class WagesScbAction extends WagesCommonAction{
             $scyjb_id = $this->getQishuId($qishu,$sid,8);
             //实时计算
             $list = M('scyjb as yj')
-                    ->field('rs.shenfenzhm,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.ruzhirq as ruzhisj,rs.erjibm,rs.ruzhinx as gongzuonx,rs.ruzhirq as ruzhisj,yj.xingming,yj.json,xxk.zongbenjin as xuexikbj,xxk.edu,yj.hejiyye,yj.jingrentou')
+                    ->field('rs.shenfenzhm,rs.bumen,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.ruzhirq as ruzhisj,rs.erjibm,rs.ruzhinx as gongzuonx,rs.ruzhirq as ruzhisj,yj.xingming,yj.json,xxk.zongbenjin as xuexikbj,xxk.edu,yj.hejiyye,yj.jingrentou')
                     ->join('LEFT JOIN stjy_rycb as rs on yj.xingming=rs.xingming')
                     ->join('LEFT JOIN stjy_school as ss on ss.name=rs.xiaoqu')
                     ->join('LEFT JOIN stjy_qishu_history as qh on qh.sid=ss.id')
@@ -330,7 +330,7 @@ class WagesScbAction extends WagesCommonAction{
         foreach($data as $key=>$val){
             $j=0;
             if ($val['0'] == '合计'){
-                for($i=0;$i<14;$i++){
+                for($i=0;$i<15;$i++){
                     unset($field[$i]);
                 }
                 $list[ $key ]['xuhao'] = '合计';
