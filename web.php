@@ -21,7 +21,7 @@ define('APP_DEBUG',True);
 define('APP_PATH','./Application/');
 
 // 绑定Admin模块到当前入口文件
-define('BIND_MODULE','index');
+define('BIND_MODULE','Index');
 
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
