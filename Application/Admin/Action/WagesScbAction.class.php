@@ -106,11 +106,11 @@ class WagesScbAction extends WagesCommonAction{
             $scyjb_id = $this->getQishuId($qishu,$sid,8);
             //实时计算
             $list = M('scyjb as yj')
-                    ->field('rs.shenfenzhm,rs.bumen,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.ruzhirq as ruzhisj,rs.erjibm,rs.ruzhinx as gongzuonx,rs.ruzhirq as ruzhisj,yj.xingming,yj.json,xxk.zongbenjin as xuexikbj,xxk.edu,yj.hejiyye,yj.jingrentou')
+                    ->field('rs.shenfenzhm,rs.bumen,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.ruzhirq as ruzhisj,rs.erjibm,rs.ruzhinx as gongzuonx,rs.ruzhirq as ruzhisj,yj.xingming,yj.json,xxk.zongbenjin as xuexikbj,yj.edu,yj.hejiyye,yj.jingrentou')
                     ->join('LEFT JOIN stjy_rycb as rs on yj.xingming=rs.xingming')
                     ->join('LEFT JOIN stjy_school as ss on ss.name=rs.xiaoqu')
                     ->join('LEFT JOIN stjy_qishu_history as qh on qh.sid=ss.id')
-                    ->join('LEFT JOIN stjy_xxkedb as xxk on xxk.suoshudd=qh.id')
+                    ->join('LEFT JOIN stjy_xxkedb as xxk on xxk.xingming=yj.xingming')
                     ->where(array('yj.suoshudd'=>$scyjb_id))
                     ->group('yj.id')
                     ->select();
@@ -206,12 +206,14 @@ class WagesScbAction extends WagesCommonAction{
         $cplx = array_values($cplx);
         //学习卡额度计算(***????)
         foreach($list as $key=>$val){
-            $val['edu'] = 40000;
+//            $val['edu'] = 40000;
             if ($val['edu'] > $new_data[$key][ count($new_data[$key])-1 ] && $new_data[$key][ count($new_data[$key])-1 ] != 0){
                 for($i=1;$i<count($new_data[$key]);$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
+//                    echo $val['xingming'].":".$new_data2[$key][$i] ."*".$cplx[$i]['ticheng']."=".$new_data2[$key][$i] * $cplx[$i]['ticheng']."<br>";
                 }
                 $list[$key]['xuexikjs'] +=  $list[$key]['miaoshatc'];
+//                echo $val['xingming'].":"."定额计算:".$list[$key]['miaoshatc']."<br>";
             }elseif($val['edu'] > $new_data[$key][ count($new_data[$key])-2 ] && $new_data[$key][ count($new_data[$key])-2 ] != 0){
                 for($i=1;$i<count($new_data[$key])-1;$i++){
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['ticheng'];
@@ -291,6 +293,7 @@ class WagesScbAction extends WagesCommonAction{
             }
             // $list[$key]['xuexikjs'] = number_format($list[$key]['xuexikjs'],2);
         }
+        die;
         $this->assign('data',$data);
         $this->assign('cplx',$cplx);
         $this->assign('chanpinlx',$chanpinlx);
