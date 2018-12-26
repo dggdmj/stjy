@@ -158,19 +158,50 @@ class WagesCommonAction extends CommonAction{
 
     //获得退费金额
     public function getTuifei($qishu,$sid,$tid = 13,$name){
-        $suoshudingdan = M("qishu_history")->where("tid = 13 and sid = $sid and qishu = $qishu")->getField("id");
-        if(!$suoshudingdan)
-            return 0;
-        $tuifei1 = M("tfb")->where("suoshudd = $suoshudingdan and zhaoshenggwxm = '".$name."'")->sum("zhaoshenggwykje");
-        $tuifei2 = M("tfb")->where("suoshudd = $suoshudingdan and jingdulsxm = '".$name."'")->sum("jingdulsykje");
-        $tuifei3 = M("tfb")->where("suoshudd = $suoshudingdan and fandulsxm = '".$name."'")->sum("fandulsykje");
-        $tuifei4 = M("tfb")->where("suoshudd = $suoshudingdan and jiaowuzrxm = '".$name."'")->sum("jiaowuzrykje");
-        $tuifei5 = M("tfb")->where("suoshudd = $suoshudingdan and zhaoshengfxzxm = '".$name."'")->sum("zhaoshengfxzje");
-        $tuifei6 = M("tfb")->where("suoshudd = $suoshudingdan and dianzhangzjxzxm = '".$name."'")->sum("dianzhangzjxzje");
-        $tuifei7 = M("tfb")->where("suoshudd = $suoshudingdan and quyujxzjxm = '".$name."'")->sum("quyujxzjje");
-        $tuifei8 = M("tfb")->where("suoshudd = $suoshudingdan and quyuzjxm = '".$name."'")->sum("quyuzjykje");
+        $suoshudd = M("qishu_history")->where("tid = 13 and sid = $sid and qishu = $qishu")->getField("id");
+        $list = M('tfb')->field('zhaoshenggwxm,zhaoshenggwykje,jingdulsxm,jingdulsykje,fandulsxm,fandulsykje,jiaowuzrxm,jiaowuzrykje,zhaoshengfxzxm,zhaoshengfxzje,dianzhangzjxzxm,dianzhangzjxzje,quyujxzjxm,quyujxzjje,quyuzjxm,quyuzjykje')->where(array('suoshudd'=>$suoshudd))->select();
+        $tuifei_total = 0;
+        foreach($list as $val){
+            switch ($name) {
+                case $v['zhaoshenggwxm']:
+                    $tuifei_total += $val['zhaoshenggwykje'];
+                    break;
+                case $v['jingdulsxm']:
+                    $tuifei_total += $val['jingdulsykje'];
+                    break;
+                case $v['fandulsxm']:
+                    $tuifei_total += $val['fandulsykje'];
+                    break;
+                case $v['jiaowuzrxm']:
+                    $tuifei_total += $val['jiaowuzrykje'];
+                    break;
+                case $v['zhaoshengfxzxm']:
+                    $tuifei_total += $val['zhaoshengfxzje'];
+                    break;
+                case $v['dianzhangzjxzxm']:
+                    $tuifei_total += $val['dianzhangzjxzje'];
+                    break;
+                case $v['quyujxzjxm']:
+                    $tuifei_total += $val['quyujxzjje'];
+                    break;
+                case $v['quyuzjxm']:
+                    $tuifei_total += $val['quyuzjykje'];
+                    break;
+            }
+        }
+        
+        // if(!$suoshudingdan)
+        //     return 0;
+        // $tuifei1 = M("tfb")->where("suoshudd = $suoshudingdan and zhaoshenggwxm = '".$name."'")->sum("zhaoshenggwykje");
+        // $tuifei2 = M("tfb")->where("suoshudd = $suoshudingdan and jingdulsxm = '".$name."'")->sum("jingdulsykje");
+        // $tuifei3 = M("tfb")->where("suoshudd = $suoshudingdan and fandulsxm = '".$name."'")->sum("fandulsykje");
+        // $tuifei4 = M("tfb")->where("suoshudd = $suoshudingdan and jiaowuzrxm = '".$name."'")->sum("jiaowuzrykje");
+        // $tuifei5 = M("tfb")->where("suoshudd = $suoshudingdan and zhaoshengfxzxm = '".$name."'")->sum("zhaoshengfxzje");
+        // $tuifei6 = M("tfb")->where("suoshudd = $suoshudingdan and dianzhangzjxzxm = '".$name."'")->sum("dianzhangzjxzje");
+        // $tuifei7 = M("tfb")->where("suoshudd = $suoshudingdan and quyujxzjxm = '".$name."'")->sum("quyujxzjje");
+        // $tuifei8 = M("tfb")->where("suoshudd = $suoshudingdan and quyuzjxm = '".$name."'")->sum("quyuzjykje");
 
-        $tuifei_total = (int)$tuifei1 + (int)$tuifei2 + (int)$tuifei3 + (int)$tuifei4 + (int)$tuifei5 + (int)$tuifei6 + (int)$tuifei7 + (int)$tuifei8;
+        // $tuifei_total = (int)$tuifei1 + (int)$tuifei2 + (int)$tuifei3 + (int)$tuifei4 + (int)$tuifei5 + (int)$tuifei6 + (int)$tuifei7 + (int)$tuifei8;
 
         return $tuifei_total;
     }

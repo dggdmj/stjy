@@ -45,7 +45,8 @@ class WagesScbAction extends WagesCommonAction{
         $sid = $_GET['sid']?$_GET['sid']:15;
         $suoshudd = $this->getQishuId($qishu,$sid,19);
         $yuefen = substr($qishu,4,2).'月';
-        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
+        $school_info = M('school')->where(array('id'=>$sid))->find();
+        $school_name = $school_info['name'];
         $heji = array();//合计
         $fujia = array();//附加表
         $sjjlb_id = $this->getQishuId($qishu,$sid,4);
@@ -94,7 +95,7 @@ class WagesScbAction extends WagesCommonAction{
             foreach($chanpinlx as $key=>$vv){
                 $chanpinlx[$key]['field'] = $this->encode($vv['xiangmu']);
                 // $chanpinlx[$key]['tichengds'] = is_numeric($vv['tichengds']) ? ( $vv['tichengds'] * 100 ).'%' : $vv['tichengds'];
-                if (!in_array($chanpinlx[$key]['tichengds'],$ticheng)){
+                if (!in_array($chanpinlx[$key]['tichengds'],$ticheng) && $chanpinlx[$key]['field'] != 'laoshengxufei'){
                     $cplx[$key]['ticheng'] = $chanpinlx[$key]['tichengds'];
                     $ticheng[] = $chanpinlx[$key]['tichengds'];
                     $cplx[$key]['tichengfxxk'] = $vv['tichengdsfxxk'] ? $vv['tichengdsfxxk'] : number_format($vv['tichengds'] * 0.8,2);
@@ -124,22 +125,19 @@ class WagesScbAction extends WagesCommonAction{
                 $list[$key]['yiqims'] = 0;
                 $list[$key]['xuexikbj'] = $list[$key]['xuexikbj'] ? $list[$key]['xuexikbj'] : 1;
                 $list[$key]['edu'] = $list[$key]['edu'] ? $list[$key]['edu'] : 1;
-                $list[$key]['jiubayyqms'] = 0;
-                $list[$key]['yiniangjhyzj'] = 0;
-                $list[$key]['yiniangjhyfzj'] = 0;
-                $list[$key]['chuangshimfd'] = 0;
-                $list[$key]['guoneilxkc'] = 0;
-                $list[$key]['guojilxkc'] = 0;
-                $list[$key]['laoshengxd'] = 0;
+
                 $list[$key]['json'] = json_decode($list[$key]['json'],'true');
                 foreach($list[$key]['json'] as $k=>$v){
                     $list[$key][$k] = $v;
                 }
                 foreach($chanpinlx as $kk=>$vv){
                     $tmp = str_replace('.','',$vv['tichengds']);
-                    $data[$key]['field'.$tmp] += $list[$key][$this->encode($vv['xiangmu'])];
+                    $temps = $this->encode($vv['xiangmu']);
+                    if ($temps != 'laoshengxufei'){
+                        $data[$key]['field'.$tmp] += $list[$key][$temps];
+                    }
                     if ($vv['shifoucyedjs'] == 1){
-                        $datas[$key]['field'.$tmp] += $list[$key][$this->encode($vv['xiangmu'])];
+                        $datas[$key]['field'.$tmp] += $list[$key][$temps];
                     }
                 }
                 unset($list[$key]['json']);
@@ -169,13 +167,21 @@ class WagesScbAction extends WagesCommonAction{
                 }
                 $list[$key]['miaoshatc'] = 0;
                 $list[$key]['yjs'] = 0;
-                foreach($byms98 as $oo){
-                    if ($vo['jinbanyf'] == $yuefen2 && $vo['count'] == 1 && $vo['xingming'] == $vo['yejigsr'] && $vo['jiaofeiyf'] == $yuefen2){
+                foreach($byms98 as $vo){
+                    if ($vo['jinbanyf'] == $yuefen2 && $vo['count'] == 1 && $val['xingming'] == $vo['yejigsr']){
                         $list[$key]['yjs'] += 1;
                         if ($list[$key]['yjs'] > 40){
-                            $list[$key]['miaoshatc'] += 276; 
+                            $list[$key]['miaoshatc'] += 276*0.5;
                         }else{
-                            $list[$key]['miaoshatc'] += 200; 
+                            $list[$key]['miaoshatc'] += 200*0.5;
+                        }
+                    }
+                    if ($vo['count'] == 1 && $val['xingming'] == $vo['yejigsr'] && $vo['jiaofeiyf'] == $yuefen2){
+                        $list[$key]['yjs'] += 1;
+                        if ($list[$key]['yjs'] > 40){
+                            $list[$key]['miaoshatc'] += 276*0.5;
+                        }else{
+                            $list[$key]['miaoshatc'] += 200*0.5;
                         }
                     }
                 }
@@ -197,13 +203,22 @@ class WagesScbAction extends WagesCommonAction{
                 $new_data2[$key][$ko] = $vo;
             }
         }
-        $hej2 = array();
+        $heji2 = array();
         foreach($data as $val){
             foreach($val as $kk=>$vv){
                 $heji2[$kk] += $vv; 
             }
         }
         $cplx = array_values($cplx);
+        $tmp_arr['name'] = '老生续读';
+        $tmp_arr['ticheng'] = '0.03';
+        $tmp_arr['tichengfxxk'] = '0';
+        $tmp_arr['tichengds'] = '3%';
+        $tmp_arr['tichengdsfxxk'] = '0';
+        $cplx[] = $tmp_arr;
+        $temp = 0;
+        //净人头考核
+        $jingrentkh = M('school')->where(array('id'=>$sid))->getField('jingrentoukh');
         //学习卡额度计算(***????)
         foreach($list as $key=>$val){
 //            $val['edu'] = 40000;
@@ -291,9 +306,15 @@ class WagesScbAction extends WagesCommonAction{
                     $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
                 }
             }
+            $list[$key]['xuexikjs'] += $list[$key]['laoshengxufei'] * 0.03;
+            $temp += $val['laoshengxufei'];
             // $list[$key]['xuexikjs'] = number_format($list[$key]['xuexikjs'],2);
+            $list[$key]['xuexikjs'] = $list[$key]['jingrentou'] > $jingrentkh ? $list[$key]['xuexikjs'] : $list[$key]['xuexikjs'] * 0.85;
         }
-        die;
+
+        $heji2[] = $temp;
+//        dump($list);
+//        die;
         $this->assign('data',$data);
         $this->assign('cplx',$cplx);
         $this->assign('chanpinlx',$chanpinlx);
