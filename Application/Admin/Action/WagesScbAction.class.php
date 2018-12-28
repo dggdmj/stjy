@@ -179,13 +179,19 @@ class WagesScbAction extends WagesCommonAction{
                             }
                         }
                     }
-                    $list[$key]['zhaoshengxztdmsyj'] = ($field1 - $field2) * 60 * 0.5 + ($field3 - $field4) * 60 * 0.5;
-
-                    if ($list[$key]['hejiyye'] <= 600000){
-                        $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.012;
+                    if($list[$key]['xiaoqu'] == $school_name){
+                        $list[$key]['zhaoshengxztdmsyj'] = ($field1 - $field2) * 60 * 0.5 + ($field3 - $field4) * 60 * 0.5;
+                        if ($list[$key]['hejiyye'] <= 600000){
+                            $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.012;
+                        }else{
+                            $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.015;
+                        }
                     }else{
-                        $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.015;
+                        $list[$key]['zhaoshengxztdmsyj'] = '';
+                        $list[$key]['zhaoshengxztdyj'] = '';
                     }
+
+
                 }
                 $list[$key]['miaoshatc'] = 0;
                 $list[$key]['yjs'] = 0;
