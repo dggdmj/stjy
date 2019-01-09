@@ -40,7 +40,7 @@ class CountJysjhzAction extends CommonAction {
         $info['tuifei'] = $srylb['tuifei'];
         $info['zaidurs'] = $info['yuedi'] - $info['weijinban'] - $info['tingdu'];
         $info['keyongjssl'] = $info['zaidurs'] / 10 * 2.5 / 11;
-        $info['shijijss'] = 0;//未给逻辑
+        $info['shijijss'] = M('school')->where(array('id'=>$sid))->getField('teachernum');//实际教师数    未给逻辑 
         $info['kaibanshu'] = $bjzysj['5']['dangyuebjs'];
         $info['banjibhl'] = $bjzysj['5']['banjibhl'];
         $info['jiaoshishu'] = $school['classnum'];

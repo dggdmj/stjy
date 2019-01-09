@@ -133,6 +133,7 @@ class CountXzmxAction extends CommonAction {
                 $temp['suoshudd'] = $qishu_id;
                 $temp['yuefen'] = $yuefen;
                 $temp['xinzenglx'] = '转入';
+                $array[] = $vv['xuehao'];
                 M('xzmxb')->add($temp);
                 $i ++;
             }
@@ -148,6 +149,7 @@ class CountXzmxAction extends CommonAction {
                $temp['suoshudd'] = $qishu_id;
                $temp['yuefen'] = $yuefen;
                $temp['xinzenglx'] = '流失回来';
+               $array[] = $vl['xuehao'];
                M('xzmxb')->add($temp);
                $i ++;
            }

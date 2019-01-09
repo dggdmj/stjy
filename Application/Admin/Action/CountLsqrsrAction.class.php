@@ -9,7 +9,7 @@ class CountLsqrsrAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu='201810',$sid='15'){
+    public function getYjData($qishu='201812',$sid='25'){
         // 判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>30))->getField('id');//判断是否有生成历史
         if ($qishu_id){
@@ -32,7 +32,7 @@ class CountLsqrsrAction extends CommonAction {
         $list = M($kxmxb.' as kx')
                 ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as kb on kb.banjimc=kx.banji')
                 ->field('kb.jingjiangxs as jingduxs,kb.fanduxs,kb.waijiaoxs,kx.shangkels as jingduls,kx.banji,kx.kexiaoje,kx.shangkesj,kx.zhujiao')
-                ->where("kx.suoshudd = '$kx_oid'")
+                ->where("kx.suoshudd = '$kx_oid' and kb.suoshudd='$kb_oid'")
                 ->order('kx.id')
                 ->select();
         //班级编码
@@ -48,12 +48,12 @@ class CountLsqrsrAction extends CommonAction {
         $banjisj = array();
         foreach($list as $key=>$val){
             $tmp = explode(',', $list[$key]['zhujiao']);
-            if (mb_strlen($tmp['0'],'utf-8') > mb_strlen($tmp['1'],'utf-8')){
-                $list[$key]['waijiaols'] = $tmp['0'];
-                $list[$key]['fanduls'] = $tmp['1'];
-            }else{
+            if (strlen($tmp['0']) > mb_strlen($tmp['0'],'utf-8')){
                 $list[$key]['waijiaols'] = $tmp['1'];
                 $list[$key]['fanduls'] = $tmp['0'];
+            }else{ 
+                $list[$key]['waijiaols'] = $tmp['0'];
+                $list[$key]['fanduls'] = $tmp['1'];
             }
             $list[$key]['banji'] = ucwords( $list[$key]['banji']);
             $list[$key]['jingdujb'] = substr( $list[$key]['banji'],0,3);
@@ -106,7 +106,6 @@ class CountLsqrsrAction extends CommonAction {
             $newList[$k+1]['suoshudd'] = $qishu_id;
 
             foreach($list as $val){
-
                 if ($val['bumen'] == '小学部'){
                     //计算授课小时
                     if($val['chuxiancs'] == 1){

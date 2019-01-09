@@ -56,7 +56,7 @@
                     <tr>
                         <td>{$jysj.c36}</td>
                         <td>{$jysj.d46}</td>
-                        <td>{$jysj.chayi3}</td>
+                        <td>{$jysj.chayi4}</td>
                     </tr>
                     <tr>
                         <td rowspan="2">学员信息表与班级花名册及出勤核对在读人数</td>
@@ -78,7 +78,7 @@
                     <tr>
                         <td>{$jysj.f36}</td>
                         <td>{$jysj.d57}</td>
-                        <td>{$jysj.chayi4}</td>
+                        <td>{$jysj.chayi3}</td>
                     </tr>
                     <tr>
                         <td rowspan="2">班级数核对</td>
@@ -124,6 +124,7 @@
                     <volist name="kecheng" id="kc">
                     <th>{$kc}</th>
                     </volist>
+                    <th>一对一</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -138,9 +139,10 @@
                         <if condition="$kc eq '一对一'">
                             <td><?php echo $v['yiduiyi'];?></td>
                         <else />
-                            <td><?php echo $v[strtolower($kc)];?></td>
+                            <td><?php echo $v[$kc];?></td>
                         </if>
                         </volist>
+                        <td>{$v["yiduiyi"]}</td>
                     </tr>
                 </foreach>
                 </tbody>

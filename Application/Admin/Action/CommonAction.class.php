@@ -365,7 +365,7 @@ class CommonAction extends Action {
         $data['qishu'] = $_GET['qishu'];
         $data['uid'] = $_SESSION['uid'];
         $res = M("duilie")->where("status = 1")->count();
-        $list = M("duilie")->where($data)->find();
+        $list = M("duilie")->where($data)->find(); 
         if($list){
             $arr['status'] = false;
             $arr['info'] = '请勿重复提交！';
@@ -408,9 +408,12 @@ class CommonAction extends Action {
     // 生成业绩表
     public function create(){
         // 避免重复操作
-        // $status_xz = M('sjzb')->where($_GET)->getField('status_xz');
+        $status_xz = M('sjzb')->where($_GET)->getField('status_xz');
         if($status_xz == 2){
-            die;
+            $this->error('该表已锁定不能重新提交');exit;
+            $arr['status'] = false;
+            $arr['info'] = '该表已锁定不能重新提交';
+            $this->ajaxReturn($arr);
         }
         $tablenames = $this->getTabelnames(1,[1,3,4]);// 获取序号和表明对应的一维数组
         $field = implode(',',$tablenames);// 组成筛选条件
@@ -453,13 +456,13 @@ class CommonAction extends Action {
             // 生成数据入库
             // $res = $this->AlltoDb($qishu,$sid);
             $this->AlltoDb($qishu,$sid);
-
+            $this->success('操作成功');exit;
             $arr['status'] = true;
             $arr['info'] = '操作成功';
             // $arr['info'] = $res;
             $this->ajaxReturn($arr);
         }else{
-            // $this->error('请导入所有表格后再通知财务');
+            $this->error('请导入所有表格后再通知财务');exit;
             $arr['status'] = false;
             $arr['info'] = '请导入所有表格后再通知财务';
             $this->ajaxReturn($arr);
@@ -479,7 +482,7 @@ class CommonAction extends Action {
 
         // 删除生成数据
         $this->delAllScData($qishu,$sid);
-
+        // $this->success('操作成功');exit;
         $arr['status'] = true;
         $arr['info'] = '操作成功';
         $this->ajaxReturn($arr);
@@ -669,6 +672,8 @@ class CommonAction extends Action {
         $chanpinlx = M('sjcplx')->field('xiangmu')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
         $sjcplx = array();
         foreach($chanpinlx as $kk=>$vv){
+            $vv['xiangmu'] = str_replace('(','（',$vv['xiangmu']);
+            $vv['xiangmu'] = str_replace(')','）',$vv['xiangmu']);
             $chanpinlx[$kk]['field'] = $this->encode($vv['xiangmu']);
         }
 
@@ -1365,16 +1370,16 @@ class CommonAction extends Action {
             $jysj = M("jysj")->where("suoshudd = '".$id."'")->find();  
             $objActSheet->setCellValue('G6',$jysj['c36']);
             $objActSheet->setCellValue('H6',$jysj['d46']);
-            $objActSheet->setCellValue('I6',$jysj['chayi1']);
+            $objActSheet->setCellValue('I6',$jysj['chayi4']);
             $objActSheet->setCellValue('G10',$jysj['as']);
             $objActSheet->setCellValue('H10',$jysj['f']);
-            $objActSheet->setCellValue('I10',$jysj['chayi2']);
+            $objActSheet->setCellValue('I10',$jysj['chayi1']);
             $objActSheet->setCellValue('G13',$jysj['f36']);
             $objActSheet->setCellValue('H13',$jysj['d57']);
             $objActSheet->setCellValue('I13',$jysj['chayi3']);
             $objActSheet->setCellValue('G16',$jysj['c21']);
             $objActSheet->setCellValue('H16',$jysj['c57']);
-            $objActSheet->setCellValue('I16',$jysj['chayi4']);
+            $objActSheet->setCellValue('I16',$jysj['chayi2']);
             // dump($data1);die;
             $i = 10;// 行从5开始
 
@@ -1394,8 +1399,16 @@ class CommonAction extends Action {
             }
 
             $data2 = M('zcxsxqztb')->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id asc')->select();
-
-            foreach($data2 as $v){
+            $kecheng_arr = array();
+            $kecheng = M('banjibianhao')->field('jingdujb')->select();
+            foreach($kecheng as $val){
+                $kecheng_arr[] = $val['jingdujb'];
+            }
+            foreach($data2 as $k=>$v){
+                $v['json'] = json_decode($v['json'],true);
+                foreach($v['json'] as $key=>$val){
+                    $v[$key] = $val;
+                }
                 if($v['nianji'] == '幼儿园'){
                     $data2['0'] = $v;
                 }
@@ -1430,16 +1443,26 @@ class CommonAction extends Action {
                     $data2['10'] = $v;
                 }
             }
-
+            $i = 26;
+            $z = 6;
+            for($j=0;$j<count($kecheng_arr)-1;$j++){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).$i,$kecheng_arr[$j]);$z++;
+            }
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).$i,'一对一');
             $i = 27;// 行从26开始
-
             foreach ($data2 as $row) {
                 $j = 1;
-                foreach($row as $v){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$row['nianji']);$j++;
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$row['zongrenshu']);$j++;
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$row['weijinban']);$j++;
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$row['tingduyjkfx']);$j++;
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$row['shijizbrs']);$j++;
+                foreach($kecheng_arr as $v){
                     // 写入数值
-                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$v);
+                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$row[$v]);
                     $j++;
                 }
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($j).$i,$row['yiduiyi']);$j++;
                 $i++;
             }
 
@@ -2057,35 +2080,9 @@ class CommonAction extends Action {
             $temp['tingduyjkfx'] = $v1['tingduyjkfx'];
             // $temp['tingdubkfx'] = $v1['ztingdubkfxrs'];
             $temp['shijizbrs'] = $v1['shijizbrs'];
-            $temp['k01'] = $v1['K01'];
-            $temp['k02'] = $v1['K02'];
-            $temp['k03'] = $v1['K03'];
-            $temp['k04'] = $v1['K04'];
-            $temp['k05'] = $v1['K05'];
-            $temp['k06'] = $v1['K06'];
-            $temp['p01'] = $v1['P01'];
-            $temp['p02'] = $v1['P02'];
-            $temp['p03'] = $v1['P03'];
-            $temp['p1a'] = $v1['P1A'];
-            $temp['p1b'] = $v1['P1B'];
-            $temp['p2a'] = $v1['P2A'];
-            $temp['p2b'] = $v1['P2B'];
-            $temp['p3a'] = $v1['P3A'];
-            $temp['p3b'] = $v1['P3B'];
-            $temp['p4a'] = $v1['P4A'];
-            $temp['p4b'] = $v1['P4B'];
-            $temp['p5a'] = $v1['P5A'];
-            $temp['p5b'] = $v1['P5B'];
-            $temp['p6a'] = $v1['P6A'];
-            $temp['p6b'] = $v1['P6B'];
-            $temp['j1a'] = $v1['J1A'];
-            $temp['j1b'] = $v1['J1B'];
-            $temp['j2a'] = $v1['J2A'];
-            $temp['j2b'] = $v1['J2B'];
-            $temp['j3a'] = $v1['J3A'];
-            $temp['j3b'] = $v1['J3B'];
+            $temp['json'] = json_encode($v1['json']);
             $temp['yiduiyi'] = $v1['yiduiyi'];
-            $temp['ns1'] = $v1['ns1'];
+            // $temp['ns1'] = $v1['ns1'];
             $temp['suoshudd'] = $qishu_id;
             M('zcxsxqztb')->add($temp);
             unset($temp);
@@ -2210,6 +2207,10 @@ class CommonAction extends Action {
         $lsqryye = new \Admin\Action\CountLsqryyeAction();
         $res_lsyye = $lsqryye->getYjData($qishu,$sid);
 
+        // 老师确认秒杀营业额
+        $lsqryyems = new \Admin\Action\CountLsqryyemsAction();
+        $res_lsyyems = $lsqryyems->getYjData($qishu,$sid);
+
         //老师收入
         $lsqrsr = new \Admin\Action\CountLsqrsrAction();
         $res_lsqrsr =  $lsqrsr->getYjData($qishu,$sid);
@@ -2242,7 +2243,7 @@ class CommonAction extends Action {
         $jysjbhz = new \Admin\Action\CountJysjhzAction();
         $jysjbhz_list =  $jysjbhz->getJysjbhzData($qishu,$sid);
         // -----------------------生成数据入库结束-----------------------
-        
+        return true;
 
     }
 
@@ -2315,6 +2316,8 @@ class CommonAction extends Action {
         $res_tf = $this->delScData($qishu,$sid,39);
         //经营数据表汇总
         $res_tf = $this->delScData($qishu,$sid,40);
+        //老师确认秒杀营业额
+        $res_tf = $this->delScData($qishu,$sid,47);
         // -----------------------生成数据从库删除结束-----------------------
     }
 
@@ -2570,6 +2573,7 @@ class CommonAction extends Action {
                           `shoucijfrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '首次缴费日期',
                           `shoucixfrq` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '首次消费日期',
                           `shengao` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '身高',
+                          `shifouzxzrdjb` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '是否转校转入待进班',
                           `suoshudd` int(11) DEFAULT NULL COMMENT '所属订单',
                           `daorusj` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '导入时间',
                           PRIMARY KEY (`id`),

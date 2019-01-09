@@ -35,8 +35,12 @@ class IndexAction extends CommonAction {
         foreach($school_name as $val){
             $xuexiao[] = $val['name'];
         }
-        $xuexiao = implode(',',$xuexiao);
-        $sid = session('sid');
+        if(count($xuexiao) == 1){
+            $xuexiao = $xuexiao['0'];
+        }else{
+            $xuexiao = count($xuexiao);
+        }
+        
         $sid = explode(',',$sid);
         $this->assign('school',$school);
         $this->assign('xuexiao',$xuexiao);
@@ -71,6 +75,7 @@ class IndexAction extends CommonAction {
         if (!$sid){
             $this->error('请选择要切换的分校',U('index/index'));
             exit;
+            // $result['info'] = '请选择要切换的分校';
         }
         $sid = implode(',',$sid);
         session('sid',$sid);

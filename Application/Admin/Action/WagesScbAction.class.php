@@ -61,6 +61,8 @@ class WagesScbAction extends WagesCommonAction{
         array_multisort($last_names,SORT_DESC,$chanpinlx);
 
         foreach($chanpinlx as $key=>$vv){
+            $vv['xiangmu'] = str_replace('(','（',$vv['xiangmu']);
+            $vv['xiangmu'] = str_replace(')','）',$vv['xiangmu']);
             $chanpinlx[$key]['field'] = $this->encode($vv['xiangmu']);
             // $chanpinlx[$key]['tichengds'] = is_numeric($vv['tichengds']) ? ( $vv['tichengds'] * 100 ).'%' : $vv['tichengds'];
             if (!in_array($chanpinlx[$key]['tichengds'],$ticheng) && $chanpinlx[$key]['field'] != 'laoshengxufei'){
@@ -133,7 +135,7 @@ class WagesScbAction extends WagesCommonAction{
                     ->join('LEFT JOIN stjy_school as ss on ss.name=rs.xiaoqu')
                     ->join('LEFT JOIN stjy_qishu_history as qh on qh.sid=ss.id')
                     ->join('LEFT JOIN stjy_xxkedb as xxk on xxk.xingming=yj.xingming')
-                    ->where(array('yj.suoshudd'=>$scyjb_id))
+                    ->where("yj.suoshudd='$scyjb_id' and yj.hejiyye != ''")
                     ->group('yj.id')
                     ->order('yj.id')
                     ->select();
@@ -165,6 +167,10 @@ class WagesScbAction extends WagesCommonAction{
                 unset($list[$key]['json']);
                 //招生副校长团队秒杀业绩
                 if ($list[$key]['zhiwei'] == '招生副校长'){
+                     $field1 = 0;
+                    $field2 = 0;
+                    $field3 = 0;
+                    $field4 = 0;
                     foreach($byms98 as $vo){
                         if ($vo['jinbanyf'] == $yuefen2 && $vo['count'] == 1){
                             $field1 += 1;
@@ -179,19 +185,6 @@ class WagesScbAction extends WagesCommonAction{
                             }
                         }
                     }
-                    if($list[$key]['xiaoqu'] == $school_name){
-                        $list[$key]['zhaoshengxztdmsyj'] = ($field1 - $field2) * 60 * 0.5 + ($field3 - $field4) * 60 * 0.5;
-                        if ($list[$key]['hejiyye'] <= 600000){
-                            $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.012;
-                        }else{
-                            $list[$key]['zhaoshengxztdyj'] = ( $list[$key]['hejiyye'] - $list[$key][ $this->encode('1期秒杀') ] - $list[$key][$this->encode('98元1期秒杀')]) * 0.015;
-                        }
-                    }else{
-                        $list[$key]['zhaoshengxztdmsyj'] = '';
-                        $list[$key]['zhaoshengxztdyj'] = '';
-                    }
-
-
                 }
                 $list[$key]['miaoshatc'] = 0;
                 $list[$key]['yjs'] = 0;
@@ -328,10 +321,26 @@ class WagesScbAction extends WagesCommonAction{
                     // $list[$key]['xuexikjs'] = number_format($list[$key]['xuexikjs'],2);
                     $list[$key]['xuexikjs'] = $list[$key]['jingrentou'] > $jingrentkh ? $list[$key]['xuexikjs'] : $list[$key]['xuexikjs'] * 0.85;
                 }
-
+                $hejiyye += $list[$key]['hejiyye'];
+                $yiqims += $list[$key][$this->encode('1期秒杀') ];
+                $jbyyiqms += $list[$key][$this->encode('98元1期秒杀') ];
+            }
+            foreach($list as $key=>$val){
+                if ($list[$key]['zhiwei'] == '招生副校长'){
+                    if($list[$key]['xiaoqu'] == $school_name){
+                        $list[$key]['zhaoshengxztdmsyj'] = ($field1 - $field2) * 60 * 0.5 + ($field3 - $field4) * 60 * 0.5;
+                        if ($hejiyye <= 600000){
+                            $list[$key]['zhaoshengxztdyj'] = ( $hejiyye - $yiqims - $jbyyiqms) * 0.012;
+                        }else{
+                            $list[$key]['zhaoshengxztdyj'] = ( $hejiyye - $yiqims - $jbyyiqms) * 0.015;
+                        }
+                    }else{
+                        $list[$key]['zhaoshengxztdmsyj'] = '';
+                        $list[$key]['zhaoshengxztdyj'] = '';
+                    }
+                }
             }
         }
-        
 
         $heji2 = array();
         foreach($data as $val){

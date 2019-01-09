@@ -9,7 +9,7 @@ class CountZxldxtzAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getZxldxtzData($qishu='201810',$sid='15'){
+    public function getZxldxtzData($qishu='201811',$sid='15'){
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>32))->getField('id');//判断是否有生成历史
         if ($qishu_id){
             $list = M('zxldxtz')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
@@ -33,12 +33,12 @@ class CountZxldxtzAction extends CommonAction {
 
         $list = M('sjjlb_'.$nian.' as sj')
                 ->join('LEFT JOIN stjy_szlsb as sz on sj.shoujuhao=sz.shoujuhao')
-                ->join('LEFT JOIN stjy_xyxxb_'.$nian.' as xy on xy.xingming=sj.jieshaoren')
+                ->join('LEFT JOIN stjy_xyxxb_'.$nian.' as xy on xy.xuehao=sj.xuehao')
+                ->join('LEFT JOIN stjy_sjcplx as cp on cp.xiangmu=sj.chanpinlx')
                 ->field('sj.xuehao,sj.xingming as xinshengxm,sj.jiaofeirq,sj.xiaoqu as fenxiao,sj.jieshaoren as laohuiyxm,sz.shouru as jiaofeije,xy.xuehao as laohuiyxh,sj.shoujuhao as xinshengsjh')
-                ->where("sj.suoshudd='$sjjlb_oid' and sj.jieshaoren != '' and sj.shoukuanzh != '老带新返现' and sj.shoukuanzh != '结转学费' and sj.chanpinlx != '教材费' and sz.shouru != '' and xy.shoucijfrq > '$benyue_time'")
+                ->where("sj.suoshudd='$sjjlb_oid' and sj.jieshaoren != '' and sj.shoukuanzh != '老带新返现' and sj.shoukuanzh != '结转学费' and sj.chanpinlx != '教材费' and sz.shouru != '' and xy.shoucijfrq > '$benyue_time' and cp.shifouldx=1")
                 ->group('sj.shoujuhao')
                 ->select();
-
         foreach($list as $key=>&$val){
             $val['xuhao'] = $key+1;
             $val['nianfen'] = $nianfen;

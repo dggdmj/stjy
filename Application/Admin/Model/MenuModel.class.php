@@ -33,6 +33,18 @@ class MenuModel {
                         'order' => 1
                     ),
                     array(
+                        'name' => '课消明细表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/5'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '学员费用预警表导入',
+                        'icon' => 'sitemap',
+                        'url' => U('/TableImport/tableList/tid/7'),
+                        'order' => 1
+                    ),
+                    array(
                         'name' => '学员信息表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/tableList/tid/1'),
@@ -62,24 +74,14 @@ class MenuModel {
                         'url' => U('/TableImport/tableList/tid/24'),
                         'order' => 1
                     ),
-                    array(
-                        'name' => '课消明细表导入',
-                        'icon' => 'sitemap',
-                        'url' => U('/TableImport/tableList/tid/5'),
-                        'order' => 1
-                    ),
+                    
                     array(
                         'name' => '开班明细表导入',
                         'icon' => 'sitemap',
                         'url' => U('/TableImport/tableList/tid/6'),
                         'order' => 1
                     ),
-                    array(
-                        'name' => '学员费用预警表导入',
-                        'icon' => 'sitemap',
-                        'url' => U('/TableImport/tableList/tid/7'),
-                        'order' => 1
-                    ),
+                    
                     array(
                         'name' => '学习卡额度表导入',
                         'icon' => 'sitemap',
@@ -194,6 +196,12 @@ class MenuModel {
                         'name' => '老师确认营业额',
                         'icon' => 'file',
                         'url' => U('/TableCount/lsqryye'),
+                        'order' => 7
+                    ),
+                    array(
+                        'name' => '老师确认秒杀营业额',
+                        'icon' => 'file',
+                        'url' => U('/TableCount/lsqryyems'),
                         'order' => 7
                     ),
                     array(
@@ -489,12 +497,12 @@ class MenuModel {
                         'url' => U('Setting/wupinqd'),
                         'order' => 12
                     ),
-                    array(
-                        'name' => '课程管理',
-                        'icon' => 'puzzle-piece',
-                        'url' => U('Setting/kechenggl2'),
-                        'order' => 12
-                    ),
+                    // array(
+                    //     'name' => '课程管理',
+                    //     'icon' => 'puzzle-piece',
+                    //     'url' => U('Setting/kechenggl2'),
+                    //     'order' => 12
+                    // ),
                     array(
                         'name' => '阿米巴标准',
                         'icon' => 'puzzle-piece',

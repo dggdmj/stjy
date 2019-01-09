@@ -125,17 +125,30 @@ class TableImportAction extends CommonAction{
         $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name,stjy_school.isshebao,stjy_school.isgongjijin')->where($map)->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         // }
         // dump($list);
-        // dump($Page->firstRow.','.$Page->listRows);
+        // dump($Page->firstRow.','.$Page->listRows); 
 
         // 获取表明与序号对应的一维数组
-        $arr = $this->getTabelnames();
-
+        $arr = $this->getTabelnames(); 
+        //把课消明细表和学员费用预警放前面
+        $tmp = $arr;
+        $key = array_search('kxmxb',$arr);
+        $key2 = array_search('xyfyyjb',$arr);
+        unset($arr[$key],$arr[$key2]);
+        array_unshift($arr,'kxmxb','xyfyyjb');
+        $data = array();
+        foreach($arr as $vv){
+            foreach($tmp as $key=>$val){
+                if($vv == $val){
+                    $data[$key] = $vv;
+                }
+            }
+        }
         // 查询该学校是否需要
         $this->assign('get',$_GET);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('rid',$rid);// 赋值角色id
-        $this->assign('arr',$arr);
+        $this->assign('arr',$data);
         $this->adminDisplay();
     }
 
@@ -344,6 +357,10 @@ class TableImportAction extends CommonAction{
     public function dataUpload() {
         if (!empty($_FILES)) {
             // dump($_FILES);die;
+            $s_status = M('school')->where(array('id'=>$_POST['sid']))->getField('isuse');
+            if($s_status != 1){
+                $this->error('当前校区已被禁用，请联系管理员');exit;
+            }
             $name = explode('.',$_FILES['excel']['name'])[0];// 获取上传excel文档的文档名
             
             $tablename = $_POST["table_name"];  //excel表对应的数据表的表名
@@ -413,6 +430,20 @@ class TableImportAction extends CommonAction{
             $sjzb['sid'] = $_POST['sid'];
             $sjzb[$tablename] = 2;
             $res2 = M('sjzb')->where($where2)->find();
+            if($count != 1){
+                if($res2['kxmxb'] != 2 && $_POST['tid'] != 5){
+                    unlink($file_name);// 删除excel文档
+                    $this->error('请先导入课消明细表');
+                }
+                if($res2['xyfyyjb'] != 2 && $_POST['tid'] != 7 &&  $_POST['tid'] != 5){
+                    unlink($file_name);// 删除excel文档
+                    $this->error('请先导入学员费用预警表');
+                }
+                if($res2['xyxxb'] != 2 && $_POST['tid'] == 3){
+                    unlink($file_name);// 删除excel文档
+                    $this->error('请先导入学员信息表');
+                }
+            }
 
             // 若查询到无记录则添加,否则就更新数据
             if(empty($res2)){
@@ -420,7 +451,8 @@ class TableImportAction extends CommonAction{
             }else{
                 M('sjzb')->where($where2)->save($sjzb);
             }
-           
+            $count = M('sjzb')->where($where2)->count();//判断是否是第一次提交
+            $sjzb[$tablename] = 1;
             $qishu_id = M("qishu_history")->add($_POST);
             //判断是否是分表
             $new_tablename = $this->checkFenbiao($qishu_id,$tablename);
@@ -468,14 +500,213 @@ class TableImportAction extends CommonAction{
                 // 获取excel里面除字段以外的数据
                 $excel_data = $this->getExcelData($objPHPExcel,$highestRow,$tid,$qishu_id,$ziduan,$newTemp);
             }
-//             dump($excel_data);
-//             die;
+            // dump($excel_data);
+            // die;
             // 将获取数组插入到数据库相应的表里面
             // $res = M($tablename)->addAll($excel_data);
+            $error = array();//异常名单
+            //验证学号是否重复
+            if($_POST['tid'] == 1 || $_POST['tid'] == 3){
+                $xuehao = array();
+                foreach($excel_data as $val){
+                    if(in_array($val['xuehao'],$xuehao)){
+                        $val['yichangbz'] = '学号重复';
+                        $error[] = $val;
+                    }else{
+                        $xuehao[] = $val['xuehao'];
+                    }
+                }
+            }
+            $school_name = M('school')->where(array('id'=>$_POST['sid']))->getField('name');
+            $nian = substr($_POST['qishu'],0,4);
+            
+            //验证学员信息表
+            if($_POST['tid'] == 1){
+                //获取课消明细表的学号
+                $kxmxb_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],5);
+                $kxmxb_list = M('kxmxb_'.$nian)->field('xuehao')->where(array('suoshudd'=>$kxmxb_id))->select();
+                $kxmxb = array();
+                foreach($kxmxb_list as $val){
+                    $kxmxb[] = $val['xuehao'];
+                }
+                //获取学员费用预警
+                $xyfyyjb_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],7);
+                $xyfyyjb_list = M('xyfyyjb_'.$nian)->field('xuehao,shengyugmsl,shengyuzssl,feiyong')->where(array('suoshudd'=>$xyfyyjb_id))->select();
+                //验证就读学校和年纪
+                foreach($excel_data as $key=>$val){
+                    if($val['jiuduxx'] == '' || $val['nianji'] == ''){
+                        $val['yichangbz'] = '就读学校、年级为空';
+                        $error[] = $val;
+                        unset($list[$key]);
+                    }
+                    //判断是否是本月在读学生
+                    if ($val['shoucixfrq'] && $val['zhuangtai'] == '在读' && $val['xiaoqu'] == $school_name && $val['shifouzxzrdjb'] != '是'){
+                        if(!in_array($val['xuehao'],$kxmxb)){
+                            $val['yichangbz'] = '本月无课销记录，请操作休学或退学';
+                            $error[] = $val;
+                        }
+                        if($val['zhuangtai'] == '在读' || $val['zhuangtai'] == '休学'){
+                            foreach($xyfyyjb_list as $vv){
+                                if($val['xuehao'] == $vv['xuehao']){
+                                    $val['shuliang'] += $vv['shengyugmsl'] + $vv['shengyuzssl'];
+                                    $val['feiyong'] += $vv['feiyong'];
+                                }
+                            }
+                            if($val['shuliang'] <= 0 && $val['feiyong'] <= 0 && $val['lengxing'] == ''){
+                                $val['yichangbz'] = '该学员已无课次学费，请操作退学';
+                                $error[] = $val;
+                            }
+                        }
+                    }
+                }
+            }
+            //验证班级学员信息表
+            if($_POST['tid'] == 3){
+                $xyxxb_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],1);
+                $xyxxb_list = M('xyxxb_'.$nian)->field('xuehao,xingming,zhuangtai,shoucixfrq,xiaoqu,shifouzxzrdjb')->where("suoshudd='$xyxxb_id' and xiaoqu='$school_name' and shoucixfrq != '' and shifouzxzrdjb != '是' and zhuangtai = '在读'")->select();
+                $bjxyxxb = array();
+                $xyxxb = array();
+                foreach($xyxxb_list as $val){
+                    $xyxxb[] = $val['xuehao'];
+                }
+                foreach($excel_data as $val){
+                    $bjxyxxb[] = $val['xuehao'];
+                    if(!in_array($val['xuehao'],$xyxxb)){
+                        $val['yichangbz'] = '非本月在读学生，请在校管家操作分出班级';
+                        $error[] = $val;
+                    }
+                }
+                foreach($xyxxb_list as $val){
+                    if(!in_array($val['xuehao'],$bjxyxxb)){
+                        $val['yichangbz'] = '在读学生未在班级里，请在校管家操作分进班级';
+                        $error[] = $val;
+                    }
+                }
+
+            }
+            //验证收据记录
+            if($_POST['tid'] == 4){
+                $cplx = array();
+                $sjcplx = M('sjcplx')->field('xiangmu')->select();
+                foreach($sjcplx as $val){
+                    $val['xiangmu'] = str_replace('(','（',$val['xiangmu']);
+                    $val['xiangmu'] = str_replace(')','）',$val['xiangmu']);
+                    $cplx[] = $val['xiangmu'];
+                }
+                foreach($excel_data as $val){
+                    $val['chanpinlx'] = str_replace('(','（',$val['chanpinlx']);
+                    $val['chanpinlx'] = str_replace(')','）',$val['chanpinlx']);
+                    $val['chanpinlx'] = str_replace(',','，',$val['chanpinlx']);
+                    if(!in_array($val['chanpinlx'],$cplx) && !strpos($val['chanpinlx'],'，')){
+                        $val['yichangbz'] = '收据类型未添加';
+                        $error[] = $val;
+                    }
+                }
+                
+            }
+            //验证课消明细
+            if($_POST['tid'] == 5){
+                $banjibh = M('banjibianhao')->field('jingdujb')->select();
+                $bianhao = array();
+                foreach($banjibh as $val){
+                    $bianhao[] = $val['jingdujb'];
+                }
+                //班级&时间
+                $banjisj = array();
+                $banjisj2 = array();
+                foreach($excel_data as $val){
+                    $tmp = '';
+                    $tmp = substr($val['banji'],0,3);
+                    $tsp = $val['banji'].$val['shangkesj'];
+                    if(!in_array($tmp,$bianhao)){
+                        $banjisj[] = $tmp;
+                        $val['yichangbz'] = $tmp.'班级编号未添加';
+                        $error[] = $val;
+                    }
+                    if(!in_array($tsp,$banjisj)){
+                        $banjisj[] = $tsp;
+                        $banjisj2[ $tsp ]['shangkels'] = $val['shangkels'];
+                        $banjisj2[ $tsp ]['zhujiao'] = $val['zhujiao'];
+                        // $banjisj2[ $tsp ]['xingming'] = $val['xingming'];
+                        // $banjisj2[ $tsp ]['xuehao'] = $val['xuehao'];
+                        // $banjisj2[ $tsp ]['banji'] = $val['banji'];
+                        // $banjisj2[ $tsp ]['shangkesj'] = $val['shangkesj'];
+                    }else{
+                        if($val['zhujiao'] != $banjisj2[$tsp]['zhujiao'] || $val['shangkels'] != $banjisj2[$tsp]['shangkels']){
+                            $temp = explode($val['zhujiao']);
+                            $temps = explode($banjisj2[$tsp]['zhujiao']);
+                            if($val['shangkels'] != $banjisj2[$tsp]['shangkels']){
+                                $val['yichangbz'] = '班级&时间，上课老师不一致';
+                                $error[] = $val;
+                            }elseif(($temp['0'] != $temps['0'] && $temp['0'] != $temps['1']) && ($temp['1'] != $temps['0'] && $temp['1'] != $temps['1'])){
+                                $val['yichangbz'] = '班级&时间，助教老师不一致';
+                                $error[] = $val;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //验证开班明细表
+            if($_POST['tid'] == 6){
+                $kxmxb_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],5);
+                $kxmxb = M('kxmxb_'.$nian)->field('shangkesc,banji')->where(array('suoshudd'=>$kxmxb_id))->select(); 
+                foreach($excel_data as $val){
+                    $tmp = '';
+                    $tmp = $val['jingjiangxs'] + $val['fanduxs'] + $val['waijiaoxs'];
+                    if(!$val['jingjiangls']){
+                        $val['yichangbz'] = '精讲老师不能为空';
+                        $error[] = $val;
+                    }
+                    if(!$val['fanduls']){
+                        $val['yichangbz'] = '泛读老师不能为空';
+                        $error[] = $val;
+                    }
+                    if(!$val['waijiaols']){
+                        $val['yichangbz'] = '外教老师不能为空';
+                        $error[] = $val;
+                    }
+                    if($tmp != $val['shangkexss']){
+                        $val['yichangbz'] = '上课时长和分配时间不一致';
+                        $error[] = $val;
+                    }
+                    foreach($kxmxb as $vv){
+                        if($vv['banji'] == $val['banjimc']){
+                            $shangkesc = mb_substr($vv['shangkesc'],0,-2,'UTF-8');
+                            if($shangkesc != $val['shangkexss']){
+                                $val['yichangbz'] = '课消明细表的上课时长和开班明细表的上课时间不一致';
+                                $error[] = $val;
+                            }
+                        }
+                    }
+                }
+            }
+            //验证进出库明细
+            if($_POST['tid'] == 34){
+                $wpqd = M('wupinqd')->field('mingcheng')->select();
+                $wupinqd = array();
+                foreach($wpqd as $val){
+                    $wupinqd[] = $val['mingcheng'];
+                }
+                foreach($excel_data as $val){
+                    if(!in_array($val['mingcheng'],$wupinqd)){
+                        $val['yichangbz'] = '物品清单未添加此名称';
+                        $error[] = $val;
+                    }
+                }
+            }
+            if($error && $count != 1){
+                M('qishu_history')->where(array('id'=>$qishu_id))->delete();
+                M('sjzb')->where($where2)->save($sjzb);
+                $this->yichangmd($error,$_POST['tid']);
+                exit;
+            }
+
             //获取分表年份表名
             foreach($excel_data as $v){
                 M($new_tablename)->add($v);
             }
+
 
             // 位置不能移动,要等班级学员信息表执行完才有其$id_bjxyxxb
             // 校验导入表格
@@ -520,7 +751,80 @@ class TableImportAction extends CommonAction{
         }
     }
 
-    
+    //异常名单查看
+    public function yichangmd($data,$tid){
+        $list = array();
+        if($tid == 1 || $tid == 3){
+            $title = array('学号','姓名','状态','首次消费日期','校区','异常情况');
+            foreach($data as $key=>$val){
+                $list[$key]=array($val['xuehao'],$val['xingming'],$val['zhuangtai'],$val['shoucixfrq'],$val['xiaoqu'],$val['yichangbz']);
+            }
+        }
+        if($tid == 6){
+            $title = array('班级名称','上课时间段','上课时间','上课时长','精读小时','泛读小时','外教小时','异常情况');
+            foreach($data as $key=>$val){
+                $list[$key]=array($val['banjimc'],$val['shangkesjd'],$val['shangkesj'],$val['shangkesc'],$val['jingduxs'],$val['fanduxs'],$val['waijiaoxs'],$val['yichangbz']);
+            }
+        }
+        if($tid == 5){
+            $title = array('学号','姓名','班级','上课时间','上课老师','助教','异常情况');
+            foreach($data as $key=>$val){
+                $list[$key]=array($val['xuehao'],$val['xingming'],$val['banji'],$val['shangkesj'],$val['shangkels'],$val['zhujiao'],$val['yichangbz']);
+            }
+        }
+        if($tid == 4){
+            $title = array('缴费日期','收据号','学号','姓名','产品类型','异常情况');
+            foreach($data as $key=>$val){
+                $list[$key]=array($val['jiaofeirq'],$val['shoujuhao'],$val['xuehao'],$val['xingming'],$val['chanpinlx'],$val['yichangbz']);
+            }
+        }
+        if($tid == 34){
+            $title = array('日期','操作','仓库','类别','名称','金额','异常情况');
+            foreach($data as $key=>$val){
+                $list[$key]=array($val['riqi'],$val['couzuo'],$val['cangku'],$val['leibie'],$val['mingcheng'],$val['jine'],$val['yichangbz']);
+            }
+        }
+
+        $this->assign('title',$title);
+        $this->assign('list',$list);
+        $this->adminDisplay('yichangmd');
+    }
+
+    //异常名单下载
+    public function download_ycmd(){
+        $data = $_POST['jsons'];
+        $data = json_decode($data);
+
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $filename = '异常名单';
+        $template = __ROOT__.'Public/template/template_ycmd.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        // $objActSheet->setCellValue('A1',$filename); 
+        $i = 1;
+        foreach($data as $val){
+            $k = 0;
+            foreach($val as $vv){
+                $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($k).$i,$vv);$k++;
+            }
+            $i++;
+        }
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="'.$filename.'.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+
+    }
 
     // 退费表专用上传方法
     public function dataUpload2() {
@@ -634,7 +938,7 @@ class TableImportAction extends CommonAction{
 
     public function checkBixu($tablename,$ziduan){
         $bixu = $this->getComment($tablename);
-        $bixu = array_flip(array_diff($bixu,['id','suoshudd','daorusj']));
+        $bixu = array_flip(array_diff($bixu,['id','suoshudd','daorusj','shifouzxzrdjb']));
         $cha = array_diff($bixu,$ziduan);
         if(!empty($cha)){
             return $cha;

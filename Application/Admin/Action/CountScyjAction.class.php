@@ -9,14 +9,14 @@ class CountScyjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getScyjData($qishu='201810',$sid='15'){
+    public function getScyjData($qishu='201812',$sid='25'){
 
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
         if(!$qishu_id){
             $qishu_id = $this->insertQishuHistory(8,$qishu,$sid);
         }else{
-            $data = M('scyjb')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
+            $data = M('scyjb')->where("suoshudd='$qishu_id' and hejiyye != ''")->order('id')->select();
             foreach($data as &$val){
                 $val['json'] = json_decode($val['json'],'true');
                 foreach($val['json'] as $k=>$v){
@@ -30,32 +30,47 @@ class CountScyjAction extends CommonAction {
         $chanpinlx = M('sjcplx')->field('xiangmu')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
         $sjcplx = array();
         foreach($chanpinlx as $vv){
+            $vv['xiangmu'] = str_replace('(','（',$vv['xiangmu']);
+            $vv['xiangmu'] = str_replace(')','）',$vv['xiangmu']);
             $sjcplx[] = $vv['xiangmu'];
         }
         $nianfen = substr($qishu,0,4);
         $tid = 4;//收据记录表的id
         $suoshuid = $this->getQishuId($qishu,$sid,$tid);//获取订单id
+        $szls_id = $this->getQishuId($qishu,$sid,26);//获取订单id
+        $xyxxb_id = $this->getQishuId($qishu,$sid,1);//获取订单id
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
 
         $renming = array();
         
-        $Model = M();
         //查询出所有数据
         $list = M('sjjlb_'.$nianfen.' as ss')
                     ->join('LEFT JOIN stjy_szlsb as sz on sz.shoujuhao=ss.shoujuhao')
-                    ->join('LEFT JOIN stjy_xyxxb_'.$nianfen.' as xx on xx.xuehao=ss.xuehao')
+                    // ->join('LEFT JOIN stjy_xyxxb_'.$nianfen.' as xx on xx.xuehao=ss.xuehao')
                     // ->join('LEFT JOIN stjy_xxked as sx on sx.xingming=ss.xingming')
-                    ->field('ss.shoujulx,ss.yejigsr,ss.chanpinlx,ss.jingrentou,sz.shouru,sz.zhanghu,ss.jiaofeirq,xx.shoucijfrq')
-                    ->where(" ss.suoshudd = '$suoshuid' and ss.yejigsr != '' ")
-                    ->group('ss.shoujuhao')
+                    ->field('ss.shoujulx,ss.yejigsr,ss.chanpinlx,ss.jingrentou,sz.shouru,sz.zhanghu,ss.jiaofeirq,ss.shoujuhao,ss.xuehao')
+                    ->where(" ss.suoshudd = '$suoshuid' and ss.yejigsr != '' and sz.suoshudd = '$szls_id'")
+                    // ->group('ss.shoujuhao')
                     ->select();
+        $xyxxb = M('xyxxb_'.$nianfen)->where(array('suoshudd'=>$xyxxb_id))->getField('xuehao,shoucijfrq');
+        // dump($xyxxb);exit;
         //查询是否是结算
         $shoufeilx = M('shoufeilx')->field('leixing')->where(array('is_jiesuan'=>1))->select();
         foreach($shoufeilx as $val){
             $shoufei_arr[] = $val['leixing'];
         }
+        $shoujuhao = array();
+
         //过滤归属人并判断是否是结算1结算  2不结算
         foreach($list as $k=>$v){
+            if(in_array($v['shoujuhao'],$shoujuhao)){
+                $list[$k]['jingrentou'] = 0;
+            }else{
+                $shoujuhao[] = $v['shoujuhao'];
+            }
+            $list[$k]['shoucijfrq'] = $xyxxb[$v['xuehao']];
+            $list[$k]['chanpinlx'] = str_replace('(','（',$list[$k]['chanpinlx']);
+            $list[$k]['chanpinlx'] = str_replace(')','）',$list[$k]['chanpinlx']);
             $list[$k]['yejigsr'] = $this->getJingrentou($v['yejigsr']);
             if (!in_array($list[$k]['yejigsr'],$renming) && $list[$k]['yejigsr'] != ''){
                 $renming[] = $list[$k]['yejigsr'];
@@ -74,20 +89,18 @@ class CountScyjAction extends CommonAction {
         $newList = array();
         //获取一年的秒数
         $yinian = 365 * 24 * 60 * 60;
-
         foreach($renming as $key=>$vo){
             foreach($rycb as $vv){
                 if ($vo == $vv['xingming']){
-                    $newList[$key]['xingming'] = $vv['xingming'];
+                    // $newList[$key]['xingming'] = $vv['xingming'];
                     $newList[$key]['zhiwei'] = $vv['zhiwei'];
                     $newList[$key]['ruzhirq'] = $vv['ruzhirq'];
-                }else{
-                    $newList[$key]['xingming'] = $vo;
                 }
             }
+            $newList[$key]['xingming'] = $vo;
             $newList[$key]['edu'] = M('xxkedb')->where("suoshudd='$xxkedb_oid' and xingming='".$vo."'")->getField('edu');
             foreach($list as $k=>$v){
-                if ($v['chanpinlx'] != '国际领袖课程' && $v['chanpinlx'] != '国内领袖课程' && $v['chanpinlx'] != '教材费'){
+                if (in_array($v['chanpinlx'],$sjcplx)){
                     if(strtotime($v['jiaofeirq']) - strtotime($v['shoucijfrq']) > $yinian){
                         $v['chanpinlx'] = '老生续费';
                     }
@@ -106,7 +119,6 @@ class CountScyjAction extends CommonAction {
                         }
                     }
                 }
-
             }
             //写进数据库
             $temp = $newList[$key];

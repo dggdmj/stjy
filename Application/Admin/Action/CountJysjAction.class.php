@@ -46,7 +46,12 @@ class CountJysjAction extends CommonAction {
         $arr['school_info'] = $school_info;
         $arr['kksd'] = $arr_kksd;
         $arr['zaice'] = $arr_zaice;
-        $arr['kecheng']  = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
+        // $arr['kecheng']  = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
+        $kecheng = M('banjibianhao')->field('jingdujb')->select();
+        foreach($kecheng as $val){
+            $arr['kecheng'][] = $val['jingdujb'];
+        }
+
         $arr['bjbmsj'] = $arr_bjbmsj;
 //        $arr['gbxzdrstj'] = $arr_gbxzdrstj;
         $arr['xsrsbd'] = $arr_xsrsbd;
@@ -67,6 +72,7 @@ class CountJysjAction extends CommonAction {
 
     //获得学生人数变动数据
     public function getxsrsbd($qishu,$sid){
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $nianfen = substr($qishu,0,4);
         $arr = array('本月初在册学生人数'=>0,'本月新生人数'=>0,'其他学校转入'=>0,'流失回来学生'=>0,'本月流失学生人数'=>0,'本月退费学生'=>0,'转校学员'=>0,'本月底在册学生人数'=>0);
 
@@ -74,7 +80,7 @@ class CountJysjAction extends CommonAction {
         $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
         if(!empty($xyxxb_prev_id)){
 //            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
-            $where = 'suoshudd ='.$xyxxb_prev_id.' and (zhuangtai = "在读" or zhuangtai = "休学")';
+            $where = "suoshudd =$xyxxb_prev_id and (zhuangtai = '在读' or zhuangtai = '休学') and xiaoqu='$school_name'";
             $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->field("id")->select();
             $r = count($res);
             $arr['本月初在册学生人数'] = $r;
@@ -110,13 +116,14 @@ class CountJysjAction extends CommonAction {
 
     //获得学生人数变动数据
     public function getxsrsbd_bak1($qishu,$sid){
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $nianfen = substr($qishu,0,4);
         $arr = array('本月初在册学生人数'=>0,'本月新生人数'=>0,'其他学校转入'=>0,'流失回来学生'=>0,'本月流失学生人数'=>0,'本月退费学生'=>0,'转校学员'=>0,'本月底在册学生人数'=>0);
 
         $fmonth = $this->getMonth($qishu);  //获得上月期数
         $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
         if(!empty($xyxxb_prev_id)){
-            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
+            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班") and laiyuanfx='.$school_name;
             $res = M('xyxxb_'.$nianfen)->where($where)->group("xuehao")->field("id")->select();
             $r = count($res);
             $arr['本月初在册学生人数'] = $r;
@@ -537,12 +544,21 @@ class CountJysjAction extends CommonAction {
         }
         // dump($list);
         $where['tid'] = 3;
-        $kecheng_arr = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
+        // $kecheng_arr = array("K01","K02","K03","K04","K05","K06","P01","P02","P03","P1A","P1B","P2A","P2B","P3A","P3B","P4A","P4B","P5A","P5B","P6A","P6B","J1A","J1B","J2A","J2B","J3A","J3B","一对一","NS1");
+        $kecheng_arr = array();
+        $kecheng = M('banjibianhao')->field('jingdujb')->select();
+        foreach($kecheng as $val){
+            $kecheng_arr[] = $val['jingdujb'];
+        }
         $bjxyxxb_id = M('qishu_history')->where($where)->getField('id');
         $bjxyxxb = M('bjxyxxb_'.$nianfen)->field('banji,nianji')->where("suoshudd='$bjxyxxb_id'")->select();
         foreach($bjxyxxb as $vv){
             $vv['banji'] = mb_substr($vv['banji'],0,3,'utf-8');
-            if(in_array($vv['banji'],$kecheng_arr)){
+            $tmp = mb_substr($vv['banji'],0,2,'utf-8');
+            if($tmp == '一对'){
+                $v['banji'] = '一对一';
+            }
+            if(in_array($vv['banji'],$kecheng_arr) || $vv['banji'] == '一对一'){
                 switch ($vv['nianji']) {
                     case '大班':
                         if($vv['banji'] == '一对一'){
@@ -551,8 +567,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['幼儿园'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['幼儿园']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['幼儿园']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -564,8 +580,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{ 
-                            $arr['幼儿园'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['幼儿园']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['幼儿园']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -577,8 +593,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['幼儿园'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['幼儿园']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['幼儿园']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -590,8 +606,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['一年级'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['一年级']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['一年级']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -603,8 +619,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['二年级'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['二年级']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['二年级']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -616,8 +632,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['三年级'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['三年级']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['三年级']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -629,8 +645,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['四年级'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['四年级']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['四年级']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -642,8 +658,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['五年级'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['五年级']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['五年级']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -655,8 +671,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['六年级'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['六年级']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['六年级']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -668,8 +684,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['初一'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['初一']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['初一']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -681,8 +697,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['初二'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['初二']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['初二']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }
@@ -694,8 +710,8 @@ class CountJysjAction extends CommonAction {
                             $arr['合计']['shijizbrs'] += 1;
                             $arr['合计']['yiduiyi'] += 1;
                         }else{
-                            $arr['初二以上'][ $vv['banji'] ] += 1;
-                            $arr['合计'][ $vv['banji'] ] += 1;
+                            $arr['初二以上']['json'][ $vv['banji'] ] += 1;
+                            $arr['合计']['json'][ $vv['banji'] ] += 1;
                             $arr['初二以上']['shijizbrs'] += 1;
                             $arr['合计']['shijizbrs'] += 1;
                         }

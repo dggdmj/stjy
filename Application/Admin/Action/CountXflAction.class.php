@@ -9,7 +9,7 @@ class CountXflAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getXflData($qishu='201808',$sid='1'){
+    public function getXflData($qishu='201810',$sid='15'){
         $xufei = $this->xufei($qishu,$sid);
         $nian = substr($qishu,0,4);
         $last_day = substr($qishu,0,4).'-'.substr($qishu,4,2);
@@ -19,13 +19,25 @@ class CountXflAction extends CommonAction {
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $list = M('xyxxb_'.$nian.' as xy')
                 ->join('LEFT JOIN stjy_bjxyxxb_'.$nian.' as bj on bj.xuehao=xy.xuehao')
-                ->join('LEFT JOIN stjy_xyfyyjb_'.$nian.' as yj on yj.xuehao=xy.xuehao')
+                // ->join('LEFT JOIN stjy_xyfyyjb_'.$nian.' as yj on yj.xuehao=xy.xuehao')
                 ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as kb on kb.banjimc=bj.banji')
-                ->join('LEFT JOIN stjy_kechenggl as kc on kc.kechengmc=yj.kechengmc')
-                ->field('xy.xuehao,xy.xingming,xy.shoucijfrq,bj.banji,yj.shengyugmsl,yj.shengyuzssl,xy.zuijinsksj,xy.tuixuerq,xy.xiuxuerq,kc.shifoujs,yj.feiyong,kb.jingjiangls,kb.fanduls')
+                // ->join('LEFT JOIN stjy_kechenggl as kc on kc.kechengmc=yj.kechengmc')
+                ->field('bj.id,xy.xuehao,xy.xingming,xy.shoucijfrq,bj.banji,xy.zuijinsksj,xy.tuixuerq,xy.xiuxuerq,kb.jingjiangls,kb.fanduls')
                 ->where("xy.suoshudd='$xyxxb_id'")
                 ->group('xy.xuehao')
                 ->select();
+        //学员费用预警
+        $xyfyyj_id = $this->getQishuId($qishu,$sid,7);
+        $xyfyyjb_list = M('xyfyyjb_'.$nian)->field('xuehao,shengyugmsl,shengyuzssl,feiyong')->where(array('suoshudd'=>$xyfyyj_id))->select();
+        //组合
+        foreach($list as $key=>$val){
+            foreach($xyfyyjb_list as $vv){
+                if ($val['xuehao'] == $vv['xuehao']){
+                    $list[$key]['shuliang'] += $vv['shengyugmsl'] + $vv['shengyuzssl'];
+                    $list[$key]['feiyong'] += $vv['feiyong'];
+                }
+            }
+        }
         $banji = M('banjibianhao')->getField('jingdujb,bumen');
         //退费人数
         $tuifei = $this->tuifei($qishu,$sid,$banji);
@@ -46,7 +58,7 @@ class CountXflAction extends CommonAction {
 
         //获取续费率计算的数组
         $xfljs_id = $this->getQishuId($qishu,$sid,36);
-        $xfljs = M('xfljs')->field('xuehao')->where("suoshudd='$xfljs_id'")->select();
+        $xfljs = M('xfljs')->field('xuehao')->where("suoshudd='$xfljs_id' and shifoucyxfljs = '否'")->select();
         $xfl_arr = array();
         foreach($xfljs as $vo){
             $xfl_arr[] = $vo['xuehao'];
@@ -69,24 +81,54 @@ class CountXflAction extends CommonAction {
         $khb = M('khb')->where($where)->getField('xuehao,bumen');
 
         //获取人事老师名单
-        $renshi = M('rycb')->field('id,xingming')->where(array('xiaoqu'=>$school_name))->select();
+        $renshi2 = array();
+        $renshi = array();
+        foreach($list as $val){
+            if(!in_array($val['jingjiangls'],$renshi2)){
+                $renshi2[] = $val['jingjiangls'];
+            }
+            if(!in_array($val['fanduls'],$renshi2)){
+                $renshi2[] = $val['fanduls'];
+            }
+        }
+        foreach($renshi2 as $key=>$val){
+            $renshi[$key]['xingming'] = $val;
+        }
+        // $renshi = M('rycb')->field('id,xingming')->where(array('xiaoqu'=>$school_name))->select();
+
         $num = 1;
 
         $miaosha_sz = M('fxms')->field('shangkekc,danjia')->where("sid='$sid'")->find();
         //获取本月新增秒杀
-        $xzms = $this->xzms($qishu,$sid);
-        foreach($renshi as &$vo){
+        $xzms = $this->xzms($qishu,$sid,$miaosha_sz);
+        foreach($renshi as $ko=>&$vo){
             $temp = array();
             foreach($list as &$val){
                 $val['banji'] = substr($val['banji'],0,3);
                 $val['bumen'] = $banji[ $val['banji'] ];
-                $val['shuliang'] = $val['shengyugmsl'] + $val['shengyuzssl'];
                 //判断不是本月透视并且不是本月新增秒杀
-                if (($val['shifoujs'] != '是' || $val['shuliang'] > $miaosha_sz['shangkekc'] || ($val['feiyong'] / $val['shuliang'] > $miaosha_sz['danjia']) || !($val['feiyong'] / $val['shuliang'] > 0)) && !in_array($val['xuehao'],$xzms) && !in_array($val['xuehao'],$xfl_arr)){
+                if ( !in_array($val['xuehao'],$xzms) && !in_array($val['xuehao'],$xfl_arr)){
                     if ($val['bumen'] == '小学部'){
+                        if ($ko==0){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $tuifeis['xiaoxuebu'] += 1;
+                            }
+                        }
+                        if ($vo['xingming'] == $val['jingjiangls']){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $temp['xx_jd']['tuifeixsrs'] += 1;
+                            }
+                        }
+                        if ($vo['xingming'] == $val['fanduls']){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $temp['xx_fd']['tuifeixsrs'] += 1;
+                            }
+                        }
                         //续费学生人数
-                        if ($val['shoucijfrq'] < $last_day && in_array($val['xuehao'],$xufei)){
-                            $data['xiaoxuebu']['xufeixsrs'] += 1;
+                        if ($val['shoucijfrq'] < $last_day && in_array($val['xuehao'],$xufei) && $val['shoucijfrq'] != ''){
+                            if($ko==0){
+                                $data['xiaoxuebu']['xufeixsrs'] += 1;
+                            }
                             //精读老师
                             if ($vo['xingming'] == $val['jingjiangls']){
                                 $temp['xx_jd']['xufeixsrs'] +=1;
@@ -94,11 +136,14 @@ class CountXflAction extends CommonAction {
                             //泛读老师
                             if ($vo['xingming'] == $val['fanduls']){
                                 $temp['xx_fd']['xufeixsrs'] +=1;
+                                
                             }
                         }
                         //剩余课次小于或等于0学生人数
                         if(($val['zuijinsksj'] > $last_day) && !( $val['shuliang'] > 0) || ( ($val['shuliang'] > 0 ) && ($val['tuixueriqi'] > $last_day) ) ){
-                            $data['xiaoxuebu']['shengyukcxydyldxs'] += 1;
+                            if($ko == 0){
+                                $data['xiaoxuebu']['shengyukcxydyldxs'] += 1;
+                            }
                             //记录考核表
                             $khb['xuehao'] = $val['xuehao'];
                             $khb['bumen'] = '小学部';
@@ -116,7 +161,9 @@ class CountXflAction extends CommonAction {
                         }
                         //新增休学人数
                         if($val['xiuxuerq'] >  $last_day && $val['xiuxuerq'] < $yuemo){
-                            $data['xiaoxuebu']['xinzengxxrs'] += 1;
+                            if($ko==0){
+                                $data['xiaoxuebu']['xinzengxxrs'] += 1;
+                            }
                             //精读老师
                             if ($vo['xingming'] == $val['jingjiangls']){
                                 $temp['xx_jd']['xinzengxxrs'] +=1;
@@ -138,13 +185,31 @@ class CountXflAction extends CommonAction {
                                 $temp['xx_fd']['yikaohe'] +=1;
                             }
                         }
-
-
                     }
                     if ($val['bumen'] == '初中部'){
+                        if ($ko==0){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $tuifeis['xiaoxuebu'] += 1;
+                            }
+                        }
+                        if ($vo['xingming'] == $val['jingjiangls']){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $temp['cz_jd']['tuifeixsrs'] += 1;
+                            }
+                        }
+                        if ($vo['xingming'] == $val['fanduls']){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $temp['cz_fd']['tuifeixsrs'] += 1;
+                            }
+                        }
                         //续费学生人数
-                        if ($val['shoucijfrq'] < $last_day && in_array($val['xuehao'],$xufei)){
-                            $data['chuzhongbu']['xufeixsrs'] += 1;
+                        if ($val['shoucijfrq'] < $last_day && in_array($val['xuehao'],$xufei) && $val['shoucijfrq'] != ''){
+                            if($ko==0){
+                                $data['chuzhongbu']['xufeixsrs'] += 1;
+                                if(in_array($val['xuehao'],$tuifei)){
+                                    $tuifeis['chuzhongbu'] += 1;
+                                }
+                            }
                             //精读老师
                             if ($vo['xingming'] == $val['jingjiangls']){
                                 $temp['cz_jd']['xufeixsrs'] +=1;
@@ -156,7 +221,9 @@ class CountXflAction extends CommonAction {
                         }
                         //剩余课次小于或等于0学生人数
                         if(($val['zuijinsksj'] > $last_day) && !( $val['shuliang'] > 0) || ( ($val['shuliang'] > 0 ) && ($val['tuixueriqi'] > $last_day) ) ){
-                            $data['chuzhongbu']['shengyukcxydyldxs'] += 1;
+                            if($ko == 0){
+                                $data['chuzhongbu']['shengyukcxydyldxs'] += 1;
+                            }
                             //记录考核表
                             $khb['xuehao'] = $val['xuehao'];
                             $khb['bumen'] = '初中部';
@@ -198,9 +265,29 @@ class CountXflAction extends CommonAction {
                         }
                     }
                     if ($val['bumen'] == '初二下学期'){
+                        if ($ko==0){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $tuifeis['xiaoxuebu'] += 1;
+                            }
+                        }
+                        if ($vo['xingming'] == $val['jingjiangls']){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $temp['ce_jd']['tuifeixsrs'] += 1;
+                            }
+                        }
+                        if ($vo['xingming'] == $val['fanduls']){
+                            if(in_array($val['xuehao'],$tuifei)){
+                                $temp['ce_fd']['tuifeixsrs'] += 1;
+                            }
+                        }
                         //续费学生人数
                         if ($val['shoucijfrq'] < $last_day && in_array($val['xuehao'],$xufei)){
-                            $data['chuerxxq']['xufeixsrs'] += 1;
+                            if($ko==0){
+                                $data['chuerxxq']['xufeixsrs'] += 1;
+                                if(in_array($val['xuehao'],$tuifei)){
+                                    $tuifeis['chuerxxq'] += 1;
+                                }
+                            }
                             //精读老师
                             if ($vo['xingming'] == $val['jingjiangls']){
                                 $temp['ce_jd']['xufeixsrs'] +=1;
@@ -212,7 +299,9 @@ class CountXflAction extends CommonAction {
                         }
                         //剩余课次小于或等于0学生人数
                         if(($val['zuijinsksj'] > $last_day) && !( $val['shuliang'] > 0) || ( ($val['shuliang'] > 0 ) && ($val['tuixueriqi'] > $last_day) ) ){
-                            $data['chuerxxq']['shengyukcxydyldxs'] += 1;
+                            if($ko == 0){
+                                $data['chuerxxq']['shengyukcxydyldxs'] += 1;
+                            }
                             //记录考核表
                             $khb['xuehao'] = $val['xuehao'];
                             $khb['bumen'] = '初二下学期';
@@ -261,7 +350,7 @@ class CountXflAction extends CommonAction {
             $temp['xx_jd']['laoshimz'] = $vo['xingming'];
             $temp['xx_jd']['banxing'] = '小学部';
             $temp['xx_jd']['leixing'] = '精读';
-            $temp['xx_jd']['tuifeixsrs'] = $tuifei['xx_jd'][ $vo['xingming'] ] ? $tuifei['xx_jd'][ $vo['xingming'] ] : 0;
+            // $temp['xx_jd']['tuifeixsrs'] = $tuifei['xx_jd'][ $vo['xingming'] ] ? $tuifei['xx_jd'][ $vo['xingming'] ] : 0;
             $temp['xx_jd']['fenmu'] =  $temp['xx_jd']['xufeixsrs']  + $temp['xx_jd']['shengyukcxydyldxs'] + $temp['xx_jd']['tuifeixsrs'] + $temp['xx_jd']['xinzengxxrs'] - $temp['yikaohe'];
             if ($temp['xx_jd']['xufeixsrs'] > 0 && $temp['xx_jd']['fenmu'] <= 0){
                 $temp['xx_jd']['xufeilv'] = 1;
@@ -279,7 +368,7 @@ class CountXflAction extends CommonAction {
             $temp['xx_fd']['laoshimz'] = $vo['xingming'];
             $temp['xx_fd']['banxing'] = '小学部';
             $temp['xx_fd']['leixing'] = '泛读';
-            $temp['xx_fd']['tuifeixsrs'] = $tuifei['xx_fd'][ $vo['xingming'] ] ? $tuifei['xx_fd'][ $vo['xingming'] ] : 0;
+            // $temp['xx_fd']['tuifeixsrs'] = $tuifei['xx_fd'][ $vo['xingming'] ] ? $tuifei['xx_fd'][ $vo['xingming'] ] : 0;
             $temp['xx_fd']['fenmu'] =  $temp['xx_fd']['xufeixsrs']  + $temp['xx_fd']['shengyukcxydyldxs'] + $temp['xx_fd']['tuifeixsrs'] + $temp['xx_fd']['xinzengxxrs'] - $temp['yikaohe'];
             if ($temp['xx_fd']['xufeixsrs'] > 0 && $temp['xx_fd']['fenmu'] <= 0){
                 $temp['xx_fd']['xufeilv'] = 1;
@@ -297,7 +386,7 @@ class CountXflAction extends CommonAction {
             $temp['cz_jd']['laoshimz'] = $vo['xingming'];
             $temp['cz_jd']['banxing'] = '初中部';
             $temp['cz_jd']['leixing'] = '精读';
-            $temp['cz_jd']['tuifeixsrs'] = $tuifei['cz_jd'][ $vo['xingming'] ] ? $tuifei['cz_jd'][ $vo['xingming'] ] : 0;
+            // $temp['cz_jd']['tuifeixsrs'] = $tuifei['cz_jd'][ $vo['xingming'] ] ? $tuifei['cz_jd'][ $vo['xingming'] ] : 0;
             $temp['cz_jd']['fenmu'] =  $temp['cz_jd']['xufeixsrs']  + $temp['cz_jd']['shengyukcxydyldxs'] + $temp['cz_jd']['tuifeixsrs'] + $temp['cz_jd']['xinzengxxrs'] - $temp['yikaohe'];
             if ($temp['cz_jd']['xufeixsrs'] > 0 && $temp['cz_jd']['fenmu'] <= 0){
                 $temp['cz_jd']['xufeilv'] = 1;
@@ -315,7 +404,7 @@ class CountXflAction extends CommonAction {
             $temp['cz_fd']['laoshimz'] = $vo['xingming'];
             $temp['cz_fd']['banxing'] = '初中部';
             $temp['cz_fd']['leixing'] = '泛读';
-            $temp['cz_fd']['tuifeixsrs'] = $tuifei['cz_fd'][ $vo['xingming'] ] ? $tuifei['cz_fd'][ $vo['xingming'] ] : 0;
+            // $temp['cz_fd']['tuifeixsrs'] = $tuifei['cz_fd'][ $vo['xingming'] ] ? $tuifei['cz_fd'][ $vo['xingming'] ] : 0;
             $temp['cz_fd']['fenmu'] =  $temp['cz_fd']['xufeixsrs']  + $temp['cz_fd']['shengyukcxydyldxs'] + $temp['cz_fd']['tuifeixsrs'] + $temp['cz_fd']['xinzengxxrs'] - $temp['yikaohe'];
             if ($temp['cz_fd']['xufeixsrs'] > 0 && $temp['cz_fd']['fenmu'] <= 0){
                 $temp['cz_fd']['xufeilv'] = 1;
@@ -333,7 +422,7 @@ class CountXflAction extends CommonAction {
             $temp['ce_jd']['laoshimz'] = $vo['xingming'];
             $temp['ce_jd']['banxing'] = '初二下学期';
             $temp['ce_jd']['leixing'] = '精读';
-            $temp['ce_jd']['tuifeixsrs'] = $tuifei['ce_jd'][ $vo['xingming'] ] ? $tuifei['ce_jd'][ $vo['xingming'] ] : 0;
+            // $temp['ce_jd']['tuifeixsrs'] = $tuifei['ce_jd'][ $vo['xingming'] ] ? $tuifei['ce_jd'][ $vo['xingming'] ] : 0;
             $temp['ce_jd']['fenmu'] =  $temp['ce_jd']['xufeixsrs']  + $temp['ce_jd']['shengyukcxydyldxs'] + $temp['ce_jd']['tuifeixsrs'] + $temp['ce_jd']['xinzengxxrs'] - $temp['yikaohe'];
             if ($temp['ce_jd']['xufeixsrs'] > 0 && $temp['ce_jd']['fenmu'] <= 0){
                 $temp['ce_jd']['xufeilv'] = 1;
@@ -351,7 +440,7 @@ class CountXflAction extends CommonAction {
             $temp['ce_fd']['laoshimz'] = $vo['xingming'];
             $temp['ce_fd']['banxing'] = '初二下学期';
             $temp['ce_fd']['leixing'] = '泛读';
-            $temp['ce_fd']['tuifeixsrs'] = $tuifei['ce_fd'][ $vo['xingming'] ] ? $tuifei['ce_fd'][ $vo['xingming'] ] : 0;
+            // $temp['ce_fd']['tuifeixsrs'] = $tuifei['ce_fd'][ $vo['xingming'] ] ? $tuifei['ce_fd'][ $vo['xingming'] ] : 0;
             $temp['ce_fd']['fenmu'] =  $temp['ce_fd']['xufeixsrs']  + $temp['ce_fd']['shengyukcxydyldxs'] + $temp['ce_fd']['tuifeixsrs'] + $temp['ce_fd']['xinzengxxrs'] - $temp['yikaohe'];
             if ($temp['ce_fd']['xufeixsrs'] > 0 && $temp['ce_fd']['fenmu'] <= 0){
                 $temp['ce_fd']['xufeilv'] = 1;
@@ -430,7 +519,6 @@ class CountXflAction extends CommonAction {
             $heji['ce_fd']['yikaohe'] += $temp['ce_fd']['yikaohe'];
             $heji['ce_fd']['fenmu'] += $temp['ce_fd']['fenmu'];
         }
-
         //小学部-精读
         $heji['xx_jd']['xuhao'] = 2; 
         $heji['xx_jd']['type'] = 2; 
@@ -559,7 +647,7 @@ class CountXflAction extends CommonAction {
 
         $newdata['xufeixsrs'] = $data['xiaoxuebu']['xufeixsrs'];
         $newdata['shengyukcxydyldxs'] = $data['xiaoxuebu']['shengyukcxydyldxs'];
-        $newdata['tuifeixsrs'] = $tuifei['xiaoxuebu'];
+        $newdata['tuifeixsrs'] = $tuifeis['xiaoxuebu'];
         $newdata['xinzengxxrs'] = $data['xiaoxuebu']['xinzengxxrs'];
         $newdata['yikaohe']= $data['xiaoxuebu']['yikaohe'];
         $newdata['fenmu']= $newdata['xufeixsrs']  + $newdata['shengyukcxydyldxs'] + $newdata['tuifeixsrs'] + $newdata['xinzengxxrs'] - $newdata['yikaohe'];
@@ -580,7 +668,7 @@ class CountXflAction extends CommonAction {
         $newdata['banxing'] = '初中部';
         $newdata['xufeixsrs'] = $data['chuzhongbu']['xufeixsrs'];
         $newdata['shengyukcxydyldxs'] = $data['chuzhongbu']['shengyukcxydyldxs'];
-        $newdata['tuifeixsrs'] = $tuifei['chuzhongbu'];
+        $newdata['tuifeixsrs'] = $tuifeis['chuzhongbu'];
         $newdata['xinzengxxrs'] = $data['chuzhongbu']['xinzengxxrs'];
         $newdata['yikaohe']= $data['chuzhongbu']['yikaohe'];
         $newdata['fenmu']= $newdata['xufeixsrs']  + $newdata['shengyukcxydyldxs'] + $newdata['tuifeixsrs'] + $newdata['xinzengxxrs'] - $newdata['yikaohe'];
@@ -596,7 +684,7 @@ class CountXflAction extends CommonAction {
         $newdata['banxing'] = '初二下学期';
         $newdata['xufeixsrs'] = $data['chuerxxq']['xufeixsrs'];
         $newdata['shengyukcxydyldxs'] = $data['chuerxxq']['shengyukcxydyldxs'];
-        $newdata['tuifeixsrs'] = $tuifei['chuerxxq'];
+        $newdata['tuifeixsrs'] = $tuifeis['chuerxxq'];
         $newdata['xinzengxxrs'] = $data['chuerxxq']['xinzengxxrs'];
         $newdata['yikaohe']= $data['chuerxxq']['yikaohe'];
         $newdata['fenmu']= $newdata['xufeixsrs']  + $newdata['shengyukcxydyldxs'] + $newdata['tuifeixsrs'] + $newdata['xinzengxxrs'] - $newdata['yikaohe'];
@@ -612,7 +700,7 @@ class CountXflAction extends CommonAction {
         $newdata['banxing'] = '分校整体续费率';
         $newdata['xufeixsrs'] = $data['xiaoxuebu']['xufeixsrs'] + $data['chuzhongbu']['xufeixsrs'] + $data['chuerxxq']['xufeixsrs'];
         $newdata['shengyukcxydyldxs'] =$data['xiaoxuebu']['shengyukcxydyldxs'] + $data['chuzhongbu']['shengyukcxydyldxs'] + $data['chuerxxq']['shengyukcxydyldxs'];
-        $newdata['tuifeixsrs'] = $tuifei['xiaoxuebu'] + $tuifei['chuzhongbu'] + $tuifei['chuerxxq'];
+        $newdata['tuifeixsrs'] = $tuifeis['xiaoxuebu'] + $tuifeis['chuzhongbu'] + $tuifeis['chuerxxq'];
         $newdata['xinzengxxrs'] = $data['xiaoxuebu']['xinzengxxrs'] + $data['chuzhongbu']['xinzengxxrs'] + $data['chuerxxq']['xinzengxxrs'];
         $newdata['yikaohe']= $data['xiaoxuebu']['yikaohe'] + $data['chuzhongbu']['yikaohe'] + $data['chuerxxq']['yikaohe'];
         $newdata['fenmu']= $newdata['xufeixsrs']  + $newdata['shengyukcxydyldxs'] + $newdata['tuifeixsrs'] + $newdata['xinzengxxrs'] - $newdata['yikaohe'];
@@ -629,16 +717,31 @@ class CountXflAction extends CommonAction {
     public function xufei($qishu,$sid){
         //获取上个月的期数
         $sjmxb_id = $this->getQishuId($qishu,$sid,24);
-        $list = M('sjmxb')->field('xuehao,goumaikc')->where("suoshudd='$sjmxb_id' and shoukuanzh != '老带新返现' and shoukuanzh != '老带新返现' and goumaikc != ''")->select();
+        $list = M('sjmxb')->field('xuehao,goumaikc')->where("suoshudd='$sjmxb_id' and shoukuanzh != '结转学费' and shoukuanzh != '老带新返现' and shoukuanzh !='' ")->select();
         $sjmxb = array();
-        // dump($list);
-        foreach($list as $val){
-            $val['goumaikc'] = mb_substr($val['goumaikc'],0,-1,'utf-8');
-            if ($val['goumaikc'] > 12){
-                $sjmxb[] = $val['xuehao'];
+        $data = array();
+        $xuehao = array();
+        $result = array();
+        foreach($list as $key=>$val){
+            $list['goumaikc'] = mb_substr($val['goumaikc'],0,-1,'utf-8');
+            if(!in_array($val['xuehao'],$xuehao)){
+                $xuehao[] = $val['xuehao'];
             }
         }
-        return $sjmxb;
+        foreach($xuehao as $kk=>$vv){
+            foreach($list as $val){
+                if($vv == $val['xuehao']){
+                    $data[$kk]['xuehao'] = $vv;
+                    $data[$kk]['goumaikc'] += $val['goumaikc'];
+                }
+            }
+        }
+        foreach($data as $val){
+            if($val['goumaikc'] > 12){
+                $result[] = $val['xuehao'];
+            }
+        }
+        return $result;
     }
 
     //退费
@@ -646,76 +749,96 @@ class CountXflAction extends CommonAction {
         $sjjlb_id = $this->getQishuId($qishu,$sid,4);
         $nian = substr($qishu,0,4);
         $list = M('sjjlb_'.$nian.' as sj')
-                ->field('bj.banji,kb.jingjiangls,kb.fanduls')
+                ->field('bj.banji,kb.jingjiangls,kb.fanduls,sj.shoujulx,sj.xuehao')
                 ->join('LEFT JOIN stjy_bjxyxxb_'.$nian.' as bj on bj.xuehao=sj.xuehao')
                 ->join('LEFT JOIN stjy_kbmxb_'.$nian.' as kb on bj.banji=kb.banjimc')
                 ->where("sj.suoshudd='$sjjlb_id' and ( sj.shoujulx='退费' or sj.shoujulx like '%转费%') ")
                 ->select();
-        $data = array();
-        $data['xiaoxuebu'] = 0;
-        $data['chuzhongbu'] = 0;
-        $data['chuerxxq'] = 0;
-        $xx_jd = array();
-        $xx_fd = array();
-        $cz_jd = array();
-        $cz_fd = array();
-        $ce_jd = array();
-        $ce_fd = array();
         foreach($list as $val){
-            $val['bumen'] = substr($val['banji'],0,3);
-            $tmp = $bianma[ $val['bumen'] ];
-            if ($tmp =='小学部'){
-                $data['xiaoxuebu'] += 1;
-                if (!in_array($val['jingjiangls'],$xx_jd)){
-                    $xx_jd[] = $val['jingjiangls'];
-                    $data['xx_jd'][ $val['jingjiangls'] ] += 1; 
-                }
-                if (!in_array($val['fanduls'],$xx_fd)){
-                    $xx_fd[] = $val['fanduls'];
-                    $data['xx_fd'][ $val['fanduls'] ] += 1; 
-                }
-            }
-            if ($tmp =='初中部'){
-                $data['chuzhongbu'] += 1;
-                if (!in_array($val['jingjiangls'],$cz_jd)){
-                    $cz_jd[] = $val['jingjiangls'];
-                    $data['cz_jd'][ $val['jingjiangls'] ] += 1; 
-                }
-                if (!in_array($val['fanduls'],$cz_fd)){
-                    $cz_fd[] = $val['fanduls'];
-                    $data['cz_fd'][ $val['fanduls'] ] += 1; 
-                }
-            }
-            if ($tmp =='初二下学期'){
-                $data['chuerxxq'] += 1;
-                if (!in_array($val['jingjiangls'],$ce_jd)){
-                    $ce_jd[] = $val['jingjiangls'];
-                    $data['ce_jd'][ $val['jingjiangls'] ] += 1; 
-                }
-                if (!in_array($val['fanduls'],$ce_fd)){
-                    $ce_fd[] = $val['fanduls'];
-                    $data['ce_fd'][ $val['fanduls'] ] += 1; 
-                }
-            }
+            $data[] = $val['xuehao'];
         }
+        // $data = array();
+        // $data['xiaoxuebu'] = 0;
+        // $data['chuzhongbu'] = 0;
+        // $data['chuerxxq'] = 0;
+        // $xx_jd = array();
+        // $xx_fd = array();
+        // $cz_jd = array();
+        // $cz_fd = array();
+        // $ce_jd = array();
+        // $ce_fd = array();
+        // foreach($list as $val){
+        //     $val['bumen'] = substr($val['banji'],0,3);
+        //     $tmp = $bianma[ $val['bumen'] ];
+        //     if ($tmp =='小学部'){
+        //         $data['xiaoxuebu'] += 1;
+        //         if (!in_array($val['jingjiangls'],$xx_jd)){
+        //             $xx_jd[] = $val['jingjiangls'];
+        //             $data['xx_jd'][ $val['jingjiangls'] ] += 1; 
+        //         }
+        //         if (!in_array($val['fanduls'],$xx_fd)){
+        //             $xx_fd[] = $val['fanduls'];
+        //             $data['xx_fd'][ $val['fanduls'] ] += 1; 
+        //         }
+        //     }
+        //     if ($tmp =='初中部'){
+        //         $data['chuzhongbu'] += 1;
+        //         if (!in_array($val['jingjiangls'],$cz_jd)){
+        //             $cz_jd[] = $val['jingjiangls'];
+        //             $data['cz_jd'][ $val['jingjiangls'] ] += 1; 
+        //         }
+        //         if (!in_array($val['fanduls'],$cz_fd)){
+        //             $cz_fd[] = $val['fanduls'];
+        //             $data['cz_fd'][ $val['fanduls'] ] += 1; 
+        //         }
+        //     }
+        //     if ($tmp =='初二下学期'){
+        //         $data['chuerxxq'] += 1;
+        //         if (!in_array($val['jingjiangls'],$ce_jd)){
+        //             $ce_jd[] = $val['jingjiangls'];
+        //             $data['ce_jd'][ $val['jingjiangls'] ] += 1; 
+        //         }
+        //         if (!in_array($val['fanduls'],$ce_fd)){
+        //             $ce_fd[] = $val['fanduls'];
+        //             $data['ce_fd'][ $val['fanduls'] ] += 1; 
+        //         }
+        //     }
+        // }
         return $data;
     }
 
-    //获取本月新增的秒杀
-    public function xzms($qishu='201808',$sid='1'){
+    //获取本月新增的秒杀和上月透视秒杀
+    public function xzms($qishu='201808',$sid='1',$miaosha_sz=array()){
         $xzmxb_id = $this->getQishuId($qishu,$sid,10);
         $nian = substr($qishu,0,4);
+        $miaosha = array();
+        //获取上个月的透视秒杀
+        $last_qishu = date('Ym',strtotime(substr($qishu,0,4).'-'.substr($qishu,4,2).' -1 day'));
+        $xyfyyjb_id = $this->getQishuId($last_qishu,$sid,7);//学员费用预警表
+        $xyfyyjb = array();
+        if ($xyfyyjb_id){
+            $lists = M('xyfyyjb_'.$nian)->field('xuehao,xingming,kechengmc,shengyugmsl,shengyuzssl,feiyong')->where("suoshudd='$xyfyyjb_id'")->select();
+            foreach($lists as $key=>$val){
+                $xyfyyjb[ $val['xuehao'] ]['zongshuliang'] += $val['shengyugmsl']+$val['shengyuzssl'];
+                $xyfyyjb[ $val['xuehao'] ]['zongfeiyong'] += $val['feiyong'];
+            }
+        }
+        //获取本月新增的秒杀
+        $xyfy_id = $this->getQishuId($qishu,$sid,7);//学员费用预警表
         $list = M('xzmxb as xz')
                 ->field('xz.xuehao,yj.shengyugmsl,yj.shengyuzssl,yj.feiyong')
                 ->join('LEFT JOIN stjy_xyfyyjb_'.$nian.' as yj on yj.xuehao=xz.xuehao')
-                ->where("xz.suoshudd = '$xzmxb_id'")
+                ->where("xz.suoshudd = '$xzmxb_id' and yj.suoshudd='$xyfy_id'")
                 ->select();
-        $miaosha = array();
+
         foreach($list as $val){
-            $val['shuliang'] = $val['shengyugmsl'] + $val['shengyuzssl'];
-            $val['danjia'] = $val['feiyong'] / $val['shuliang'];
-            if ($val['shuliang'] < 16 && $val['danjia'] < 117 && $val['danjia'] > 0){
-                $miaosha[] = $val['xuehao'];
+            $xyfyyjb[ $val['xuehao'] ]['zongshuliang'] += $val['shengyugmsl'] + $val['shengyuzssl'];
+            $xyfyyjb[ $val['xuehao'] ]['zongfeiyong'] += $val['feiyong'];
+        }
+        foreach($xyfyyjb as $key=>$val){
+            $val['danjia'] = round($val['zongfeiyong'] / $val['zongshuliang'],2);
+            if ($val['zongshuliang'] <= $miaosha_sz['shangkekc'] && $val['danjia'] <= $miaosha_sz['danjia'] && $val['danjia'] > 0){
+                 $miaosha[] = $key;
             }
         }
         return $miaosha;

@@ -15,13 +15,13 @@
                     <tr>
                         <th width="60">期数</th>
                         <th width="80">校区</th>
+                        <th width="80">课消明细</th>
+                        <th width="80">学员费用预警</th>
                         <th width="80">学员信息</th>
-                        <th width="80">班级信息</th>
+                        <th width="80">班级信息</th> 
                         <th width="80">班级学员信息</th>
                         <th width="80">收据记录</th>
-                        <th width="80">课消明细</th>
                         <th width="80">开班明细</th>
-                        <th width="80">学员费用预警</th>
                         <th width="80">学习卡额度</th>
                         <th width="80">收据明细</th>
                         <th width="80">出勤明细</th>
@@ -220,14 +220,18 @@
                 var index = layer.load(1, {
                     shade: [0.8,'#fff'] //0.1透明度的白色背景
                 });
-                $.post(subUrl,$("form").serialize(),function(data){
-                    if(data.status){
-                        layer.msg(data.info, {icon: 1});
-                    }else{
-                        layer.msg(data.info, {icon: 2});
-                    }
-                    setTimeout("window.location.reload()",1000); // 让提示框停留一会
-                });
+                if(dd == '通知行政经理'){
+                    window.location.href=subUrl;
+                }else{
+                    $.get(subUrl,function(data){
+                        if(data.status){
+                            layer.msg(data.info, {icon: 1});
+                        }else{
+                            layer.msg(data.info, {icon: 2});
+                        }
+                        setTimeout("window.location.reload()",1000); // 让提示框停留一会
+                    },'json');
+                }
             });
         });
 

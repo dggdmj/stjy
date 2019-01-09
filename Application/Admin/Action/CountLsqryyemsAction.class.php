@@ -1,7 +1,7 @@
 <?php
 namespace Admin\Action;
 use Think\Action;
-class CountLsqryyeAction extends CommonAction {
+class CountLsqryyemsAction extends CommonAction {
     /**
      * 获得统计数据
      *
@@ -9,9 +9,9 @@ class CountLsqryyeAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu='201811',$sid='15'){
+    public function getYjData($qishu='201810',$sid='15'){
         // 判断语句
-        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>29))->getField('id');//判断是否有生成历史
+        $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>47))->getField('id');//判断是否有生成历史
         if ($qishu_id){
             $newList = M('lsqryye')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
             $newList = $this->heji($newList);
@@ -107,7 +107,7 @@ class CountLsqryyeAction extends CommonAction {
                         $v['chanpinlx'] = '老生续费';
                     }
                 }
-                if(in_array($v['chanpinlx'],$cplx) && !in_array($v['xuehao'],$miaosha_xz) && $v['shoucijfrq'] < $ls_day_last){
+                if(in_array($v['chanpinlx'],$cplx) && in_array($v['xuehao'],$miaosha_xz)){
                     $bianma = substr($v['banji'],0,3);
                     $v['bumen'] = $bumen[ $bianma ];
                     if($v['jingjiangls'] == $data[$key]['xingming']){

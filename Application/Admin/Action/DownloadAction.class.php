@@ -55,6 +55,8 @@ class DownloadAction extends CommonAction {
                 $chanpinlx = M('sjcplx')->field('xiangmu')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
                 $sjcplx = array();
                 foreach($chanpinlx as $kk=>$vv){
+                    $vv['xiangmu'] = str_replace('(','（',$vv['xiangmu']);
+                    $vv['xiangmu'] = str_replace(')','）',$vv['xiangmu']);
                     $chanpinlx[$kk]['field'] = $this->encode($vv['xiangmu']);
                 }
                 // 字段补充
@@ -395,9 +397,10 @@ class DownloadAction extends CommonAction {
         $qishu = I('qishu');
         $sid = I('sid');
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
-        $nian = substr($qishu,0,4);
-        $suoshudd = $this->getQishuId($qishu,$sid,1);//学员费用预警表
-        $list = M('xyxxb_'.$nian)->where("suoshudd='$suoshudd'")->select();
+
+        $data = new \Admin\Action\CountXyxxbAction();
+        $list = $data->getData($qishu,$sid);
+
         foreach($list as $key=>$val){
             switch ($val['nianji']) {
                 case '小班':
@@ -501,7 +504,7 @@ class DownloadAction extends CommonAction {
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(49).$i,$val['nianjicfl']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(50).$i,$val['xiuxuefxrq']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(51).$i,$val['tuixuehfrq']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(52).$i,$val['zhuangtai']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(52).$i,$val['zhuangtai2']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(53).$i,$val['shifouycmd']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(54).$i,$val['shifouzxzrdjb']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(55).$i,$val['shifoutfxs']);
@@ -509,6 +512,22 @@ class DownloadAction extends CommonAction {
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(57).$i,$val['shengyuxf']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(58).$i,$val['benyuesfysk']);
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(59).$i,$val['baomingrqsfbyys']);
+
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(60).$i,$val['shuliang']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(61).$i,$val['danjia']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(62).$i,$val['feiyong']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(63).$i,$val['shifoums']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(64).$i,$val['shifouykx']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(65).$i,$val['xufei']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(66).$i,$val['shifoukhls']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(67).$i,$val['banji']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(68).$i,$val['banxing']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(69).$i,$val['bumen']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(70).$i,$val['jingjiangls']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(71).$i,$val['fanduls']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(72).$i,$val['shifouyikaohe']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(73).$i,$val['shifoucyxfljs']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(74).$i,$val['bucanyxfljsyy']);
             $i++;
         }
       

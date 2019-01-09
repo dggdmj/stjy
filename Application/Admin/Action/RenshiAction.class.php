@@ -607,10 +607,6 @@ class RenshiAction extends CommonAction{
                 $this->error($upload->getError());
             }
             M('rycb')->where('1=1')->delete();
-            // $data['wenjianmc'] = $info['excel']['name'];
-            // $data['lujing'] = $info['excel']['savepath'].$info['excel']['savename'];
-            // $data['caozuoren'] = session('username');
-            // M('renyuan_log')->add($data);
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
             $arr['name'] = $info['excel']['name'];
             $arr['path'] = $file_name;
@@ -628,27 +624,51 @@ class RenshiAction extends CommonAction{
             $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
             $highestRow = $sheet->getHighestRow(); // 取得总行数
             $colsNum = 66;
-            $rycb = M('')->query("select COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_rycb'");
-            $zhiduan = array();
-            foreach($rycb as $val){
-                if ($val['column_name'] != 'id' && $val['column_name'] != 'daorusj'){
-                    $zhiduan[] = $val['column_name'];
+            $b_field = M('')->query("select COLUMN_NAME,column_comment from information_schema.COLUMNS where table_name = 'stjy_rycb'");
+            $field = array();
+            for($i=0;$i<$colsNum;$i++){
+                $tmp =  $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'2')->getValue();
+                if ($tmp){
+                    $field[] = $tmp;
                 }
             }
-            for($i=2;$i<$highestRow+1;$i++){
+            $zhiduan = array();
+            $list = array();
+            $h = 0;
+            for($i=3;$i<$highestRow+1;$i++){
                 for($j=0;$j<$colsNum;$j++){
                     $tmp = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($j).$i);
-                    $cell[ $zhiduan[$j] ] = $tmp->getValue();
-                    if(substr($cell[ $zhiduan[$j] ],0,1) == '='){
-                        $cell[ $zhiduan[$j] ] = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getOldCalculatedValue();
+                    $cell = $tmp->getValue();
+                    if(substr($cell,0,1) == '='){
+                        $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getOldCalculatedValue();
                     }
                     // 自动识别单元格为日期格式
-                    if(mb_strlen($cell[ $zhiduan[$j] ],'UTF8') > 3 && mb_strlen($cell[ $zhiduan[$j] ],'UTF8') < 8 && is_numeric($cell[ $zhiduan[$j] ])){
-                        $cell[ $zhiduan[$j]]=date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP($cell[ $zhiduan[$j] ]));
+                    // if(mb_strlen($cell,'UTF8') > 4 && mb_strlen($cell,'UTF8') < 6 && is_numeric($cell)){
+                    //     $cell=date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP($cell));
+                    // }
+                    $list[$h][] = $cell;
+                }
+                $h++;
+            }
+            $new_field = array();
+            foreach($b_field as $val){
+                if(in_array($val['column_comment'],$field)){
+                    $new_field[ array_search($val['column_comment'],$field) ] = $val['column_name'];
+                }
+            }
+
+            foreach($list as $vo){
+                $data = array();
+                foreach($vo as $kk=>$vv){
+                    $temp = $new_field[ $kk ];
+                    if ($temp){
+                        $data[$temp] = $vv;
                     }
                 }
-                if ($cell['xingming']){
-                    M('rycb')->add( $cell );
+                $data['ruzhirq'] = date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP( $data['ruzhirq']));
+                $data['diyixlbysj'] = date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP( $data['diyixlbysj']));
+                if($data['xingming']){
+                    M('rycb')->add($data);
                 }
             }
             $this->success('导入成功',U('renyuan_list')); 
