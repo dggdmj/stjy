@@ -10,11 +10,13 @@
     <!-- import css -->
     <link rel="stylesheet" type="text/css" href="/Public/Admin/css/pingtu.css" />
     <link rel="stylesheet" type="text/css" href="/Public/Admin/css/admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/dialog/dialog.css" />
 
     <!-- import js -->
     <script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
     <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
     <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
+    <script type="text/javascript" src="/Public/Admin/dialog/mDialogMin.js"></script>
 
 </head>
 <style>
@@ -23,8 +25,8 @@
     tr{border-bottom:solid 1px #ccc;}
     h3{margin-top: 2%;margin-bottom: 2%}
 </style>
-<body style="filter: blur(2px);">
-<div>
+<body">
+<div style="filter: blur(2px);">
     <center>
         <h3>{$school.name}-教学部经营数据汇总表</h3>
         <table>
@@ -100,5 +102,16 @@
         </table>
     </center>
 </div>
+<script type="text/javascript">
+    Dialog.init('',{
+        title : '请开通权限后查看',
+        button : {
+            立即开通 : function(){
+                Dialog.init("<a href='tel:13764567708'>13764567708</a>");
+//                Dialog.close(this);
+            }
+        }
+    });
+</script>
 </body>
 </html>
