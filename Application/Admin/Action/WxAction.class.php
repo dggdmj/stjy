@@ -46,6 +46,8 @@ class WxAction extends Action
         if($result['errode'] == 0){
             $url = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token=".ACCESS_TOKEN."&userid=".$result['UserId'];
             $res = $this->https_request($url);
+            session('wx_userinfo', json_decode($res,true));
+
             echo "用户信息拉取成功<br/>";
             dump(json_decode($res,true));
         }else{
