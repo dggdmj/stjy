@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{$school_name}-市场部业绩报表</title>
+    <title>{$xingming}工资条</title>
 <LINK href="favicon.ico" type="image/x-icon" rel=icon>
 <LINK href="favicon.ico" type="image/x-icon" rel="shortcut icon">
     <!-- import css -->
@@ -24,35 +24,29 @@
     td,th{text-align: center;border-right: solid 1px #ccc;line-height: 2em;}
     tr{border-bottom:solid 1px #ccc;}
     h3{margin-top: 2%;margin-bottom: 2%}
+    p{font-size: 2em;}
 </style>
 <body>
-<div style="filter: blur(2px);">
-    <center>
-        <h3>{$school_name}-市场部业绩报表</h3>
-        <table>
-            <tr>
-                <th>顾问姓名</th>
-                <th>所属分校</th>
-                <th>部门</th>
-                <th>净人头</th>
-                <th>业绩总额</th>
-            </tr>
-            <foreach name="list" item="vv">
-                <tr>
-                    <td>{$vv.xingming}</td>
-                    <td>{$school_name}</td>
-                    <td>{$vv.bumen}</td>
-                    <td>{$vv.jingrentou}</td>
-                    <td>{$vv.hejiyye}</td>
-                </tr>
-            </foreach>
-        </table>
-    </center>
+<div>
+    <div style="text-align: center;margin-top: 2em;">
+        <foreach name="list" item="vv">
+            <p><a href="{:U('getWage',array('qishu'=>$vv['qishu'],'phone'=>$phone))}">第{$vv.qishu}期</a></p>
+        </foreach>
+        <empty name="list">
+            <p>您还没有工资记录</p>
+        </empty>
+    </div>
 </div>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     Dialog.init('',{
         title : '请开通权限后查看',
+        button : {
+            立即开通 : function(){
+                Dialog.init("<a href='tel:13764567708'>13764567708</a>");
+//                Dialog.close(this);
+            }
+        }
     });
-</script>
+</script> -->
 </body>
 </html>

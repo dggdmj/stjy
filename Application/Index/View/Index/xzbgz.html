@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$xingming}工资条</title>
+<LINK href="favicon.ico" type="image/x-icon" rel=icon>
+<LINK href="favicon.ico" type="image/x-icon" rel="shortcut icon">
+    <!-- import css -->
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/pingtu.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/dialog/dialog.css" />
+
+    <!-- import js -->
+    <script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
+    <script type="text/javascript" src="/Public/Admin/dialog/mDialogMin.js"></script>
+
+</head>
+<style>
+    table{border: solid 1px #ccc;width: 100%}
+    td,th{text-align: center;border-right: solid 1px #ccc;line-height: 2em;}
+    tr{border-bottom:solid 1px #ccc;}
+    h3{margin-top: 2%;margin-bottom: 2%}
+</style>
+<body>
+<div>
+    <center>
+        <h3>行政部工资</h3>
+        <table>
+            <tr>
+                <td valign="middle" rowspan="12">基础信息</td>
+                <td>月份</td>
+                <td>{$info.yuefen}</td>
+            </tr>
+            <tr>
+                <td>分校</td>
+                <td>{$info.fenxiao}</td>
+            </tr>
+            <tr>
+                <td>部门</td>
+                <td>{$info.bumen}</td>
+            </tr>
+            <tr>
+                <td>职位</td>
+                <td>{$info.zhiwei}</td>
+            </tr>
+            <tr>
+                <td>岗位类型</td>
+                <td>{$info.gangweilx}</td>
+            </tr>
+            <tr>
+                <td>在职状态</td>
+                <td>{$info.zaizhizt}</td>
+            </tr>
+            <tr>
+                <td>姓名</td>
+                <td>{$info.xingming}</td>
+            </tr>
+            <tr>
+                <td>身份证</td>
+                <td>{$info.shenfenzhm}</td>
+            </tr>
+            <tr>
+                <td>入职时间</td>
+                <td>{$info.ruzhisj}</td>
+            </tr>
+            <tr>
+                <td>工作年限</td>
+                <td>{$info.gongzuonx}</td>
+            </tr>
+            <tr>
+                <td>应出勤天数</td>
+                <td>{$info.yingchuqts}</td>
+            </tr>
+            <tr>
+                <td>实际出勤天数</td>
+                <td>{$info.shijicqts}</td>
+            </tr>
+            <tr>
+                <td>基本工资</td>
+                <td>基本工资</td>
+                <td>{$info.jibengz}</td>
+            </tr>
+            <tr>
+                <td valign="middle" rowspan="6">区域行政经理</td>
+                <td>证件办理、年审、变更</td>
+                <td>{$info.zhengjianbl}</td>
+            </tr>
+            <tr>
+                <td>员工薪酬</td>
+                <td>{$info.yuangongxc}</td>
+            </tr>
+            <tr>
+                <td>培训</td>
+                <td>{$info.peixun}</td>
+            </tr>
+            <tr>
+                <td>表格收集汇总</td>
+                <td>{$info.biaogesjkz}</td>
+            </tr>
+            <tr>
+                <td>其他（临时工作）</td>
+                <td>{$info.qita}</td>
+            </tr>
+            <tr>
+                <td>小计</td>
+                <td>{$info.xiaoji}</td>
+            </tr>
+            <tr>
+                <td valign="middle" rowspan="16">分校行政专员</td>
+                <td>学校面积</td>
+                <td>{$info.xuexiaomz}</td>
+            </tr>
+            <tr>
+                <td>在读人数</td>
+                <td>{$info.zaidurs}</td>
+            </tr>
+            <tr>
+                <td>收费金额</td>
+                <td>{$info.shoufeije}</td>
+            </tr>
+            <tr>
+                <td>在职人员</td>
+                <td>{$info.zaizhiyy}</td>
+            </tr>
+            <tr>
+                <td>出库套数</td>
+                <td>{$info.chukuts}</td>
+            </tr>
+            <tr>
+                <td>学生服务管理</td>
+                <td>{$info.xueshengfwgl}</td>
+            </tr>
+            <tr>
+                <td>员工服务管理</td>
+                <td>{$info.yuangongfwgl}</td>
+            </tr>
+            <tr>
+                <td>卫生安全管理</td>
+                <td>{$info.weishengaqgl}</td>
+            </tr>
+            <tr>
+                <td>员工招聘</td>
+                <td>{$info.yuangongzp}</td>
+            </tr>
+            <tr>
+                <td>成功招聘</td>
+                <td>{$info.chenggongzp}</td>
+            </tr>
+            <tr>
+                <td>收费分成</td>
+                <td>{$info.shoufeifc}</td>
+            </tr>
+            <tr>
+                <td>证件维护</td>
+                <td>{$info.zhengjianwh}</td>
+            </tr>
+            <tr>
+                <td>公章管理</td>
+                <td>{$info.gongzhanggl}</td>
+            </tr>
+            <tr>
+                <td>资料文件保管</td>
+                <td>{$info.ziliaowjbg}</td>
+            </tr>
+            <tr>
+                <td>其他（临时工作）</td>
+                <td>{$info.qita2}</td>
+            </tr>
+            <tr>
+                <td>小计</td>
+                <td>{$info.xiaoji2}</td>
+            </tr>
+            <tr>
+                <td valign="middle" rowspan="14">财务专员</td>
+                <td>学生服务管理（财务）</td>
+                <td>{$info.xueshengfwglcw}</td>
+            </tr>
+            <tr>
+                <td>员工服务管理（财务）</td>
+                <td>{$info.yuangongfwglcw}</td>
+            </tr>
+            <tr>
+                <td>仓库管理（财务）</td>
+                <td>{$info.cangkuglcw}</td>
+            </tr>
+            <tr>
+                <td>收入核对录入（财务）</td>
+                <td>{$info.shouruhdlrcw}</td>
+            </tr>
+            <tr>
+                <td>支付审核（财务）</td>
+                <td>{$info.zhifushcw}</td>
+            </tr>
+            <tr>
+                <td>系统维护</td>
+                <td>{$info.xitongwhcw}</td>
+            </tr>
+            <tr>
+                <td>分校筹建财务对接（财务）</td>
+                <td>{$info.fenxiaocjcwdjcw}</td>
+            </tr>
+            <tr>
+                <td>收资产管理（财务）</td>
+                <td>{$info.zichanglcw}</td>
+            </tr>
+            <tr>
+                <td>其他（临时工作）</td>
+                <td>{$info.qita3}</td>
+            </tr>
+            <tr>
+                <td>小计</td>
+                <td>{$info.xiaoji3}</td>
+            </tr>
+            <tr>
+                <td>素质基金扣缴</td>
+                <td>{$info.suzhizjkj}</td>
+            </tr>
+            <tr>
+                <td>其他扣罚</td>
+                <td>{$info.qitakf}</td>
+            </tr>
+            <tr>
+                <td>浮动合计</td>
+                <td>{$info.fudonghj}</td>
+            </tr>
+            <tr>
+                <td>月度应发发总计</td>
+                <td>{$info.yueduyffzj}</td>
+            </tr>
+            <tr>
+                <td valign="middle" rowspan="3">代扣</td>
+                <td>公积金</td>
+                <td>{$info.gongjij}</td>
+            </tr>
+            <tr>
+                <td>个人社保</td>
+                <td>{$info.gerensb}</td>
+            </tr>
+            <tr>
+                <td>个人所得税</td>
+                <td>{$info.gerensds}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>月度实发总计</td>
+                <td>{$info.yuedusfzj}</td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td>备注</td>
+                <td>{$info.beizhu}</td>
+            </tr>
+        </table>
+    </center>
+</div>
+<!-- <script type="text/javascript">
+    Dialog.init('',{
+        title : '请开通权限后查看',
+        button : {
+            立即开通 : function(){
+                Dialog.init("<a href='tel:13764567708'>13764567708</a>");
+//                Dialog.close(this);
+            }
+        }
+    });
+</script> -->
+</body>
+</html>

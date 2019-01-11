@@ -46,10 +46,12 @@ class WxAction extends Action
         if($result['errode'] == 0){
             $url = "https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token=".ACCESS_TOKEN."&userid=".$result['UserId'];
             $res = $this->https_request($url);
-            session('wx_userinfo', json_decode($res,true));
-
-            echo "用户信息拉取成功<br/>";
-            dump(json_decode($res,true));
+            $res = json_decode($res,true);
+            if($res['mobile']){
+                header("location:".$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].'/web.php/Index/getqishu/phone/'.$res['mobile']);
+            }else{
+                echo '还没有您的信息，请联系管理员添加';exit;
+            }
         }else{
             echo "请求失败：".$res;
         }

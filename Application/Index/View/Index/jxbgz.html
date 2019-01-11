@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$xingming}工资条</title>
+<LINK href="favicon.ico" type="image/x-icon" rel=icon>
+<LINK href="favicon.ico" type="image/x-icon" rel="shortcut icon">
+    <!-- import css -->
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/pingtu.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/dialog/dialog.css" />
+
+    <!-- import js -->
+    <script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
+    <script type="text/javascript" src="/Public/Admin/dialog/mDialogMin.js"></script>
+
+</head>
+<style>
+    table{border: solid 1px #ccc;width: 100%}
+    td,th{text-align: center;border-right: solid 1px #ccc;line-height: 2em;}
+    tr{border-bottom:solid 1px #ccc;}
+    h3{margin-top: 2%;margin-bottom: 2%}
+</style>
+<body>
+<div>
+    <center>
+        <h3>教学部工资</h3>
+        <table>
+            <tr>
+                <td>月份</td>
+                <td>{$info.yuefen}</td>
+            </tr>
+            <tr>
+                <td>分校</td>
+                <td>{$info.fenxiao}</td>
+            </tr>
+            <tr>
+                <td>部门</td>
+                <td>{$info.bumen}</td>
+            </tr>
+            <tr>
+                <td>二级部门</td>
+                <td>{$info.erjibm}</td>
+            </tr>
+            <tr>
+                <td>职位</td>
+                <td>{$info.zhiwei}</td>
+            </tr>
+            <tr>
+                <td>岗位类型</td>
+                <td>{$info.gangweilx}</td>
+            </tr>
+            <tr>
+                <td>在职状态</td>
+                <td>{$info.zaizhizt}</td>
+            </tr>
+
+            <tr>
+                <td>姓名</td>
+                <td>{$info.xingming}</td>
+            </tr>
+            <tr>
+                <td>身份证号</td>
+                <td>{$info.shenfenzhm}</td>
+            </tr>
+            <tr>
+                <td>入职时间</td>
+                <td>{$info.ruzhisj}</td>
+            </tr>
+            <tr>
+                <td>入树童前年限折算</td>
+                <td>{$info.rushutqnxzd}</td>
+            </tr>
+            <tr>
+                <td>工作年限（月）</td>
+                <td>{$info.gongzuonx}</td>
+            </tr>
+            <tr>
+                <td>应出勤天数</td>
+                <td>{$info.yingchuqts}</td>
+            </tr>
+            <tr>
+                <td>实际出勤天数</td>
+                <td>{$info.shijicqts}</td>
+            </tr>
+            <tr>
+                <td>学历或英语专8追加年限</td>
+                <td>{$info.xuelihyyz8zjnx}</td>
+            </tr>
+            <tr>
+                <td>年限加成阿米巴</td>
+                <td>{$info.nianxianjcamb}</td>
+            </tr>
+
+            <tr>
+                <td>收费课程带班小时数</td>
+                <td>{$info.shoufeikcdbxss}</td>
+            </tr>
+            <tr>
+                <td>其中精读带班小时数</td>
+                <td>{$info.qizhongjddbxss}</td>
+            </tr>
+            <tr>
+                <td>小时数</td>
+                <td>{$info.xiaoshis}</td>
+            </tr>
+            <tr>
+                <td>阿米巴调整比例</td>
+                <td>{$info.amibtzbl}</td>
+            </tr>
+            <tr>
+                <td>小学综合</td>
+                <td>{$info.xiaoxuezh}</td>
+            </tr>
+            <tr>
+                <td>初中综合</td>
+                <td>{$info.chuzhongzh}</td>
+            </tr>
+            <tr>
+                <td>小学</td>
+                <td>{$info.xiaoxue}</td>
+            </tr>
+            <tr>
+                <td>初中</td>
+                <td>{$info.chuzhong}</td>
+            </tr>
+            <tr>
+                <td>完成个数</td>
+                <td>{$info.wanchenggs}</td>
+            </tr>
+            <tr>
+                <td>阿米巴调整比例</td>
+                <td>{$info.alibtzbl2}</td>
+            </tr>
+            <tr>
+                <td>得分</td>
+                <td>{$info.defen}</td>
+            </tr>
+            <tr>
+                <td>阿米巴调整比例</td>
+                <td>{$info.alibtzbl3}</td>
+            </tr>
+            <tr>
+                <td>小学</td>
+                <td>{$info.xiaoxue2}</td>
+            </tr>
+            <tr>
+                <td>初中</td>
+                <td>{$info.chuzhong2}</td>
+            </tr>
+            <tr>
+                <td>小学上课人次小时</td>
+                <td>{$info.xiaoxueskrcxs}</td>
+            </tr>
+            <tr>
+                <td>初中上课人次小时</td>
+                <td>{$info.chuzhongskrcxs}</td>
+            </tr>
+            <tr>
+                <td>人次小时平均单价</td>
+                <td>{$info.rencixspjdj}</td>
+            </tr>
+            <tr>
+                <td>阿米巴确认收入</td>
+                <td>{$info.amibqrsr}</td>
+            </tr>
+            <tr>
+                <td>阿米巴分成</td>
+                <td>{$info.amibfc}</td>
+            </tr>
+            <tr>
+                <td>一对一补课增值奖励分成</td>
+                <td>{$info.yiduiybkzzjlfc}</td>
+            </tr>
+            <tr>
+                <td>教务奖励分成(详见奖励台帐)</td>
+                <td>{$info.jiaowujlfc}</td>
+            </tr>
+            <tr>
+                <td>小学营业额</td>
+                <td>{$info.xiaoxueyye}</td>
+            </tr>
+            <tr>
+                <td>初中营业额</td>
+                <td>{$info.chuzhongyye}</td>
+            </tr>
+            <tr>
+                <td>正价学生续费营业额分成</td>
+                <td>{$info.zhengjiaxsxfyyefc}</td>
+            </tr>
+            <tr>
+                <td>秒杀转化营业额结算分成</td>
+                <td>{$info.miaoshazhyyejsfc}</td>
+            </tr>
+            <tr>
+                <td>团队确认收入</td>
+                <td>{$info.tuanduiqrsr}</td>
+            </tr>
+            <tr>
+                <td>任主任/组长岗位开始日期</td>
+                <td>{$info.renzhurzzgwksrq}</td>
+            </tr>
+            <tr>
+                <td>任主任/组长任岗年限</td>
+                <td>{$info.renzhurzzrgnx}</td>
+            </tr>
+            <tr>
+                <td>团队收入提成比</td>
+                <td>{$info.tuanduisrtcb}</td>
+            </tr>
+            <tr>
+                <td>团队阿米巴分成</td>
+                <td>{$info.tuanduiambfc}</td>
+            </tr>
+            <tr>
+                <td>组员人数分成</td>
+                <td>{$info.zuyuanrsfc}</td>
+            </tr>
+            <tr>
+                <td>组长爱外教上线奖励分成</td>
+                <td>{$info.zuzhangawjsxjlfc}</td>
+            </tr>
+            <tr>
+                <td>部门阿米巴平均值分成</td>
+                <td>{$info.bumenambpjfc}</td>
+            </tr>
+            <tr>
+                <td>饱和率</td>
+                <td>{$info.baohel}</td>
+            </tr>
+            <tr>
+                <td>饱和率考核分成</td>
+                <td>{$info.baohelkhfc}</td>
+            </tr>
+            <tr>
+                <td>上月末正价在读数</td>
+                <td>{$info.shangyuemzjzds}</td>
+            </tr>
+            <tr>
+                <td>月末正价在读数</td>
+                <td>{$info.yuemozjzds}</td>
+            </tr>
+            <tr>
+                <td>正价在读规模变化</td>
+                <td>{$info.zhengjiazdgmbh}</td>
+            </tr>
+            <tr>
+                <td>月末正价在读数奖励分成</td>
+                <td>{$info.yuemozjzdsjlfc}</td>
+            </tr>
+            <tr>
+                <td>新生未进班班</td>
+                <td>{$info.xinshengwjbb}</td>
+            </tr>
+            <tr>
+                <td>团队续费率人头考核分成</td>
+                <td>{$info.tuanduixflrtkhfc}</td>
+            </tr>
+            <tr>
+                <td>续费率人头扣罚分成</td>
+                <td>{$info.xufeilrtkffc}</td>
+            </tr>
+            <tr>
+                <td>赠送课及基地招生课超小时定额提成</td>
+                <td>{$info.zengsongkjjdzskcxsdetc}</td>
+            </tr>
+            <tr>
+                <td>PRT精品公开课</td>
+                <td>{$info.prtjpgkk}</td>
+            </tr>
+            <tr>
+                <td>流失及退费绩效结算</td>
+                <td>{$info.liushijtfjxjs}</td>
+            </tr>
+            <tr>
+                <td>考勤</td>
+                <td>{$info.kaoqin}</td>
+            </tr>
+            <tr>
+                <td>素质基金</td>
+                <td>{$info.suzhijj}</td>
+            </tr>
+            <tr>
+                <td>扣罚/奖励</td>
+                <td>{$info.koufajl}</td>
+            </tr>
+            <tr>
+                <td>预发</td>
+                <td>{$info.yufa}</td>
+            </tr>
+            <tr>
+                <td>浮动合计</td>
+                <td>{$info.fudonghj}</td>
+            </tr>
+            <tr>
+                <td>月度应发总计</td>
+                <td>{$info.yueduyfzj}</td>
+            </tr>
+            <tr>
+                <td>公积金</td>
+                <td>{$info.gongjij}</td>
+            </tr>
+            <tr>
+                <td>个人社保</td>
+                <td>{$info.gerensb}</td>
+            </tr>
+            <tr>
+                <td>个人所得税</td>
+                <td>{$info.gerensds}</td>
+            </tr>
+            <tr>
+                <td>月度实发总计</td>
+                <td>{$info.yuedusfzj}</td>
+            </tr>
+            <tr>
+                <td>月度实发基本工资（标准+年限）</td>
+                <td>{$info.yuedusfjbgz}</td>
+            </tr>
+            <tr>
+                <td>月度实发绩效</td>
+                <td>{$info.yuedusfyj}</td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td>{$info.beizhu}</td>
+            </tr>
+        </table>
+    </center>
+</div>
+<!-- <script type="text/javascript">
+    Dialog.init('',{
+        title : '请开通权限后查看',
+        button : {
+            立即开通 : function(){
+                Dialog.init("<a href='tel:13764567708'>13764567708</a>");
+//                Dialog.close(this);
+            }
+        }
+    });
+</script> -->
+</body>
+</html>

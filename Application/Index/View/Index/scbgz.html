@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$xingming}工资条</title>
+<LINK href="favicon.ico" type="image/x-icon" rel=icon>
+<LINK href="favicon.ico" type="image/x-icon" rel="shortcut icon">
+    <!-- import css -->
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/pingtu.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/css/admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Admin/dialog/dialog.css" />
+
+    <!-- import js -->
+    <script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
+    <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
+    <script type="text/javascript" src="/Public/Admin/dialog/mDialogMin.js"></script>
+
+</head>
+<style>
+    table{border: solid 1px #ccc;width: 100%}
+    td,th{text-align: center;border-right: solid 1px #ccc;line-height: 2em;}
+    tr{border-bottom:solid 1px #ccc;}
+    h3{margin-top: 2%;margin-bottom: 2%}
+</style>
+<body>
+<div>
+    <center>
+        <h3>市场部工资</h3>
+        <table>
+            <tr>
+                <td valign="middle" rowspan="13">基础信息</td>
+                <td>月份</td>
+                <td>{$info.yuefen}</td>
+            </tr>
+            <tr>
+                <td>分校</td>
+                <td>{$info.fenxiao}</td>
+            </tr>
+            <tr>
+                <td>部门</td>
+                <td>{$info.bumen}</td>
+            </tr>
+            <tr>
+                <td>职位</td>
+                <td>{$info.zhiwei}</td>
+            </tr>
+            <tr>
+                <td>岗位类型</td>
+                <td>{$info.gangweilx}</td>
+            </tr>
+            <tr>
+                <td>在职状态</td>
+                <td>{$info.zaizhizt}</td>
+            </tr>
+
+            <tr>
+                <td>姓名</td>
+                <td>{$info.xingming}</td>
+            </tr>
+            <tr>
+                <td>身份证号</td>
+                <td>{$info.shenfenzhm}</td>
+            </tr>
+
+            <tr>
+                <td>工作年限</td>
+                <td>{$info.gongzuonx}</td>
+            </tr>
+            <tr>
+                <td>入职时间</td>
+                <td>{$info.ruzhisj}</td>
+            </tr>
+
+            <tr>
+                <td>应出勤天数</td>
+                <td>{$info.yingchuqts}</td>
+            </tr>
+            <tr>
+                <td>实际出勤天数</td>
+                <td>{$info.shijicqts}</td>
+            </tr>
+            <tr>
+                <td>学习卡本金</td>
+                <td>{$info.xuexikbj}</td>
+            </tr>
+            <tr>
+                <td>额度</td>
+                <td>{$info.edu}</td>
+            </tr>
+            <tr>
+                <td>净人头</td>
+                <td>{$info.jingrentou}</td>
+            </tr>
+
+
+
+
+
+            <tr>
+                <td>合计营业额</td>
+                <td>{$info.hejiyye}</td>
+            </tr>
+
+            <tr>
+                <td>参照保底线</td>
+                <td>{$info.canzhaobdx}</td>
+            </tr>
+            <tr>
+                <td>招生校长个人业绩</td>
+                <td>{$info.zhaoshengxzgryj}</td>
+            </tr>
+            <tr>
+                <td>固定合计</td>
+                <td>{$info.gudinghj}</td>
+            </tr>
+            <tr>
+                <td>学习卡结算</td>
+                <td>{$info.xuexikjs}</td>
+            </tr>
+            <tr>
+                <td>招生校长团队秒杀业绩</td>
+                <td>{$info.zhaoshengxztdmsyj}</td>
+            </tr>
+            <tr>
+                <td>招生校长团队业绩</td>
+                <td>{$info.zhaoshengxztdyj}</td>
+            </tr>
+            <tr>
+                <td>团队稳定</td>
+                <td>{$info.taunduiwd}</td>
+            </tr>
+            <tr>
+                <td>校长招生课或家长会考核</td>
+                <td>{$info.xiaozhangzsk}</td>
+            </tr>
+            <tr>
+                <td>微信绩效</td>
+                <td>{$info.weixinjx}</td>
+            </tr>
+            <tr>
+                <td>家长会现场报名奖励</td>
+                <td>{$info.jiazhanghxcbrjl}</td>
+            </tr>
+            <tr>
+                <td>流失及退费绩效结算</td>
+                <td>{$info.liushijtfjxjs}</td>
+            </tr>
+            <tr>
+                <td>考勤</td>
+                <td>{$info.kaoqin}</td>
+            </tr>
+            <tr>
+                <td>其他奖罚</td>
+                <td>{$info.qitajf}</td>
+            </tr>
+            <tr>
+                <td>浮动合计</td>
+                <td>{$info.fudonghj}</td>
+            </tr>
+            <tr>
+                <td>本月预发</td>
+                <td>{$info.benyueyf}</td>
+            </tr>
+            <tr>
+                <td>应发工资合计</td>
+                <td>{$info.yingfagzhj}</td>
+            </tr>
+            <tr>
+                <td>公积金</td>
+                <td>{$info.gongjij}</td>
+            </tr>
+            <tr>
+                <td>个人社保</td>
+                <td>{$info.gerensb}</td>
+            </tr>
+            <tr>
+                <td>个人所得税</td>
+                <td>{$info.gerensds}</td>
+            </tr>
+            <tr>
+                <td>实发工资合计</td>
+                <td>{$info.shifagzhj}</td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td>{$info.beizhu}</td>
+            </tr>
+            
+        </table>
+    </center>
+</div>
+<!-- <script type="text/javascript">
+    Dialog.init('',{
+        title : '请开通权限后查看',
+        button : {
+            立即开通 : function(){
+                Dialog.init("<a href='tel:13764567708'>13764567708</a>");
+//                Dialog.close(this);
+            }
+        }
+    });
+</script> -->
+</body>
+</html>
