@@ -28,10 +28,10 @@
 <body>
 <div>
     <center>
-        <h3>市场部工资</h3>
+        <h3>{$xingming}{$info.yuefen}工资明细</h3>
         <table>
             <tr>
-                <td valign="middle" rowspan="13">基础信息</td>
+                <!-- <td valign="middle" rowspan="13">基础信息</td> -->
                 <td>月份</td>
                 <td>{$info.yuefen}</td>
             </tr>
@@ -94,11 +94,12 @@
                 <td>净人头</td>
                 <td>{$info.jingrentou}</td>
             </tr>
-
-
-
-
-
+            <foreach name="cplx" item="val" key="key">
+            <tr>
+                <td>{$val.name}</td>
+                <td>{$data.$key}</td>
+            </tr>
+            </foreach>
             <tr>
                 <td>合计营业额</td>
                 <td>{$info.hejiyye}</td>

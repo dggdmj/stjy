@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{$xingming}工资条</title>
+    <title>工资条</title>
 <LINK href="favicon.ico" type="image/x-icon" rel=icon>
 <LINK href="favicon.ico" type="image/x-icon" rel="shortcut icon">
     <!-- import css -->
@@ -16,37 +16,81 @@
     <script type="text/javascript" src="/Public/Admin/js/jquery.min.js"></script>
     <script type="text/javascript" src="/Public/Admin/js/pingtu.js"></script>
     <script type="text/javascript" src="/Public/Admin/js/respond.js"></script>
-    <script type="text/javascript" src="/Public/Admin/dialog/mDialogMin.js"></script>
 
 </head>
 <style>
-    table{border: solid 1px #ccc;width: 100%}
-    td,th{text-align: center;border-right: solid 1px #ccc;line-height: 2em;}
-    tr{border-bottom:solid 1px #ccc;}
-    h3{margin-top: 2%;margin-bottom: 2%}
-    p{font-size: 2em;}
+    body{
+        background: #efefef;
+        margin: 0;
+        padding: 0;
+    }
+    .menu{
+        width: 100%;
+        height: 125px;
+        background: #ff4200;
+        text-align: center;
+        color: #ffffff;
+        font-size: 16px;
+        padding-top: 10px;
+    }
+    .menu div{
+        margin-top: 6px;
+    }
+    .list{
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+        margin-top: 20px;
+    }
+    .list li {
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+    }
+    .list .tit {
+        float: left;
+        margin-left: 5%;
+    }
+    .list .num {
+        float: right;
+        margin-right: 10%;
+    }
+    .caozuo button{
+        width: 40%;
+        float: left;
+        border: 1px solid #ff4200;
+        margin-left: 6%;
+        height: 40px;
+        background: #fff;
+        border-radius: 5px;
+        font-size: 18px;
+    }
 </style>
 <body>
-<div>
-    <div style="text-align: center;margin-top: 2em;">
-        <foreach name="list" item="vv">
-            <p><a href="{:U('getWage',array('qishu'=>$vv['qishu'],'phone'=>$phone))}">第{$vv.qishu}期</a></p>
-        </foreach>
-        <empty name="list">
-            <p>您还没有工资记录</p>
-        </empty>
-    </div>
+<div class="menu">
+    <div>{$nian}年平均工资</div>
+    <div style="font-size: 30px; line-height: 40px;">{$pingjungz}</div>
+    <div>亲爱的{$xingming}，感谢您的辛勤付出</div>
 </div>
-<!-- <script type="text/javascript">
-    Dialog.init('',{
-        title : '请开通权限后查看',
-        button : {
-            立即开通 : function(){
-                Dialog.init("<a href='tel:13764567708'>13764567708</a>");
-//                Dialog.close(this);
-            }
-        }
-    });
-</script> -->
+<div>
+    <ul class="list">
+        <foreach name="list" item="val">
+            <li>
+                <a href="{:U('getLast',array('qishu'=>$val['qishu'],'phone'=>$phone))}"><div class="tit">
+                    第{$val.qishu}期
+                </div>
+                <div class="num">
+                    {$val.gongzi}
+                </div></a>
+            </li>
+        </foreach>
+        <li style="background: #efefef">
+
+        </li>
+        
+        </li>
+    </ul>
+</div>
 </body>
 </html>

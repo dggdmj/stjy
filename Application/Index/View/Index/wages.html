@@ -69,27 +69,19 @@
 </style>
 <body>
 <div class="menu">
-    <div>2018年11月工资</div>
-    <div style="font-size: 30px; line-height: 40px;">5280</div>
-    <div><button style="font-size: 14px;border: 1px solid #ffffff;border-radius: 5px;background:#ff4200;color: #fff; ">查看往期</button></div>
-    <div>亲爱的胡涛，感谢您的辛勤付出</div>
+    <div>第{$qishu}期工资</div>
+    <div style="font-size: 30px; line-height: 40px;">{$info.yingfagzhj}</div>
+    <div><a href="{:U('getqishu',array('phone'=>$phone))}"><button style="font-size: 14px;border: 1px solid #ffffff;border-radius: 5px;background:#ff4200;color: #fff; ">查看往期</button></a>&nbsp;&nbsp;<a href="{:U('getWage',array('qishu'=>$qishu,'phone'=>$phone))}"><button style="font-size: 14px;border: 1px solid #ffffff;border-radius: 5px;background:#ff4200;color: #fff; ">查看明细</button></a></div>
+    <div>亲爱的{$xingming}，感谢您的辛勤付出</div>
 </div>
 <div>
     <ul class="list">
         <li>
             <div class="tit">
-                基本工资
+                应发工资
             </div>
             <div class="num">
-                3000
-            </div>
-        </li>
-        <li>
-            <div class="tit">
-                绩效工资
-            </div>
-            <div class="num">
-                2000
+                {$info.yingfagzhj}
             </div>
         </li>
         <li>
@@ -97,7 +89,7 @@
                 公积金代扣
             </div>
             <div class="num">
-                1000
+                {$info.gongjij}
             </div>
         </li>
         <li>
@@ -105,7 +97,7 @@
                 社保代扣
             </div>
             <div class="num">
-                800
+                {$info.gerensb}
             </div>
         </li>
         <li>
@@ -113,7 +105,7 @@
                 个税代扣
             </div>
             <div class="num">
-                500
+                {$info.gerensds}
             </div>
         </li>
         <li style="background: #efefef">
@@ -124,17 +116,17 @@
                 实发合计
             </div>
             <div class="num">
-                5800
+                {$info.zongji}
             </div>
         </li>
-        <li style="height: 100px">
+        <li style="height: 40px">
             <div style="font-size:14px;color:#b1a9a9;margin-left:5%">
                 温馨提示:工资条属于敏感信息，请注意保密
             </div>
-            <div class="caozuo">
+            <!-- <div class="caozuo">
                 <button style="background: #ff4200;color: #ffffff">确认以上信息</button>
                 <button style="color: #ff4200">问题反馈</button>
-            </div>
+            </div> -->
         </li>
     </ul>
 </div>

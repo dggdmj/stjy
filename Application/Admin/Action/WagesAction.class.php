@@ -50,7 +50,8 @@ class WagesAction extends CommonAction{
         $temp = M('admin')->where('username ="'.$username.'"')->find();// 获取admin表的数据
         $uid = $temp['id'];// 获取用户id
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
-        $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        $school_id = session('sid');// 获取用户所属校区
+        // $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
         if($rid == 5){
             $map['status_fzr'] = array('neq',3);// 查询条件
         }elseif($rid == 4){

@@ -48,7 +48,7 @@ class WxAction extends Action
             $res = $this->https_request($url);
             $res = json_decode($res,true);
             if($res['mobile']){
-                header("location:".$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].'/web.php/Index/getqishu/phone/'.$res['mobile']);
+                header("location:".$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].'/web.php/Index/getLast/phone/'.$res['mobile']);
             }else{
                 echo '还没有您的信息，请联系管理员添加';exit;
             }
