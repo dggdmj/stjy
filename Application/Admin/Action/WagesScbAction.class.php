@@ -75,7 +75,6 @@ class WagesScbAction extends WagesCommonAction{
             }
         }
         $cplx = array_values($cplx);
-
         if ($suoshudd){
             $list = M('scbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $heji = $list[ count($list) - 1];
@@ -394,23 +393,52 @@ class WagesScbAction extends WagesCommonAction{
             M('fjb')->add($tmp);
         }
         M('scbgz')->where("suoshudd='$suoshudd'")->delete();
+        $cplx = array();
+        $chanpinlx = M('sjcplx')->field('xiangmu,tichengds,tichengdsfxxk,shifoucyedjs')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
+
+        //按提成点数从高到低排序
+        $last_names = array_column($chanpinlx,'tichengds');
+        array_multisort($last_names,SORT_DESC,$chanpinlx);
+
+        foreach($chanpinlx as $key=>$vv){
+            $vv['xiangmu'] = str_replace('(','（',$vv['xiangmu']);
+            $vv['xiangmu'] = str_replace(')','）',$vv['xiangmu']);
+            $chanpinlx[$key]['field'] = $this->encode($vv['xiangmu']);
+            // $chanpinlx[$key]['tichengds'] = is_numeric($vv['tichengds']) ? ( $vv['tichengds'] * 100 ).'%' : $vv['tichengds'];
+            if (!in_array($chanpinlx[$key]['tichengds'],$ticheng) && $chanpinlx[$key]['field'] != 'laoshengxufei'){
+                $cplx[$key]['ticheng'] = $chanpinlx[$key]['tichengds'];
+                $ticheng[] = $chanpinlx[$key]['tichengds'];
+                $cplx[$key]['tichengfxxk'] = $vv['tichengdsfxxk'] ? $vv['tichengdsfxxk'] : number_format($vv['tichengds'] * 0.8,2);
+                $cplx[$key]['tichengds'] = is_numeric($vv['tichengds']) ? ( $vv['tichengds'] * 100 ).'%' : $vv['tichengds'];
+                $cplx[$key]['tichengdsfxxk'] = is_numeric($cplx[$key]['tichengfxxk']) ? ( $cplx[$key]['tichengfxxk'] * 100 ).'%' : $cplx[$key]['tichengfxxk'];
+                $cplx[$key]['name'] = $vv['xiangmu'];
+            }
+        }
+        $cplx = array_values($cplx);
+
+        foreach($data as $key=>$val){
+            for($b=16;$b<15+count($cplx)+2;$b++){
+                unset($data[$key][$b]);
+            }
+            $data[$key] = array_values($data[$key]);
+        }
         $list = array();
         $field = M('')->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_scbgz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj'");
         foreach($data as $key=>$val){
             $j=0;
-            if ($val['0'] == '合计'){
-                for($i=0;$i<15;$i++){
-                    unset($field[$i]);
-                }
-                $list[ $key ]['xuhao'] = '合计';
-                $j=1;
-            }
+            // if ($val['0'] == '合计'){
+                // for($i=0;$i<15;$i++){
+                //     unset($field[$i]);
+                // }
+                // $list[ $key ]['fenxiao'] = '合计';
+                // $j=1;
+            // }
             foreach($field as $kk=>$vv){
                 $list[ $key ][ $vv['column_name'] ] = $val[$j];
                 $j++;
             }
             $list[$key]['suoshudd'] = $suoshudd;
-            if ($list[$key]['xuhao']){
+            if ($list[$key]['fenxiao']){
                 $res = M('scbgz')->add($list[$key]);
             }
         }

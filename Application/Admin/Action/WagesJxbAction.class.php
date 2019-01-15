@@ -219,7 +219,7 @@ class WagesJxbAction extends WagesCommonAction{
         foreach($data as $key=>$val){
             $j=0;
             if ($val['0'] == '合计'){
-                for($i=0;$i<15;$i++){
+                for($i=0;$i<31;$i++){
                     unset($field[$i]);
                 }
                 $list[ $key ]['fenxiao'] = '合计';
