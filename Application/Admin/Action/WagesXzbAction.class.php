@@ -259,7 +259,7 @@ class WagesXzbAction extends WagesCommonAction{
         foreach($data as $key=>$val){
             $j=0;
             if ($val['0'] == '合计'){
-                for($i=0;$i<14;$i++){
+                for($i=0;$i<13;$i++){
                     unset($field[$i]);
                 }
                 $list[ $key ]['xingming'] = '合计';

@@ -245,6 +245,7 @@ class WagesCommonAction extends CommonAction{
 
         if ($suoshudd){
             $list = M('xzbgz')->where("suoshudd='$suoshudd'")->order('id asc')->select();
+            $list_pz = M('xzbgz_pz')->where("suoshudd='$suoshudd'")->order('id asc')->select();
             $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
         }
 
@@ -262,7 +263,7 @@ class WagesCommonAction extends CommonAction{
         $i = 7;
         foreach($list as $val){
             $s = 0;
-            // $objPHPExcel->getActiveSheet()->getComment('A13')->getText()->createTextRun('pz');
+            // $objPHPExcel->getActiveSheet()->getComment($i)->getText()->createTextRun('pz');
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xuhao']);$s++;
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yuefen']);$s++;
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['fenxiao']);$s++;
@@ -442,7 +443,7 @@ class WagesCommonAction extends CommonAction{
         $objActSheet = $objPHPExcel->getActiveSheet();
         $objActSheet->setCellValue('A1',$filename); 
         $objActSheet->setCellValue('O2','市场部业绩数据'); 
-
+        $tmp_c = count($data['0']);
         $bt_arr = ['合计营业额','参照保底线','招生校长个人业绩','固定合计','学习卡结算','招生校长团队秒杀业绩','招生校长团队业绩','团队稳定','校长招生课或家长会考核','微信绩效','家长会现场报名奖励','流失及退费绩效结算','考勤','其他奖罚','浮动合计','本月预发','应发工资合计','公积金','个人社保','个人所得税','实发工资合计','备注'];
         for($s=0;$s<count($bt_arr);$s++){
             $ss = $this->getZm($sch_ex_id);
@@ -482,8 +483,12 @@ class WagesCommonAction extends CommonAction{
                     $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($q).$i,$vv);$q++;
                 }
             }else{
-                foreach($data[$key] as $vv){
-                    $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($q).$i,$vv);$q++;
+                if($data[$key]){
+                    foreach($data[$key] as $vv){
+                        $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($q).$i,$vv);$q++;
+                    }
+                }else{
+                    $q += $tmp_c;
                 }
                 $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($q).$i,$val['laoshengxufei']);$q++;
             }
@@ -790,17 +795,17 @@ class WagesCommonAction extends CommonAction{
     }
 
     //获取老师续费率和续费率人头结算
-    public function getLsxfl($qishu='201812',$sid='15'){
+    public function getLsxfl($qishu='201903',$sid='1'){
         $yuefen = substr($qishu,4,2);
         $nian = substr($qishu,0,4);
         if ($yuefen == '03'){
-            $suoshudd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'.") and tid=37 and sid=$sid")->select();
+            $suoshudd = M('qishu_history')->field('max(id) as id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'.") and (tid=37 or tid=50 ) and sid=$sid")->group('qishu')->select();
         }elseif($yuefen == '06'){
-            $suoshudd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'.") and tid=37 and sid=$sid")->select();
+            $suoshudd = M('qishu_history')->field('max(id) as id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'.") and (tid=37 or tid=50) and sid=$sid")->group('qishu')->select();
         }elseif($yuefen == '09'){
-            $suoshudd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'." or qishu=$nian".'07'." or qishu=$nian".'08'." or qishu=$nian".'09'.") and tid=37 and sid=$sid")->select();
+            $suoshudd = M('qishu_history')->field('max(id) as id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'." or qishu=$nian".'07'." or qishu=$nian".'08'." or qishu=$nian".'09'.") and (tid=37 or tid=50) and sid=$sid")->group('qishu')->select();
         }elseif($yuefen == '12'){
-            $suoshudd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'." or qishu=$nian".'07'." or qishu=$nian".'08'." or qishu=$nian".'09'." or qishu=$nian".'10'." or qishu=$nian".'11'." or qishu=$nian".'12'.") and tid=37 and sid=$sid")->select();
+            $suoshudd = M('qishu_history')->field('max(id) as id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'." or qishu=$nian".'04'." or qishu=$nian".'05'." or qishu=$nian".'06'." or qishu=$nian".'07'." or qishu=$nian".'08'." or qishu=$nian".'09'." or qishu=$nian".'10'." or qishu=$nian".'11'." or qishu=$nian".'12'.") and (tid=37 or tid=50) and sid=$sid")->group('qishu')->select();
         }else{
             return array();
         }
@@ -812,8 +817,9 @@ class WagesCommonAction extends CommonAction{
             $where['suoshudd'] = array('in',$suoshudd_arr);
             $where['laoshimz'] = array('neq','');
             $list = M('xfl')->field('laoshimz,banxing,leixing,xufeixsrs,fenmu')->where($where)->select();
+            $list2 = M('xfljs')->field('laoshimz,banxing,leixing,xufeixsrs,fenmu')->where($where)->select();
+            $list = array_merge($list,$list2);
         }
-        // dump($list);
         $laoshi = array();
         foreach($list as $val){
             if (!in_array($val['laoshimz'],$laoshi)){
@@ -1210,7 +1216,6 @@ class WagesCommonAction extends CommonAction{
         $this->ajaxReturn('1');
     }
 
-    
 }
 
 ?>

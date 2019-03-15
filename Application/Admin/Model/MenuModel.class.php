@@ -313,6 +313,18 @@ class MenuModel {
                         'url' => U('/wagesSj/wageList/tid/48'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '续费率',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesSj/wageList/tid/50'),
+                        'order' => 1
+                    ),
+                    array(
+                        'name' => '秒杀转换率',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesSj/wageList/tid/51'),
+                        'order' => 1
+                    ),
                 )
             );
         $gongzi = array(
