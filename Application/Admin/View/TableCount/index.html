@@ -20,11 +20,12 @@
                         <th width="160">续费率</th>
                         <th width="160">转化率</th>
                         <th width="160">老师确认秒杀营业额</th>
+                        <th width="160">市场部秒杀清单</th>
                         <th width="200">操作</th>
                         <!-- <th width="80">汇总表</th> -->
-                        <if condition="($rid eq 3) or ($rid eq 4) or ($rid eq 5)">
+                        <!-- <if condition="($rid eq 3) or ($rid eq 4) or ($rid eq 5)">
                         <th width="200">操作</th>
-                        </if>
+                        </if> -->
                         <!-- <th width="80">状态</th> -->
                     </tr>
                     <foreach name='list' item='v' key='k'>
@@ -57,15 +58,13 @@
                                     
                                 </if>
                                 
-                            <if condition="$rid eq 3">
+                            <!-- <if condition="$rid eq 3">
                                 <if condition="$v.status_xzjl neq 2">
                                     <td>
-                                        <!-- <a class="button bg-red button-small icon-tool" title="退回行政" alt="退回行政" href="__MODULE__/Common/thxz/qishu/{$v.qishu}/sid/{$v.sid}">退回行政</a> -->
                                         <a class="button bg-red button-small js-sub" title="退回行政" alt="退回行政" target2="__MODULE__/Common/back/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">退回行政</a>
                                         <a class="button bg-yellow button-small js-sub" title="通过审核" alt="通过审核" target2="__MODULE__/Common/checked/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">通过审核</a>
                                     </td>
                                 <elseif condition="$v.status_xzjl eq 2" />
-                                    <!-- <a class="button bg-yellow button-small icon-tool" title="已审核" alt="已审核" href="">已审核</a> -->
                                     <if condition="$v.status_cw neq 2">
                                         <td>
                                             <a class="button bg-red button-small js-sub" title="取消" alt="取消" target2="__MODULE__/Common/cancel/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">取消</a>
@@ -87,7 +86,7 @@
                                         <a class="button bg-red button-small js-sub" title="取消" alt="取消" target2="__MODULE__/Common/cancel/qishu/{$v.qishu}/sid/{$v.sid}" style="cursor:pointer">取消</a>
                                     </td>
                                 </if>
-                            </if>
+                            </if> -->
                             <td>
                                 <!-- <a class="button bg-green button-small icon-eye" title="查看" alt="查看" href="__CONTROLLER__/index_xq/sid/{$v.sid}/qishu/{$v.qishu}" style="cursor:pointer"></a> -->
                             </td>

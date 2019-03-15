@@ -825,15 +825,13 @@ class CountZhlAction extends CommonAction {
         }
         //获取本月新增的秒杀
         $xyfy_id = $this->getQishuId($qishu,$sid,7);//学员费用预警表
-        $list = M('xzmxb as xz')
-                ->field('xz.xuehao,yj.shengyugmsl,yj.shengyuzssl,yj.feiyong')
-                ->join('LEFT JOIN stjy_xyfyyjb_'.$nian.' as yj on yj.xuehao=xz.xuehao')
-                ->where("xz.suoshudd = '$xzmxb_id' and yj.suoshudd='$xyfy_id'")
+        $list = M('xzmxb')
+                ->field('xuehao')
+                ->where("suoshudd = '$xzmxb_id' and shifoums = '是'")
                 ->select();
 
         foreach($list as $val){
-            $xyfyyjb[ $val['xuehao'] ]['zongshuliang'] += $val['shengyugmsl'] + $val['shengyuzssl'];
-            $xyfyyjb[ $val['xuehao'] ]['zongfeiyong'] += $val['feiyong'];
+           $miaosha[] = $val['xuehao'];
         }
         foreach($xyfyyjb as $key=>$val){
             $val['danjia'] = round($val['zongfeiyong'] / $val['zongshuliang'],2);

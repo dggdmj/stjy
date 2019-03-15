@@ -1423,5 +1423,267 @@ class SettingAction extends CommonAction{
         $this->assign('info',$info);
         $this->adminDisplay();
     }
+
+    //饱和率
+    public function bhl_list(){
+        $list = M('bhl')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //清空表
+    public function tname_delete(){
+        $tname = I('tname');
+        $list = M($tname)->where("1=1")->delete();
+        $this->success('操作成功',U($tname.'_list'));
+    }
+
+    //中心名称导入
+    public function bhl_add(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());exit;
+            }
+            M('bhl')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'bhl';
+            M('file')->add($arr);
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)getCalculatedValue
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($j=2;$j<$highestRow+1;$j++){
+                $data['leibie'] = $sheet->getCell('A'.$j)->getValue();
+                $data['qujian'] = $sheet->getCell('B'.$j)->getValue();
+                $data['shuzhi'] = $sheet->getCell('C'.$j)->getValue();
+                if ($data['leibie']){
+                    M('bhl')->add($data);
+                }
+                unset($data);
+            }
+            $this->success('导入成功',U('bhl_list'));
+            exit;
+        }
+    }
+
+    //标准收入提成表
+    public function bzsrtcb_list(){
+        $list = M('bzsrtcb')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //标准收入提成表
+    public function bzsrtcb_add(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());exit;
+            }
+            M('bzsrtcb')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'bzsrtcb';
+            M('file')->add($arr);
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)getCalculatedValue
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($j=2;$j<$highestRow+1;$j++){
+                $data['biyegznx'] = $sheet->getCell('A'.$j)->getCalculatedValue();
+                $data['bumen'] = $sheet->getCell('B'.$j)->getCalculatedValue();
+                $data['xvfeilv'] = $sheet->getCell('C'.$j)->getCalculatedValue();
+                $data['lgj'] = $sheet->getCell('D'.$j)->getCalculatedValue();
+                $data['jgy'] = $sheet->getCell('E'.$j)->getCalculatedValue();
+                $data['dyy'] = $sheet->getCell('F'.$j)->getCalculatedValue();
+                $data['ljd'] = $sheet->getCell('G'.$j)->getCalculatedValue();
+                $data['sgwjd'] = $sheet->getCell('H'.$j)->getCalculatedValue();
+                $data['syxjd'] = $sheet->getCell('I'.$j)->getCalculatedValue();
+                $data['shuoming'] = $sheet->getCell('J'.$j)->getCalculatedValue();
+                if ($data['biyegznx']){
+                    M('bzsrtcb')->add($data);
+                }
+                unset($data);
+            }
+            $this->success('导入成功',U('bzsrtcb_list'));
+            exit;
+        }
+    }
+
+    //技能评分阿米巴
+    public function jnpfamb_list(){
+        $list = M('jnpfamb')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //技能评分阿米巴
+    public function jnpfamb_add(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());exit;
+            }
+            M('jnpfamb')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'jnpfamb';
+            M('file')->add($arr);
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)getCalculatedValue
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            for($j=2;$j<$highestRow+1;$j++){
+                $data['dasaidf'] = $sheet->getCell('A'.$j)->getCalculatedValue();
+                $data['amibtzbl'] = $sheet->getCell('B'.$j)->getCalculatedValue();
+                if ($data['dasaidf']){
+                    M('jnpfamb')->add($data);
+                }
+                unset($data);
+            }
+            $this->success('导入成功',U('jnpfamb_list'));
+            exit;
+        }
+    }
+
+    //技能评分阿米巴
+    public function jcxxb_list(){
+        $list = M('jcxxb')->order('id')->select();
+        $this->assign('list',$list);
+        $this->adminDisplay();
+    }
+
+    //基础信息表
+    public function jcxxb_add(){
+        if(!empty($_FILES)){
+            //上传表格并导入数据
+            $config = array(
+                'exts' => array('xlsx', 'xls'),
+                'maxSize' => 3145728,
+                'rootPath' => "./Public/",
+                'savePath' => 'Uploads/',
+                'subName' => array('date', 'Ymd'),
+            );
+
+            $upload = new \Think\Upload($config);
+
+            if (!$info = $upload->upload()) {
+                $this->error($upload->getError());exit;
+            }
+            M('jcxxb')->where("1=1")->delete();
+            $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
+            $arr['name'] = $info['excel']['name'];
+            $arr['path'] = $file_name;
+            $arr['add_time'] = date('Y-m-d H:i:s',time());
+            $arr['table_name'] = 'jcxxb';
+            M('file')->add($arr);
+            vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+
+            $inputFileType = \PHPExcel_IOFactory::identify($file_name);
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            // $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($file_name);
+            $sheet = $objPHPExcel->getSheet(0);// 取得默认第一张工作表
+            $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+            $colsNum= \PHPExcel_Cell::columnIndexFromString($highestColumn); // 获取总列数(数字)
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            $b_field = M('')->query("select COLUMN_NAME,column_comment from information_schema.COLUMNS where table_name = 'stjy_jcxxb'");
+            $field = array();
+            for($i=0;$i<$colsNum;$i++){
+                $tmp =  $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($i).'1')->getValue();
+                if ($tmp){
+                    $field[] = $tmp;
+                }
+            }
+            $zhiduan = array();
+            $list = array();
+            $h = 0;
+            for($i=2;$i<$highestRow+1;$i++){
+                for($j=0;$j<$colsNum;$j++){
+                    $tmp = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($j).$i);
+                    $cell = $tmp->getCalculatedValue();
+                    if(substr($cell,0,1) == '='){
+                        $cell = $objPHPExcel->getActiveSheet()->getCell(\PHPExcel_Cell::stringFromColumnIndex($j).$i)->getOldCalculatedValue();
+                    }
+                    $list[$h][] = $cell;
+                }
+                $h++;
+            }
+            $new_field = array();
+            foreach($b_field as $val){
+                if(in_array($val['column_comment'],$field)){
+                    $new_field[ array_search($val['column_comment'],$field) ] = $val['column_name'];
+                }
+            }
+            foreach($list as $vo){
+                $data = array();
+                foreach($vo as $kk=>$vv){
+                    $temp = $new_field[ $kk ];
+                    if ($temp){
+                        $data[$temp] = $vv;
+                    }
+                }
+                
+                if($data['quyu']){
+                    M('jcxxb')->add($data);
+                }
+            }
+            $this->success('导入成功',U('jcxxb_list')); 
+            exit;
+        }
+    }
 }
 ?>

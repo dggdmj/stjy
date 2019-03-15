@@ -103,7 +103,8 @@ class WagesAction extends CommonAction{
         $temp = M('admin')->where('username ="'.$username.'"')->find();// 获取admin表的数据
         $uid = $temp['id'];// 获取用户id
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
-        $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
+        $school_id = session('sid');// 获取用户所属校区
+        // $school_id = explode(",",$temp['school_id']);// 获取用户所属校区
         if($rid == 5){
             $map['status_fzr'] = array('neq',3);// 查询条件
         }elseif($rid == 4){
@@ -131,16 +132,21 @@ class WagesAction extends CommonAction{
         // dump($list);die;
         if($_GET['table'] == 'Xzb'){
             $tname = '行政部工资表';
+            $tid = 17;
         }elseif($_GET['table'] == 'Jxb'){
             $tname = '教学部工资表';
+            $tid = 18;
         }elseif($_GET['table'] == 'Scb'){
             $tname = '市场部工资表';
+            $tid = 19;
         }elseif($_GET['table'] == 'Zj'){
             $tname = '总监工资表';
+            $tid = 20;
         }
         $controller = 'Wages'.$_GET['table'];
         $this->assign('controller',$controller);
         $this->assign('tname',$tname);
+        $this->assign('tid',$tid);
         $this->assign('list',$list);// 赋值数据集
         $this->assign('fpage',$show);// 赋值分页输出
         $this->assign('rid',$rid);// 赋值角色id

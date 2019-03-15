@@ -1,16 +1,4 @@
-<php>if($table_info['id'] == '41'){</php>
-    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/WagesSj/zxf_save',array('id'=>$article['id']))}">
-<php>}elseif($table_info['id'] == '42'){</php>
-    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/WagesSj/lrfp_save',array('id'=>$article['id']))}">
-<php>}elseif($table_info['id'] == '43'){</php>
-    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/WagesSj/zdxs_save',array('id'=>$article['id']))}">
-<php>}elseif($table_info['id'] == '45'){</php>
-    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/WagesSj/ydybkzztz_save',array('id'=>$article['id']))}">
-<php>}elseif($table_info['id'] == '46'){</php>
-    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/WagesSj/jwjltz_save',array('id'=>$article['id']))}">
-<php>}elseif($table_info['id'] == '48'){</php>
-    <form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/WagesSj/jxzz_save',array('id'=>$article['id']))}">
-<php>}</php>
+<form method="post" enctype="multipart/form-data" class="form-x one-form form-auto" id="form" action="{:U('/WagesSj/saves',array('tname'=>$tname))}">
 	 <div class="panel one-box  active">
         <div class="panel-head">
             <strong>数据表导入</strong>
@@ -33,13 +21,7 @@
                 <div class="field">
                     <select name="qishu" style="height:32px;border-radius: 4px;">
                         <foreach name='qishu' item='v'>
-
-                            <if condition="$v.name eq $extra['qishu']">
-
-                                <option value ="{$v.name}" selected>{$v.name}</option>
-                            <else />
-                                <option value ="{$v.name}">{$v.name}</option>
-                            </if>
+                            <option value ="{$v.name}">{$v.name}</option>
                         </foreach>
                     </select>
                 </div>
@@ -50,7 +32,7 @@
                     <label>操作人</label>
                 </div>
                 <div class="field">
-                    <input type="text" class="input" name="caozuoren" size="60" value="{$nicename}" readonly>
+                    <input type="text" class="input" name="caozuoren" size="60" value="{$uname}" readonly>
                 </div>
             </div>
 			<div class="form-group">

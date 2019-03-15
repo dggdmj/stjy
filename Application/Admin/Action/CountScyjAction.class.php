@@ -9,7 +9,7 @@ class CountScyjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getScyjData($qishu='201812',$sid='25'){
+    public function getScyjData($qishu='201901',$sid='1'){
 
         //判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>8))->getField('id');//判断是否有生成历史
@@ -101,7 +101,7 @@ class CountScyjAction extends CommonAction {
             $newList[$key]['edu'] = M('xxkedb')->where("suoshudd='$xxkedb_oid' and xingming='".$vo."'")->getField('edu');
             foreach($list as $k=>$v){
                 if (in_array($v['chanpinlx'],$sjcplx)){
-                    if(strtotime($v['jiaofeirq']) - strtotime($v['shoucijfrq']) > $yinian){
+                    if(strtotime($v['jiaofeirq']) - strtotime($v['shoucijfrq']) > $yinian && in_array($v['chanpinlx'],$sjcplx)){
                         $v['chanpinlx'] = '老生续费';
                     }
                 }

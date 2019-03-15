@@ -349,7 +349,7 @@ class DownloadAction extends CommonAction {
             $list[$key]['zongshuliang'] = $val['shengyugmsl']+$val['shengyuzssl'];
             $list[$key]['zongfeiyong'] = $val['feiyong'];
             $list[$key]['danjia'] = round($val['feiyong'] / $list[$key]['zongshuliang'],2);
-            if ($list[$key]['zongshuliang'] <= $miaosha['shangkekc'] && $list[$key]['danjia'] <= $miaosha['danjia'] && $list[$key]['danjia'] > 0){
+            if ($list[$key]['zongshuliang'] <= $miaosha['shangkekc'] && $list[$key]['danjia'] <= $miaosha['danjia'] && $list[$key]['zongshuliang'] > 0){
                 $list[$key]['shifoums'] = '秒杀';
                 $data[] = $list[$key];
             }else{
@@ -564,7 +564,7 @@ class DownloadAction extends CommonAction {
         header("Content-type: application/octet-stream");
         header("Accept-Ranges: bytes");
         header("Accept-Length: ".filesize($file_url));
-        header("Content-Disposition: attachment; filename=".$filename.'.'.$file_type);
+        header("Content-Disposition: attachment; filename=".$filename);
         //输出文件内容
         echo fread($file,filesize($file_url));
         fclose($file);

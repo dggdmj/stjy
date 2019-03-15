@@ -384,11 +384,10 @@ class TableImportAction extends CommonAction{
             );
 
             $upload = new \Think\Upload($config);
-            $upload->autoSub = false;
+            $upload->autoSub = true;
             if (!$info = $upload->upload()) {
                 $this->error($upload->getError());
             }
-
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
 
             // dump($num);
@@ -649,6 +648,7 @@ class TableImportAction extends CommonAction{
 
             //验证开班明细表
             if($_POST['tid'] == 6){
+                $banji = array();
                 $kxmxb_id = $this->getQishuId($_POST['qishu'],$_POST['sid'],5);
                 $kxmxb = M('kxmxb_'.$nian)->field('shangkesc,banji')->where(array('suoshudd'=>$kxmxb_id))->select(); 
                 foreach($excel_data as $val){
@@ -678,6 +678,12 @@ class TableImportAction extends CommonAction{
                                 $error[] = $val;
                             }
                         }
+                    }
+                    if(in_array($val['banji'],$banji)){
+                        $val['yichangbz'] = '班级名称重复';
+                        $error[] = $val;
+                    }else{
+                        $banji[] = $val['banji'];
                     }
                 }
             }

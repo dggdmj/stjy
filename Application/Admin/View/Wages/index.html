@@ -160,11 +160,13 @@
 			    btn: ['确定','取消'] //按钮
 			}, function(){
 				$.get(subUrl,function(data){
-                    if (data == 1){
+                    if (data.status == 1){
     	                layer.msg('重新生成成功', {icon: 1});
     	                setTimeout("window.location.reload()",1000); // 让提示框停留一会
+                    }else if(data.status == 2){
+                        layer.msg('工资表已提交，请退回再重新计算', {icon: 2});
                     }else{
-                        layer.msg('重新生成失败', {icon: 2});
+                        layer.msg('您没有权限重新计算工资表', {icon: 2});
                     }
 	            });
 			});

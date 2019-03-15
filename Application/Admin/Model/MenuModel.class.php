@@ -307,6 +307,12 @@ class MenuModel {
                         'url' => U('/wagesSj/wageList/tid/46'),
                         'order' => 1
                     ),
+                    array(
+                        'name' => '教学组长',
+                        'icon' => 'sitemap',
+                        'url' => U('/wagesSj/wageList/tid/48'),
+                        'order' => 1
+                    ),
                 )
             );
         $gongzi = array(
@@ -525,6 +531,30 @@ class MenuModel {
                         'name' => '人事列表',
                         'icon' => 'user',
                         'url' => U('Renshi/renyuan_list'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '饱和率',
+                        'icon' => 'user',
+                        'url' => U('Setting/bhl_list'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '标准收入提成比',
+                        'icon' => 'user',
+                        'url' => U('Setting/bzsrtcb_list'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '技能评分阿米巴',
+                        'icon' => 'user',
+                        'url' => U('Setting/jnpfamb_list'),
+                        'order' => 6
+                    ),
+                    array(
+                        'name' => '基础信息表',
+                        'icon' => 'user',
+                        'url' => U('Setting/jcxxb_list'),
                         'order' => 6
                     ),
                 )

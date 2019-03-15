@@ -9,7 +9,7 @@ class CountLsqrsrAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu='201812',$sid='25'){
+    public function getYjData($qishu='201902',$sid='1'){
         // 判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>30))->getField('id');//判断是否有生成历史
         if ($qishu_id){
@@ -34,6 +34,7 @@ class CountLsqrsrAction extends CommonAction {
                 ->field('kb.jingjiangxs as jingduxs,kb.fanduxs,kb.waijiaoxs,kx.shangkels as jingduls,kx.banji,kx.kexiaoje,kx.shangkesj,kx.zhujiao')
                 ->where("kx.suoshudd = '$kx_oid' and kb.suoshudd='$kb_oid'")
                 ->order('kx.id')
+                ->group('kx.id')
                 ->select();
         //班级编码
         $banjibm = M('banjibianhao')->field('jingdujb,bumen')->select();
@@ -56,7 +57,7 @@ class CountLsqrsrAction extends CommonAction {
                 $list[$key]['fanduls'] = $tmp['1'];
             }
             $list[$key]['banji'] = ucwords( $list[$key]['banji']);
-            $list[$key]['jingdujb'] = substr( $list[$key]['banji'],0,3);
+            $list[$key]['jingdujb'] = mb_substr( $list[$key]['banji'],0,3,'utf-8');
             $list[$key]['bumen'] = $bumen[  $list[$key]['jingdujb'] ];
             $list[$key]['banjisj'] =  $list[$key]['banji']. $list[$key]['shangkesj'];
             if(in_array( $list[$key]['banjisj'],$banjisj)){
@@ -65,18 +66,19 @@ class CountLsqrsrAction extends CommonAction {
                 $list[$key]['chuxiancs'] = 1;
                 $banjisj[] =  $list[$key]['banjisj'];
             }
-            if (!in_array( $list[$key]['jingduls'],$laoshi) &&   $list[$key]['jingduls'] != '' &&  $list[$key]['jingduls'] != '无'){
+            if (!in_array( $list[$key]['jingduls'],$laoshi) &&   $list[$key]['jingduls'] != ''){
                 $laoshi[] =  $list[$key]['jingduls'];
             }
-            if (!in_array( $list[$key]['fanduls'],$laoshi) &&   $list[$key]['fanduls'] != '' &&  $list[$key]['fanduls'] != '无'){
+            if (!in_array( $list[$key]['fanduls'],$laoshi) &&   $list[$key]['fanduls'] != ''){
                 $laoshi[] =  $list[$key]['fanduls'];
             }
-            if (!in_array( $list[$key]['waijiaols'],$laoshi) &&   $list[$key]['waijiaols'] != '' &&  $list[$key]['waijiaols'] != '无'){
+            if (!in_array( $list[$key]['waijiaols'],$laoshi) &&   $list[$key]['waijiaols'] != ''){
                 $laoshi[] =  $list[$key]['waijiaols'];
             }
         }
         $newList = array();
         $shumu = array();
+        $ss = 0;
         //组装数组
         foreach($laoshi as $k=>$v){
             //小学部
@@ -104,7 +106,6 @@ class CountLsqrsrAction extends CommonAction {
             $newList[$k+1]['zongrencxs'] = 0;
             $newList[$k+1]['querensr'] = 0;
             $newList[$k+1]['suoshudd'] = $qishu_id;
-
             foreach($list as $val){
                 if ($val['bumen'] == '小学部'){
                     //计算授课小时
@@ -126,17 +127,17 @@ class CountLsqrsrAction extends CommonAction {
                     //计算总人次小时数
                     if($val['jingduls'] == $v){
                         $newList[$k]['zongrencxs'] += $val['jingduxs'];
-                        $newList[$k]['querensr'] += number_format($val['jingduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
+                        $newList[$k]['querensr'] += round($val['jingduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                     //泛读
                     if($val['fanduls'] == $v){
                         $newList[$k]['zongrencxs'] += $val['fanduxs'];
-                        $newList[$k]['querensr'] += number_format($val['fanduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
+                        $newList[$k]['querensr'] += round($val['fanduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                     //外教
                     if($val['waijiaols'] == $v){
                         $newList[$k]['zongrencxs'] += $val['waijiaoxs'];
-                        $newList[$k]['querensr'] += number_format($val['waijiaoxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
+                        $newList[$k]['querensr'] += round($val['waijiaoxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                 }else if($val['bumen'] == '初中部'){
                     //计算授课小时
@@ -158,18 +159,18 @@ class CountLsqrsrAction extends CommonAction {
                     //计算总人次小时数
                     if($val['jingduls'] == $v){
                         $newList[$k+1]['zongrencxs'] += $val['jingduxs'];
-                        $newList[$k+1]['querensr'] += number_format($val['jingduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
+                        $newList[$k+1]['querensr'] += round($val['jingduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
 
                     }
                     //泛读
                     if($val['fanduls'] == $v){
                         $newList[$k+1]['zongrencxs'] += $val['fanduxs'];
-                        $newList[$k+1]['querensr'] += number_format($val['fanduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
+                        $newList[$k+1]['querensr'] += round($val['fanduxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                     //外教
                     if($val['waijiaols'] == $v){
                         $newList[$k+1]['zongrencxs'] += $val['waijiaoxs'];
-                        $newList[$k+1]['querensr'] += number_format($val['waijiaoxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
+                        $newList[$k+1]['querensr'] += round($val['waijiaoxs']/($val['jingduxs']+$val['fanduxs']+$val['waijiaoxs'])*$val['kexiaoje'],8);
                     }
                 }
             }

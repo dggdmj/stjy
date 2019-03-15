@@ -1,0 +1,44 @@
+<form method="post" id="form" action="#">
+    <div class="panel one-box">
+        <div class="table-responsive">
+            <table id="table" class="table table-hover table-bordered table-condensed">
+                <caption align="top">{$school_name}市场部工资秒杀清单</caption>
+                <thead>
+                <tr>
+                    <th>交费日期</th>
+                    <th>收据号</th>
+                    <th>学号</th>
+                    <th>姓名</th>
+                    <th>业绩归属人</th>
+                    <th>交费金额</th>
+                    <th>产品类型 </th>
+                    <th>首次消费日期</th>
+                    <th>年级</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <foreach name="list" item="val" key="key">
+                        <tr>
+                            <td>{$val.jiaofeirq}</td>
+                            <td>{$val.shoujuhao}</td>
+                            <td>{$val.xuehao}</td>
+                            <td>{$val.xingming}</td>
+                            <td>{$val.yejigsr}</td>
+                            <td>{$val.jiaofeije}</td>
+                            <td>{$val.chanpinlx}</td>
+                            <td>{$val.shoucixfrq}</td>
+                            <td>{$val.nianji}</td>
+                        </tr>
+                    </foreach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<style>
+    body {
+        overflow-x: scroll;
+        background-color: #fff;
+        width: 100%;
+    }
+</style>

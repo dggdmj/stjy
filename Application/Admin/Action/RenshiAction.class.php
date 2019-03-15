@@ -571,6 +571,7 @@ class RenshiAction extends CommonAction{
 
     //人员列表
     public function renyuan_list(){
+        // phpinfo();
         $field = $this->getComment('rycb');
         $arr = array();
         foreach($field as $key=>$val){
@@ -606,7 +607,7 @@ class RenshiAction extends CommonAction{
             if (!$info = $upload->upload()) {
                 $this->error($upload->getError());
             }
-            M('rycb')->where('1=1')->delete();
+            
             $file_name=$upload->rootPath.$info['excel']['savepath'].$info['excel']['savename'];
             $arr['name'] = $info['excel']['name'];
             $arr['path'] = $file_name;
@@ -656,7 +657,7 @@ class RenshiAction extends CommonAction{
                     $new_field[ array_search($val['column_comment'],$field) ] = $val['column_name'];
                 }
             }
-
+            M('rycb')->where('1=1')->delete();
             foreach($list as $vo){
                 $data = array();
                 foreach($vo as $kk=>$vv){
@@ -665,8 +666,15 @@ class RenshiAction extends CommonAction{
                         $data[$temp] = $vv;
                     }
                 }
-                $data['ruzhirq'] = date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP( $data['ruzhirq']));
-                $data['diyixlbysj'] = date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP( $data['diyixlbysj']));
+                if($data['ruzhirq']){
+                    $data['ruzhirq'] = date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP( $data['ruzhirq']));
+                }
+                if($data['diyixlbysj']){
+                    $data['diyixlbysj'] = date('Y-m-d',\PHPExcel_Shared_Date::ExcelToPHP( $data['diyixlbysj']));
+                }
+                if(!preg_match("/^1[3456789]\d{9}$/", $data['lianxidh']) && $data['xingming']){
+                    $this->error($data['xingming'].'联系电话格式错误');
+                }
                 if($data['xingming']){
                     M('rycb')->add($data);
                 }

@@ -39,6 +39,8 @@ class WagesScbAction extends WagesCommonAction{
     }
 
     public function index(){
+        $uid = session('uid');
+        $role_id = M('role_user')->where("user_id=$uid")->getField('role_id');
         //期数
         $qishu = $_GET['qishu']?$_GET['qishu']:'201810';
         //学校id
@@ -63,6 +65,7 @@ class WagesScbAction extends WagesCommonAction{
         foreach($chanpinlx as $key=>$vv){
             $vv['xiangmu'] = str_replace('(','（',$vv['xiangmu']);
             $vv['xiangmu'] = str_replace(')','）',$vv['xiangmu']);
+            $chanpinlx[$key]['xiangmu'] = $vv['xiangmu'];
             $chanpinlx[$key]['field'] = $this->encode($vv['xiangmu']);
             // $chanpinlx[$key]['tichengds'] = is_numeric($vv['tichengds']) ? ( $vv['tichengds'] * 100 ).'%' : $vv['tichengds'];
             if (!in_array($chanpinlx[$key]['tichengds'],$ticheng) && $chanpinlx[$key]['field'] != 'laoshengxufei'){
@@ -75,13 +78,16 @@ class WagesScbAction extends WagesCommonAction{
             }
         }
         $cplx = array_values($cplx);
+        $status = 0;
         if ($suoshudd){
             $list = M('scbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
+            $status = $list['0']['status']?$list['0']['status']:0;
+            $list_pz = M('scbgz_pz')->where("qishu=$qishu and sid=$sid")->order('id')->select();
             $heji = $list[ count($list) - 1];
             unset($list[ count($list) - 1]);
             $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
             $scyjb_id = $this->getQishuId($qishu,$sid,8);
-            $lists = M('scyjb')->field('id,json')->where(array('suoshudd'=>$scyjb_id))->order('id')->select();
+            $lists = M('scyjb')->field('id,json')->where("suoshudd=$scyjb_id and hejiyye != ''")->order('id')->select();
             foreach($lists as $key=>$val){
                 $lists[$key]['json'] = json_decode($lists[$key]['json'],'true');
                 foreach($lists[$key]['json'] as $k=>$v){
@@ -91,9 +97,11 @@ class WagesScbAction extends WagesCommonAction{
                 $temp += $list[$key]['laoshengxufei'];
                 foreach($chanpinlx as $kk=>$vv){
                     $tmp = str_replace('.','',$vv['tichengds']);
-                    $temps = $this->encode($vv['xiangmu']);
+                    // $temps = $this->encode($vv['xiangmu']);
+                    $temps = $vv['field'];
                     if ($temps != 'laoshengxufei'){
                         $data[$key]['field'.$tmp] += $lists[$key][$temps];
+                        $tmp_arrs['field'.$tmp] = '';
                     }
                     if ($vv['shifoucyedjs'] == 1){
                         $datas[$key]['field'.$tmp] += $lists[$key][$temps];
@@ -101,10 +109,28 @@ class WagesScbAction extends WagesCommonAction{
                 }
                 unset($lists[$key]['json']);
             }
+            $i = count($list) - count($lists);
+            for($h=0;$h<$i;$h++){
+                $data[] = $tmp_arrs;
+            }
         }else{
             $chuqin_arr = $this->getChuqin($qishu,$sid);
+            $yj_id = $this->getAllSdd($qishu,$sid);
             //本月秒杀清单
-            $byms98 = M()->query("select shoujuhao,xuehao,yejigsr,jiaofeirq,count(*) as count from stjy_sjjlb_".$nian." where suoshudd = '$sjjlb_id' and chanpinlx = '98元1期秒杀' and yejigsr != '' group by xuehao ");
+            $byms98 = M()->query("select shoujulx,shoujuhao,xuehao,yejigsr,jiaofeirq,count(*) as count from stjy_sjjlb_".$nian." where suoshudd in ($yj_id) and ( chanpinlx = '98元1期秒杀' or chanpinlx = '1期秒杀') and yejigsr != '' and shoukuanzh != '' and shoukuanzh !='结转学费' and shoukuanzh != '老带新返现'  group by xuehao");
+            $yqms = M()->query("select shoujulx,shoujuhao,xuehao,yejigsr,jiaofeirq,count(*) as count from stjy_sjjlb_".$nian." where suoshudd = '$sjjlb_id' and chanpinlx = '1期秒杀' and yejigsr != '' and shoukuanzh != '' and shoukuanzh !='结转学费' and shoukuanzh != '老带新返现' group by xuehao ");
+            $ms98 = M()->query("select shoujulx,shoujuhao,xuehao,yejigsr,jiaofeirq,count(*) as count from stjy_sjjlb_".$nian." where suoshudd in ($yj_id) and chanpinlx = '98元1期秒杀' and yejigsr != '' and shoukuanzh != '' and shoukuanzh !='结转学费' and shoukuanzh != '老带新返现'  group by xuehao");
+            //查询是否是结算
+            $shoufeilx = M('shoufeilx')->field('leixing')->where(array('is_jiesuan'=>1))->select();
+            foreach($shoufeilx as $val){
+                $shoufei_arr[] = $val['leixing'];
+            }
+
+            foreach($byms98 as $k=>$v){
+                if (!in_array($v['shoujulx'],$shoufei_arr)){
+                    unset($byms98[$k]);
+                }
+            }
             $xuehao = array();
             foreach($byms98 as $key=>$val){
                 $tmp = explode('(', $val['yejigsr']);
@@ -113,8 +139,39 @@ class WagesScbAction extends WagesCommonAction{
                     $xuehao[] = $val['xuehao'];
                 }
             }
+            //2
+            foreach($yqms as $k=>$v){
+                if (!in_array($v['shoujulx'],$shoufei_arr)){
+                    unset($yqms[$k]);
+                }
+            }
+            $xuehao = array();
+            foreach($yqms as $key=>$val){
+                $tmp = explode('(', $val['yejigsr']);
+                $yqms[$key]['yejigsr'] = $tmp['0'];
+                if ($val['count'] == 1){
+                    $xuehao[] = $val['xuehao'];
+                }
+            }
+            //3
+            foreach($ms98 as $k=>$v){
+                if (!in_array($v['shoujulx'],$shoufei_arr)){
+                    unset($ms98[$k]);
+                }
+            }
+            $xuehao = array();
+            foreach($ms98 as $key=>$val){
+                $tmp = explode('(', $val['yejigsr']);
+                $ms98[$key]['yejigsr'] = $tmp['0'];
+                if ($val['count'] == 1){
+                    $xuehao[] = $val['xuehao'];
+                }
+            }
+
             $xyxxb_id = $this->getQishuId($qishu,$sid,1);
-            $xyxxb = M('xyxxb_'.$nian)->where(array('xuehao'=>array('in',$xuehao)))->getField('xuehao,shoucixfrq');
+            if($xuehao){
+                $xyxxb = M('xyxxb_'.$nian)->where(array('xuehao'=>array('in',$xuehao)))->getField('xuehao,shoucixfrq');
+            }
             foreach($byms98 as $key=>$val){
                 $byms98[$key]['shoucixfrq'] = $xyxxb[$val['xuehao']];
                 if ($byms98[$key]['shoucixfrq']){
@@ -124,12 +181,21 @@ class WagesScbAction extends WagesCommonAction{
                 }
                 $byms98[$key]['jiaofeiyf'] = substr($byms98[$key]['jiaofeirq'],5,2);
             }
+            foreach($ms98 as $key=>$val){
+                $ms98[$key]['shoucixfrq'] = $xyxxb[$val['xuehao']];
+                if ($ms98[$key]['shoucixfrq']){
+                    $ms98[$key]['jinbanyf'] = substr($ms98[$key]['shoucixfrq'],5,2);
+                }else{
+                    $ms98[$key]['jinbanyf'] = '';
+                }
+                $ms98[$key]['jiaofeiyf'] = substr($ms98[$key]['jiaofeirq'],5,2);
+            }
             $yuefen2 = substr($qishu,4,2);
             
             $scyjb_id = $this->getQishuId($qishu,$sid,8);
             //实时计算
             $list = M('scyjb as yj')
-                    ->field('rs.shenfenzhm,rs.xiaoqu,rs.bumen,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.ruzhirq as ruzhisj,rs.erjibm,rs.ruzhinx as gongzuonx,rs.ruzhirq as ruzhisj,yj.xingming,yj.json,xxk.zongbenjin as xuexikbj,yj.edu,yj.hejiyye,yj.jingrentou')
+                    ->field('rs.shenfenzhm,rs.xiaoqu,rs.bumen,rs.zhiwu as zhiwei,rs.gangweilx,rs.leixing as zaizhizt,rs.ruzhirq as ruzhisj,rs.erjibm,rs.ruzhinx as gongzuonx,yj.xingming,yj.json,xxk.zongbenjin as xuexikbj,yj.edu,yj.hejiyye,yj.jingrentou,rs.gongjijgrbf as gongjij,rs.shebaogrbf as gerensb')
                     ->join('LEFT JOIN stjy_rycb as rs on yj.xingming=rs.xingming')
                     ->join('LEFT JOIN stjy_school as ss on ss.name=rs.xiaoqu')
                     ->join('LEFT JOIN stjy_qishu_history as qh on qh.sid=ss.id')
@@ -138,7 +204,15 @@ class WagesScbAction extends WagesCommonAction{
                     ->group('yj.id')
                     ->order('yj.id')
                     ->select();
+            // dump($byms98);
             foreach($list as $key=>$val){
+                if($val['bumen'] != '市场部' || $val['xiaoqu'] != $school_name){
+                    $list[$key]['gongjij'] = 0;
+                    $list[$key]['gerensb'] = 0;
+                }
+                if($val['xiaoqu'] != $school_name){
+                    $list[$key]['zhiwei'] = '招生顾问';
+                }
                 $list[$key]['xuhao'] = $key+1;
                 $list[$key]['yuefen'] = $yuefen;
                 $list[$key]['fenxiao'] = $school_name;
@@ -155,18 +229,23 @@ class WagesScbAction extends WagesCommonAction{
                 }
                 foreach($chanpinlx as $kk=>$vv){
                     $tmp = str_replace('.','',$vv['tichengds']);
-                    $temps = $this->encode($vv['xiangmu']);
+                    // $temps = $this->encode($vv['xiangmu']);
+                    $temps = $vv['field'];
                     if ($temps != 'laoshengxufei'){
                         $data[$key]['field'.$tmp] += $list[$key][$temps];
+                        $tmp_arrs['field'.$tmp] = '';
                     }
                     if ($vv['shifoucyedjs'] == 1){
                         $datas[$key]['field'.$tmp] += $list[$key][$temps];
+                    }else{
+                         $list[$key]['nmp'] += $list[$key][$temps] * $vv['tichengds'];
+                         // echo $list[$key]['xingming'].$list[$key][$temps].'*'.$vv['tichengds'].$temps.'<br>';
                     }
                 }
                 unset($list[$key]['json']);
                 //招生副校长团队秒杀业绩
                 if ($list[$key]['zhiwei'] == '招生副校长'){
-                     $field1 = 0;
+                    $field1 = 0;
                     $field2 = 0;
                     $field3 = 0;
                     $field4 = 0;
@@ -187,23 +266,69 @@ class WagesScbAction extends WagesCommonAction{
                 }
                 $list[$key]['miaoshatc'] = 0;
                 $list[$key]['yjs'] = 0;
-                foreach($byms98 as $vo){
-                    if ($vo['jinbanyf'] == $yuefen2 && $vo['count'] == 1 && $val['xingming'] == $vo['yejigsr']){
-                        $list[$key]['yjs'] += 1;
-                        if ($list[$key]['yjs'] > 40){
-                            $list[$key]['miaoshatc'] += 276*0.5;
-                        }else{
-                            $list[$key]['miaoshatc'] += 200*0.5;
+                if($list[$key]['zhiwei'] == '招生副校长'){
+                    foreach($byms98 as $vo){
+                        if ($vo['jinbanyf'] == $yuefen2 && $vo['count'] == 1 && $val['xingming'] == $vo['yejigsr']){
+                            $list[$key]['yjs'] += 1;
+                            if ($list[$key]['yjs'] > 40){
+                                $list[$key]['miaoshatc'] += 276*0.5;
+                            }else{
+                                $list[$key]['miaoshatc'] += 200*0.5;
+                            }
+                        }
+                        if ($vo['count'] == 1 && $val['xingming'] == $vo['yejigsr'] && $vo['jiaofeiyf'] == $yuefen2){
+                            $list[$key]['yjs'] += 1;
+                            if ($list[$key]['yjs'] > 40){
+                                $list[$key]['miaoshatc'] += 276*0.5;
+                            }else{
+                                $list[$key]['miaoshatc'] += 200*0.5;
+                            }
                         }
                     }
-                    if ($vo['count'] == 1 && $val['xingming'] == $vo['yejigsr'] && $vo['jiaofeiyf'] == $yuefen2){
-                        $list[$key]['yjs'] += 1;
-                        if ($list[$key]['yjs'] > 40){
-                            $list[$key]['miaoshatc'] += 276*0.5;
-                        }else{
-                            $list[$key]['miaoshatc'] += 200*0.5;
+                }else{
+                    foreach($ms98 as $vo){
+                        if ($vo['jinbanyf'] == $yuefen2 && $vo['count'] == 1 && $val['xingming'] == $vo['yejigsr']){
+                            $list[$key]['yjs'] += 1;
+                            if ($list[$key]['yjs'] > 40){
+                                $list[$key]['miaoshatc'] += 276*0.5;
+                            }else{
+                                $list[$key]['miaoshatc'] += 200*0.5;
+                            }
+                        }
+                        if ($vo['count'] == 1 && $val['xingming'] == $vo['yejigsr'] && $vo['jiaofeiyf'] == $yuefen2){
+                            $list[$key]['yjs'] += 1;
+                            if ($list[$key]['yjs'] > 40){
+                                $list[$key]['miaoshatc'] += 276*0.5;
+                            }else{
+                                $list[$key]['miaoshatc'] += 200*0.5;
+                            }
                         }
                     }
+                    foreach($yqms as $vo){
+                        if($vo['count'] == 1 && $val['xingming'] == $vo['yejigsr']){
+                            $list[$key]['yjs'] += 1;
+                            if ($list[$key]['yjs'] > 40){
+                                $list[$key]['miaoshatc'] += 276;
+                            }else{
+                                $list[$key]['miaoshatc'] += 200;
+                            }
+                        }
+                    }
+                }
+            }
+            $lsss = array();
+            foreach($list as $val){
+                $lsss[] = $val['xingming'];
+            }
+            $sc_laoshi = M('rycb')->field('xingming,shenfenzhm,xiaoqu,bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,ruzhirq as ruzhisj,erjibm,ruzhinx as gongzuonx,gongjijgrbf as gongjij,shebaogrbf as gerensb')->where("xiaoqu='$school_name' and bumen = '市场部'")->select();
+            foreach($sc_laoshi as $val){
+                if(!in_array($val['xingming'],$lsss)){
+                    $key++;
+                    $val['xuhao'] = $key;
+                    $val['yuefen'] = $yuefen;
+                    $val['fenxiao'] = $school_name;
+                    $list[] = $val;
+                    $data[] = $tmp_arrs;
                 }
             }
             $fujia['jibie'] = M('zxmc')->where(array('zhongxin'=>$school_name))->getField('jibie');
@@ -313,12 +438,16 @@ class WagesScbAction extends WagesCommonAction{
                         }
                         for($i=1;$i<count($new_data[$key]);$i++){
                             $list[$key]['xuexikjs'] +=$new_data2[$key][$i] * $cplx[$i]['tichengfxxk'];
+                            // echo $val['xingming'].":".$new_data2[$key][$i] ."*".$cplx[$i]['tichengfxxk']."=".$new_data2[$key][$i] * $cplx[$i]['tichengfxxk']."<br>";
                         }
                     }
-                    $list[$key]['xuexikjs'] += $list[$key]['laoshengxufei'] * 0.03;
+                    // echo $list[$key]['xingming'].$list[$key]['laoshengxufei'].'* 0.03'.'<br>';
+                    // $list[$key]['xuexikjs'] += $list[$key]['laoshengxufei'] * 0.03;
+                    $list[$key]['xuexikjs'] += $list[$key]['nmp'];
+                    // echo $list[$key]['xingming'].$list[$key]['nmp'];
                     $temp += $val['laoshengxufei'];
                     // $list[$key]['xuexikjs'] = number_format($list[$key]['xuexikjs'],2);
-                    $list[$key]['xuexikjs'] = $list[$key]['jingrentou'] > $jingrentkh ? $list[$key]['xuexikjs'] : $list[$key]['xuexikjs'] * 0.85;
+                    $list[$key]['xuexikjs'] = $list[$key]['jingrentou'] >= $jingrentkh ? $list[$key]['xuexikjs'] : $list[$key]['xuexikjs'] * 0.85;
                 }
                 $hejiyye += $list[$key]['hejiyye'];
                 $yiqims += $list[$key][$this->encode('1期秒杀') ];
@@ -347,6 +476,7 @@ class WagesScbAction extends WagesCommonAction{
                 $heji2[$kk] += $vv; 
             }
         }
+
         
         $tmp_arr['name'] = '老生续读';
         $tmp_arr['ticheng'] = '0.03';
@@ -354,11 +484,50 @@ class WagesScbAction extends WagesCommonAction{
         $tmp_arr['tichengds'] = '3%';
         $tmp_arr['tichengdsfxxk'] = '0';
         $cplx[] = $tmp_arr;
-        
-
         $heji2[] = $temp;
-//        dump($list);
-//        die;
+
+        $role = 0;
+        switch ($status)
+        {
+            case 0:
+                $role = 8;
+                break;
+            case 1:
+                $role = 10;
+                break;
+            case 2:
+                $role = 11;
+                break;
+            case 3:
+                $role = 12;
+                break;
+            case 4:
+                $role = 13;
+                break;
+            case 5:
+                $role = 14;
+                break;
+            case 6:
+                $role = 16;
+                break;
+            case 99:
+                $role = 17;
+                break;
+        }
+        $status_zt = $status;
+        //重定义status判断是否可以进行修改
+        $status = 0;
+        if($role == $role_id || $role_id==1){
+            $status = 1;
+        }
+        $c_data = count($data['0']);
+        $role_name = M('role')->where(array('id'=>$role))->getField('name');
+        $this->assign('role_id',$role_id);
+        $this->assign('role_name',$role_name);
+        $this->assign('c_data',$c_data);
+        $this->assign('suoshudd',$suoshudd);
+        $this->assign('status',$status);
+        $this->assign('status_zt',$status_zt);
         $this->assign('data',$data);
         $this->assign('cplx',$cplx);
         $this->assign('chanpinlx',$chanpinlx);
@@ -366,16 +535,19 @@ class WagesScbAction extends WagesCommonAction{
         $this->assign('heji',$heji);
         $this->assign('heji2',$heji2);
         $this->assign('school_name',$school_name);
+        $this->assign('yuefen',$yuefen);
         $this->assign('nianyue',substr($qishu,0,4).'年'.substr($qishu,4,2).'月');
         $this->assign('qishu',$qishu);
         $this->assign('sid',$sid);
         $this->assign("list",$list);
+        $this->assign("list_pz",$list_pz);
         $this->adminDisplay();
     }
 
     //市场部提交
     public function saves(){
-        $data = json_decode($_POST['jsons']);
+        $data = json_decode($_POST['jsons'],true);
+        $pz_json = json_decode($_POST['pz_json'],true); 
         $qishu = $_POST['qishu'];
         $sid = $_POST['sid'];
         $suoshudd = $this->getQishuId($qishu,$sid,19);
@@ -383,7 +555,7 @@ class WagesScbAction extends WagesCommonAction{
             $suoshudd = $this->insertQishuHistory(19,$qishu,$sid);
         }
         $fujia = $_POST;
-        unset($fujia['sid'],$fujia['qishu'],$fujia['jsons']);
+        unset($fujia['sid'],$fujia['status'],$fujia['qishu'],$fujia['jsons'],$fujia['pz_json']);
         M('fjb')->where("suoshudd='$suoshudd'")->delete();
         foreach($fujia as $key=>$val){
             $tmp = array();
@@ -393,6 +565,7 @@ class WagesScbAction extends WagesCommonAction{
             M('fjb')->add($tmp);
         }
         M('scbgz')->where("suoshudd='$suoshudd'")->delete();
+        M('scbgz_pz')->where("qishu=$qishu and sid=$sid")->delete();
         $cplx = array();
         $chanpinlx = M('sjcplx')->field('xiangmu,tichengds,tichengdsfxxk,shifoucyedjs')->where("shifouqy='启用' and shifoutxyj='1' ")->select();
 
@@ -422,8 +595,15 @@ class WagesScbAction extends WagesCommonAction{
             }
             $data[$key] = array_values($data[$key]);
         }
+        foreach($pz_json as $key=>$val){
+            for($b=16;$b<15+count($cplx)+2;$b++){
+                unset($pz_json[$key][$b]);
+            }
+            $pz_json[$key] = array_values($pz_json[$key]);
+        }
         $list = array();
-        $field = M('')->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_scbgz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj'");
+        $field = M('')->query("SELECT COLUMN_NAME from information_schema.COLUMNS where table_name = 'stjy_scbgz' and table_schema ='stjy' and COLUMN_NAME != 'id' and COLUMN_NAME != 'suoshudd' and COLUMN_NAME != 'daorusj' and COLUMN_NAME != 'status'");
+        $field2 = $field;
         foreach($data as $key=>$val){
             $j=0;
             // if ($val['0'] == '合计'){
@@ -439,136 +619,26 @@ class WagesScbAction extends WagesCommonAction{
             }
             $list[$key]['suoshudd'] = $suoshudd;
             if ($list[$key]['fenxiao']){
+                $list[$key]['status'] = $_POST['status'];
                 $res = M('scbgz')->add($list[$key]);
+            }
+        }
+        $list = array();
+        foreach($pz_json as $key=>$val){
+            if($val){
+                $j=0;
+                foreach($field2 as $kk=>$vv){
+                    $list[ $key ][ $vv['column_name'] ] = $val[$j];
+                    $j++;
+                }
+                // $list[$key]['suoshudd'] = $suoshudd;
+                $list[$key]['qishu'] = $qishu;
+                $list[$key]['sid'] = $sid;
+                M('scbgz_pz')->add($list[$key]);
             }
         }
         $this->ajaxReturn(1);
         // $this->success('保存成功');
-    }
-
-    public function index_bak(){
-        //期数
-        $qishu = $_GET['qishu']?$_GET['qishu']:'201709';
-        //学校id
-        $sid = $_GET['sid']?$_GET['sid']:1;
-        $action = $_GET['action']?$_GET['action']:'';
-        // dump($action);die;
-        $school = M("school")->where("id = $sid")->find();
-        $scb_list = M("scbgzb")->where("qishu = '".$qishu."' and sid = $sid and istijiao = 0")->select();
-        // dump($scb_list);die;
-        $table = M("scbgzb")->query("select column_name as fieldname,column_comment as beizhu from Information_schema.columns WHERE table_Name='stjy_scbgzb'");
-        //查询出课程列表
-        $kecheng = M("kecheng")->order("paixu")->select();
-        $kecheng_arr = array();
-        foreach ($kecheng as $k => $v){
-            $kecheng_arr[$v['name']] = $v['ticheng']*100;
-        }
-        //如果业绩表是修改操作，就从业绩表里取数，否则实时运算
-        if(!empty($scb_list)){
-            $temp = $scb_list;
-            $list = array();
-            $extra = array('shijichuqints','xinguwenbdrt','canzhaobdx','gongzuoliang','gudinghj','tuanduiwd','dituijrtjx','weixinjx','jiazhanghuixcbjl','weijinbankhjx','shangkeksjx','jidizskjx','yuedusfjx','beizhu');
-            $i = 1;
-            foreach($temp as $k=>$v){
-                foreach($v as $k2=>$v2){
-                    if(in_array($k2,$extra)){
-                        $list[$k][$k2]['value'] = "<input class='input do_enter' type='text' name='".$k2."' value='".$v2."'>";
-                    }else{
-                        if($k2 == 'kechengyeji'){
-                            $list[$k]['kechengyj'] = $this->object2array(json_decode($v2));
-                        }elseif($k2 == 'id'){
-                            $list[$k][$k2]['value'] = $i;
-                        }else{
-                            $list[$k][$k2]['value'] = $v2;
-                        }
-                        
-                    }
-                }
-                $i++;
-            }
-        }else{
-            //取当期的市场业绩表信息
-            $suoshudingdan = M("qishu_history")->where("tid = 8 and sid = $sid and qishu = $qishu")->getField("id");
-            $scyj = M("scyjb")->where("suoshudd = $suoshudingdan")->select();
-            //查找本校区市场部中没有业绩的人员
-            $meiyeji_arr = $this->getScbrenyuan($sid,$scyj);
-            $new_arr = array_merge($scyj,$meiyeji_arr);
-            $list = array();
-            $i = 1;
-            foreach ($new_arr as $sk=>$sc){
-                if($sc['xingming'] == "合计"){
-                    continue;
-                }
-                $list[$sk]['id']['value'] = $i;  //序号
-                $list[$sk]['xingming']['value'] = $sc['xingming'];   //姓名
-                $list[$sk]['yuefen']['value'] = mb_substr($qishu,4).'月';   //月份
-                $list[$sk]['fenxiao']['value'] = $school['name'];   //分校名称
-                $user = M("renshi")->where("xingming = '".$sc['xingming']."' and sid = $sid")->find();  //在人事资料里取对应信息
-                $list[$sk]['bumen']['value'] = $user['bumen'];   //部门名称
-                $list[$sk]['erjibm']['value'] = $user['bumen2'];   //二级部门
-                $list[$sk]['gangweijb']['value'] = $user['gangweilx'];   //岗位类型
-                $list[$sk]['zhiwei']['value'] = $user['zhiwu'];   //岗位类型
-
-                $list[$sk]['bumen']['value'] = $user["bumen"];   //部门
-                $list[$sk]['erjibm']['value'] = $user["bumen2"];   //二级部门
-                $list[$sk]['gangweijb']['value'] = '';   //岗位级别
-                $list[$sk]['zhiwei']['value'] = $user["zhiwu"];  //职位
-                if($user['gangweilx'] == 1){
-                    $list[$sk]['gangweilx']['value'] = '全职';   //岗位类型
-                }elseif($user['gangweilx'] == 2){
-                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
-                }else{
-                    $list[$sk]['gangweilx']['value'] = '兼职';   //岗位类型
-                }
-                $list[$sk]['gongzuonx']['value'] = empty($user["ruzhirq"])?'0':floor((time()-strtotime($user['ruzhirq']))/(365*86400))."年";  //工作年限
-                $list[$sk]['ruzhisj']['value'] = $user["ruzhirq"];  //入职日期
-                $list[$sk]['yingchuqingts']['value'] = date('t', strtotime($qishu."01")); //应出勤天数:返回当期月份的天数
-                $list[$sk]['shijichuqints']['value'] = "<input class='input do_enter' type='text' name='shijichuqints' value='0'>";  //实际出勤天数
-                $list[$sk]['yuedujingjx']['value'] = $school["ydjjx"];  //月度警戒线
-                $list[$sk]['yueduchaorts']['value'] = $school["ydcrtx"];  //月度超人头数
-                $list[$sk]['yueduchaocrts']['value'] = $school["ydccrtx"];  //月度超超人头数
-                $edu = $list[$sk]['edu']['value'] = 0+M("xxkedb")->where("suoshudd = ".$suoshudingdan." and xingming = '".$sc['xingming']."'")->getField("edu");  //查询出当前期数，此人的学习卡额度信息
-                $list[$sk]['rentoushu']['value'] = 0+$sc["rentoushu"];  //人头数
-                $jrt = $list[$sk]['jingrentou']['value'] = 0+$sc["jingrentou"];  //净人头数
-                //按照课程拼接业绩
-                $list[$sk]['kechengyj'] = $this->object2array(json_decode($sc['kechengyj']));
-                $list[$sk]['hejiyye']['value'] = 0+$sc["hejiyye"];  //合计营业额
-                $list[$sk]['huiyuanldxyye']['value'] = 0+$sc["huiyuanldxyye"];  //会员老带新营业额
-                $list[$sk]['xinguwenbdrt']['value'] = "<input class='input do_enter' type='text' name='xinguwenbdrt' value='0'>";  //新顾问保底人头
-                $list[$sk]['canzhaobdx']['value'] = "<input class='input do_enter' type='text' name='canzhaobdx' value='0'>";  //参考保底线
-                $list[$sk]['gongzuoliang']['value'] = "<input class='input do_enter' type='text' name='gongzuoliang' value='0'>";  //工作量
-                $list[$sk]['gudinghj']['value'] = "<input class='input do_enter' type='text' name='gudinghj' value='0'>";  //固定合计
-                if(empty($sc['kechengyj'])){
-                    $list[$sk]['xuexikajs']['value'] = 0;  //学习卡结算
-                }else{
-                    $list[$sk]['xuexikajs']['value'] = 0+$this->getXxkjs($sc['kechengyj'],$jrt,$edu,$kecheng_arr,$sc['huiyuanldxyye']);  //学习卡结算
-                }
-                $list[$sk]['jixiaojj']['value'] = 0+$this->getJxjj($sc['kechengyj'],$kecheng_arr);  //绩效奖金
-                $list[$sk]['xiaozhangtdtc']['value'] = 0;  //校长团队提成
-                $list[$sk]['tuanduiwd']['value'] = "<input class='input do_enter' type='text' name='tuanduiwd' value='0'>";  //团队稳定
-                $list[$sk]['dituijrtjx']['value'] = "<input class='input do_enter' type='text' name='dituijrtjx' value='0'>";  //地推净人头绩效
-                $list[$sk]['weixinjx']['value'] = "<input class='input do_enter' type='text' name='weixinjx' value='0'>";  //微信绩效
-                $list[$sk]['jiazhanghuixcbjl']['value'] = "<input class='input do_enter' type='text' name='jiazhanghuixcbjl' value='0'>";  //家长会报名现场奖励
-                $list[$sk]['liushijtfjxjs']['value'] = $this->getTuifei($qishu,$sid,13,$sc['xingming']);  //流失及退费绩效结算
-                $list[$sk]['weijinbankhjx']['value'] = "<input class='input do_enter' type='text' name='weijinbankhjx' value='0'>";  //未进班考核绩效
-                $list[$sk]['shangkeksjx']['value'] = "<input class='input do_enter' type='text' name='shangkeksjx' value='0'>";  //上课课时绩效
-                $list[$sk]['jidizskjx']['value'] = "<input class='input do_enter' type='text' name='jidizskjx' value='0'>";  //基地招生课绩效
-                $gerejce = M("gjjmxb")->where("qishu = '".$qishu."' and zhengjianhao = '".$user['shenfenzhm']."'")->getField("gerenjce");
-                $list[$sk]['gongjijin']['value'] = $gerejce?$gerejce:0;  //公积金
-                $geresbe = M("sbmxb")->where("qishu = '".$qishu."' and shenfenzhm = '".$user['shenfenzhm']."'")->getField("gerenhj");
-                $list[$sk]['gerensb']['value'] = $geresbe?$geresbe:0;  //个人社保
-                $list[$sk]['yuedusfjbgz']['value'] = 1895;  //月度实发基本工资
-                $list[$sk]['yuedusfjx']['value'] = "<input class='input do_enter' type='text' name='yuedusfjx' value='0'>";  //月度实发绩效
-                $list[$sk]['beizhu']['value'] = "<input class='input do_enter' type='text' name='beizhu' value=''>";  //备注
-                $i++;
-            }
-        }
-        $this->assign("kecheng",$kecheng);
-        $this->assign("qishu",$qishu);
-        $this->assign("sid",$sid);
-        $this->assign("table",$table);
-        $this->assign("list",$list);
-        $this->adminDisplay();
     }
 
     //查找本校区市场部中没有业绩的人员
@@ -590,38 +660,20 @@ class WagesScbAction extends WagesCommonAction{
         return $meiyeji;
     }
 
-    public function save(){
-        // 还需要查询该状态是否已经锁定,如果锁定了就返回不成功
-        $qishu = $_POST["qishu"];
-        $sid = $_POST["sid"];
-        $res = M("scbgzb")->where("qishu ='".$qishu."' and sid = $sid")->delete();
-        $obj = json_decode($_POST['arr']);
-        $n = count($obj);
-        $data = array();
-        foreach ($obj as $k => $v){
-            foreach ($v as $m => $n){
-                if($m == 'id')
-                    continue;
-                if($m == 'kechengyeji'){
-                    $data[$k]['kechengyeji'] = json_encode($n);
-                }else{
-                    $data[$k][$m] = $n;
-                }
-            }
-            $data[$k]['qishu'] = $qishu;
-            $data[$k]['sid'] = $sid;
-            // $data[$k]['addtime'] = null;
-            $data[$k]['addtime'] = date('Y-m-d H:i:s',time());
-            // dump($data);die;
-        }
-        
-        $res = M("scbgzb")->addAll($data);
-        if($res){
-            $this->ajaxReturn(true);
+    //根据身份证获取基本数据
+    public function getSf(){
+        $sfz = I('sfz','445221199109174590');
+        $fenxiao = I('fenxiao');
+        $info = M('rycb')->field('xingming,shenfenzhm,xiaoqu,bumen,zhiwu as zhiwei,gangweilx,leixing as zaizhizt,ruzhirq as ruzhisj,erjibm,ruzhinx as gongzuonx')->where("shenfenzhm='$sfz'")->find();
+        if($info){
+            $this->ajaxReturn($info);
         }else{
-            $this->ajaxReturn(false);
+            $this->ajaxReturn(array());
         }
     }
+
+    
+
 }
 
 ?>

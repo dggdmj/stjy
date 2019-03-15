@@ -261,61 +261,64 @@ class WagesCommonAction extends CommonAction{
         $objActSheet->setCellValue('C3',$fujia['jibie']); 
         $i = 7;
         foreach($list as $val){
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).$i,$val['xuhao']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(1).$i,$val['yuefen']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(2).$i,$val['fenxiao']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(3).$i,$val['bumen']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(4).$i,$val['zhiwei']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(5).$i,$val['gangweilx']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(6).$i,$val['zaizhizt']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(7).$i,$val['xingming']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(8).$i,$val['shenfenzhm']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(9).$i,$val['ruzhisj']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(10).$i,$val['gongzuonx']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(11).$i,$val['yingchuqts']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(12).$i,$val['shijicqts']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(13).$i,$val['jibengz']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(14).$i,$val['zhengjianbl']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(15).$i,$val['yuangongxc']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(16).$i,$val['peixun']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(17).$i,$val['biaogesjkz']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(18).$i,$val['qita']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(19).$i,$val['xiaoji']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(20).$i,$val['xuexiaomz']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(21).$i,$val['zaidurs']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(22).$i,$val['shoufeije']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(23).$i,$val['zaizhiyy']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(24).$i,$val['chukuts']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(25).$i,$val['xueshengfwgl']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(26).$i,$val['yuangongfwgl']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(27).$i,$val['weishengaqgl']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(28).$i,$val['yuangongzp']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(29).$i,$val['chenggongzp']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(30).$i,$val['shoufeifc']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(31).$i,$val['zhengjianwh']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(32).$i,$val['gongzhanggl']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(33).$i,$val['ziliaowjbg']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(34).$i,$val['qita2']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(35).$i,$val['xiaoji2']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(36).$i,$val['xueshengfwglcw']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(37).$i,$val['yuangongfwglcw']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(38).$i,$val['cangkuglcw']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(39).$i,$val['shouruhdlrcw']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(40).$i,$val['zhifushcw']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(41).$i,$val['xitongwhcw']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(42).$i,$val['fenxiaocjcwdjcw']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(43).$i,$val['zichanglcw']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(44).$i,$val['qita3']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(45).$i,$val['xiaoji3']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(46).$i,$val['suzhizjkj']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(47).$i,$val['qitakf']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(48).$i,$val['fudonghj']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(49).$i,$val['yueduyffzj']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(50).$i,$val['gongjij']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(51).$i,$val['gerensb']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(52).$i,$val['gerensds']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(53).$i,$val['yuedusfzj']);
-            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(54).$i,$val['beizhu']);
+            $s = 0;
+            // $objPHPExcel->getActiveSheet()->getComment('A13')->getText()->createTextRun('pz');
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xuhao']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yuefen']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['fenxiao']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['bumen']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['zhiwei']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['gangweilx']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['zaizhizt']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xingming']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['shenfenzhm']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['ruzhisj']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['gongzuonx']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yingchuqts']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['shijicqts']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['jibengz']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['zhengjianbl']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yuangongxc']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['peixun']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['biaogesjkz']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['qita']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xiaoji']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xuexiaomz']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['zaidurs']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['shoufeije']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['zaizhiyy']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['chukuts']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['chukuts98']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xueshengfwgl']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yuangongfwgl']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['weishengaqgl']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yuangongzp']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['chenggongzp']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['shoufeifc']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['zhengjianwh']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['gongzhanggl']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['ziliaowjbg']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['qita2']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xiaoji2']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xueshengfwglcw']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yuangongfwglcw']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['cangkuglcw']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['shouruhdlrcw']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['zhifushcw']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xitongwhcw']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['fenxiaocjcwdjcw']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['zichanglcw']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['qita3']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['xiaoji3']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['suzhizjkj']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['qitakf']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['fudonghj']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yueduyffzj']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['gongjij']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['gerensb']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['gerensds']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['yuedusfzj']);$s++;
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($s).$i,$val['beizhu']);$s++;
             $i++;
         }
         $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).$i,'模板设计：');
@@ -392,7 +395,7 @@ class WagesCommonAction extends CommonAction{
             $list = M('scbgz')->where("suoshudd='$suoshudd'")->order('id')->select();
             $fujia = M('fjb')->where("suoshudd='$suoshudd'")->getField('field,value');
             $scyjb_id = $this->getQishuId($qishu,$sid,8);
-            $lists = M('scyjb')->field('id,json')->where(array('suoshudd'=>$scyjb_id))->order('id')->select();
+            $lists = M('scyjb')->field('id,json')->where("suoshudd=$scyjb_id and hejiyye != ''")->order('id')->select();
             foreach($lists as $key=>$val){
                 $lists[$key]['json'] = json_decode($lists[$key]['json'],'true');
                 foreach($lists[$key]['json'] as $k=>$v){
@@ -915,62 +918,226 @@ class WagesCommonAction extends CommonAction{
                 $data[$kk]['zongkoufa'] +=  $data[$kk]['cz_jd_jine'] +  $data[$kk]['cz_fd_jine'];
             }
         }
+        // dump($data);
         return $data;
     }
 
     //获取学习卡额度和营业额
-    public function getYyetcjs($qishu='201812',$sid='15'){
+    public function getYyetcjszj($qishu='201901',$sid='15'){
         $yuefen = substr($qishu,4,2);
         $nian = substr($qishu,0,4);
-        //一月到12月的数据
-        //根据月份判断查的数据
-        // if ($yuefen == '04' || $yuefen == '05'){
-        //     $suoshudd_yjd = M('qishu_history')->field('id')->where("(qishu=$nian".'01'." or qishu=$nian".'02'." or qishu=$nian".'03'.") and tid=29 and sid=$sid")->select();
-        // }elseif($yuefen == 6){
-
-        // }
-        //1-12月的所属订单
-        $yi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'01'." and tid=29 and sid=$sid")->getField('id');
-        $er_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'02'." and tid=29 and sid=$sid")->getField('id');
-        $san_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'03'." and tid=29 and sid=$sid")->getField('id');
-        $si_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'04'." and tid=29 and sid=$sid")->getField('id');
-        $wu_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'05'." and tid=29 and sid=$sid")->getField('id');
-        $liu_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'06'." and tid=29 and sid=$sid")->getField('id');
-        $qi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'07'." and tid=29 and sid=$sid")->getField('id');
-        $ba_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'08'." and tid=29 and sid=$sid")->getField('id');
-        $jiu_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'09'." and tid=29 and sid=$sid")->getField('id');
-        $shi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'10'." and tid=29 and sid=$sid")->getField('id');
-        $shiyi_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'11'." and tid=29 and sid=$sid")->getField('id');
-        $shier_suoshudd = $suoshudd_yjd = M('qishu_history')->where("qishu=$nian".'12'." and tid=29 and sid=$sid")->getField('id');
-
-        //第一季度
-        foreach($suoshudd_yjd as $val){
-            $ssdd_arr[] = $val['id'];
+        if($yuefen == '01'){
+            $yi_suoshudd = M('qishu_history')->where("qishu=$nian".'01'." and tid=29 and sid=$sid")->getField('id');
+            $yi_suoshudd = $yi_suoshudd?$yi_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$yi_suoshudd")->select();
+        }else if($yuefen == '02'){
+            $er_suoshudd = M('qishu_history')->where("qishu=$nian".'02'." and tid=29 and sid=$sid")->getField('id');
+            $er_suoshudd = $er_suoshudd?$er_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$er_suoshudd")->select();
+        }else if($yuefen == '03'){
+            $yi_suoshudd = M('qishu_history')->where("qishu=$nian".'01'." and tid=29 and sid=$sid")->getField('id');
+            $er_suoshudd = M('qishu_history')->where("qishu=$nian".'02'." and tid=29 and sid=$sid")->getField('id');
+            $san_suoshudd = M('qishu_history')->where("qishu=$nian".'03'." and tid=29 and sid=$sid")->getField('id');
+            $yi_suoshudd = $yi_suoshudd?$yi_suoshudd:0;
+            $er_suoshudd = $er_suoshudd?$er_suoshudd:0;
+            $san_suoshudd = $san_suoshudd?$san_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$yi_suoshudd or suoshudd=$er_suoshudd or suoshudd=$san_suoshudd")->select();
+        }else if($yuefen == '04'){
+            $si_suoshudd = M('qishu_history')->where("qishu=$nian".'04'." and tid=29 and sid=$sid")->getField('id');
+            $si_suoshudd = $si_suoshudd?$si_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$si_suoshudd")->select();
+        }else if($yuefen == '05'){
+            $wu_suoshudd = M('qishu_history')->where("qishu=$nian".'05'." and tid=29 and sid=$sid")->getField('id');
+            $wu_suoshudd = $wu_suoshudd?$wu_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$wu_suoshudd")->select();
+        }else if($yuefen == '06'){
+            $si_suoshudd = M('qishu_history')->where("qishu=$nian".'04'." and tid=29 and sid=$sid")->getField('id');
+            $wu_suoshudd = M('qishu_history')->where("qishu=$nian".'05'." and tid=29 and sid=$sid")->getField('id');
+            $liu_suoshudd = M('qishu_history')->where("qishu=$nian".'06'." and tid=29 and sid=$sid")->getField('id');
+            $si_suoshudd = $si_suoshudd?$si_suoshudd:0;
+            $wu_suoshudd = $wu_suoshudd?$wu_suoshudd:0;
+            $liu_suoshudd = $liu_suoshudd?$liu_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$si_suoshudd or suoshudd=$wu_suoshudd or suoshudd=$liu_suoshudd")->select();
+        }else if($yuefen == '07'){
+            $qi_suoshudd = M('qishu_history')->where("qishu=$nian".'07'." and tid=29 and sid=$sid")->getField('id');
+            $qi_suoshudd = $qi_suoshudd?$qi_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$qi_suoshudd")->select();
+        }else if($yuefen == '08'){
+            $ba_suoshudd = M('qishu_history')->where("qishu=$nian".'08'." and tid=29 and sid=$sid")->getField('id');
+            $ba_suoshudd = $ba_suoshudd?$ba_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$ba_suoshudd")->select();
+        }else if($yuefen == '09'){
+            $qi_suoshudd = M('qishu_history')->where("qishu=$nian".'07'." and tid=29 and sid=$sid")->getField('id');
+            $ba_suoshudd = M('qishu_history')->where("qishu=$nian".'08'." and tid=29 and sid=$sid")->getField('id');
+            $jiu_suoshudd = M('qishu_history')->where("qishu=$nian".'09'." and tid=29 and sid=$sid")->getField('id');
+            $qi_suoshudd = $qi_suoshudd?$qi_suoshudd:0;
+            $ba_suoshudd = $ba_suoshudd?$ba_suoshudd:0;
+            $jiu_suoshudd = $jiu_suoshudd?$jiu_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$qi_suoshudd or suoshudd=$ba_suoshudd or suoshudd=$jiu_suoshudd")->select();
+        }else if($yuefen == '10'){
+            $shi_suoshudd = M('qishu_history')->where("qishu=$nian".'10'." and tid=29 and sid=$sid")->getField('id');
+            $shi_suoshudd = $shi_suoshudd?$shi_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$shi_suoshudd")->select();
+        }else if($yuefen == '11'){
+            $shiyi_suoshudd = M('qishu_history')->where("qishu=$nian".'11'." and tid=29 and sid=$sid")->getField('id');
+            $shiyi_suoshudd = $shiyi_suoshudd?$shiyi_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$shiyi_suoshudd")->select();
+        }else if($yuefen == '12'){
+            $shi_suoshudd = M('qishu_history')->where("qishu=$nian".'10'." and tid=29 and sid=$sid")->getField('id');
+            $shiyi_suoshudd = M('qishu_history')->where("qishu=$nian".'11'." and tid=29 and sid=$sid")->getField('id');
+            $shier_suoshudd = M('qishu_history')->where("qishu=$nian".'12'." and tid=29 and sid=$sid")->getField('id');
+            $shi_suoshudd = $shi_suoshudd?$shi_suoshudd:0;
+            $shiyi_suoshudd = $shiyi_suoshudd?$shiyi_suoshudd:0;
+            $shier_suoshudd = $shier_suoshudd?$shier_suoshudd:0;
+            $jsyye = M('lsqryye')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$shi_suoshudd or suoshudd=$shiyi_suoshudd or suoshudd=$shier_suoshudd")->select();
         }
-        $data = array();
-        if ($ssdd_arr){
-            $list = M('lsqryye')->where(array('suoshudd'=>array('in',$ssdd_arr)))->select();
-        }
-        //定义需要返回的数组
         $laoshi = array();
-        foreach ($list as $val) {
-            if (!in_array($val['laoshi'],$laoshi)){
+        $data = array();
+        $result = array();
+        $tchj = 0;
+        foreach($jsyye as $val){
+            if(!in_array($val['laoshi'],$laoshi)){
                 $laoshi[] = $val['laoshi'];
             }
         }
-        foreach($laoshi as $key=>$vv){
-            foreach($list as $val){
-                if ($vv == $val['laoshi']){
-                    $data[$key]['laoshi'] = $vv;
-                    $data[$key]['xuexiked'] += $val['xuexikzed'];
-                    if ($val['banxing'] == '小学部'){
-                        $data[$key]['xx_yingyee'] += $val['yingyee'];
+        if($yuefen == '03'){
+            //补逻辑
+        }else if($yuefen == '06'){
+            //补逻辑
+        }else if($yuefen == '09'){
+            //补逻辑
+        }else if($yuefen == '12'){
+            //补逻辑
+        }else{
+            foreach($laoshi as $key=>$val){
+                foreach($jsyye as $vv){
+                    if($val == $vv['laoshi']){
+                        if($vv['banxing'] == '小学部'){
+                            $data[$key]['xxb'] = $vv['yingyee'];
+                        }else{
+                            $data[$key]['czb'] = $vv['yingyee'];
+                        }
+                        $data[$key]['xingming'] = $val;
+                        $data[$key]['ticheng'] = ($data[$key]['xxb'] + $data[$key]['czb'])*0.04;
                     }
                 }
-
+            }
+            foreach($data as $val){
+                $tchj += $val['ticheng'] * 0.01;
             }
         }
-        return array();
+        $result['data'] = $data;
+        $result['tchj'] = $tchj;
+        return $result;
+    }
+
+    //获取学习卡额度和营业额
+    public function getYyetcjsms($qishu='201901',$sid='15'){
+        $yuefen = substr($qishu,4,2);
+        $nian = substr($qishu,0,4);
+        if($yuefen == '01'){
+            $yi_suoshudd = M('qishu_history')->where("qishu=$nian".'01'." and tid=47 and sid=$sid")->getField('id');
+            $yi_suoshudd = $yi_suoshudd?$yi_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$yi_suoshudd")->select();
+        }else if($yuefen == '02'){
+            $er_suoshudd = M('qishu_history')->where("qishu=$nian".'02'." and tid=47 and sid=$sid")->getField('id');
+            $er_suoshudd = $er_suoshudd?$er_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$er_suoshudd")->select();
+        }else if($yuefen == '03'){
+            $yi_suoshudd = M('qishu_history')->where("qishu=$nian".'01'." and tid=47 and sid=$sid")->getField('id');
+            $er_suoshudd = M('qishu_history')->where("qishu=$nian".'02'." and tid=47 and sid=$sid")->getField('id');
+            $san_suoshudd = M('qishu_history')->where("qishu=$nian".'03'." and tid=47 and sid=$sid")->getField('id');
+            $yi_suoshudd = $yi_suoshudd?$yi_suoshudd:0;
+            $er_suoshudd = $er_suoshudd?$er_suoshudd:0;
+            $san_suoshudd = $san_suoshudd?$san_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$yi_suoshudd or suoshudd=$er_suoshudd or suoshudd=$san_suoshudd")->select();
+        }else if($yuefen == '04'){
+            $si_suoshudd = M('qishu_history')->where("qishu=$nian".'04'." and tid=47 and sid=$sid")->getField('id');
+            $si_suoshudd = $si_suoshudd?$si_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$si_suoshudd")->select();
+        }else if($yuefen == '05'){
+            $wu_suoshudd = M('qishu_history')->where("qishu=$nian".'05'." and tid=47 and sid=$sid")->getField('id');
+            $wu_suoshudd = $wu_suoshudd?$wu_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$wu_suoshudd")->select();
+        }else if($yuefen == '06'){
+            $si_suoshudd = M('qishu_history')->where("qishu=$nian".'04'." and tid=47 and sid=$sid")->getField('id');
+            $wu_suoshudd = M('qishu_history')->where("qishu=$nian".'05'." and tid=47 and sid=$sid")->getField('id');
+            $liu_suoshudd = M('qishu_history')->where("qishu=$nian".'06'." and tid=47 and sid=$sid")->getField('id');
+            $si_suoshudd = $si_suoshudd?$si_suoshudd:0;
+            $wu_suoshudd = $wu_suoshudd?$wu_suoshudd:0;
+            $liu_suoshudd = $liu_suoshudd?$liu_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$si_suoshudd or suoshudd=$wu_suoshudd or suoshudd=$liu_suoshudd")->select();
+        }else if($yuefen == '07'){
+            $qi_suoshudd = M('qishu_history')->where("qishu=$nian".'07'." and tid=47 and sid=$sid")->getField('id');
+            $qi_suoshudd = $qi_suoshudd?$qi_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$qi_suoshudd")->select();
+        }else if($yuefen == '08'){
+            $ba_suoshudd = M('qishu_history')->where("qishu=$nian".'08'." and tid=47 and sid=$sid")->getField('id');
+            $ba_suoshudd = $ba_suoshudd?$ba_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$ba_suoshudd")->select();
+        }else if($yuefen == '09'){
+            $qi_suoshudd = M('qishu_history')->where("qishu=$nian".'07'." and tid=47 and sid=$sid")->getField('id');
+            $ba_suoshudd = M('qishu_history')->where("qishu=$nian".'08'." and tid=47 and sid=$sid")->getField('id');
+            $jiu_suoshudd = M('qishu_history')->where("qishu=$nian".'09'." and tid=47 and sid=$sid")->getField('id');
+            $qi_suoshudd = $qi_suoshudd?$qi_suoshudd:0;
+            $ba_suoshudd = $ba_suoshudd?$ba_suoshudd:0;
+            $jiu_suoshudd = $jiu_suoshudd?$jiu_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$qi_suoshudd or suoshudd=$ba_suoshudd or suoshudd=$jiu_suoshudd")->select();
+        }else if($yuefen == '10'){
+            $shi_suoshudd = M('qishu_history')->where("qishu=$nian".'10'." and tid=47 and sid=$sid")->getField('id');
+            $shi_suoshudd = $shi_suoshudd?$shi_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$shi_suoshudd")->select();
+        }else if($yuefen == '11'){
+            $shiyi_suoshudd = M('qishu_history')->where("qishu=$nian".'11'." and tid=47 and sid=$sid")->getField('id');
+            $shiyi_suoshudd = $shiyi_suoshudd?$shiyi_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$shiyi_suoshudd")->select();
+        }else if($yuefen == '12'){
+            $shi_suoshudd = M('qishu_history')->where("qishu=$nian".'10'." and tid=47 and sid=$sid")->getField('id');
+            $shiyi_suoshudd = M('qishu_history')->where("qishu=$nian".'11'." and tid=47 and sid=$sid")->getField('id');
+            $shier_suoshudd = M('qishu_history')->where("qishu=$nian".'12'." and tid=47 and sid=$sid")->getField('id');
+            $shi_suoshudd = $shi_suoshudd?$shi_suoshudd:0;
+            $shiyi_suoshudd = $shiyi_suoshudd?$shiyi_suoshudd:0;
+            $shier_suoshudd = $shier_suoshudd?$shier_suoshudd:0;
+            $jsyye = M('lsqryyems')->field('laoshi,xuexikzed,banxing,yingyee')->where("suoshudd=$shi_suoshudd or suoshudd=$shiyi_suoshudd or suoshudd=$shier_suoshudd")->select();
+        }
+        $laoshi = array();
+        $data = array();
+        $result = array();
+        $tchj = 0;
+        foreach($jsyye as $val){
+            if(!in_array($val['laoshi'],$laoshi)){
+                $laoshi[] = $val['laoshi'];
+            }
+        }
+        if($yuefen == '03'){
+            //补逻辑
+        }else if($yuefen == '06'){
+            //补逻辑
+        }else if($yuefen == '09'){
+            //补逻辑
+        }else if($yuefen == '12'){
+            //补逻辑
+        }else{
+            foreach($laoshi as $key=>$val){
+                foreach($jsyye as $vv){
+                    if($val == $vv['laoshi']){
+                        if($vv['banxing'] == '小学部'){
+                            $data[$key]['xxb'] = $vv['yingyee'];
+                        }else{
+                            $data[$key]['czb'] = $vv['yingyee'];
+                        }
+                        $data[$key]['xingming'] = $val;
+                        $data[$key]['ticheng'] = ($data[$key]['xxb'] + $data[$key]['czb'])*0.04;
+                    }
+                }
+            }
+            foreach($data as $val){
+                $tchj += $val['ticheng'] * 0.01;
+            }
+        }
+        $result['data'] = $data;
+        $result['tchj'] = $tchj;
+        return $result;
     }
 
     //数字换字母excel
@@ -982,6 +1149,68 @@ class WagesCommonAction extends CommonAction{
             ];
         return $zm[$sz];
     }
+
+    //工资表提交状态加一
+    public function wageTj(){
+        $suoshudd = I('suoshudd','');
+        $tname = I('tname','xzbgz');
+        $st = I('status','0');
+        $status = M($tname)->where("suoshudd=$suoshudd")->getField('status');
+        $status = $status?$status:0;
+        if($st != $status){
+            $this->ajaxreturn(array('status'=>2,'msg'=>'状态已改变'));
+        }
+        $status += 1;
+        M($tname)->where("suoshudd=$suoshudd")->save(array("status"=>$status));
+        $this->ajaxreturn(array('status'=>1));
+    }
+
+    //工资表退回状态减一
+    public function wageTh(){
+        $suoshudd = I('suoshudd','');
+        $tname = I('tname','xzbgz');
+        $st = I('status','0');
+        $status = M($tname)->where("suoshudd=$suoshudd")->getField('status');
+        $status = $status?$status:0;
+        if($status ==0 ){
+            $this->ajaxreturn(array('status'=>2,'msg'=>'状态已改变'));
+        }
+        if($st != $status){
+            $this->ajaxreturn(array('status'=>2,'msg'=>'状态已改变'));
+        }
+        $status -= 1;
+        M($tname)->where("suoshudd=$suoshudd")->save(array("status"=>$status));
+        $this->ajaxreturn(array('status'=>1));
+    }
+
+    //提交修改
+    public function tjxg(){
+        $suoshudd = I('suoshudd');
+        $data['uid'] = session('uid');
+        $data['qishu'] = I('qishu');
+        $data['sid'] = I('sid');
+        $data['status'] = I('status');
+        $data['tname'] = I('tname','xzbgz');
+        M('wage_log')->add($data);
+        M($data['tname'])->where(array('suoshudd'=>$suoshudd))->save(array('status'=>99));
+        $this->ajaxReturn('1');
+    }
+
+    //返回修改前
+    public function fhxg(){
+        $suoshudd = I('suoshudd');
+        $data['uid'] = session('uid');
+        $data['qishu'] = I('qishu');
+        $data['sid'] = I('sid');
+        $data['tname'] = I('tname','xzb');
+        $data['status'] = M('wage_log')->where($data)->order('addtime desc')->getField('status');
+        $data['status']=$data['status'] ? $data['status'] :0;
+        M('wage_log')->add($data);
+        M($data['tname'])->where(array('suoshudd'=>$suoshudd))->save(array('status'=>$data['status']));
+        $this->ajaxReturn('1');
+    }
+
+    
 }
 
 ?>

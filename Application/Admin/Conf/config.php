@@ -12,7 +12,10 @@ return array(
 	'RBAC_ACCESS_TABLE' => 'stjy_access',  //权限表名称
 	'RBAC_NODE_TABLE' => 'stjy_node',      //节点表名称
 	'DEFAULT_MODULE' => '',      //默认模块
-
+	'APP_DEBUG' => true,
+	'LOG_RECORD' => false, // 日志记录
+	'LOG_EXCEPTION_RECORD' => false, // 记录异常信息日志
+	'DB_SQL_LOG' => false, // 记录SQL信息是否打开。
 	// 自定义控制器名称
 	'DEFAULT_C_LAYER' => 'Action',
 	

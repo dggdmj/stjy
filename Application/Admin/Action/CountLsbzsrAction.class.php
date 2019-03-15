@@ -52,6 +52,7 @@ class CountLsbzsrAction extends CommonAction {
                 ->field('kb.jingjiangxs as jingduxs,kb.fanduxs,kb.waijiaoxs,kx.shangkels as jingduls,kx.banji,kx.kexiaoje,kx.shangkesj,kx.zhujiao')
                 ->where("kx.suoshudd = '$kx_oid' and kb.suoshudd='$kb_oid'")
                 ->order('kx.id')
+                ->group('kx.id')
                 ->select();
          $cqmxb = M('cqmxb')
                     ->field('banji,shangkesj')
@@ -99,7 +100,7 @@ class CountLsbzsrAction extends CommonAction {
                     $vv['waijiaols'] = $tmp['0'];
                     $vv['fanduls'] = $tmp['1'];
                 }
-                $vv['banji'] = substr($vv['banji'],0,3);
+                $vv['banji'] = mb_substr($vv['banji'],0,3,'utf-8');
                 if ($val['banxing'] == $banji[ ucwords($vv['banji'] )]){
                     if($val['laoshi'] == $vv['jingduls']){
                         $val['zongrencxs'] += $vv['jingduxs'];

@@ -9,7 +9,7 @@ class CountJysjAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getJysjbData($qishu='201810',$sid='15'){
+    public function getJysjbData($qishu='201902',$sid='25'){
         //获得经营数据汇总表各数据
         $school_info = M("school")->where("id = ".$sid)->find();
         $arr_zaice = $this->getzaice($qishu,$sid);   //获得在册学生学期状态表
@@ -78,6 +78,10 @@ class CountJysjAction extends CommonAction {
 
         $fmonth = $this->getMonth($qishu);  //获得上月期数
         $xyxxb_prev_id = $this->getQishuId($fmonth,$sid,1);  //获得学员信息表的所属Id
+        $yuefen = mb_substr($qishu,4,2);
+        if($yuefen == 01){
+            $nianfen = $nianfen -1;
+        }
         if(!empty($xyxxb_prev_id)){
 //            $where = 'suoshudd ='.$xyxxb_prev_id.' and ((xuehao !="" and beizhu = "") or banji = "停读" or banji = "未进班")';
             $where = "suoshudd =$xyxxb_prev_id and (zhuangtai = '在读' or zhuangtai = '休学') and xiaoqu='$school_name'";
@@ -252,6 +256,7 @@ class CountJysjAction extends CommonAction {
         foreach($list as $val){
             if(strpos($val['banji'],"一")){
                 $val["bumen"] = "一对一";
+                 $val['chuxiancs'] = 1;
             }else{
                 $val['bh'] = substr($val['banji'],0,3);
                 $val['bumen'] = $bjbh[ $val['bh'] ];
@@ -314,6 +319,8 @@ class CountJysjAction extends CommonAction {
             //如果课程名称中含有字符"一"，返回一对一
             if(strpos($v['banji'],"一")){
                 $list[$k]["shijianduan"] = "一对一";
+                // $data["一对一"] += 1;
+                $v['banji'] = '一对一';
             }else{
                 $list[$k]["day"] = mb_substr($v["shangkesj"],0,2,"utf-8");
                 $list[$k]["shangkesj"] = mb_substr($v["shangkesj"],2,2,"utf-8");
@@ -325,7 +332,7 @@ class CountJysjAction extends CommonAction {
                     $list[$k]["shijianduan"] = $list[$k]["day"]."晚上";
                 }
             }
-            if(in_array($v['banji'],$banji)){
+            if(in_array($v['banji'],$banji) && $v['banji'] != '一对一'){
                 $list[$k]['chuxiancs'] = 2;
             }else{
                 $banji[] = $v['banji'];
@@ -407,12 +414,13 @@ class CountJysjAction extends CommonAction {
     }
 
     public function getzaice($qishu,$sid){
+        $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         $nianfen = substr($qishu,0,4);
         $where['qishu'] = $qishu;// 获取期数
         $where['sid'] = $sid;// 获取学校id
         $where['tid'] = 1;// 从学员信息表获取信息,它的tid是3
         $id = M('qishu_history')->where($where)->getField('id');// 获取对应qishu_history的id,也就是bjxyxxb里面的suoshudd的订单号
-        $list = M('xyxxb_'.$nianfen )->field('nianji,zhuangtai,shoucixfrq,shifouzxzrdjb')->where("suoshudd = ".$id)->select();
+        $list = M('xyxxb_'.$nianfen )->field('nianji,zhuangtai,shoucixfrq,shifouzxzrdjb')->where("suoshudd = ".$id." and xiaoqu = '$school_name'")->select();
         $arr = array();
         foreach ($list as $k => &$v){
             if ( ($v['shoucixfrq'] == '' && $v['zhuangtai'] == '在读') or ($v['shifouzxzrdjb'] == '是') ){
@@ -553,10 +561,10 @@ class CountJysjAction extends CommonAction {
         $bjxyxxb_id = M('qishu_history')->where($where)->getField('id');
         $bjxyxxb = M('bjxyxxb_'.$nianfen)->field('banji,nianji')->where("suoshudd='$bjxyxxb_id'")->select();
         foreach($bjxyxxb as $vv){
-            $vv['banji'] = mb_substr($vv['banji'],0,3,'utf-8');
-            $tmp = mb_substr($vv['banji'],0,2,'utf-8');
-            if($tmp == '一对'){
-                $v['banji'] = '一对一';
+            if(strpos($vv['banji'],"一")){
+                $vv['banji'] = '一对一';
+            }else{
+                $vv['banji'] = mb_substr($vv['banji'],0,3,'utf-8');
             }
             if(in_array($vv['banji'],$kecheng_arr) || $vv['banji'] == '一对一'){
                 switch ($vv['nianji']) {

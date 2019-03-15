@@ -76,13 +76,13 @@ class TableCountAction extends CommonAction{
         $rid = M('role_user')->where('user_id ='.$uid)->getField('role_id');// 获取角色id
         $sid = session('sid');
         $school_id = explode(",",$sid);// 获取用户当前校区
-        if($rid == 3 || $rid == 2 || $rid == 1){
-            $map['status_xzjl'] = array('neq',3);// 查询条件
-        }elseif($rid == 4){
-            $map['status_cw'] = array('neq',3);// 查询条件
-        }elseif($rid == 5){
-            $map['status_fzr'] = array('neq',3);// 查询条件
-        }
+        // if($rid == 3 || $rid == 2 || $rid == 1){
+        //     $map['status_xzjl'] = array('neq',3);// 查询条件
+        // }elseif($rid == 4){
+        //     $map['status_cw'] = array('neq',3);// 查询条件
+        // }elseif($rid == 5){
+        //     $map['status_fzr'] = array('neq',3);// 查询条件
+        // }
 
         $map['sid'] = array('in',$school_id);// 查询条件
         $data = M('sjzb'); // 实例化对象
@@ -93,13 +93,14 @@ class TableCountAction extends CommonAction{
         $Page = new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数(25)
         $show = $Page->show();// 分页显示输出
         // 进行分页数据查询 注意limit方法的参数要使用Page类的属性
-        if($rid == 3 || $rid == 2 || $rid == 1){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        }else if($rid == 4){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        }else if($rid == 5){
-            $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_fzr is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
-        }
+        // if($rid == 3 || $rid == 2 || $rid == 1){
+        //     $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        // }else if($rid == 4){
+        //     $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_cw is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        // }else if($rid == 5){
+        //     $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_fzr is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        // }
+        $list = $data->join('stjy_school ON stjy_sjzb.sid=stjy_school.id')->field('stjy_sjzb.*,stjy_school.name')->where($map)->where('stjy_sjzb.status_xzjl is not null')->order('stjy_sjzb.qishu desc')->limit($Page->firstRow.','.$Page->listRows)->select();
         // dump($list);exit;
         // 获取表明与序号对应的一维数组
         $arr = $this->getTabelnames(1,[2]);
@@ -1348,7 +1349,7 @@ class TableCountAction extends CommonAction{
                 if($v['xuehao'] == $key){
                     $val['danjia'] = round($val['zongfeiyong'] / $val['zongshuliang'],2);
                     $list[$k]['danjia'] = $val['danjia'];
-                    if($val['zongshuliang'] <=$miaosha['shangkekc'] && $val['danjia'] <= $miaosha['danjia'] && $val['danjia'] > 0){
+                    if($val['zongshuliang'] <=$miaosha['shangkekc'] && $val['danjia'] <= $miaosha['danjia'] && $val['zongshuliang'] > 0){
                         $list[$k]['shifoums'] = '秒杀';
                         $list[$k]['zongfeiyong'] = $val['zongfeiyong'];
                         $list[$k]['zongshuliang'] = $val['zongshuliang'];
@@ -1710,6 +1711,33 @@ class TableCountAction extends CommonAction{
         $this->assign('list',$data);
         $this->assign('nian',$nian);
         $this->adminDisplay('zhl_hz');
+    }
+
+    //教材费详情
+    public function scbmsqd_xq(){
+        $qishu=I('qishu','201902');
+        $sid=I('sid','15');
+        $nian = substr($qishu, 0,4);
+        $suoshudd = $this->getAllSdd($qishu,$sid);
+        $list = array();
+        $xuehao = array();
+        if($suoshudd){
+            $list = M()->query("select shoujulx,jiaofeije,xingming,chanpinlx,shoujuhao,xuehao,yejigsr,jiaofeirq from stjy_sjjlb_".$nian." where suoshudd in ($suoshudd) and ( chanpinlx = '98元1期秒杀' or chanpinlx = '1期秒杀') and yejigsr != '' and shoukuanzh != '' and shoukuanzh !='结转学费' and shoukuanzh != '老带新返现' ");
+            foreach($list as $key=>$val){
+                $xuehao[] = $val['xuehao'];
+                $tmp = explode('(', $val['yejigsr']);
+                $list[$key]['yejigsr'] = $tmp['0'];
+            }
+        }
+        if($xuehao){
+            $xyxxb = M('xyxxb_'.$nian)->where(array('xuehao'=>array('in',$xuehao)))->getField('xuehao,shoucixfrq,nianji');
+        }
+        foreach($list as $key=>$val){
+            $list[$key]['shoucixfrq'] = $xyxxb[$val['xuehao']]['shoucixfrq'];
+            $list[$key]['nianji'] = $xyxxb[$val['xuehao']]['nianji'];
+        }
+        $this->assign('list',$list);
+        $this->adminDisplay();
     }
 }
 ?>

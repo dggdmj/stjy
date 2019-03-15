@@ -103,10 +103,11 @@ class CommonAction extends Action {
 		if(!isset($_SESSION[C('USER_AUTH_KEY')])) {
 			$this->redirect('Login/index');
 		}
-		$notAuth=in_array(MODULE_NAME,explode(',',C('NOT_AUTH_MODULE')))||in_array(ACTION_NAME,explode(',',C('NOT_AUTH_ACTION')));
-		if(C('USER_AUTH_ON')&&!$notAuth) {
-			RBAC::AccessDecision()||$this->error('没有权限');
-		}
+        // RBAC::saveAccessList();
+        $notAuth=in_array(MODULE_NAME,explode(',',C('NOT_AUTH_MODULE')))||in_array(ACTION_NAME,explode(',',C('NOT_AUTH_ACTION')));
+        if(C('USER_AUTH_ON')&&!$notAuth) {
+            RBAC::AccessDecision()||$this->error('没有权限');
+        }
 		if(!(APP_NAME == 'admin' && CONTROLLER_NAME == 'Login')){
 			//赋值当前菜单
 	        if(method_exists($this,'_infoModule')){
@@ -843,6 +844,17 @@ class CommonAction extends Action {
                 $xfl = new \Admin\Action\DownloadAction();
                 $xfl->download_zhl($qishu,$sid);
             break;
+            case 47:
+                $start_row = 3;
+                if(!empty($id)){
+                    $data = M($tbnames[$tid])->field('id,suoshudd,daorusj',true)->where('suoshudd ='.$id)->order('id')->select();
+                }else{
+                    $data = array();
+                }
+            break;
+            case 49:
+                $this->scbmsqd($qishu,$sid);
+                die;
         }
         $this->exportExcel($tid,$start_row,$data,$filename,$info);
     }
@@ -1275,6 +1287,9 @@ class CommonAction extends Action {
             case 33:
                 $template = __ROOT__.'Public/template/template_lsbzsr.xlsx';          //使用模板
             break;
+            case 47:
+                $template = __ROOT__.'Public/template/template_lsyye.xlsx';          //使用模板
+            break;
         }
 
         $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
@@ -1299,6 +1314,9 @@ class CommonAction extends Action {
             break;
             case 33:
                 $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'老师标准收入表');          //使用模板
+            break;
+            case 47:
+                $objActSheet->setCellValue('A1',$info['year'].'年'.$info['month'].'月'.$info['school'].'老师确认秒杀营业额表');          //使用模板
             break;
         }
         // $objActSheet->setCellValue('坐标','值');
@@ -1448,6 +1466,7 @@ class CommonAction extends Action {
             for($j=0;$j<count($kecheng_arr)-1;$j++){
                 $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).$i,$kecheng_arr[$j]);$z++;
             }
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).$i,$kecheng_arr[$j]);$z++;
             $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($z).$i,'一对一');
             $i = 27;// 行从26开始
             foreach ($data2 as $row) {
@@ -2177,7 +2196,7 @@ class CommonAction extends Action {
         return true;
     }
 
-    public function AlltoDb($qishu,$sid){
+    public function AlltoDb($qishu="201901",$sid="1"){
         // -----------------------生成数据入库开始-----------------------
 
         // 市场占有率数据写入数据库
@@ -2206,7 +2225,7 @@ class CommonAction extends Action {
         // 老师确认营业额
         $lsqryye = new \Admin\Action\CountLsqryyeAction();
         $res_lsyye = $lsqryye->getYjData($qishu,$sid);
-
+        
         // 老师确认秒杀营业额
         $lsqryyems = new \Admin\Action\CountLsqryyemsAction();
         $res_lsyyems = $lsqryyems->getYjData($qishu,$sid);
@@ -2426,7 +2445,7 @@ class CommonAction extends Action {
                 case 'kbmxb':
                     M('')->execute("CREATE TABLE `$niantable` (
                           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-                          `banjimc` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级名称',
+                          `banjimc` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级名称',
                           `banjibq` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级标签',
                           `kaibanrq` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '开班日期',
                           `jiebanrq` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '结班日期',
@@ -2593,7 +2612,7 @@ class CommonAction extends Action {
                           `banxing` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班型',
                           `kemu` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '科目',
                           `kecheng` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '课程',
-                          `banji` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级',
+                          `banji` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级',
                           `xiaoqumc` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '校区名称',
                           `shangkels` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '上课老师',
                           `zhujiao` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '助教',
@@ -2765,10 +2784,81 @@ class CommonAction extends Action {
         $qishu = I('qishu');
         $sid = I('sid');
         $tid = I('tid');
-        $res = $this->delScData($qishu,$sid,$tid);
         $suoshudd = $this->getQishuId($qishu,$sid,$tid);
+        $tname = M('table_name')->where(array('id'=>$tid))->getField('table_name');
+        $status = M($tname)->where(array('suoshudd'=>$suoshudd))->getField('status');
+        if($status != 0){
+            $this->ajaxReturn(array('status'=>2));
+        }
+        $res = $this->delScData($qishu,$sid,$tid);
         M('fjb')->where(array('suoshudd'=>$suoshudd))->delete();
-        $this->ajaxReturn(1);
+        $this->ajaxReturn(array('status'=>1));
+    }
+
+    //根据期数获取自2019年开始的所有期数id
+    public function getAllSdd($qishu='201902',$sid='15'){
+        $data = array();
+        $list = M('qishu_history')->where("qishu<=$qishu and qishu>=201901 and sid=$sid and tid=4")->field('id')->select();
+        foreach($list as $val){
+            $data[] = $val['id'];
+        }
+        $data = implode(',',$data);
+        return $data;
+    }
+
+    //市场部工资秒杀清单
+    public function scbmsqd($qishu='201902',$sid='15'){
+        // $qishu=I('qishu','201902');
+        // $sid=I('sid','15');
+        $nian = substr($qishu, 0,4);
+        $suoshudd = $this->getAllSdd($qishu,$sid);
+        $list = array();
+        $xuehao = array();
+        if($suoshudd){
+            $list = M()->query("select shoujulx,jiaofeije,xingming,chanpinlx,shoujuhao,xuehao,yejigsr,jiaofeirq from stjy_sjjlb_".$nian." where suoshudd in ($suoshudd) and ( chanpinlx = '98元1期秒杀' or chanpinlx = '1期秒杀') and yejigsr != '' and shoukuanzh != '' and shoukuanzh !='结转学费' and shoukuanzh != '老带新返现' ");
+            foreach($list as $key=>$val){
+                $xuehao[] = $val['xuehao'];
+                $tmp = explode('(', $val['yejigsr']);
+                $list[$key]['yejigsr'] = $tmp['0'];
+            }
+        }
+        if($xuehao){
+            $xyxxb = M('xyxxb_'.$nian)->where(array('xuehao'=>array('in',$xuehao)))->getField('xuehao,shoucixfrq,nianji');
+        }
+        foreach($list as $key=>$val){
+            $list[$key]['shoucixfrq'] = $xyxxb[$val['xuehao']]['shoucixfrq'];
+            $list[$key]['nianji'] = $xyxxb[$val['xuehao']]['nianji'];
+        }
+        vendor("PHPExcel.PHPExcel");// 引入phpexcel插件
+        $template = __ROOT__.'Public/template/template_scb_ms.xlsx';
+        $objPHPExcel = \PHPExcel_IOFactory::load($template);     //加载excel文件,设置模板
+        $objWriter = new \PHPExcel_Writer_Excel2007($objPHPExcel);  //设置保存版本格式
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        $j = 2;
+        foreach($list as $key=>$val){
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(0).$j,$val['jiaofeirq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(1).$j,$val['shoujuhao']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(2).$j,$val['xuehao']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(3).$j,$val['xingming']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(4).$j,$val['yejigsr']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(5).$j,$val['jiaofeije']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(6).$j,$val['chanpinlx']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(7).$j,$val['shoucixfrq']);
+            $objActSheet->setCellValue(\PHPExcel_Cell::stringFromColumnIndex(8).$j,$val['nianji']);
+            $j++;
+        }
+        $school_name = M('school')->where("id=$sid")->getField('name');
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="'.$school_name.'市场部工资秒杀清单.xlsx"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
     }
 
 }

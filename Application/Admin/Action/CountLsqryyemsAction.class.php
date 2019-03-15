@@ -9,15 +9,15 @@ class CountLsqryyemsAction extends CommonAction {
      * @param  string $sid         学校id：school  中的id
      * @return array
      */
-    public function getYjData($qishu='201810',$sid='15'){
+    public function getYjData($qishu='201902',$sid='1'){
         // 判断语句
         $qishu_id = M('qishu_history')->where(array('qishu'=>$qishu,'sid'=>$sid,'tid'=>47))->getField('id');//判断是否有生成历史
         if ($qishu_id){
-            $newList = M('lsqryye')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
+            $newList = M('lsqryyems')->where(array('suoshudd'=>$qishu_id))->order('id')->select();
             $newList = $this->heji($newList);
             return $newList;
         }
-        $qishu_id = $this->insertQishuHistory(29,$qishu,$sid);
+        $qishu_id = $this->insertQishuHistory(47,$qishu,$sid);
         $scyjb_id = $this->getQishuId($qishu,$sid,8);
         $school_name = M('school')->where(array('id'=>$sid))->getField('name');
         //老师营业额  先查所有的老师  人事表
@@ -56,16 +56,25 @@ class CountLsqryyemsAction extends CommonAction {
                     // ->join('LEFT JOIN stjy_sjcplx as cp on cp.xiangmu=ss.chanpinlx')
                     ->join('LEFT JOIN stjy_szlsb as sz on sz.shoujuhao=ss.shoujuhao')
                     // ->join('LEFT JOIN stjy_sjmxb as mx on ss.shoujuhao=mx.shoujuhao')
-                    ->field('ss.xuehao,sz.shouru,sk.jingjiangls,sb.banji,ss.chanpinlx,ss.shoujuhao,ss.jiaofeirq,sx.shoucixfrq,sz.zhanghu')
+                    ->field('ss.xuehao,sz.shouru,sk.jingjiangls,sb.banji,ss.chanpinlx,ss.shoujuhao,ss.jiaofeirq,sx.shoucijfrq,sz.zhanghu')
                     ->where("ss.suoshudd='$suoshudd' and  sx.shoucixfrq != '' and ss.jiaofeirq > sx.shoucixfrq and sk.jingjiangls != '' and sz.shouru != '' and sz.zhanghu != '结转学费' and sz.zhanghu != '老带新返现' and sb.suoshudd = '$bjxyxxb_id' and sx.suoshudd='$xyxxb_id' and sb.suoshudd='$bjxyxxb_id' and sk.suoshudd='$kbmxb_id' and sz.suoshudd='$szls_id'")
                     // and sb.suoshudd = '$bjxyxxb_id' and sx.suoshudd='$xyxxb_id' and sb.suoshudd='$bjxyxxb_id' and sk.suoshudd='$kbmxb_id' and sz.suoshudd='$szls_id'
-                    // ->where(" sx.shoucixfrq < '$ls_day_last' and  ss.chanpinlx != '教材费' and ss.suoshudd='$suoshudd' and  sx.shoucixfrq != ''")
+                    // ->where("ss.suoshudd='$suoshudd'")
                     ->group('ss.shoujuhao')
                     ->select();
         $chanpinlx = M('sjcplx')->field('xiangmu')->where("shifouyyejs=1")->select();
+        $chanpinlx2 = M('sjcplx')->field('xiangmu')->where("shifoutxyj=1")->select();
         $cplx = array();
+        $cplx2 = array();
         foreach($chanpinlx as $val){
+            $val['xiangmu'] = str_replace('(','（',$val['xiangmu']);
+            $val['xiangmu'] = str_replace(')','）',$val['xiangmu']);
             $cplx[] = $val['xiangmu'];
+        }
+        foreach($chanpinlx2 as $val){
+            $val['xiangmu'] = str_replace('(','（',$val['xiangmu']);
+            $val['xiangmu'] = str_replace(')','）',$val['xiangmu']);
+            $cplx2[] = $val['xiangmu'];
         }
         $jingjiangls = array(); 
         foreach($zonge as $key=>$val){
@@ -102,12 +111,14 @@ class CountLsqryyemsAction extends CommonAction {
             $data[$key]['yingyee1'] = 0;
             $data[$key]['yingyee2'] = 0;
             foreach($zonge as $v){
+                $v['chanpinlx'] = str_replace('(','（',$v['chanpinlx']);
+                $v['chanpinlx'] = str_replace(')','）',$v['chanpinlx']);
                 if ($v['chanpinlx'] != '国际领袖课程' && $v['chanpinlx'] != '国内领袖课程' && $v['chanpinlx'] != '教材费'){
-                    if(strtotime($v['jiaofeirq']) - strtotime($v['shoucijfrq']) > $yinian){
+                    if(strtotime($v['jiaofeirq']) - strtotime($v['shoucijfrq']) > $yinian && in_array($v['chanpinlx'],$cplx2)){
                         $v['chanpinlx'] = '老生续费';
                     }
                 }
-                if(in_array($v['chanpinlx'],$cplx) && in_array($v['xuehao'],$miaosha_xz)){
+                if(in_array($v['chanpinlx'],$cplx) && in_array($v['xuehao'],$miaosha_xz) && strpos($v['zhanghu'],'退费转让') ===false){
                     $bianma = substr($v['banji'],0,3);
                     $v['bumen'] = $bumen[ $bianma ];
                     if($v['jingjiangls'] == $data[$key]['xingming']){
@@ -139,7 +150,7 @@ class CountLsqryyemsAction extends CommonAction {
             $data2['chuxiancs'] = 1;
             $data2['suoshudd'] = $qishu_id;
             $newList[] = $data2;
-            M('lsqryye')->add($data2);
+            M('lsqryyems')->add($data2);
             //初中部
             $data2['xuhao']=$ko+2;
             $data2['yuefen'] = $vo['yuefen'];
@@ -153,7 +164,7 @@ class CountLsqryyemsAction extends CommonAction {
             $data2['yanzheng'] = '-';
             $data2['chuxiancs'] = 2;
             $data2['suoshudd'] = $qishu_id;
-            M('lsqryye')->add($data2);
+            M('lsqryyems')->add($data2);
             $newList[] = $data2;
         }
         $newList = $this->heji($newList);
@@ -197,15 +208,13 @@ class CountLsqryyemsAction extends CommonAction {
         }
         //获取本月新增的秒杀
         $xyfy_id = $this->getQishuId($qishu,$sid,7);//学员费用预警表
-        $list = M('xzmxb as xz')
-                ->field('xz.xuehao,yj.shengyugmsl,yj.shengyuzssl,yj.feiyong')
-                ->join('LEFT JOIN stjy_xyfyyjb_'.$nian.' as yj on yj.xuehao=xz.xuehao')
-                ->where("xz.suoshudd = '$xzmxb_id' and yj.suoshudd='$xyfy_id'")
+        $list = M('xzmxb')
+                ->field('xuehao')
+                ->where("suoshudd = '$xzmxb_id' and shifoums = '是'")
                 ->select();
 
         foreach($list as $val){
-            $xyfyyjb[ $val['xuehao'] ]['zongshuliang'] += $val['shengyugmsl'] + $val['shengyuzssl'];
-            $xyfyyjb[ $val['xuehao'] ]['zongfeiyong'] += $val['feiyong'];
+           $miaosha[] = $val['xuehao'];
         }
         foreach($xyfyyjb as $key=>$val){
             $val['danjia'] = round($val['zongfeiyong'] / $val['zongshuliang'],2);
